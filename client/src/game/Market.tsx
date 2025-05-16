@@ -17,6 +17,8 @@ const Market = ({ onExit }: MarketProps) => {
   const { exitBuilding, setGameState } = useGameStateStore();
   
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [cart, setCart] = useState<{item: typeof foodItems[0], quantity: number}[]>([]);
+  const [showCart, setShowCart] = useState(false);
   
   // Filter food items by category
   const filteredFoodItems = selectedCategory === "all" 
@@ -26,7 +28,66 @@ const Market = ({ onExit }: MarketProps) => {
   // Get all categories
   const categories = ["all", ...Array.from(new Set(foodItems.map(item => item.category)))];
   
-  // Handle food purchase
+  // Add item to cart
+  const addToCart = (foodItem: typeof foodItems[0]) => {
+    // Check if item already exists in cart
+    const existingItem = cart.find(item => item.item.id === foodItem.id);
+    
+    if (existingItem) {
+      // Update quantity if it exists
+      setCart(prevCart => prevCart.map(item => 
+        item.item.id === foodItem.id 
+          ? { ...item, quantity: item.quantity + 1 } 
+          : item
+      ));
+    } else {
+      // Add new item to cart
+      setCart(prevCart => [...prevCart, { item: foodItem, quantity: 1 }]);
+    }
+    
+    // Show notification
+    toast.success(`${foodItem.name} added to cart`);
+  };
+  
+  // Remove item from cart
+  const removeFromCart = (foodId: string) => {
+    setCart(prevCart => prevCart.filter(item => item.item.id !== foodId));
+  };
+  
+  // Get total price of all items in cart
+  const getTotalCartPrice = () => {
+    return cart.reduce((total, item) => total + (item.item.price * item.quantity), 0);
+  };
+  
+  // Handle checkout (purchase all items in cart)
+  const handleCheckout = () => {
+    const totalPrice = getTotalCartPrice();
+    
+    // Check if player has enough coins
+    if ((playerData?.coins || 0) < totalPrice) {
+      toast.error("Not enough iHumancoins for checkout!");
+      return;
+    }
+    
+    // Purchase all items
+    cart.forEach(cartItem => {
+      for (let i = 0; i < cartItem.quantity; i++) {
+        addPurchasedFood(cartItem.item);
+        addFood(cartItem.item);
+      }
+    });
+    
+    // Update player coins
+    updateCoins(-totalPrice);
+    
+    // Clear cart
+    setCart([]);
+    
+    // Show success message
+    toast.success(`Purchase completed successfully!`);
+  };
+  
+  // Handle direct purchase (old method, kept for compatibility)
   const handlePurchase = (foodItem: typeof foodItems[0]) => {
     // Check if player has enough coins
     if ((playerData?.coins || 0) < foodItem.price) {
@@ -55,10 +116,21 @@ const Market = ({ onExit }: MarketProps) => {
             <h1 className="text-4xl font-bold text-amber-50 drop-shadow-md tracking-wide text-center">MARKET</h1>
           </div>
           
-          <div className="flex justify-start items-center">
+          <div className="flex justify-between items-center">
             <div className="bg-amber-700 px-4 py-2 rounded-lg text-amber-50 border-2 border-amber-600 shadow-inner">
               <span className="font-semibold">iHumancoins: </span>
               <span className="text-yellow-300 font-bold text-xl ml-1">{playerData?.coins?.toFixed(0) || 0}</span>
+            </div>
+            
+            {/* Carrito de compras */}
+            <div 
+              className="flex items-center bg-amber-600 px-4 py-2 rounded-lg text-amber-50 border-2 border-amber-500 shadow-inner cursor-pointer hover:brightness-110 transition-all"
+              onClick={() => setShowCart(!showCart)}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+              <span className="font-bold text-lg">{cart.reduce((total, item) => total + item.quantity, 0)}</span>
             </div>
           </div>
         </div>
@@ -147,25 +219,110 @@ const Market = ({ onExit }: MarketProps) => {
                   {/* Descripción */}
                   <p className="text-xs text-amber-700 mb-3 h-12 overflow-hidden">{food.description}</p>
                   
-                  {/* Botón de compra */}
-                  <button 
-                    onClick={() => handlePurchase(food)}
-                    disabled={(playerData?.coins || 0) < food.price}
-                    className={`w-full py-2 rounded-lg font-bold text-center transition-all ${
-                      (playerData?.coins || 0) >= food.price
-                        ? 'bg-gradient-to-b from-amber-500 to-amber-600 text-white border-2 border-amber-400 hover:from-amber-600 hover:to-amber-700 hover:scale-105'
-                        : 'bg-gray-300 text-gray-500 cursor-not-allowed border-2 border-gray-400'
-                    }`}
-                  >
-                    Buy
-                  </button>
+                  {/* Botones de compra y añadir al carrito */}
+                  <div className="flex gap-2">
+                    <button 
+                      onClick={() => handlePurchase(food)}
+                      disabled={(playerData?.coins || 0) < food.price}
+                      className={`w-full py-2 rounded-lg font-bold text-center transition-all ${
+                        (playerData?.coins || 0) >= food.price
+                          ? 'bg-gradient-to-b from-amber-500 to-amber-600 text-white border-2 border-amber-400 hover:from-amber-600 hover:to-amber-700 hover:scale-105'
+                          : 'bg-gray-300 text-gray-500 cursor-not-allowed border-2 border-gray-400'
+                      }`}
+                    >
+                      Buy
+                    </button>
+                    
+                    <button 
+                      onClick={() => addToCart(food)}
+                      className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-3 rounded-lg border-2 border-green-500 transition-all hover:scale-105 flex-shrink-0"
+                      title="Add to cart"
+                    >
+                      +
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Carrito de compra - opcional, se puede añadir más tarde */}
+        {/* Panel del carrito de compra */}
+        {showCart && (
+          <div className="absolute top-0 right-0 w-1/3 h-full bg-amber-800/95 text-white p-4 shadow-xl border-l-4 border-amber-900 overflow-auto z-10">
+            <div className="flex justify-between items-center mb-4 border-b border-amber-700 pb-2">
+              <h2 className="text-2xl font-bold">Shopping Cart</h2>
+              <button 
+                onClick={() => setShowCart(false)}
+                className="text-amber-300 hover:text-amber-100"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            
+            {cart.length === 0 ? (
+              <div className="text-center py-8 text-amber-300">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mx-auto mb-4 opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+                <p>Your cart is empty</p>
+                <p className="text-sm text-amber-400 mt-2">Add items by clicking the + button</p>
+              </div>
+            ) : (
+              <>
+                <div className="space-y-3 max-h-[60vh] overflow-auto">
+                  {cart.map(cartItem => (
+                    <div key={cartItem.item.id} className="flex justify-between items-center bg-amber-700/50 p-2 rounded-lg">
+                      <div className="flex items-center">
+                        <div className="mr-2 bg-amber-600 text-white w-6 h-6 flex items-center justify-center rounded-full">
+                          {cartItem.quantity}
+                        </div>
+                        <div>
+                          <p className="font-medium">{cartItem.item.name}</p>
+                          <p className="text-xs text-amber-300">{cartItem.item.price} IHC × {cartItem.quantity}</p>
+                        </div>
+                      </div>
+                      <div className="flex gap-2">
+                        <span className="font-bold text-amber-300">
+                          {(cartItem.item.price * cartItem.quantity)} IHC
+                        </span>
+                        <button 
+                          onClick={() => removeFromCart(cartItem.item.id)}
+                          className="text-red-400 hover:text-red-300"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                
+                <div className="border-t border-amber-700 mt-4 pt-4">
+                  <div className="flex justify-between text-xl font-bold mb-4">
+                    <span>Total:</span>
+                    <span className="text-amber-300">{getTotalCartPrice()} IHC</span>
+                  </div>
+                  
+                  <button 
+                    onClick={handleCheckout}
+                    disabled={(playerData?.coins || 0) < getTotalCartPrice()}
+                    className={`w-full py-3 rounded-lg font-bold text-center text-lg transition-all ${
+                      (playerData?.coins || 0) >= getTotalCartPrice()
+                        ? 'bg-green-600 hover:bg-green-700 text-white'
+                        : 'bg-gray-600 text-gray-400 cursor-not-allowed'
+                    }`}
+                  >
+                    Checkout
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
