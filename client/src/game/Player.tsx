@@ -21,6 +21,9 @@ const Player = () => {
   } = usePlayerStore();
   const { marketPosition, kitchenPosition } = useFoodStore();
   
+  // Ajustar la altura del personaje para que no se hunda en el suelo
+  const PLAYER_HEIGHT_OFFSET = 0.5; // Elevación para evitar que las piernas se hundan
+  
   // Subscribe to keyboard controls
   const [, getKeys] = useKeyboardControls();
   
@@ -270,14 +273,14 @@ const Player = () => {
   useEffect(() => {
     if (playerRef.current) {
       playerRef.current.position.x = playerPosition.x;
-      playerRef.current.position.y = playerPosition.y;
+      playerRef.current.position.y = playerPosition.y + PLAYER_HEIGHT_OFFSET;
       playerRef.current.position.z = playerPosition.z;
       playerRef.current.rotation.y = rotationY;
     }
-  }, [playerPosition, rotationY]);
+  }, [playerPosition, rotationY, PLAYER_HEIGHT_OFFSET]);
   
   return (
-    <group ref={playerRef} position={[playerPosition.x, playerPosition.y, playerPosition.z]}>
+    <group ref={playerRef} position={[playerPosition.x, playerPosition.y + PLAYER_HEIGHT_OFFSET, playerPosition.z]}>
       {/* Character body */}
       <mesh castShadow position={[0, 1, 0]}>
         <capsuleGeometry args={[0.5, 1, 4, 8]} />
@@ -313,12 +316,12 @@ const Player = () => {
       </mesh>
       
       {/* Character legs */}
-      <mesh castShadow position={[0.3, 0, 0]}>
+      <mesh castShadow position={[0.3, 0.5, 0]}>
         <capsuleGeometry args={[0.25, 0.8, 4, 8]} />
         <meshStandardMaterial color="#4169E1" />
       </mesh>
       
-      <mesh castShadow position={[-0.3, 0, 0]}>
+      <mesh castShadow position={[-0.3, 0.5, 0]}>
         <capsuleGeometry args={[0.25, 0.8, 4, 8]} />
         <meshStandardMaterial color="#4169E1" />
       </mesh>
