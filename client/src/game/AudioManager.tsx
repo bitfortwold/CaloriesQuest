@@ -45,24 +45,8 @@ const AudioManager = () => {
       setVoiceSound(new Audio());
     }
     
-    // Unmute audio after user interaction
-    const handleFirstInteraction = () => {
-      toggleMute(); // This will toggle from default muted state to unmuted
-      
-      // Remove event listeners after first interaction
-      document.removeEventListener("click", handleFirstInteraction);
-      document.removeEventListener("keydown", handleFirstInteraction);
-    };
-    
-    // Add event listeners for first interaction
-    document.addEventListener("click", handleFirstInteraction);
-    document.addEventListener("keydown", handleFirstInteraction);
-    
     // Clean up function
-    return () => {
-      document.removeEventListener("click", handleFirstInteraction);
-      document.removeEventListener("keydown", handleFirstInteraction);
-      
+    return () => {      
       // Stop and clean up audio elements
       if (backgroundMusic) {
         backgroundMusic.pause();
