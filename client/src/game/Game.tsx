@@ -15,8 +15,10 @@ const Game = () => {
   const { playerPosition } = usePlayerStore();
   const { camera } = useThree();
   const [isInitialized, setIsInitialized] = useState(false);
-  const [cameraMode, setCameraMode] = useState<"follow" | "free">("follow");
   const orbitControlsRef = useRef<any>(null);
+  
+  // Camera offset for orbit controls
+  const cameraTarget = useRef(new THREE.Vector3());
   
   // Set up the game when component mounts
   useEffect(() => {
@@ -24,64 +26,65 @@ const Game = () => {
       console.log("Game initialized");
       setGameState("playing");
       setIsInitialized(true);
-      
-      // Configurar tecla para cambiar modo de cámara (tecla 'C')
-      const handleKeyDown = (e: KeyboardEvent) => {
-        if (e.code === 'KeyC') {
-          setCameraMode(prev => prev === "follow" ? "free" : "follow");
-          
-          // Si cambiamos a modo libre, configurar la posición inicial de la cámara libre
-          if (cameraMode === "follow" && orbitControlsRef.current) {
-            orbitControlsRef.current.target.set(
-              playerPosition.x,
-              playerPosition.y,
-              playerPosition.z
-            );
-          }
-        }
-      };
-      
-      window.addEventListener('keydown', handleKeyDown);
-      return () => {
-        window.removeEventListener('keydown', handleKeyDown);
-      };
     }
     
     // Clean up function
     return () => {
       console.log("Game cleanup");
     };
-  }, [setGameState, isInitialized, cameraMode, playerPosition]);
+  }, [setGameState, isInitialized]);
 
-  // Camera follows player in follow mode
-  useFrame(() => {
-    if (gameState === "playing" && cameraMode === "follow") {
-      // Only update camera in playing state (when outside buildings) and follow mode
-      const targetPosition = new THREE.Vector3(
+  // Update camera target to follow player
+  useEffect(() => {
+    if (gameState === "playing" && orbitControlsRef.current) {
+      // Actualizar el objetivo de la cámara para que siga al jugador
+      cameraTarget.current.set(
         playerPosition.x,
-        camera.position.y, // Keep the same height
-        playerPosition.z + 8 // Position camera behind player
+        playerPosition.y,
+        playerPosition.z
       );
       
-      // Smoothly move the camera
-      camera.position.lerp(targetPosition, 0.1);
-      camera.lookAt(playerPosition.x, playerPosition.y + 1, playerPosition.z);
+      // Aplicar el target a los controles de órbita
+      orbitControlsRef.current.target.copy(cameraTarget.current);
     }
-  });
+  }, [gameState, playerPosition]);
+
+  // Initial camera position
+  useEffect(() => {
+    if (camera && playerPosition) {
+      // Posición inicial de la cámara detrás del jugador
+      camera.position.set(
+        playerPosition.x, 
+        playerPosition.y + 5, 
+        playerPosition.z + 10
+      );
+      camera.lookAt(playerPosition.x, playerPosition.y, playerPosition.z);
+    }
+  }, [camera, playerPosition]);
 
   return (
     <>
-      {/* Enable orbit controls in free camera mode */}
-      {cameraMode === "free" && gameState === "playing" && (
+      {/* Controles de órbita siempre activos en modo de juego */}
+      {gameState === "playing" && (
         <OrbitControls 
           ref={orbitControlsRef}
           enablePan={true}
           enableZoom={true}
           enableRotate={true}
-          minDistance={2}
-          maxDistance={50}
-          minPolarAngle={Math.PI / 6} // Limitar rotación hacia abajo
-          maxPolarAngle={Math.PI / 2} // Limitar rotación hacia arriba
+          minDistance={3}
+          maxDistance={30}
+          minPolarAngle={Math.PI / 8} // Limitar rotación hacia abajo (no mucho)
+          maxPolarAngle={Math.PI / 2} // Limitar rotación hacia arriba (hasta horizontal)
+          zoomSpeed={0.5} // Velocidad de zoom más suave
+          rotateSpeed={0.5} // Velocidad de rotación más suave
+          panSpeed={0.5} // Velocidad de paneo más suave
+          enableDamping={true} // Añadir inercia
+          dampingFactor={0.1} // Factor de inercia
+          mouseButtons={{
+            LEFT: THREE.MOUSE.ROTATE,
+            MIDDLE: THREE.MOUSE.DOLLY,
+            RIGHT: THREE.MOUSE.PAN
+          }}
         />
       )}
       
@@ -106,8 +109,6 @@ const Game = () => {
           <Buildings />
         </>
       )}
-      
-      {/* Instrucción de cámara mostrada en el UI en lugar de en 3D */}
       
       {/* GameUI removed from 3D context - it's rendered through a portal */}
     </>
