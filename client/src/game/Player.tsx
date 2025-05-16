@@ -21,8 +21,8 @@ const Player = () => {
   } = usePlayerStore();
   const { marketPosition, kitchenPosition } = useFoodStore();
   
-  // Ajustar la altura del personaje para elevarlo sobre el suelo
-  const PLAYER_HEIGHT_OFFSET = 0.8; // Elevación para que el personaje esté sobre el suelo
+  // Ajustar la altura del personaje para elevarlo más sobre el suelo
+  const PLAYER_HEIGHT_OFFSET = 1.2; // Mayor elevación para que el personaje esté claramente sobre el suelo
   
   // Subscribe to keyboard controls
   const [, getKeys] = useKeyboardControls();
@@ -315,14 +315,14 @@ const Player = () => {
         <meshStandardMaterial color={playerData?.gender === 'female' ? '#E38AAE' : '#6495ED'} />
       </mesh>
       
-      {/* Character legs - ajustadas para tocar el suelo */}
-      <mesh castShadow position={[0.3, -0.2, 0]}>
-        <capsuleGeometry args={[0.25, 1.5, 4, 8]} />
+      {/* Character legs - ajustadas para la nueva elevación */}
+      <mesh castShadow position={[0.3, -0.6, 0]}>
+        <capsuleGeometry args={[0.25, 1.8, 4, 8]} />
         <meshStandardMaterial color="#4169E1" />
       </mesh>
       
-      <mesh castShadow position={[-0.3, -0.2, 0]}>
-        <capsuleGeometry args={[0.25, 1.5, 4, 8]} />
+      <mesh castShadow position={[-0.3, -0.6, 0]}>
+        <capsuleGeometry args={[0.25, 1.8, 4, 8]} />
         <meshStandardMaterial color="#4169E1" />
       </mesh>
     </group>
