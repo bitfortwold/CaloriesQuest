@@ -45,14 +45,14 @@ const Market = ({ onExit }: MarketProps) => {
   
   return (
     <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 overflow-auto">
-      <div className="w-full max-w-5xl max-h-[90vh] overflow-auto bg-gradient-to-b from-amber-50 to-amber-100 rounded-lg shadow-xl border-4 border-amber-800">
+      <div className="w-full max-w-5xl max-h-[90vh] overflow-auto bg-gradient-to-b from-blue-50 to-green-50 rounded-lg shadow-xl border-4 border-green-800">
         {/* Header con estilo de madera */}
-        <div className="bg-amber-800 text-amber-50 p-3 rounded-t-lg relative overflow-hidden">
-          <div className="absolute inset-0 opacity-30 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMCIgaGVpZ2h0PSIzMCI+CjxyZWN0IHdpZHRoPSIzMCIgaGVpZ2h0PSIzMCIgZmlsbD0iI2ZmZiI+PC9yZWN0Pgo8cmVjdCB4PSIxNSIgeT0iMCIgd2lkdGg9IjE1IiBoZWlnaHQ9IjE1IiBmaWxsPSIjZjNmNGY2Ij48L3JlY3Q+CjxyZWN0IHg9IjAiIHk9IjE1IiB3aWR0aD0iMTUiIGhlaWdodD0iMTUiIGZpbGw9IiNmM2Y0ZjYiPjwvcmVjdD4KPC9zdmc+')]"></div>
-          <h1 className="text-4xl font-bold text-center text-amber-50 mb-2 drop-shadow-md tracking-wide">MARKET</h1>
+        <div className="bg-gradient-to-r from-blue-700 to-green-700 text-white p-3 rounded-t-lg relative overflow-hidden">
+          <div className="absolute inset-0 opacity-20 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMCIgaGVpZ2h0PSIzMCI+CjxyZWN0IHdpZHRoPSIzMCIgaGVpZ2h0PSIzMCIgZmlsbD0iI2ZmZiI+PC9yZWN0Pgo8cmVjdCB4PSIxNSIgeT0iMCIgd2lkdGg9IjE1IiBoZWlnaHQ9IjE1IiBmaWxsPSIjZjNmNGY2Ij48L3JlY3Q+CjxyZWN0IHg9IjAiIHk9IjE1IiB3aWR0aD0iMTUiIGhlaWdodD0iMTUiIGZpbGw9IiNmM2Y0ZjYiPjwvcmVjdD4KPC9zdmc+')]"></div>
+          <h1 className="text-4xl font-bold text-center text-white mb-2 drop-shadow-md tracking-wide">MARKET</h1>
           
           <div className="flex justify-between items-center">
-            <div className="bg-amber-700 px-4 py-2 rounded-lg text-amber-50 border-2 border-amber-600 shadow-inner">
+            <div className="bg-gradient-to-r from-blue-600 to-green-600 px-4 py-2 rounded-lg text-white border-2 border-blue-400 shadow-inner">
               <span className="font-semibold">iHumancoins: </span>
               <span className="text-yellow-300 font-bold text-xl ml-1">{playerData?.coins?.toFixed(0) || 0}</span>
             </div>
@@ -66,15 +66,15 @@ const Market = ({ onExit }: MarketProps) => {
         </div>
         
         {/* Tabs de categoría con estilo de pestañas */}
-        <div className="bg-amber-200 px-2 pt-2 flex space-x-1 overflow-x-auto border-b-2 border-amber-700">
+        <div className="bg-blue-100 px-2 pt-2 flex space-x-1 overflow-x-auto border-b-2 border-blue-600">
           {categories.map(category => (
             <button 
               key={category}
               onClick={() => setSelectedCategory(category)}
               className={`capitalize font-bold py-2 px-4 rounded-t-lg transition-all hover:brightness-110 ${
                 selectedCategory === category 
-                  ? 'bg-amber-50 text-amber-900 border-2 border-b-0 border-amber-700 shadow-inner-top' 
-                  : 'bg-amber-300 text-amber-700 border border-amber-400 opacity-80 hover:opacity-100'
+                  ? 'bg-gradient-to-br from-blue-50 to-green-50 text-blue-900 border-2 border-b-0 border-blue-600 shadow-inner-top' 
+                  : 'bg-gradient-to-r from-blue-200 to-green-200 text-blue-800 border border-blue-400 opacity-80 hover:opacity-100'
               }`}
             >
               {category === 'all' ? 'All' : category}
@@ -82,18 +82,18 @@ const Market = ({ onExit }: MarketProps) => {
           ))}
         </div>
         
-        <div className="p-4">
+        <div className="p-4 bg-gradient-to-br from-blue-50 to-green-50">
           {/* Cuadrícula de comida con estilo de tarjetas de juego */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {filteredFoodItems.map((food) => (
               <div 
                 key={food.id} 
-                className="bg-amber-50 rounded-lg shadow-md border-2 border-amber-300 overflow-hidden hover:border-amber-500 transition-all hover:shadow-lg"
+                className="bg-white rounded-lg shadow-md border-2 border-green-200 overflow-hidden hover:border-blue-400 transition-all hover:shadow-lg"
               >
                 {/* Cabecera del item */}
-                <div className="bg-gradient-to-r from-amber-500 to-amber-600 p-3 flex justify-between items-center border-b-2 border-amber-400">
+                <div className="bg-gradient-to-r from-blue-500 to-green-500 p-3 flex justify-between items-center border-b-2 border-blue-400">
                   <h3 className="text-lg font-bold text-white truncate">{food.name}</h3>
-                  <span className="font-bold text-yellow-100 bg-amber-700 px-2 py-1 rounded-full text-sm border border-amber-800">
+                  <span className="font-bold text-white bg-blue-600 px-2 py-1 rounded-full text-sm border border-green-700">
                     {food.price} IHC
                   </span>
                 </div>
@@ -104,33 +104,33 @@ const Market = ({ onExit }: MarketProps) => {
                     {/* Columna izquierda */}
                     <div className="flex flex-col gap-1">
                       <div className="flex items-center">
-                        <span className="w-24 text-xs text-amber-800">Calories:</span>
-                        <span className="font-bold text-amber-900">{food.calories} kcal</span>
+                        <span className="w-24 text-xs text-blue-800">Calories:</span>
+                        <span className="font-bold text-blue-900">{food.calories} kcal</span>
                       </div>
                       <div className="flex items-center">
-                        <span className="w-24 text-xs text-amber-800">Carbs:</span>
-                        <span className="font-bold text-amber-900">{food.nutritionalValue.carbs}g</span>
+                        <span className="w-24 text-xs text-blue-800">Carbs:</span>
+                        <span className="font-bold text-blue-900">{food.nutritionalValue.carbs}g</span>
                       </div>
                     </div>
                     
                     {/* Columna derecha */}
                     <div className="flex flex-col gap-1">
                       <div className="flex items-center">
-                        <span className="w-24 text-xs text-amber-800">Protein:</span>
-                        <span className="font-bold text-amber-900">{food.nutritionalValue.protein}g</span>
+                        <span className="w-24 text-xs text-green-800">Protein:</span>
+                        <span className="font-bold text-green-900">{food.nutritionalValue.protein}g</span>
                       </div>
                       <div className="flex items-center">
-                        <span className="w-24 text-xs text-amber-800">Fat:</span>
-                        <span className="font-bold text-amber-900">{food.nutritionalValue.fat}g</span>
+                        <span className="w-24 text-xs text-green-800">Fat:</span>
+                        <span className="font-bold text-green-900">{food.nutritionalValue.fat}g</span>
                       </div>
                     </div>
                   </div>
                   
                   {/* Barra de sostenibilidad */}
                   <div className="mb-3">
-                    <div className="text-xs text-amber-800 mb-1">Sustainability:</div>
+                    <div className="text-xs text-blue-800 mb-1">Sustainability:</div>
                     <div className="flex items-center gap-2">
-                      <div className="h-4 flex-1 bg-amber-200 rounded-full border border-amber-300 overflow-hidden">
+                      <div className="h-4 flex-1 bg-green-100 rounded-full border border-green-300 overflow-hidden">
                         <div 
                           className={`h-full ${
                             food.sustainabilityScore > 7 
@@ -147,7 +147,7 @@ const Market = ({ onExit }: MarketProps) => {
                   </div>
                   
                   {/* Descripción */}
-                  <p className="text-xs text-amber-700 mb-3 h-12 overflow-hidden">{food.description}</p>
+                  <p className="text-xs text-blue-700 mb-3 h-12 overflow-hidden">{food.description}</p>
                   
                   {/* Botón de compra */}
                   <button 
@@ -155,7 +155,7 @@ const Market = ({ onExit }: MarketProps) => {
                     disabled={(playerData?.coins || 0) < food.price}
                     className={`w-full py-2 rounded-lg font-bold text-center transition-all ${
                       (playerData?.coins || 0) >= food.price
-                        ? 'bg-gradient-to-b from-amber-500 to-amber-600 text-white border-2 border-amber-400 hover:from-amber-600 hover:to-amber-700 hover:scale-105'
+                        ? 'bg-gradient-to-r from-blue-500 to-green-500 text-white border-2 border-blue-400 hover:from-blue-600 hover:to-green-600 hover:scale-105'
                         : 'bg-gray-300 text-gray-500 cursor-not-allowed border-2 border-gray-400'
                     }`}
                   >
