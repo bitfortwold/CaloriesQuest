@@ -279,7 +279,7 @@ const Player = () => {
   return (
     <group ref={playerRef} position={[playerPosition.x, playerPosition.y, playerPosition.z]}>
       {/* Personaje ajustado a la altura del camino rectangular */}
-      <group position={[0, 1.0, 0]}>
+      <group position={[0, 0.8, 0]}>
         {/* Torso central simple */}
         <mesh castShadow position={[0, 1, 0]}>
           <capsuleGeometry args={[0.5, 1, 4, 8]} />
