@@ -247,9 +247,9 @@ const Market = ({ onExit }: MarketProps) => {
           </div>
         </div>
 
-        {/* Panel del carrito de compra */}
+        {/* Panel del carrito de compra - aumentado z-index y posicionado sobre todo */}
         {showCart && (
-          <div className="absolute top-0 right-0 w-1/3 h-full bg-amber-800/95 text-white p-4 shadow-xl border-l-4 border-amber-900 overflow-auto z-10">
+          <div className="fixed top-0 right-0 w-1/3 h-full bg-amber-800/95 text-white p-4 shadow-xl border-l-4 border-amber-900 overflow-auto z-[2000]">
             <div className="flex justify-between items-center mb-4 border-b border-amber-700 pb-2">
               <h2 className="text-2xl font-bold">Shopping Cart</h2>
               <button 
