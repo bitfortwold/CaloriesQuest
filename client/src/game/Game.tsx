@@ -73,8 +73,7 @@ const Game = () => {
         </>
       )}
       
-      {/* UI elements that need to be in 3D space */}
-      <GameUI />
+      {/* GameUI removed from 3D context - it's rendered through a portal */}
     </>
   );
 };
