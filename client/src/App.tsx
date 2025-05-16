@@ -8,6 +8,7 @@ import { Toaster } from "sonner";
 import Game from "./game/Game";
 import GameUI from "./game/GameUI";
 import RegistrationForm from "./game/RegistrationForm";
+import SimpleLoginForm from "./game/SimpleLoginForm";
 import AudioManager from "./game/AudioManager";
 import { useGameStateStore } from "./stores/useGameStateStore";
 
@@ -24,10 +25,20 @@ const controls = [
 function App() {
   const { gameState, isRegistered } = useGameStateStore();
   const [showCanvas, setShowCanvas] = useState(false);
+  const [hasStoredProfile, setHasStoredProfile] = useState(false);
 
-  // Show the canvas once everything is loaded
+  // Show the canvas once everything is loaded and check for stored profile
   useEffect(() => {
     setShowCanvas(true);
+    
+    // Comprobar si hay datos guardados
+    try {
+      const savedData = localStorage.getItem("caloric_consumption_user_data");
+      setHasStoredProfile(!!savedData);
+    } catch (error) {
+      console.error("Error checking localStorage:", error);
+      setHasStoredProfile(false);
+    }
   }, []);
 
   return (
@@ -35,7 +46,13 @@ function App() {
       <div style={{ width: '100vw', height: '100vh', position: 'relative', overflow: 'hidden' }}>
         {showCanvas && (
           <KeyboardControls map={controls}>
-            {!isRegistered && <RegistrationForm />}
+            {!isRegistered && (
+              // Si existe un perfil guardado, muestra el inicio de sesión simple
+              // Si no hay perfil guardado o se está registrando por primera vez, muestra el formulario completo
+              hasStoredProfile ? 
+                <SimpleLoginForm /> : 
+                <RegistrationForm />
+            )}
             
             {isRegistered && (
               <>
