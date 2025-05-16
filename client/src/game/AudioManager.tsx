@@ -75,6 +75,12 @@ const AudioManager = () => {
   useEffect(() => {
     if (!backgroundMusic) return;
     
+    // Obtener el estado actual de mute
+    const isMuted = useAudio.getState().isMuted;
+    
+    // Asegurarnos de que el elemento de audio tenga el estado de mute correcto
+    backgroundMusic.muted = isMuted;
+    
     if (gameState === "playing" || gameState === "market" || gameState === "kitchen") {
       backgroundMusic.play().catch(error => {
         console.log("Background music play prevented:", error);
