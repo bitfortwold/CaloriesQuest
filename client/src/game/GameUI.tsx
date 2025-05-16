@@ -129,7 +129,7 @@ const GameUI = () => {
             {/* Controls hint with mouse controls */}
             <div className="fixed bottom-4 left-4 bg-black/70 text-white p-2 rounded text-xs">
               <p>WASD o Flechas: Moverse</p>
-              <p>Click del ratón: Moverse al punto</p>
+              <p>Click del ratón: Moverse o interactuar con edificios</p>
               <p>E o Espacio: Interactuar</p>
             </div>
           </div>

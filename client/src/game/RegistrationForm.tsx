@@ -200,11 +200,11 @@ const RegistrationForm = () => {
     <div className="fixed inset-0 bg-gradient-to-b from-blue-400 to-green-400 flex items-center justify-center z-50 p-4">
       <Card className="w-full max-w-lg">
         <CardHeader>
-          <CardTitle className="text-2xl">Welcome to Caloric Consumption</CardTitle>
+          <CardTitle className="text-2xl">Bienvenido a Consumo Calórico</CardTitle>
           <CardDescription>
             {showQuickLogin 
-              ? `Welcome back! You can continue with your saved profile or create a new one.`
-              : `Register your profile to start your nutritional adventure! The game will calculate your daily calorie needs.`
+              ? `¡Bienvenido de nuevo! Puedes continuar con tu perfil guardado o crear uno nuevo.`
+              : `¡Registra tu perfil para comenzar tu aventura nutricional! El juego calculará tus necesidades calóricas diarias.`
             }
           </CardDescription>
         </CardHeader>
@@ -238,7 +238,7 @@ const RegistrationForm = () => {
             <form onSubmit={handleSubmit}>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium mb-1">Name</label>
+                  <label className="block text-sm font-medium mb-1">Nombre</label>
                   <input
                     type="text"
                     name="name"
@@ -246,11 +246,11 @@ const RegistrationForm = () => {
                     onChange={handleChange}
                     className={`w-full p-2 border rounded-md ${errors.name ? 'border-red-500' : 'border-gray-300'}`}
                   />
-                  {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
+                  {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name === "Name is required" ? "El nombre es obligatorio" : errors.name}</p>}
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium mb-1">Age</label>
+                  <label className="block text-sm font-medium mb-1">Edad</label>
                   <input
                     type="number"
                     name="age"
@@ -258,27 +258,33 @@ const RegistrationForm = () => {
                     onChange={handleChange}
                     className={`w-full p-2 border rounded-md ${errors.age ? 'border-red-500' : 'border-gray-300'}`}
                   />
-                  {errors.age && <p className="text-red-500 text-xs mt-1">{errors.age}</p>}
+                  {errors.age && <p className="text-red-500 text-xs mt-1">
+                    {errors.age === "Valid age is required" ? "La edad es obligatoria" : 
+                     errors.age === "Age must be between 7 and 120" ? "La edad debe estar entre 7 y 120 años" : 
+                     errors.age}
+                  </p>}
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium mb-1">Gender</label>
+                  <label className="block text-sm font-medium mb-1">Género</label>
                   <select
                     name="gender"
                     value={formData.gender}
                     onChange={handleChange}
                     className={`w-full p-2 border rounded-md ${errors.gender ? 'border-red-500' : 'border-gray-300'}`}
                   >
-                    <option value="">Select Gender</option>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                    <option value="other">Other</option>
+                    <option value="">Selecciona género</option>
+                    <option value="male">Masculino</option>
+                    <option value="female">Femenino</option>
+                    <option value="other">Otro</option>
                   </select>
-                  {errors.gender && <p className="text-red-500 text-xs mt-1">{errors.gender}</p>}
+                  {errors.gender && <p className="text-red-500 text-xs mt-1">
+                    {errors.gender === "Gender is required" ? "El género es obligatorio" : errors.gender}
+                  </p>}
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium mb-1">Height (cm)</label>
+                  <label className="block text-sm font-medium mb-1">Altura (cm)</label>
                   <input
                     type="number"
                     name="height"
@@ -286,11 +292,15 @@ const RegistrationForm = () => {
                     onChange={handleChange}
                     className={`w-full p-2 border rounded-md ${errors.height ? 'border-red-500' : 'border-gray-300'}`}
                   />
-                  {errors.height && <p className="text-red-500 text-xs mt-1">{errors.height}</p>}
+                  {errors.height && <p className="text-red-500 text-xs mt-1">
+                    {errors.height === "Valid height is required" ? "La altura es obligatoria" : 
+                     errors.height === "Height must be between 50 and 250 cm" ? "La altura debe estar entre 50 y 250 cm" : 
+                     errors.height}
+                  </p>}
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium mb-1">Weight (kg)</label>
+                  <label className="block text-sm font-medium mb-1">Peso (kg)</label>
                   <input
                     type="number"
                     name="weight"
@@ -298,30 +308,36 @@ const RegistrationForm = () => {
                     onChange={handleChange}
                     className={`w-full p-2 border rounded-md ${errors.weight ? 'border-red-500' : 'border-gray-300'}`}
                   />
-                  {errors.weight && <p className="text-red-500 text-xs mt-1">{errors.weight}</p>}
+                  {errors.weight && <p className="text-red-500 text-xs mt-1">
+                    {errors.weight === "Valid weight is required" ? "El peso es obligatorio" : 
+                     errors.weight === "Weight must be between 15 and 300 kg" ? "El peso debe estar entre 15 y 300 kg" : 
+                     errors.weight}
+                  </p>}
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium mb-1">Activity Level</label>
+                  <label className="block text-sm font-medium mb-1">Nivel de actividad</label>
                   <select
                     name="activityLevel"
                     value={formData.activityLevel}
                     onChange={handleChange}
                     className={`w-full p-2 border rounded-md ${errors.activityLevel ? 'border-red-500' : 'border-gray-300'}`}
                   >
-                    <option value="">Select Activity Level</option>
-                    <option value="sedentary">Sedentary (little or no exercise)</option>
-                    <option value="light">Light (light exercise/sports 1-3 days/week)</option>
-                    <option value="moderate">Moderate (moderate exercise/sports 3-5 days/week)</option>
-                    <option value="active">Active (hard exercise/sports 6-7 days a week)</option>
-                    <option value="veryActive">Very Active (very hard exercise & physical job)</option>
+                    <option value="">Selecciona nivel de actividad</option>
+                    <option value="sedentary">Sedentario (poco o nada de ejercicio)</option>
+                    <option value="light">Ligero (ejercicio ligero 1-3 días/semana)</option>
+                    <option value="moderate">Moderado (ejercicio moderado 3-5 días/semana)</option>
+                    <option value="active">Activo (ejercicio intenso 6-7 días/semana)</option>
+                    <option value="veryActive">Muy activo (ejercicio muy intenso y trabajo físico)</option>
                   </select>
-                  {errors.activityLevel && <p className="text-red-500 text-xs mt-1">{errors.activityLevel}</p>}
+                  {errors.activityLevel && <p className="text-red-500 text-xs mt-1">
+                    {errors.activityLevel === "Activity level is required" ? "El nivel de actividad es obligatorio" : errors.activityLevel}
+                  </p>}
                 </div>
                 
                 <div className="pt-2">
                   <Button type="submit" className="w-full">
-                    Start Game
+                    Comenzar Juego
                   </Button>
                 </div>
 
