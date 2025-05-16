@@ -13,7 +13,7 @@ const MOUSE_SPEED = 0.05; // Velocidad para movimiento con mouse
 // Definir las constantes para el modelo y sus dimensiones
 const CHARACTER_HEIGHT = 4.0; // Altura total aproximada del personaje
 const LEG_LENGTH = 2.0;       // Longitud de las piernas (incluido el radio)
-const PLAYER_OFFSET = CHARACTER_HEIGHT / 2 - LEG_LENGTH / 2;
+const PLAYER_OFFSET = 2.0;    // Elevación fija para que el personaje no toque el suelo
 
 const Player = () => {
   const playerRef = useRef<THREE.Group>(null);
