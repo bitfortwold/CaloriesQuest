@@ -14,7 +14,8 @@ const GameUI = () => {
   
   // Track whether DOM is ready for portals
   const [domReady, setDomReady] = useState(false);
-  const [activeTab, setActiveTab] = useState<string>("profile");
+  const [activeTab, setActiveTab] = useState<string | null>(null);
+  const [showProfilePanel, setShowProfilePanel] = useState(false);
   
   // Set up portal target
   useEffect(() => {
@@ -41,7 +42,10 @@ const GameUI = () => {
                 <div className="flex gap-2">
                   <button 
                     className="text-blue-400 text-sm"
-                    onClick={() => setActiveTab('profile')}
+                    onClick={() => {
+                      setShowProfilePanel(!showProfilePanel);
+                      setActiveTab('profile');
+                    }}
                   >
                     Perfil
                   </button>
@@ -84,17 +88,18 @@ const GameUI = () => {
               </div>
             </div>
             
-            {/* Profile panel that appears when user clicks on "Perfil" */}
-            {activeTab === 'profile' && (
+            {/* Profile panel that appears only when user clicks on "Perfil" */}
+            {showProfilePanel && (
               <div className="fixed top-2 right-2 bg-white/90 p-2 rounded-lg shadow-md" style={{ maxWidth: "300px", maxHeight: "80vh", overflow: "auto" }}>
                 <div className="flex space-x-2 mb-2">
                   <button 
-                    className="px-3 py-1 text-sm rounded bg-blue-500 text-white"
+                    className={`px-3 py-1 text-sm rounded ${activeTab === 'profile' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+                    onClick={() => setActiveTab('profile')}
                   >
                     Profile
                   </button>
                   <button 
-                    className="px-3 py-1 text-sm rounded bg-gray-200"
+                    className={`px-3 py-1 text-sm rounded ${activeTab === 'activities' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
                     onClick={() => setActiveTab('activities')}
                   >
                     Activities
@@ -102,31 +107,17 @@ const GameUI = () => {
                 </div>
                 
                 <div className="max-h-[60vh] overflow-auto">
-                  <ProfilePanel />
-                </div>
-              </div>
-            )}
-            
-            {/* Activities panel */}
-            {activeTab === 'activities' && (
-              <div className="fixed top-2 right-2 bg-white/90 p-2 rounded-lg shadow-md" style={{ maxWidth: "300px", maxHeight: "80vh", overflow: "auto" }}>
-                <div className="flex space-x-2 mb-2">
-                  <button 
-                    className="px-3 py-1 text-sm rounded bg-gray-200"
-                    onClick={() => setActiveTab('profile')}
-                  >
-                    Profile
-                  </button>
-                  <button 
-                    className="px-3 py-1 text-sm rounded bg-blue-500 text-white"
-                  >
-                    Activities
-                  </button>
+                  {activeTab === 'profile' && <ProfilePanel />}
+                  {activeTab === 'activities' && <Activities />}
                 </div>
                 
-                <div className="max-h-[60vh] overflow-auto">
-                  <Activities />
-                </div>
+                {/* Close button */}
+                <button 
+                  className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+                  onClick={() => setShowProfilePanel(false)}
+                >
+                  ✕
+                </button>
               </div>
             )}
             
