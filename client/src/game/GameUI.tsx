@@ -131,6 +131,8 @@ const GameUI = () => {
               <p>WASD o Flechas: Moverse</p>
               <p>Click del ratón: Moverse o interactuar con edificios</p>
               <p>E o Espacio: Interactuar</p>
+              <p>C: Cambiar modo de cámara (libre/seguimiento)</p>
+              <p>En modo libre: Usar ratón para rotar y rueda para acercar/alejar</p>
             </div>
           </div>
         );
