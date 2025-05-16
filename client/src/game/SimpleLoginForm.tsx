@@ -110,13 +110,33 @@ const SimpleLoginForm = () => {
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
               <label className="block text-sm font-medium mb-1">Nombre</label>
-              <input
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                className={`w-full p-2 border rounded-md ${error ? 'border-red-500' : 'border-gray-300'}`}
-                placeholder="Introduce tu nombre"
-              />
+              <div className="relative">
+                <input
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  onFocus={() => {
+                    // Mostrar visualmente que hay una sugerencia si hay un usuario guardado
+                    if (savedUsers.length > 0 && !username) {
+                      // Dejamos que se muestre la clase de estilo enfocado
+                    }
+                  }}
+                  className={`w-full p-2 border rounded-md ${error ? 'border-red-500' : 'border-gray-300'}`}
+                  placeholder={savedUsers.length > 0 ? `Sugerencia: ${savedUsers[0]}` : "Introduce tu nombre"}
+                />
+                
+                {savedUsers.length > 0 && !username && (
+                  <div className="absolute right-2 top-1/2 transform -translate-y-1/2 z-10">
+                    <button
+                      type="button"
+                      onClick={() => setUsername(savedUsers[0])}
+                      className="text-blue-600 text-sm font-medium hover:text-blue-800 hover:underline"
+                    >
+                      Usar
+                    </button>
+                  </div>
+                )}
+              </div>
               {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
             </div>
             
