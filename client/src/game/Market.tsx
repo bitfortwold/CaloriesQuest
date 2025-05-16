@@ -58,17 +58,26 @@ const Market = ({ onExit }: MarketProps) => {
               <span className="font-semibold">iHumancoins: </span>
               <span className="text-yellow-300 font-bold text-xl ml-1">{playerData?.coins?.toFixed(0) || 0}</span>
             </div>
-            <button
-              onClick={() => {
-                console.log("Exiting market - direct method");
-                // Usar el método del store directamente accediendo a su estado global
-                // Esto evita problemas con los props y asegura que siempre funcione
-                useGameStateStore.getState().setGameState("playing");
+            <a 
+              href="#" 
+              onClick={(e) => {
+                e.preventDefault();
+                console.log("Exiting market - forced direct method");
+                
+                // Técnica de fuerza bruta para volver al modo juego
+                window.setTimeout(() => {
+                  useGameStateStore.getState().setGameState("playing");
+                }, 10);
+                
+                // También intentamos con el callback pasado como prop
+                if (typeof onExit === 'function') {
+                  onExit();
+                }
               }}
-              className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded-lg border-2 border-red-500 shadow-md transition-all hover:scale-105"
+              className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded-lg border-2 border-red-500 shadow-md transition-all hover:scale-105 inline-block text-center"
             >
               Exit
-            </button>
+            </a>
           </div>
         </div>
         

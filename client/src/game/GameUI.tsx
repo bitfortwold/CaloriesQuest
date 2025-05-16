@@ -29,9 +29,25 @@ const GameUI = () => {
   const renderGameUI = () => {
     switch (gameState) {
       case "market":
-        return <Market onExit={() => exitBuilding()} />;
+        return (
+          <div className="fixed inset-0 z-50 flex items-center justify-center">
+            <Market onExit={() => {
+              console.log("GameUI attempting to exit market");
+              setActiveTab(null);
+              exitBuilding();
+            }} />
+          </div>
+        );
       case "kitchen":
-        return <Kitchen onExit={() => exitBuilding()} />;
+        return (
+          <div className="fixed inset-0 z-50 flex items-center justify-center">
+            <Kitchen onExit={() => {
+              console.log("GameUI attempting to exit kitchen");
+              setActiveTab(null);
+              exitBuilding();
+            }} />
+          </div>
+        );
       case "playing":
         return (
           <div className="z-10">
