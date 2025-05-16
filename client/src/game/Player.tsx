@@ -37,9 +37,12 @@ const Player = () => {
   // Get Three.js scene and camera
   const { camera, gl } = useThree();
 
-  // Handle click on ground for movement
+  // Handle click on ground for movement con cámara fluida
   const handleGroundClick = (event: MouseEvent) => {
     if (gameState !== "playing") return;
+    
+    // Cancelar si se está usando el botón derecho para mover la cámara
+    if (event.button !== 0) return;
     
     // Prevent default behavior
     event.preventDefault();
@@ -49,11 +52,11 @@ const Player = () => {
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
     
-    // Create raycaster
+    // Create raycaster usando la posición y rotación exactas de la cámara
     const raycaster = new THREE.Raycaster();
     raycaster.setFromCamera(mouse, camera);
     
-    // Find intersections with ground plane
+    // Find intersections con el suelo desde la perspectiva actual de la cámara
     const groundPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0); // Y-up plane at y=0
     const targetPoint = new THREE.Vector3();
     raycaster.ray.intersectPlane(groundPlane, targetPoint);

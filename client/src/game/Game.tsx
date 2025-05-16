@@ -64,7 +64,7 @@ const Game = () => {
 
   return (
     <>
-      {/* Controles de órbita siempre activos en modo de juego */}
+      {/* Controles de órbita optimizados para fluidez y no perder posición */}
       {gameState === "playing" && (
         <OrbitControls 
           ref={orbitControlsRef}
@@ -75,15 +75,21 @@ const Game = () => {
           maxDistance={30}
           minPolarAngle={Math.PI / 8} // Limitar rotación hacia abajo (no mucho)
           maxPolarAngle={Math.PI / 2} // Limitar rotación hacia arriba (hasta horizontal)
-          zoomSpeed={1.0} // Velocidad de zoom aumentada para mejor respuesta
-          rotateSpeed={0.5} // Velocidad de rotación más suave
-          panSpeed={0.5} // Velocidad de paneo más suave
-          enableDamping={true} // Añadir inercia
-          dampingFactor={0.1} // Factor de inercia
+          zoomSpeed={0.8} // Velocidad de zoom más suave para mejor control
+          rotateSpeed={0.4} // Velocidad de rotación más suave para movimientos precisos
+          panSpeed={0.4} // Velocidad de paneo más suave para movimientos precisos
+          enableDamping={true} // Añadir inercia para movimientos fluidos
+          dampingFactor={0.07} // Factor de inercia reducido para mayor estabilidad
+          screenSpacePanning={true} // Paneo en espacio de pantalla para mantener enfoque
+          keyPanSpeed={20} // Velocidad de paneo con teclado
           mouseButtons={{
             LEFT: THREE.MOUSE.ROTATE,
             MIDDLE: THREE.MOUSE.DOLLY,
             RIGHT: THREE.MOUSE.PAN
+          }}
+          touches={{
+            ONE: THREE.TOUCH.ROTATE,
+            TWO: THREE.TOUCH.DOLLY_PAN
           }}
           // Mantener los controles siempre activos, incluso durante el movimiento
           enabled={true}
