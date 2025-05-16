@@ -31,8 +31,8 @@ const GameUI = () => {
       case "market":
         return (
           <>
-            {/* Botón flotante grande para salir del mercado - independiente de la interfaz del mercado */}
-            <div className="fixed top-4 right-4 z-[1000]">
+            {/* Botones flotantes para controlar el mercado - independientes de la interfaz */}
+            <div className="fixed top-4 right-4 z-[1000] flex flex-col gap-3">
               <button
                 onClick={() => {
                   console.log("Force exiting market via floating button");
@@ -41,6 +41,25 @@ const GameUI = () => {
                 className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg border-2 border-red-500 shadow-lg text-xl transition-all hover:scale-105"
               >
                 EXIT
+              </button>
+              
+              {/* Botón flotante para el carrito */}
+              <button
+                id="floating-cart-button"
+                onClick={() => {
+                  console.log("Toggle cart from floating button");
+                  // Manipulación directa del DOM para mostrar/ocultar el panel del carrito
+                  const cartPanel = document.getElementById('cart-panel');
+                  if (cartPanel) {
+                    cartPanel.style.display = cartPanel.style.display === 'none' ? 'block' : 'none';
+                  }
+                }}
+                className="bg-amber-600 hover:bg-amber-700 text-white font-bold py-3 px-8 rounded-lg border-2 border-amber-500 shadow-lg text-xl transition-all hover:scale-105 flex items-center justify-center"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+                CART
               </button>
             </div>
             
