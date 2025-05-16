@@ -59,12 +59,74 @@ const Player = () => {
     raycaster.ray.intersectPlane(groundPlane, targetPoint);
     
     if (targetPoint) {
-      // Set the target position (keep Y the same as current position)
+      // Comprobar si el clic está cerca del mercado o la cocina
+      const distToMarket = new THREE.Vector3(
+        targetPoint.x - marketPosition.x,
+        0,
+        targetPoint.z - marketPosition.z
+      ).length();
+      
+      const distToKitchen = new THREE.Vector3(
+        targetPoint.x - kitchenPosition.x,
+        0, 
+        targetPoint.z - kitchenPosition.z
+      ).length();
+      
+      // Si el clic está cerca de un edificio, interactuar con él
+      if (distToMarket < INTERACTION_DISTANCE) {
+        // Primero mover al jugador cerca del edificio
+        targetPoint.copy(new THREE.Vector3(marketPosition.x, playerPosition.y, marketPosition.z));
+        targetPoint.addScaledVector(new THREE.Vector3(1, 0, 1).normalize(), 1.5); // Posición ligeramente alejada
+        setTargetPosition(targetPoint);
+        setIsMovingToTarget(true);
+        
+        // Calcular dirección para mirar hacia el edificio
+        const direction = new THREE.Vector3().subVectors(
+          new THREE.Vector3(marketPosition.x, playerPosition.y, marketPosition.z),
+          new THREE.Vector3(targetPoint.x, playerPosition.y, targetPoint.z)
+        );
+        const targetRotation = Math.atan2(direction.x, direction.z);
+        setRotationY(targetRotation);
+        
+        // Entrar al mercado después de un breve retraso
+        setTimeout(() => {
+          console.log("Entering market");
+          enterBuilding("market");
+        }, 500);
+        
+        return;
+      }
+      
+      if (distToKitchen < INTERACTION_DISTANCE) {
+        // Primero mover al jugador cerca del edificio
+        targetPoint.copy(new THREE.Vector3(kitchenPosition.x, playerPosition.y, kitchenPosition.z));
+        targetPoint.addScaledVector(new THREE.Vector3(1, 0, 1).normalize(), 1.5); // Posición ligeramente alejada
+        setTargetPosition(targetPoint);
+        setIsMovingToTarget(true);
+        
+        // Calcular dirección para mirar hacia el edificio
+        const direction = new THREE.Vector3().subVectors(
+          new THREE.Vector3(kitchenPosition.x, playerPosition.y, kitchenPosition.z),
+          new THREE.Vector3(targetPoint.x, playerPosition.y, targetPoint.z)
+        );
+        const targetRotation = Math.atan2(direction.x, direction.z);
+        setRotationY(targetRotation);
+        
+        // Entrar a la cocina después de un breve retraso
+        setTimeout(() => {
+          console.log("Entering kitchen");
+          enterBuilding("kitchen");
+        }, 500);
+        
+        return;
+      }
+      
+      // Si no está cerca de un edificio, simplemente moverse allí
       targetPoint.y = playerPosition.y;
       setTargetPosition(targetPoint);
       setIsMovingToTarget(true);
       
-      // Calculate direction to face
+      // Calcular dirección para mirar
       const direction = new THREE.Vector3().subVectors(targetPoint, new THREE.Vector3(playerPosition.x, playerPosition.y, playerPosition.z));
       const targetRotation = Math.atan2(direction.x, direction.z);
       setRotationY(targetRotation);
