@@ -11,6 +11,7 @@ interface GameStateStore {
   setIsRegistered: (registered: boolean) => void;
   enterBuilding: (building: "market" | "kitchen") => void;
   exitBuilding: () => void;
+  logout: () => void; // Función para cerrar sesión
 }
 
 export const useGameStateStore = create<GameStateStore>((set) => ({
@@ -33,5 +34,14 @@ export const useGameStateStore = create<GameStateStore>((set) => ({
   
   exitBuilding: () => {
     set({ gameState: "playing" });
+  },
+  
+  // Función para cerrar sesión y volver a la pantalla de inicio
+  logout: () => {
+    // Restablece el estado del juego a su valor inicial
+    set({ 
+      gameState: "ready",
+      isRegistered: false
+    });
   }
 }));

@@ -49,7 +49,12 @@ const GameUI = () => {
                   >
                     Perfil
                   </button>
-                  <button className="text-red-400 text-sm">Salir</button>
+                  <button 
+                    className="text-red-400 text-sm"
+                    onClick={() => useGameStateStore.getState().logout()}
+                  >
+                    Salir
+                  </button>
                 </div>
               </div>
               
