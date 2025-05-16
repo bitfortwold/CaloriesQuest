@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { useRef, useEffect, useState } from "react";
-import { useFrame } from "@react-three/fiber";
+import { useFrame, useThree } from "@react-three/fiber";
 import { useKeyboardControls } from "@react-three/drei";
 import { useGameStateStore } from "../stores/useGameStateStore";
 import { usePlayerStore } from "../stores/usePlayerStore";
@@ -8,6 +8,7 @@ import { useFoodStore } from "../stores/useFoodStore";
 
 const PLAYER_SPEED = 0.1;
 const INTERACTION_DISTANCE = 3;
+const MOUSE_SPEED = 0.05; // Velocidad para movimiento con mouse
 
 const Player = () => {
   const playerRef = useRef<THREE.Group>(null);
@@ -28,21 +29,81 @@ const Player = () => {
   
   // Character's facing direction
   const [rotationY, setRotationY] = useState(0);
+  
+  // Mouse movement variables
+  const [targetPosition, setTargetPosition] = useState<THREE.Vector3 | null>(null);
+  const [isMovingToTarget, setIsMovingToTarget] = useState(false);
+  
+  // Get Three.js scene and camera
+  const { camera, gl } = useThree();
 
+  // Handle click on ground for movement
+  const handleGroundClick = (event: MouseEvent) => {
+    if (gameState !== "playing") return;
+    
+    // Prevent default behavior
+    event.preventDefault();
+    
+    // Calculate mouse position in normalized device coordinates (-1 to +1)
+    const mouse = new THREE.Vector2();
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    
+    // Create raycaster
+    const raycaster = new THREE.Raycaster();
+    raycaster.setFromCamera(mouse, camera);
+    
+    // Find intersections with ground plane
+    const groundPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0); // Y-up plane at y=0
+    const targetPoint = new THREE.Vector3();
+    raycaster.ray.intersectPlane(groundPlane, targetPoint);
+    
+    if (targetPoint) {
+      // Set the target position (keep Y the same as current position)
+      targetPoint.y = playerPosition.y;
+      setTargetPosition(targetPoint);
+      setIsMovingToTarget(true);
+      
+      // Calculate direction to face
+      const direction = new THREE.Vector3().subVectors(targetPoint, new THREE.Vector3(playerPosition.x, playerPosition.y, playerPosition.z));
+      const targetRotation = Math.atan2(direction.x, direction.z);
+      setRotationY(targetRotation);
+    }
+  };
+  
+  // Set up mouse click event listener
+  useEffect(() => {
+    // Only add event listeners if in playing state
+    if (gameState === "playing") {
+      const canvas = gl.domElement;
+      canvas.addEventListener('click', handleGroundClick);
+      
+      return () => {
+        canvas.removeEventListener('click', handleGroundClick);
+      };
+    }
+  }, [gameState, gl.domElement, playerPosition]);
+  
   // Handle movement and interactions in each frame
   useFrame(() => {
     if (gameState !== "playing" || !playerRef.current) return;
     
+    // Keyboard movement
     const { forward, backward, leftward, rightward, interact } = getKeys();
     
-    // Calculate movement direction
+    // If any keyboard movement, cancel mouse movement
+    if (forward || backward || leftward || rightward) {
+      setIsMovingToTarget(false);
+    }
+    
+    // Calculate keyboard movement direction
     moveDir.set(0, 0, 0);
     if (forward) moveDir.z -= 1;
     if (backward) moveDir.z += 1;
     if (leftward) moveDir.x -= 1;
     if (rightward) moveDir.x += 1;
     
-    // Normalize movement direction
+    // Move with keyboard if direction exists
     if (moveDir.length() > 0) {
       moveDir.normalize();
       
@@ -62,6 +123,34 @@ const Player = () => {
       
       // Burn a small amount of calories when moving
       increaseCaloriesBurned(0.01);
+    }
+    // Move toward mouse target if active
+    else if (isMovingToTarget && targetPosition) {
+      // Calculate direction to target
+      const currentPos = new THREE.Vector3(playerPosition.x, playerPosition.y, playerPosition.z);
+      const targetPos = targetPosition.clone();
+      const direction = targetPos.sub(currentPos);
+      
+      // Check if we're close enough to target
+      if (direction.length() < MOUSE_SPEED) {
+        setIsMovingToTarget(false);
+      } else {
+        // Normalize and scale by speed
+        direction.normalize().multiplyScalar(MOUSE_SPEED);
+        
+        // Update position
+        const newPosition = {
+          x: playerPosition.x + direction.x,
+          y: playerPosition.y,
+          z: playerPosition.z + direction.z
+        };
+        
+        // Apply the new position
+        setPlayerPosition(newPosition);
+        
+        // Burn a small amount of calories when moving
+        increaseCaloriesBurned(0.01);
+      }
     }
     
     // Handle interaction
