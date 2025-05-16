@@ -1,16 +1,17 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { useFoodStore } from "../stores/useFoodStore";
+import { useFoodStore, StorageType, StoredFoodItem } from "../stores/useFoodStore";
 import { usePlayerStore } from "../stores/usePlayerStore";
 import { toast } from "sonner";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface KitchenProps {
   onExit: () => void;
 }
 
 const Kitchen = ({ onExit }: KitchenProps) => {
-  const { purchasedFood, removePurchasedFood } = useFoodStore();
+  const { purchasedFood, removePurchasedFood, refrigeratorFood, pantryFood, removeFromKitchen } = useFoodStore();
   const { playerData, consumeFood, calculateEstimatedLifespan } = usePlayerStore();
   
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
@@ -19,7 +20,14 @@ const Kitchen = ({ onExit }: KitchenProps) => {
   // Calculate nutritional totals for the selected items
   const calculateTotals = () => {
     return selectedItems.reduce((totals, itemId) => {
-      const item = purchasedFood.find(f => f.id === itemId);
+      // Buscar el alimento en las diferentes ubicaciones
+      const refrigeratorItem = refrigeratorFood.find(f => f.id === itemId);
+      const pantryItem = pantryFood.find(f => f.id === itemId);
+      const marketItem = purchasedFood.find(f => f.id === itemId);
+      
+      // Usar el alimento que se encontró
+      const item = refrigeratorItem || pantryItem || marketItem;
+      
       if (!item) return totals;
       
       return {
@@ -32,7 +40,7 @@ const Kitchen = ({ onExit }: KitchenProps) => {
     }, { calories: 0, protein: 0, carbs: 0, fat: 0, sustainabilityScore: 0 });
   };
   
-  // Toggle item selection
+  // Toggle item selection (ahora trabajando con alimentos de la nevera y despensa)
   const toggleItemSelection = (itemId: string) => {
     if (selectedItems.includes(itemId)) {
       setSelectedItems(selectedItems.filter(id => id !== itemId));
@@ -54,8 +62,24 @@ const Kitchen = ({ onExit }: KitchenProps) => {
     // Consume the food (adds to calories consumed)
     consumeFood(totals.calories);
     
-    // Remove consumed items from inventory
+    // Identificar de dónde viene cada alimento (nevera o despensa)
     selectedItems.forEach(itemId => {
+      // Buscar en refrigerador
+      const refrigeratorItem = refrigeratorFood.find(food => food.id === itemId);
+      if (refrigeratorItem) {
+        removeFromKitchen(itemId, "refrigerator");
+        return;
+      }
+      
+      // Buscar en despensa
+      const pantryItem = pantryFood.find(food => food.id === itemId);
+      if (pantryItem) {
+        removeFromKitchen(itemId, "pantry");
+        return;
+      }
+      
+      // Si no está en ninguno de los dos, usar el método antiguo
+      // (este caso solo ocurriría si hay alimentos que aún no se han transferido)
       removePurchasedFood(itemId);
     });
     
@@ -135,32 +159,80 @@ const Kitchen = ({ onExit }: KitchenProps) => {
         <CardContent>
           {cookingMode === "free" ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* Left side - Available ingredients */}
+              {/* Left side - Available ingredients with tabs for Refrigerator and Pantry */}
               <div>
-                <h3 className="text-lg font-semibold mb-2">Available Ingredients</h3>
-                <div className="grid grid-cols-1 gap-2 max-h-[400px] overflow-y-auto">
-                  {purchasedFood.length === 0 ? (
-                    <p className="text-gray-500">No ingredients available. Visit the market to buy some!</p>
-                  ) : (
-                    purchasedFood.map((food) => (
-                      <div 
-                        key={food.id} 
-                        className={`p-3 border rounded-md cursor-pointer ${
-                          selectedItems.includes(food.id) ? 'border-blue-500 bg-blue-50' : 'border-gray-200'
-                        }`}
-                        onClick={() => toggleItemSelection(food.id)}
-                      >
-                        <div className="flex justify-between">
-                          <span className="font-medium">{food.name}</span>
-                          <span>{food.calories} kcal</span>
-                        </div>
-                        <div className="text-xs text-gray-600 mt-1">
-                          Protein: {food.nutritionalValue.protein}g • Carbs: {food.nutritionalValue.carbs}g • Fat: {food.nutritionalValue.fat}g
-                        </div>
-                      </div>
-                    ))
-                  )}
-                </div>
+                <Tabs defaultValue="refrigerator" className="w-full">
+                  <TabsList className="grid grid-cols-2 mb-4">
+                    <TabsTrigger value="refrigerator" className="flex items-center gap-2">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
+                      </svg>
+                      Refrigerator
+                    </TabsTrigger>
+                    <TabsTrigger value="pantry" className="flex items-center gap-2">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                      </svg>
+                      Pantry
+                    </TabsTrigger>
+                  </TabsList>
+                  
+                  {/* Refrigerator Content */}
+                  <TabsContent value="refrigerator" className="mt-0">
+                    <h3 className="text-lg font-semibold mb-2">Refrigerated Items</h3>
+                    <div className="grid grid-cols-1 gap-2 max-h-[400px] overflow-y-auto">
+                      {refrigeratorFood.length === 0 ? (
+                        <p className="text-gray-500">Your refrigerator is empty. Visit the market to buy fresh food!</p>
+                      ) : (
+                        refrigeratorFood.map((food) => (
+                          <div 
+                            key={food.id} 
+                            className={`p-3 border rounded-md cursor-pointer ${
+                              selectedItems.includes(food.id) ? 'border-blue-500 bg-blue-50' : 'border-gray-200'
+                            }`}
+                            onClick={() => toggleItemSelection(food.id)}
+                          >
+                            <div className="flex justify-between">
+                              <span className="font-medium">{food.name}</span>
+                              <span>{food.calories} kcal</span>
+                            </div>
+                            <div className="text-xs text-gray-600 mt-1">
+                              Protein: {food.nutritionalValue.protein}g • Carbs: {food.nutritionalValue.carbs}g • Fat: {food.nutritionalValue.fat}g
+                            </div>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  </TabsContent>
+                  
+                  {/* Pantry Content */}
+                  <TabsContent value="pantry" className="mt-0">
+                    <h3 className="text-lg font-semibold mb-2">Pantry Items</h3>
+                    <div className="grid grid-cols-1 gap-2 max-h-[400px] overflow-y-auto">
+                      {pantryFood.length === 0 ? (
+                        <p className="text-gray-500">Your pantry is empty. Visit the market to buy non-perishables!</p>
+                      ) : (
+                        pantryFood.map((food) => (
+                          <div 
+                            key={food.id} 
+                            className={`p-3 border rounded-md cursor-pointer ${
+                              selectedItems.includes(food.id) ? 'border-blue-500 bg-blue-50' : 'border-gray-200'
+                            }`}
+                            onClick={() => toggleItemSelection(food.id)}
+                          >
+                            <div className="flex justify-between">
+                              <span className="font-medium">{food.name}</span>
+                              <span>{food.calories} kcal</span>
+                            </div>
+                            <div className="text-xs text-gray-600 mt-1">
+                              Protein: {food.nutritionalValue.protein}g • Carbs: {food.nutritionalValue.carbs}g • Fat: {food.nutritionalValue.fat}g
+                            </div>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  </TabsContent>
+                </Tabs>
               </div>
               
               {/* Right side - Meal preview */}
