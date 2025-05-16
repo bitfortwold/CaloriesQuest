@@ -21,8 +21,8 @@ const Player = () => {
   } = usePlayerStore();
   const { marketPosition, kitchenPosition } = useFoodStore();
   
-  // Ajustar la altura del personaje para que no quede flotando
-  const PLAYER_HEIGHT_OFFSET = 0.0; // No elevamos el personaje para que esté en contacto con el suelo
+  // Ajustar la altura del personaje para que las piernas estén visibles
+  const PLAYER_HEIGHT_OFFSET = 1.0; // Elevar el personaje para que las piernas no atraviesen el suelo
   
   // Subscribe to keyboard controls
   const [, getKeys] = useKeyboardControls();
@@ -315,14 +315,14 @@ const Player = () => {
         <meshStandardMaterial color={playerData?.gender === 'female' ? '#E38AAE' : '#6495ED'} />
       </mesh>
       
-      {/* Character legs - extendidas hasta tocar el suelo */}
-      <mesh castShadow position={[0.3, -0.5, 0]}>
-        <capsuleGeometry args={[0.25, 2, 4, 8]} />
+      {/* Character legs - ajustadas para que sean visibles */}
+      <mesh castShadow position={[0.3, 0, 0]}>
+        <capsuleGeometry args={[0.25, 1.2, 4, 8]} />
         <meshStandardMaterial color="#4169E1" />
       </mesh>
       
-      <mesh castShadow position={[-0.3, -0.5, 0]}>
-        <capsuleGeometry args={[0.25, 2, 4, 8]} />
+      <mesh castShadow position={[-0.3, 0, 0]}>
+        <capsuleGeometry args={[0.25, 1.2, 4, 8]} />
         <meshStandardMaterial color="#4169E1" />
       </mesh>
     </group>
