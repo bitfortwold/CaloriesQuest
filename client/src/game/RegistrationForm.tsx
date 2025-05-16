@@ -1,8 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useGameStateStore } from "../stores/useGameStateStore";
 import { usePlayerStore } from "../stores/usePlayerStore";
+
+// Clave para almacenar datos de usuario en localStorage
+const USER_DATA_KEY = "caloric_consumption_user_data";
 
 const RegistrationForm = () => {
   const { setIsRegistered } = useGameStateStore();
@@ -18,8 +21,74 @@ const RegistrationForm = () => {
     activityLevel: ""
   });
   
+  // Estado para mostrar formulario rápido
+  const [showQuickLogin, setShowQuickLogin] = useState(false);
+  const [savedUsername, setSavedUsername] = useState("");
+  
   // Form validation state
   const [errors, setErrors] = useState<Record<string, string>>({});
+  
+  // Comprueba si hay datos guardados al cargar
+  useEffect(() => {
+    try {
+      const savedData = localStorage.getItem(USER_DATA_KEY);
+      if (savedData) {
+        const userData = JSON.parse(savedData);
+        if (userData.name) {
+          setSavedUsername(userData.name);
+          setShowQuickLogin(true);
+        } else {
+          setShowQuickLogin(false);
+        }
+      }
+    } catch (error) {
+      console.error("Error loading saved user data:", error);
+      setShowQuickLogin(false);
+    }
+  }, []);
+  
+  // Función para iniciar sesión rápida con datos guardados
+  const handleQuickLogin = () => {
+    try {
+      const savedData = localStorage.getItem(USER_DATA_KEY);
+      if (savedData) {
+        const userData = JSON.parse(savedData);
+        
+        // Calcular calorías diarias
+        const dailyCalories = calculateDailyCalories(
+          userData.gender,
+          Number(userData.age),
+          Number(userData.weight),
+          Number(userData.height),
+          userData.activityLevel
+        );
+        
+        // Crear datos del jugador con valores iniciales
+        const playerData = {
+          name: userData.name,
+          age: Number(userData.age),
+          gender: userData.gender,
+          height: Number(userData.height),
+          weight: Number(userData.weight),
+          activityLevel: userData.activityLevel,
+          coins: 100,
+          caloriesConsumed: 0,
+          caloriesBurned: 0,
+          dailyCalories,
+          estimatedLifespan: 80,
+          inventory: []
+        };
+        
+        // Actualizar estado global
+        setPlayerData(playerData);
+        setIsRegistered(true);
+      }
+    } catch (error) {
+      console.error("Error during quick login:", error);
+      // Si hay un error, mostrar el formulario completo
+      setShowQuickLogin(false);
+    }
+  };
   
   // Handle form input changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -108,6 +177,20 @@ const RegistrationForm = () => {
         dailyCalories
       });
       
+      // Guardar datos en localStorage para futuras sesiones
+      try {
+        localStorage.setItem(USER_DATA_KEY, JSON.stringify({
+          name: formData.name,
+          age: formData.age,
+          gender: formData.gender,
+          height: formData.height,
+          weight: formData.weight,
+          activityLevel: formData.activityLevel
+        }));
+      } catch (error) {
+        console.error("Error saving user data to localStorage:", error);
+      }
+      
       // Register the player
       setIsRegistered(true);
     }
@@ -119,102 +202,143 @@ const RegistrationForm = () => {
         <CardHeader>
           <CardTitle className="text-2xl">Welcome to Caloric Consumption</CardTitle>
           <CardDescription>
-            Register your profile to start your nutritional adventure! The game will calculate your daily calorie needs.
+            {showQuickLogin 
+              ? `Welcome back! You can continue with your saved profile or create a new one.`
+              : `Register your profile to start your nutritional adventure! The game will calculate your daily calorie needs.`
+            }
           </CardDescription>
         </CardHeader>
         
         <CardContent>
-          <form onSubmit={handleSubmit}>
+          {showQuickLogin ? (
             <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium mb-1">Name</label>
-                <input
-                  type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  className={`w-full p-2 border rounded-md ${errors.name ? 'border-red-500' : 'border-gray-300'}`}
-                />
-                {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium mb-1">Age</label>
-                <input
-                  type="number"
-                  name="age"
-                  value={formData.age}
-                  onChange={handleChange}
-                  className={`w-full p-2 border rounded-md ${errors.age ? 'border-red-500' : 'border-gray-300'}`}
-                />
-                {errors.age && <p className="text-red-500 text-xs mt-1">{errors.age}</p>}
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium mb-1">Gender</label>
-                <select
-                  name="gender"
-                  value={formData.gender}
-                  onChange={handleChange}
-                  className={`w-full p-2 border rounded-md ${errors.gender ? 'border-red-500' : 'border-gray-300'}`}
-                >
-                  <option value="">Select Gender</option>
-                  <option value="male">Male</option>
-                  <option value="female">Female</option>
-                  <option value="other">Other</option>
-                </select>
-                {errors.gender && <p className="text-red-500 text-xs mt-1">{errors.gender}</p>}
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium mb-1">Height (cm)</label>
-                <input
-                  type="number"
-                  name="height"
-                  value={formData.height}
-                  onChange={handleChange}
-                  className={`w-full p-2 border rounded-md ${errors.height ? 'border-red-500' : 'border-gray-300'}`}
-                />
-                {errors.height && <p className="text-red-500 text-xs mt-1">{errors.height}</p>}
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium mb-1">Weight (kg)</label>
-                <input
-                  type="number"
-                  name="weight"
-                  value={formData.weight}
-                  onChange={handleChange}
-                  className={`w-full p-2 border rounded-md ${errors.weight ? 'border-red-500' : 'border-gray-300'}`}
-                />
-                {errors.weight && <p className="text-red-500 text-xs mt-1">{errors.weight}</p>}
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium mb-1">Activity Level</label>
-                <select
-                  name="activityLevel"
-                  value={formData.activityLevel}
-                  onChange={handleChange}
-                  className={`w-full p-2 border rounded-md ${errors.activityLevel ? 'border-red-500' : 'border-gray-300'}`}
-                >
-                  <option value="">Select Activity Level</option>
-                  <option value="sedentary">Sedentary (little or no exercise)</option>
-                  <option value="light">Light (light exercise/sports 1-3 days/week)</option>
-                  <option value="moderate">Moderate (moderate exercise/sports 3-5 days/week)</option>
-                  <option value="active">Active (hard exercise/sports 6-7 days a week)</option>
-                  <option value="veryActive">Very Active (very hard exercise & physical job)</option>
-                </select>
-                {errors.activityLevel && <p className="text-red-500 text-xs mt-1">{errors.activityLevel}</p>}
-              </div>
-              
-              <div className="pt-2">
-                <Button type="submit" className="w-full">
-                  Start Game
-                </Button>
+              <div className="bg-blue-50 p-4 rounded-md">
+                <h3 className="font-medium text-lg text-blue-700 mb-2">Perfil guardado</h3>
+                <p className="mb-4">Hemos encontrado un perfil guardado para <span className="font-bold">{savedUsername}</span>.</p>
+                
+                <div className="flex flex-col space-y-2">
+                  <Button 
+                    onClick={handleQuickLogin}
+                    className="w-full bg-green-600 hover:bg-green-700"
+                  >
+                    Continuar como {savedUsername}
+                  </Button>
+                  
+                  <Button 
+                    onClick={() => setShowQuickLogin(false)}
+                    variant="outline"
+                    className="w-full"
+                  >
+                    Crear un nuevo perfil
+                  </Button>
+                </div>
               </div>
             </div>
-          </form>
+          ) : (
+            <form onSubmit={handleSubmit}>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium mb-1">Name</label>
+                  <input
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    className={`w-full p-2 border rounded-md ${errors.name ? 'border-red-500' : 'border-gray-300'}`}
+                  />
+                  {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium mb-1">Age</label>
+                  <input
+                    type="number"
+                    name="age"
+                    value={formData.age}
+                    onChange={handleChange}
+                    className={`w-full p-2 border rounded-md ${errors.age ? 'border-red-500' : 'border-gray-300'}`}
+                  />
+                  {errors.age && <p className="text-red-500 text-xs mt-1">{errors.age}</p>}
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium mb-1">Gender</label>
+                  <select
+                    name="gender"
+                    value={formData.gender}
+                    onChange={handleChange}
+                    className={`w-full p-2 border rounded-md ${errors.gender ? 'border-red-500' : 'border-gray-300'}`}
+                  >
+                    <option value="">Select Gender</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                  </select>
+                  {errors.gender && <p className="text-red-500 text-xs mt-1">{errors.gender}</p>}
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium mb-1">Height (cm)</label>
+                  <input
+                    type="number"
+                    name="height"
+                    value={formData.height}
+                    onChange={handleChange}
+                    className={`w-full p-2 border rounded-md ${errors.height ? 'border-red-500' : 'border-gray-300'}`}
+                  />
+                  {errors.height && <p className="text-red-500 text-xs mt-1">{errors.height}</p>}
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium mb-1">Weight (kg)</label>
+                  <input
+                    type="number"
+                    name="weight"
+                    value={formData.weight}
+                    onChange={handleChange}
+                    className={`w-full p-2 border rounded-md ${errors.weight ? 'border-red-500' : 'border-gray-300'}`}
+                  />
+                  {errors.weight && <p className="text-red-500 text-xs mt-1">{errors.weight}</p>}
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium mb-1">Activity Level</label>
+                  <select
+                    name="activityLevel"
+                    value={formData.activityLevel}
+                    onChange={handleChange}
+                    className={`w-full p-2 border rounded-md ${errors.activityLevel ? 'border-red-500' : 'border-gray-300'}`}
+                  >
+                    <option value="">Select Activity Level</option>
+                    <option value="sedentary">Sedentary (little or no exercise)</option>
+                    <option value="light">Light (light exercise/sports 1-3 days/week)</option>
+                    <option value="moderate">Moderate (moderate exercise/sports 3-5 days/week)</option>
+                    <option value="active">Active (hard exercise/sports 6-7 days a week)</option>
+                    <option value="veryActive">Very Active (very hard exercise & physical job)</option>
+                  </select>
+                  {errors.activityLevel && <p className="text-red-500 text-xs mt-1">{errors.activityLevel}</p>}
+                </div>
+                
+                <div className="pt-2">
+                  <Button type="submit" className="w-full">
+                    Start Game
+                  </Button>
+                </div>
+
+                {showQuickLogin === false && savedUsername && (
+                  <div className="pt-2 text-center">
+                    <button 
+                      type="button"
+                      onClick={() => setShowQuickLogin(true)}
+                      className="text-blue-600 hover:underline text-sm"
+                    >
+                      ¿Ya tienes un perfil? Volver a la pantalla anterior
+                    </button>
+                  </div>
+                )}
+              </div>
+            </form>
+          )}
         </CardContent>
       </Card>
     </div>
