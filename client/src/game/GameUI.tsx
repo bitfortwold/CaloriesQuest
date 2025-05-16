@@ -39,7 +39,12 @@ const GameUI = () => {
               <div className="flex justify-between items-center border-b border-gray-700 pb-2 mb-2">
                 <h2 className="text-lg font-bold uppercase tracking-wide">PLAYER STATS</h2>
                 <div className="flex gap-2">
-                  <button className="text-blue-400 text-sm">Perfil</button>
+                  <button 
+                    className="text-blue-400 text-sm"
+                    onClick={() => setActiveTab('profile')}
+                  >
+                    Perfil
+                  </button>
                   <button className="text-red-400 text-sm">Salir</button>
                 </div>
               </div>
@@ -79,28 +84,51 @@ const GameUI = () => {
               </div>
             </div>
             
-            {/* Tabs at top right - smaller and compacted */}
-            <div className="fixed top-2 right-2 bg-white/90 p-2 rounded-lg shadow-md" style={{ maxWidth: "300px", maxHeight: "80vh", overflow: "auto" }}>
-              <div className="flex space-x-2 mb-2">
-                <button 
-                  className={`px-3 py-1 text-sm rounded ${activeTab === 'profile' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
-                  onClick={() => setActiveTab('profile')}
-                >
-                  Profile
-                </button>
-                <button 
-                  className={`px-3 py-1 text-sm rounded ${activeTab === 'activities' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
-                  onClick={() => setActiveTab('activities')}
-                >
-                  Activities
-                </button>
+            {/* Profile panel that appears when user clicks on "Perfil" */}
+            {activeTab === 'profile' && (
+              <div className="fixed top-2 right-2 bg-white/90 p-2 rounded-lg shadow-md" style={{ maxWidth: "300px", maxHeight: "80vh", overflow: "auto" }}>
+                <div className="flex space-x-2 mb-2">
+                  <button 
+                    className="px-3 py-1 text-sm rounded bg-blue-500 text-white"
+                  >
+                    Profile
+                  </button>
+                  <button 
+                    className="px-3 py-1 text-sm rounded bg-gray-200"
+                    onClick={() => setActiveTab('activities')}
+                  >
+                    Activities
+                  </button>
+                </div>
+                
+                <div className="max-h-[60vh] overflow-auto">
+                  <ProfilePanel />
+                </div>
               </div>
-              
-              <div className="max-h-[60vh] overflow-auto">
-                {activeTab === 'profile' && <ProfilePanel />}
-                {activeTab === 'activities' && <Activities />}
+            )}
+            
+            {/* Activities panel */}
+            {activeTab === 'activities' && (
+              <div className="fixed top-2 right-2 bg-white/90 p-2 rounded-lg shadow-md" style={{ maxWidth: "300px", maxHeight: "80vh", overflow: "auto" }}>
+                <div className="flex space-x-2 mb-2">
+                  <button 
+                    className="px-3 py-1 text-sm rounded bg-gray-200"
+                    onClick={() => setActiveTab('profile')}
+                  >
+                    Profile
+                  </button>
+                  <button 
+                    className="px-3 py-1 text-sm rounded bg-blue-500 text-white"
+                  >
+                    Activities
+                  </button>
+                </div>
+                
+                <div className="max-h-[60vh] overflow-auto">
+                  <Activities />
+                </div>
               </div>
-            </div>
+            )}
             
             {/* Controls hint */}
             <div className="fixed bottom-4 left-4 bg-black/70 text-white p-2 rounded text-xs">
