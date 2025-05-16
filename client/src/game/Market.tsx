@@ -51,24 +51,26 @@ const Market = ({ onExit }: MarketProps) => {
         {/* Header con estilo de madera */}
         <div className="bg-amber-800 text-amber-50 p-3 rounded-t-lg relative overflow-hidden">
           <div className="absolute inset-0 opacity-30 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMCIgaGVpZ2h0PSIzMCI+CjxyZWN0IHdpZHRoPSIzMCIgaGVpZ2h0PSIzMCIgZmlsbD0iI2ZmZiI+PC9yZWN0Pgo8cmVjdCB4PSIxNSIgeT0iMCIgd2lkdGg9IjE1IiBoZWlnaHQ9IjE1IiBmaWxsPSIjZjNmNGY2Ij48L3JlY3Q+CjxyZWN0IHg9IjAiIHk9IjE1IiB3aWR0aD0iMTUiIGhlaWdodD0iMTUiIGZpbGw9IiNmM2Y0ZjYiPjwvcmVjdD4KPC9zdmc+')]"></div>
-          <h1 className="text-4xl font-bold text-center text-amber-50 mb-2 drop-shadow-md tracking-wide">MARKET</h1>
+          <div className="flex justify-between items-center mb-2">
+            <h1 className="text-4xl font-bold text-amber-50 drop-shadow-md tracking-wide">MARKET</h1>
+            
+            <button 
+              type="button"
+              onClick={() => {
+                console.log("Exiting market - direct state method from header button");
+                setGameState("playing");
+              }}
+              className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-8 rounded-lg border-2 border-red-500 shadow-md transition-all hover:scale-105"
+            >
+              Exit
+            </button>
+          </div>
           
-          <div className="flex justify-between items-center">
+          <div className="flex justify-start items-center">
             <div className="bg-amber-700 px-4 py-2 rounded-lg text-amber-50 border-2 border-amber-600 shadow-inner">
               <span className="font-semibold">iHumancoins: </span>
               <span className="text-yellow-300 font-bold text-xl ml-1">{playerData?.coins?.toFixed(0) || 0}</span>
             </div>
-            <button 
-              type="button"
-              onClick={() => {
-                console.log("Exiting market - direct state method");
-                // Cambiamos directamente el estado usando el método importado del hook
-                setGameState("playing");
-              }}
-              className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded-lg border-2 border-red-500 shadow-md transition-all hover:scale-105"
-            >
-              Exit
-            </button>
           </div>
         </div>
         
