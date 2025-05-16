@@ -315,14 +315,14 @@ const Player = () => {
         <meshStandardMaterial color={playerData?.gender === 'female' ? '#E38AAE' : '#6495ED'} />
       </mesh>
       
-      {/* Character legs - ajustadas para tocar exactamente el suelo */}
-      <mesh castShadow position={[0.3, 0.3, 0]}>
-        <capsuleGeometry args={[0.25, 1.0, 4, 8]} />
+      {/* Character legs - extendidas hasta tocar justo el suelo */}
+      <mesh castShadow position={[0.3, 0, 0]}>
+        <capsuleGeometry args={[0.25, 1.3, 4, 8]} />
         <meshStandardMaterial color="#4169E1" />
       </mesh>
       
-      <mesh castShadow position={[-0.3, 0.3, 0]}>
-        <capsuleGeometry args={[0.25, 1.0, 4, 8]} />
+      <mesh castShadow position={[-0.3, 0, 0]}>
+        <capsuleGeometry args={[0.25, 1.3, 4, 8]} />
         <meshStandardMaterial color="#4169E1" />
       </mesh>
     </group>
