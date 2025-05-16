@@ -10,6 +10,7 @@ import GameUI from "./game/GameUI";
 import RegistrationForm from "./game/RegistrationForm";
 import SimpleLoginForm from "./game/SimpleLoginForm";
 import AudioManager from "./game/AudioManager";
+import { SoundButton } from "./components/ui/SoundButton";
 import { useGameStateStore } from "./stores/useGameStateStore";
 
 // Define control keys for the game
@@ -79,6 +80,7 @@ function App() {
             )}
             
             <AudioManager />
+            <SoundButton />
           </KeyboardControls>
         )}
         <Toaster position="bottom-right" />

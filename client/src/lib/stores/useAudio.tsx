@@ -5,6 +5,7 @@ interface AudioState {
   hitSound: HTMLAudioElement | null;
   successSound: HTMLAudioElement | null;
   isMuted: boolean;
+  volume: number;
   
   // Setter functions
   setBackgroundMusic: (music: HTMLAudioElement) => void;
@@ -13,6 +14,9 @@ interface AudioState {
   
   // Control functions
   toggleMute: () => void;
+  increaseVolume: () => void;
+  decreaseVolume: () => void;
+  setVolume: (volume: number) => void;
   playHit: () => void;
   playSuccess: () => void;
 }
@@ -22,10 +26,72 @@ export const useAudio = create<AudioState>((set, get) => ({
   hitSound: null,
   successSound: null,
   isMuted: true, // Start muted by default
+  volume: 0.5, // Default volume (0 to 1)
   
-  setBackgroundMusic: (music) => set({ backgroundMusic: music }),
-  setHitSound: (sound) => set({ hitSound: sound }),
-  setSuccessSound: (sound) => set({ successSound: sound }),
+  setBackgroundMusic: (music) => {
+    set({ backgroundMusic: music });
+    // Apply current volume to the music
+    const { volume, isMuted } = get();
+    if (music) {
+      music.volume = volume;
+      music.muted = isMuted;
+    }
+  },
+  
+  setHitSound: (sound) => {
+    set({ hitSound: sound });
+    // Apply current volume to the sound
+    const { volume } = get();
+    if (sound) {
+      sound.volume = volume;
+    }
+  },
+  
+  setSuccessSound: (sound) => {
+    set({ successSound: sound });
+    // Apply current volume to the sound
+    const { volume } = get();
+    if (sound) {
+      sound.volume = volume;
+    }
+  },
+  
+  setVolume: (newVolume) => {
+    // Ensure volume is between 0 and 1
+    const clampedVolume = Math.max(0, Math.min(1, newVolume));
+    
+    // Update volume state
+    set({ volume: clampedVolume });
+    
+    // Apply to all audio elements
+    const { backgroundMusic, hitSound, successSound } = get();
+    
+    if (backgroundMusic) {
+      backgroundMusic.volume = clampedVolume;
+    }
+    
+    if (hitSound) {
+      hitSound.volume = clampedVolume;
+    }
+    
+    if (successSound) {
+      successSound.volume = clampedVolume;
+    }
+    
+    console.log(`Volume set to ${Math.round(clampedVolume * 100)}%`);
+  },
+  
+  increaseVolume: () => {
+    const { volume } = get();
+    const newVolume = Math.min(1, volume + 0.1);
+    get().setVolume(newVolume);
+  },
+  
+  decreaseVolume: () => {
+    const { volume } = get();
+    const newVolume = Math.max(0, volume - 0.1);
+    get().setVolume(newVolume);
+  },
   
   toggleMute: () => {
     const { isMuted, backgroundMusic } = get();
