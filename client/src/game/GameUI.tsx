@@ -30,13 +30,28 @@ const GameUI = () => {
     switch (gameState) {
       case "market":
         return (
-          <div className="fixed inset-0 z-50 flex items-center justify-center">
-            <Market onExit={() => {
-              console.log("GameUI attempting to exit market");
-              setActiveTab(null);
-              exitBuilding();
-            }} />
-          </div>
+          <>
+            {/* Botón flotante grande para salir del mercado - independiente de la interfaz del mercado */}
+            <div className="fixed top-4 right-4 z-[1000]">
+              <button
+                onClick={() => {
+                  console.log("Force exiting market via floating button");
+                  exitBuilding();
+                }}
+                className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg border-2 border-red-500 shadow-lg text-xl transition-all hover:scale-105"
+              >
+                EXIT
+              </button>
+            </div>
+            
+            <div className="fixed inset-0 z-50 flex items-center justify-center">
+              <Market onExit={() => {
+                console.log("GameUI attempting to exit market");
+                setActiveTab(null);
+                exitBuilding();
+              }} />
+            </div>
+          </>
         );
       case "kitchen":
         return (
