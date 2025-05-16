@@ -80,7 +80,6 @@ function App() {
             )}
             
             <AudioManager />
-            <SoundButton />
           </KeyboardControls>
         )}
         <Toaster position="bottom-right" />
