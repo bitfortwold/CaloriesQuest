@@ -77,13 +77,28 @@ const GameUI = () => {
         );
       case "kitchen":
         return (
-          <div className="fixed inset-0 z-50 flex items-center justify-center">
-            <Kitchen onExit={() => {
-              console.log("GameUI attempting to exit kitchen");
-              setActiveTab(null);
-              exitBuilding();
-            }} />
-          </div>
+          <>
+            {/* Botón flotante grande para salir de la cocina - independiente de la interfaz */}
+            <div className="fixed top-4 right-4 z-[1000]">
+              <button
+                onClick={() => {
+                  console.log("Force exiting kitchen via floating button");
+                  exitBuilding();
+                }}
+                className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg border-2 border-red-500 shadow-lg text-xl transition-all hover:scale-105"
+              >
+                EXIT
+              </button>
+            </div>
+            
+            <div className="fixed inset-0 z-50 flex items-center justify-center">
+              <Kitchen onExit={() => {
+                console.log("GameUI attempting to exit kitchen");
+                setActiveTab(null);
+                exitBuilding();
+              }} />
+            </div>
+          </>
         );
       case "playing":
         return (

@@ -161,12 +161,6 @@ const Kitchen = ({ onExit }: KitchenProps) => {
               >
                 Free Cooking
               </Button>
-              <Button 
-                onClick={onExit}
-                className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg border-2 border-red-500 shadow-lg transition-all hover:scale-105"
-              >
-                EXIT
-              </Button>
             </div>
           </div>
         </div>
