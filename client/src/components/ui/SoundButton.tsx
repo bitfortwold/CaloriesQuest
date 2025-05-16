@@ -5,18 +5,39 @@ export const SoundButton = () => {
   const { isMuted, toggleMute, volume, increaseVolume, decreaseVolume } = useAudio();
   const [showVolumeControls, setShowVolumeControls] = useState(false);
   const soundButtonRef = useRef<HTMLDivElement>(null);
+  const volumeControlsRef = useRef<HTMLDivElement>(null);
   
-  // Maneja los clics fuera del botón para cerrar el panel de volumen
+  // Maneja eventos del mouse para mostrar/ocultar el panel de volumen
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (soundButtonRef.current && !soundButtonRef.current.contains(event.target as Node)) {
-        setShowVolumeControls(false);
-      }
+    // Función que se ejecuta cuando el mouse sale del área
+    const handleMouseLeave = () => {
+      setShowVolumeControls(false);
     };
     
-    document.addEventListener("mousedown", handleClickOutside);
+    // Función que se ejecuta cuando el mouse entra en el botón
+    const handleMouseEnter = () => {
+      setShowVolumeControls(true);
+    };
+    
+    // Obtener referencias a los elementos
+    const buttonElement = soundButtonRef.current;
+    const volumeElement = volumeControlsRef.current;
+    
+    // Añadir eventos
+    if (buttonElement) {
+      buttonElement.addEventListener('mouseenter', handleMouseEnter);
+      
+      // El evento mouseleave se dispara cuando el mouse sale del elemento
+      // y de todos sus descendientes
+      buttonElement.addEventListener('mouseleave', handleMouseLeave);
+    }
+    
+    // Limpieza al desmontar
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      if (buttonElement) {
+        buttonElement.removeEventListener('mouseenter', handleMouseEnter);
+        buttonElement.removeEventListener('mouseleave', handleMouseLeave);
+      }
     };
   }, []);
   
@@ -27,7 +48,6 @@ export const SoundButton = () => {
         <button
           className="w-12 h-12 rounded-full bg-black/80 flex items-center justify-center text-white hover:bg-black/90 transition-all shadow-lg"
           onClick={() => toggleMute()}
-          onMouseEnter={() => setShowVolumeControls(true)}
           title={isMuted ? "Activar música de fondo" : "Silenciar música de fondo"}
         >
           {isMuted ? (
@@ -48,6 +68,7 @@ export const SoundButton = () => {
         {showVolumeControls && (
           <div 
             className="absolute bottom-14 left-0 bg-black/80 p-3 rounded-lg flex flex-col items-center shadow-lg"
+            ref={volumeControlsRef}
           >
             <div className="text-white text-xs opacity-80 font-medium mb-2 text-center">
               Música de fondo
