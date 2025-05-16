@@ -131,25 +131,7 @@ const SimpleLoginForm = () => {
                 Registrarse como nuevo usuario
               </Button>
             </div>
-            
-            {savedUsers.length > 0 && (
-              <div className="mt-4 bg-blue-50 p-3 rounded-md">
-                <p className="text-sm text-blue-800 mb-2">Usuarios guardados:</p>
-                <ul className="space-y-1">
-                  {savedUsers.map((user) => (
-                    <li key={user} className="text-sm">
-                      <button
-                        type="button"
-                        onClick={() => setUsername(user)}
-                        className="text-blue-600 hover:underline"
-                      >
-                        {user}
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
+
           </form>
         </CardContent>
       </Card>
