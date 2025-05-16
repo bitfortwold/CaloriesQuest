@@ -34,18 +34,48 @@ const GameUI = () => {
       case "playing":
         return (
           <div className="z-10">
-            {/* Small player info panel at top left */}
-            <div className="fixed top-2 left-2 bg-white/90 p-2 rounded-lg shadow-md" style={{ maxWidth: "180px" }}>
-              <h2 className="text-base font-bold truncate">
-                {playerData?.name || "Player"}
-              </h2>
-              <div className="grid grid-cols-2 gap-1 text-xs">
-                <div>Edad: {playerData?.age || 0}</div>
-                <div>Cal: {playerData?.dailyCalories?.toFixed(0) || 0}</div>
+            {/* Player stats panel similar to the reference design */}
+            <div className="fixed top-2 left-2 bg-gray-900/90 p-3 rounded-lg shadow-md text-white" style={{ maxWidth: "240px" }}>
+              <div className="flex justify-between items-center border-b border-gray-700 pb-2 mb-2">
+                <h2 className="text-lg font-bold uppercase tracking-wide">PLAYER STATS</h2>
+                <div className="flex gap-2">
+                  <button className="text-blue-400 text-sm">Perfil</button>
+                  <button className="text-red-400 text-sm">Salir</button>
+                </div>
               </div>
-              <div className="mt-1 flex justify-between text-xs">
-                <span>IHC:</span>
-                <span className="font-medium">{playerData?.coins?.toFixed(0) || 0}</span>
+              
+              <div className="bg-blue-500 text-white text-center py-1 mb-3 w-1/3 mx-auto">
+                {playerData?.name || "Player"}
+              </div>
+              
+              <div className="space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-yellow-400">Health:</span>
+                  <span className="text-yellow-400 font-bold">50%</span>
+                </div>
+                <div className="w-full bg-gray-700 rounded-full h-3">
+                  <div className="bg-yellow-400 h-3 rounded-full" style={{ width: "50%" }}></div>
+                </div>
+                
+                <div className="flex justify-between items-center">
+                  <span className="text-blue-400">Calories:</span>
+                  <span className="text-white">{playerData?.caloriesConsumed || 0}/{playerData?.dailyCalories?.toFixed(0) || 0}</span>
+                </div>
+                <div className="w-full bg-gray-700 rounded-full h-3">
+                  <div className="bg-blue-400 h-3 rounded-full" style={{ 
+                    width: `${Math.min((playerData?.caloriesConsumed || 0) / (playerData?.dailyCalories || 2000) * 100, 100)}%` 
+                  }}></div>
+                </div>
+                
+                <div className="flex justify-between items-center">
+                  <span className="text-yellow-400">iHumanCoins:</span>
+                  <span className="text-yellow-400 font-bold">{playerData?.coins?.toFixed(0) || 0}</span>
+                </div>
+                
+                <div className="flex justify-between items-center">
+                  <span className="text-purple-400">Inventory:</span>
+                  <span className="text-purple-400">{playerData?.inventory?.length || 0} items</span>
+                </div>
               </div>
             </div>
             
