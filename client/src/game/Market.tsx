@@ -60,9 +60,10 @@ const Market = ({ onExit }: MarketProps) => {
             </div>
             <button
               onClick={() => {
-                console.log("Exiting market");
-                exitBuilding(); // Usar directamente exitBuilding del store
-                onExit(); // También llamar a onExit para mantener compatibilidad
+                console.log("Exiting market - direct method");
+                // Usar el método del store directamente accediendo a su estado global
+                // Esto evita problemas con los props y asegura que siempre funcione
+                useGameStateStore.getState().setGameState("playing");
               }}
               className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded-lg border-2 border-red-500 shadow-md transition-all hover:scale-105"
             >
