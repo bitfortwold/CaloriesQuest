@@ -104,91 +104,127 @@ const GameUI = () => {
       case "playing":
         return (
           <div className="z-10">
-            {/* Player stats panel similar to the reference design */}
-            <div className="fixed top-2 left-2 bg-gray-900/90 p-3 rounded-lg shadow-md text-white" style={{ maxWidth: "240px" }}>
-              <div className="flex justify-between items-center border-b border-gray-700 pb-2 mb-2">
-                <h2 className="text-lg font-bold uppercase tracking-wide">PLAYER STATS</h2>
-                <div className="flex gap-2">
-                  <button 
-                    className="text-blue-400 text-sm"
-                    onClick={() => {
-                      setShowProfilePanel(!showProfilePanel);
-                      setActiveTab('profile');
-                    }}
-                  >
-                    Perfil
-                  </button>
-                  <button 
-                    className="text-yellow-400 text-sm"
-                    onClick={() => {
-                      // Mostrar/ocultar panel de instrucciones
-                      const statsInstructions = document.getElementById('stats-instructions');
-                      if (statsInstructions) {
-                        const isVisible = statsInstructions.style.display !== 'none';
-                        statsInstructions.style.display = isVisible ? 'none' : 'block';
-                      }
-                    }}
-                    title="Ver instrucciones"
-                  >
-                    Ayuda
-                  </button>
-                  <button 
-                    className="text-red-400 text-sm"
-                    onClick={() => useGameStateStore.getState().logout()}
-                  >
-                    Salir
-                  </button>
-                </div>
-              </div>
-              
-              {/* Panel de instrucciones oculto por defecto dentro del panel de estadísticas */}
-              <div 
-                id="stats-instructions" 
-                className="bg-black/95 text-white p-3 rounded-lg shadow-lg w-full mb-3"
-                style={{ display: 'none' }}
-              >
-                <h3 className="text-center font-bold mb-2 text-blue-300 text-xs">CONTROLES DEL JUEGO</h3>
-                <div className="space-y-1 text-xs">
-                  <p>• WASD o Flechas: Moverse</p>
-                  <p>• Click: Moverse/interactuar</p>
-                  <p>• E/Espacio: Interactuar</p>
-                  <p>• Botón izq. + arrastrar: Rotar</p>
-                  <p>• Rueda: Acercar/alejar</p>
-                </div>
-              </div>
-              
-              <div className="bg-blue-500 text-white text-center py-1 mb-3 w-1/3 mx-auto">
-                {playerData?.name || "Player"}
-              </div>
-              
-              <div className="space-y-3">
-                <div className="flex justify-between items-center">
-                  <span className="text-yellow-400">Health:</span>
-                  <span className="text-yellow-400 font-bold">50%</span>
-                </div>
-                <div className="w-full bg-gray-700 rounded-full h-3">
-                  <div className="bg-yellow-400 h-3 rounded-full" style={{ width: "50%" }}></div>
-                </div>
+            {/* Botón de estadísticas colapsable */}
+            <div className="fixed top-2 left-2 z-[1000]">
+              <div className="flex flex-col items-start">
+                {/* Botón de estadísticas atractivo */}
+                <button
+                  onClick={() => setShowProfilePanel(!showProfilePanel)}
+                  className={`bg-gradient-to-r from-blue-700 to-indigo-900 text-white font-bold py-3 px-6 rounded-lg shadow-lg 
+                           border-2 border-blue-600 transition-all duration-300 hover:scale-105 flex items-center ${showProfilePanel ? 'mb-2' : ''}`}
+                >
+                  <div className="mr-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                  </div>
+                  <span className="text-xl">PLAYER STATS</span>
+                  <div className="ml-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" className={`h-5 w-5 transition-transform ${showProfilePanel ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
+                </button>
                 
-                <div className="flex justify-between items-center">
-                  <span className="text-blue-400">Calories:</span>
-                  <span className="text-white">{playerData?.caloriesConsumed || 0}/{playerData?.dailyCalories?.toFixed(0) || 0}</span>
-                </div>
-                <div className="w-full bg-gray-700 rounded-full h-3">
-                  <div className="bg-blue-400 h-3 rounded-full" style={{ 
-                    width: `${Math.min((playerData?.caloriesConsumed || 0) / (playerData?.dailyCalories || 2000) * 100, 100)}%` 
-                  }}></div>
-                </div>
-                
-                <div className="flex justify-between items-center">
-                  <span className="text-yellow-400">iHumanCoins:</span>
-                  <span className="text-yellow-400 font-bold">{playerData?.coins?.toFixed(0) || 0}</span>
-                </div>
-                
-                <div className="flex justify-between items-center">
-                  <span className="text-purple-400">Inventory:</span>
-                  <span className="text-purple-400">{playerData?.inventory?.length || 0} items</span>
-                </div>
+                {/* Panel desplegable que contiene las estadísticas */}
+                {showProfilePanel && (
+                  <div className="bg-gray-900/90 p-4 rounded-lg shadow-md text-white animate-fadeIn w-64">
+                    <div className="flex justify-between items-center border-b border-gray-700 pb-2 mb-3">
+                      <div className="flex gap-2 w-full">
+                        <button 
+                          className="bg-blue-600 hover:bg-blue-700 text-white text-sm px-3 py-1 rounded flex-1 transition-colors"
+                          onClick={() => setActiveTab('profile')}
+                        >
+                          Perfil
+                        </button>
+                        <button 
+                          className="bg-yellow-600 hover:bg-yellow-700 text-white text-sm px-3 py-1 rounded flex-1 transition-colors"
+                          onClick={() => {
+                            // Mostrar/ocultar panel de instrucciones
+                            const statsInstructions = document.getElementById('stats-instructions');
+                            if (statsInstructions) {
+                              const isVisible = statsInstructions.style.display !== 'none';
+                              statsInstructions.style.display = isVisible ? 'none' : 'block';
+                            }
+                          }}
+                          title="Ver instrucciones"
+                        >
+                          Ayuda
+                        </button>
+                        <button 
+                          className="bg-red-600 hover:bg-red-700 text-white text-sm px-3 py-1 rounded flex-1 transition-colors"
+                          onClick={() => useGameStateStore.getState().logout()}
+                        >
+                          Salir
+                        </button>
+                      </div>
+                    </div>
+                    
+                    {/* Panel de instrucciones oculto por defecto dentro del panel de estadísticas */}
+                    <div 
+                      id="stats-instructions" 
+                      className="bg-black/95 text-white p-3 rounded-lg shadow-lg w-full mb-3"
+                      style={{ display: 'none' }}
+                    >
+                      <h3 className="text-center font-bold mb-2 text-blue-300 text-xs">CONTROLES DEL JUEGO</h3>
+                      <div className="space-y-1 text-xs">
+                        <p>• WASD o Flechas: Moverse</p>
+                        <p>• Click: Moverse/interactuar</p>
+                        <p>• E/Espacio: Interactuar</p>
+                        <p>• Botón izq. + arrastrar: Rotar</p>
+                        <p>• Rueda: Acercar/alejar</p>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white text-center py-1 mb-3 rounded font-bold">
+                      {playerData?.name || "Player"}
+                    </div>
+                    
+                    <div className="space-y-4">
+                      <div>
+                        <div className="flex justify-between items-center mb-1">
+                          <span className="text-yellow-400 font-semibold">Health:</span>
+                          <span className="text-yellow-400 font-bold">50%</span>
+                        </div>
+                        <div className="w-full bg-gray-800 rounded-full h-3 overflow-hidden">
+                          <div className="bg-gradient-to-r from-yellow-500 to-yellow-300 h-3 rounded-full" style={{ width: "50%" }}></div>
+                        </div>
+                      </div>
+                      
+                      <div>
+                        <div className="flex justify-between items-center mb-1">
+                          <span className="text-blue-400 font-semibold">Calories:</span>
+                          <span className="text-white">{playerData?.caloriesConsumed || 0}/{playerData?.dailyCalories?.toFixed(0) || 0}</span>
+                        </div>
+                        <div className="w-full bg-gray-800 rounded-full h-3 overflow-hidden">
+                          <div className="bg-gradient-to-r from-blue-600 to-blue-400 h-3 rounded-full" style={{ 
+                            width: `${Math.min((playerData?.caloriesConsumed || 0) / (playerData?.dailyCalories || 2000) * 100, 100)}%` 
+                          }}></div>
+                        </div>
+                      </div>
+                      
+                      <div className="flex justify-between items-center bg-gray-800 p-2 rounded">
+                        <span className="text-yellow-400 font-semibold flex items-center">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          iHumanCoins:
+                        </span>
+                        <span className="text-yellow-400 font-bold">{playerData?.coins?.toFixed(0) || 0}</span>
+                      </div>
+                      
+                      <div className="flex justify-between items-center bg-gray-800 p-2 rounded">
+                        <span className="text-purple-400 font-semibold flex items-center">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+                          </svg>
+                          Inventory:
+                        </span>
+                        <span className="text-purple-400">{playerData?.inventory?.length || 0} items</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
             
