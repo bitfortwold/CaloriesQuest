@@ -75,7 +75,7 @@ const Game = () => {
           maxDistance={30}
           minPolarAngle={Math.PI / 8} // Limitar rotación hacia abajo (no mucho)
           maxPolarAngle={Math.PI / 2} // Limitar rotación hacia arriba (hasta horizontal)
-          zoomSpeed={0.5} // Velocidad de zoom más suave
+          zoomSpeed={1.0} // Velocidad de zoom aumentada para mejor respuesta
           rotateSpeed={0.5} // Velocidad de rotación más suave
           panSpeed={0.5} // Velocidad de paneo más suave
           enableDamping={true} // Añadir inercia
@@ -85,6 +85,10 @@ const Game = () => {
             MIDDLE: THREE.MOUSE.DOLLY,
             RIGHT: THREE.MOUSE.PAN
           }}
+          // Mantener los controles siempre activos, incluso durante el movimiento
+          enabled={true}
+          // Hacer que los controles no se desactiven automáticamente
+          makeDefault={true}
         />
       )}
       

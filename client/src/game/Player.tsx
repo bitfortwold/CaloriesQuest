@@ -138,10 +138,24 @@ const Player = () => {
     // Only add event listeners if in playing state
     if (gameState === "playing") {
       const canvas = gl.domElement;
-      canvas.addEventListener('click', handleGroundClick);
+      
+      // Handler para detectar si es un clic puro o parte de una acción de zoom/rotación
+      const handleCanvasClick = (event: MouseEvent) => {
+        // Si se está presionando algún botón del teclado o la rueda del ratón, no considerar como clic para movimiento
+        if (event.altKey || event.ctrlKey || event.shiftKey || event.metaKey) {
+          return; // No manejar este clic como orden de movimiento
+        }
+        
+        // Verificar si es un clic rápido y no parte de un arrastre o zoom
+        if (event.detail === 1) { // Es un clic simple
+          handleGroundClick(event);
+        }
+      };
+      
+      canvas.addEventListener('click', handleCanvasClick);
       
       return () => {
-        canvas.removeEventListener('click', handleGroundClick);
+        canvas.removeEventListener('click', handleCanvasClick);
       };
     }
   }, [gameState, gl.domElement, playerPosition]);
