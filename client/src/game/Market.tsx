@@ -48,8 +48,32 @@ const Market = ({ onExit }: MarketProps) => {
       setCart(prevCart => [...prevCart, { item: foodItem, quantity: 1 }]);
     }
     
+    // Mostrar el panel del carrito si está oculto
+    const cartPanel = document.getElementById('cart-panel');
+    if (cartPanel && cartPanel.style.display === 'none') {
+      cartPanel.style.display = 'block';
+    }
+    
     // Show notification
     toast.success(`${foodItem.name} added to cart`);
+    
+    // Log para depuración
+    console.log("Item added to cart:", foodItem.name, "- Cart now has", cart.length + (existingItem ? 0 : 1), "different items");
+    
+    // Actualizar el contador del carrito
+    const updatedCart = existingItem 
+      ? [...cart.filter(item => item.item.id !== foodItem.id), { ...existingItem, quantity: existingItem.quantity + 1 }]
+      : [...cart, { item: foodItem, quantity: 1 }];
+      
+    const totalItems = updatedCart.reduce((total, item) => total + item.quantity, 0);
+    const cartCounter = document.getElementById('cart-counter');
+    if (cartCounter) {
+      cartCounter.textContent = totalItems.toString();
+      
+      // Efecto visual de "bounce" para el contador
+      cartCounter.classList.add('scale-125');
+      setTimeout(() => cartCounter.classList.remove('scale-125'), 300);
+    }
   };
   
   // Remove item from cart
@@ -119,26 +143,11 @@ const Market = ({ onExit }: MarketProps) => {
             <h1 className="text-4xl font-bold text-amber-50 drop-shadow-md tracking-wide text-center">MARKET</h1>
           </div>
           
-          <div className="flex justify-between items-center">
+          <div className="flex justify-center items-center">
             <div className="bg-amber-700 px-4 py-2 rounded-lg text-amber-50 border-2 border-amber-600 shadow-inner">
               <span className="font-semibold">iHumancoins: </span>
               <span className="text-yellow-300 font-bold text-xl ml-1">{playerData?.coins?.toFixed(0) || 0}</span>
             </div>
-            
-            {/* Carrito de compras */}
-            <button 
-              type="button"
-              className="flex items-center bg-amber-600 px-4 py-2 rounded-lg text-amber-50 border-2 border-amber-500 shadow-inner cursor-pointer hover:brightness-110 transition-all"
-              onClick={() => {
-                console.log("Toggle cart visibility - current state:", showCart);
-                setShowCart(prevState => !prevState);
-              }}
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-              </svg>
-              <span className="font-bold text-lg">{cart.reduce((total, item) => total + item.quantity, 0)}</span>
-            </button>
           </div>
         </div>
         
