@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { foodItems } from "../data/foodItems";
 import { usePlayerStore } from "../stores/usePlayerStore";
 import { useFoodStore } from "../stores/useFoodStore";
+import { useGameStateStore } from "../stores/useGameStateStore";
 import { toast } from "sonner";
 
 interface MarketProps {
@@ -13,6 +14,7 @@ interface MarketProps {
 const Market = ({ onExit }: MarketProps) => {
   const { playerData, addFood, updateCoins } = usePlayerStore();
   const { purchasedFood, addPurchasedFood } = useFoodStore();
+  const { exitBuilding } = useGameStateStore();
   
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   
@@ -59,7 +61,8 @@ const Market = ({ onExit }: MarketProps) => {
             <button
               onClick={() => {
                 console.log("Exiting market");
-                onExit(); // Llamar explícitamente a la función onExit proporcionada por las props
+                exitBuilding(); // Usar directamente exitBuilding del store
+                onExit(); // También llamar a onExit para mantener compatibilidad
               }}
               className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded-lg border-2 border-red-500 shadow-md transition-all hover:scale-105"
             >
