@@ -13,7 +13,7 @@ interface MarketProps {
 
 const Market = ({ onExit }: MarketProps) => {
   const { playerData, addFood, updateCoins } = usePlayerStore();
-  const { purchasedFood, addPurchasedFood } = useFoodStore();
+  const { purchasedFood, addPurchasedFood, transferToKitchen } = useFoodStore();
   const { exitBuilding, setGameState } = useGameStateStore();
   
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
@@ -48,11 +48,7 @@ const Market = ({ onExit }: MarketProps) => {
       setCart(prevCart => [...prevCart, { item: foodItem, quantity: 1 }]);
     }
     
-    // Mostrar el panel del carrito si está oculto
-    const cartPanel = document.getElementById('cart-panel');
-    if (cartPanel && cartPanel.style.display === 'none') {
-      cartPanel.style.display = 'block';
-    }
+    // Ya no mostramos automáticamente el panel, solo actualizamos el contador
     
     // Show notification
     toast.success(`${foodItem.name} added to cart`);
@@ -96,13 +92,31 @@ const Market = ({ onExit }: MarketProps) => {
       return;
     }
     
+    // Array para guardar los IDs de los alimentos que se transferirán a la cocina
+    const foodIdsToTransfer: string[] = [];
+    
     // Purchase all items
     cart.forEach(cartItem => {
+      // Repetir según la cantidad
       for (let i = 0; i < cartItem.quantity; i++) {
-        addPurchasedFood(cartItem.item);
-        addFood(cartItem.item);
+        // Crear un ID único para cada elemento (incluso si son del mismo tipo)
+        const uniqueId = `${cartItem.item.id}-${Date.now()}-${i}`;
+        const itemWithUniqueId = {
+          ...cartItem.item,
+          id: uniqueId
+        };
+        
+        // Añadir a la compra y al inventario del jugador
+        addPurchasedFood(itemWithUniqueId);
+        addFood(itemWithUniqueId);
+        
+        // Añadir a la lista para transferir a la cocina
+        foodIdsToTransfer.push(uniqueId);
       }
     });
+    
+    // Transferir alimentos a la cocina (refrigerador o despensa)
+    transferToKitchen(foodIdsToTransfer);
     
     // Update player coins
     updateCoins(-totalPrice);
@@ -111,7 +125,19 @@ const Market = ({ onExit }: MarketProps) => {
     setCart([]);
     
     // Show success message
-    toast.success(`Purchase completed successfully!`);
+    toast.success(`Purchase completed successfully! Your items have been delivered to your kitchen.`);
+    
+    // Ocultar el panel del carrito
+    const cartPanel = document.getElementById('cart-panel');
+    if (cartPanel) {
+      cartPanel.style.display = 'none';
+    }
+    
+    // Reset el contador del carrito
+    const cartCounter = document.getElementById('cart-counter');
+    if (cartCounter) {
+      cartCounter.textContent = "0";
+    }
   };
   
   // Handle direct purchase (old method, kept for compatibility)
