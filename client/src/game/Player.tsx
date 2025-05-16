@@ -277,62 +277,51 @@ const Player = () => {
   }, [playerPosition, rotationY]);
   
   return (
-    <group ref={playerRef} position={[playerPosition.x, playerPosition.y + 0.75, playerPosition.z]}>
-      {/* Personaje completo rediseñado desde cero */}
-      <group>
-        {/* Torso central ajustado hacia arriba */}
-        <mesh castShadow position={[0, 1.5, 0]}>
+    <group ref={playerRef} position={[playerPosition.x, playerPosition.y, playerPosition.z]}>
+      {/* Personaje ajustado a la altura del camino rectangular */}
+      <group position={[0, 0.5, 0]}>
+        {/* Torso central simple */}
+        <mesh castShadow position={[0, 1, 0]}>
           <capsuleGeometry args={[0.5, 1, 4, 8]} />
           <meshStandardMaterial color={playerData?.gender === 'female' ? '#E38AAE' : '#6495ED'} />
         </mesh>
         
-        {/* Cabeza ajustada hacia arriba */}
-        <mesh castShadow position={[0, 2.6, 0]}>
+        {/* Cabeza simple */}
+        <mesh castShadow position={[0, 2.1, 0]}>
           <sphereGeometry args={[0.4, 16, 16]} />
           <meshStandardMaterial color="#F5DEB3" />
         </mesh>
         
-        {/* Ojos ajustados hacia arriba */}
-        <mesh position={[0.15, 2.7, 0.3]}>
+        {/* Ojos */}
+        <mesh position={[0.15, 2.2, 0.3]}>
           <sphereGeometry args={[0.08, 8, 8]} />
           <meshBasicMaterial color="black" />
         </mesh>
         
-        <mesh position={[-0.15, 2.7, 0.3]}>
+        <mesh position={[-0.15, 2.2, 0.3]}>
           <sphereGeometry args={[0.08, 8, 8]} />
           <meshBasicMaterial color="black" />
         </mesh>
         
-        {/* Brazos ajustados hacia arriba */}
-        <mesh castShadow position={[0.6, 1.5, 0]}>
+        {/* Brazos simples */}
+        <mesh castShadow position={[0.6, 1, 0]}>
           <capsuleGeometry args={[0.2, 1, 4, 8]} />
           <meshStandardMaterial color={playerData?.gender === 'female' ? '#E38AAE' : '#6495ED'} />
         </mesh>
         
-        <mesh castShadow position={[-0.6, 1.5, 0]}>
+        <mesh castShadow position={[-0.6, 1, 0]}>
           <capsuleGeometry args={[0.2, 1, 4, 8]} />
           <meshStandardMaterial color={playerData?.gender === 'female' ? '#E38AAE' : '#6495ED'} />
         </mesh>
         
-        {/* Piernas más largas que llegan justo hasta el suelo */}
-        <mesh castShadow position={[0.3, 0.25, 0]}>
-          <capsuleGeometry args={[0.25, 1.5, 4, 8]} />
+        {/* Piernas simples */}
+        <mesh castShadow position={[0.3, 0, 0]}>
+          <capsuleGeometry args={[0.25, 0.8, 4, 8]} />
           <meshStandardMaterial color="#4169E1" />
         </mesh>
         
-        <mesh castShadow position={[-0.3, 0.25, 0]}>
-          <capsuleGeometry args={[0.25, 1.5, 4, 8]} />
-          <meshStandardMaterial color="#4169E1" />
-        </mesh>
-        
-        {/* Pies - esferas en la base de las piernas */}
-        <mesh castShadow position={[0.3, -0.65, 0]}>
-          <sphereGeometry args={[0.28, 16, 16]} />
-          <meshStandardMaterial color="#4169E1" />
-        </mesh>
-        
-        <mesh castShadow position={[-0.3, -0.65, 0]}>
-          <sphereGeometry args={[0.28, 16, 16]} />
+        <mesh castShadow position={[-0.3, 0, 0]}>
+          <capsuleGeometry args={[0.25, 0.8, 4, 8]} />
           <meshStandardMaterial color="#4169E1" />
         </mesh>
       </group>
