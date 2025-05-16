@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { useGameStateStore } from "../stores/useGameStateStore";
 import { usePlayerStore } from "../stores/usePlayerStore";
+import { SoundButton } from "../components/ui/SoundButton";
 import Market from "./Market";
 import Kitchen from "./Kitchen";
 import Activities from "./Activities";
@@ -211,7 +212,11 @@ const GameUI = () => {
   
   // Use portal to render UI outside of Canvas
   return createPortal(
-    renderGameUI(),
+    <>
+      {/* Botón de sonido visible en todos los estados */}
+      <SoundButton />
+      {renderGameUI()}
+    </>,
     document.body
   );
 };
