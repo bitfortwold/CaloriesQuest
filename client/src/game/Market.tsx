@@ -57,7 +57,10 @@ const Market = ({ onExit }: MarketProps) => {
               <span className="text-yellow-300 font-bold text-xl ml-1">{playerData?.coins?.toFixed(0) || 0}</span>
             </div>
             <button
-              onClick={onExit}
+              onClick={() => {
+                console.log("Exiting market");
+                onExit(); // Llamar explícitamente a la función onExit proporcionada por las props
+              }}
               className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded-lg border-2 border-red-500 shadow-md transition-all hover:scale-105"
             >
               Exit
