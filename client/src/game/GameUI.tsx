@@ -119,11 +119,41 @@ const GameUI = () => {
                     Perfil
                   </button>
                   <button 
+                    className="text-yellow-400 text-sm"
+                    onClick={() => {
+                      // Mostrar/ocultar panel de instrucciones
+                      const statsInstructions = document.getElementById('stats-instructions');
+                      if (statsInstructions) {
+                        const isVisible = statsInstructions.style.display !== 'none';
+                        statsInstructions.style.display = isVisible ? 'none' : 'block';
+                      }
+                    }}
+                    title="Ver instrucciones"
+                  >
+                    Ayuda
+                  </button>
+                  <button 
                     className="text-red-400 text-sm"
                     onClick={() => useGameStateStore.getState().logout()}
                   >
                     Salir
                   </button>
+                </div>
+              </div>
+              
+              {/* Panel de instrucciones oculto por defecto dentro del panel de estadísticas */}
+              <div 
+                id="stats-instructions" 
+                className="bg-black/95 text-white p-3 rounded-lg shadow-lg w-full mb-3"
+                style={{ display: 'none' }}
+              >
+                <h3 className="text-center font-bold mb-2 text-blue-300 text-xs">CONTROLES DEL JUEGO</h3>
+                <div className="space-y-1 text-xs">
+                  <p>• WASD o Flechas: Moverse</p>
+                  <p>• Click: Moverse/interactuar</p>
+                  <p>• E/Espacio: Interactuar</p>
+                  <p>• Botón izq. + arrastrar: Rotar</p>
+                  <p>• Rueda: Acercar/alejar</p>
                 </div>
               </div>
               
@@ -195,13 +225,40 @@ const GameUI = () => {
               </div>
             )}
             
-            {/* Controls hint with mouse controls */}
-            <div className="fixed bottom-4 left-4 bg-black/70 text-white p-2 rounded text-xs">
-              <p>WASD o Flechas: Moverse</p>
-              <p>Click del ratón: Moverse o interactuar con edificios</p>
-              <p>E o Espacio: Interactuar</p>
-              <p>Botón izquierdo + arrastrar: Rotar cámara</p>
-              <p>Rueda del ratón: Acercar/alejar</p>
+            {/* Botón de instrucciones que muestra los controles en un tooltip */}
+            <div className="fixed bottom-4 right-4 z-10">
+              <button 
+                className="bg-blue-600 text-white p-2 rounded-full shadow-lg hover:bg-blue-700 transition-all"
+                onClick={() => {
+                  // Mostrar/ocultar panel de instrucciones
+                  const instructionsPanel = document.getElementById('game-instructions');
+                  if (instructionsPanel) {
+                    const isVisible = instructionsPanel.style.display !== 'none';
+                    instructionsPanel.style.display = isVisible ? 'none' : 'block';
+                  }
+                }}
+                title="Ver instrucciones"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </button>
+              
+              {/* Panel de instrucciones oculto por defecto */}
+              <div 
+                id="game-instructions" 
+                className="absolute bottom-14 right-0 bg-black/90 text-white p-3 rounded-lg shadow-lg w-64"
+                style={{ display: 'none' }}
+              >
+                <h3 className="text-center font-bold mb-2 text-blue-300">CONTROLES DEL JUEGO</h3>
+                <div className="space-y-1 text-sm">
+                  <p>• WASD o Flechas: Moverse</p>
+                  <p>• Click del ratón: Moverse o interactuar</p>
+                  <p>• E o Espacio: Interactuar</p>
+                  <p>• Botón izquierdo + arrastrar: Rotar cámara</p>
+                  <p>• Rueda del ratón: Acercar/alejar</p>
+                </div>
+              </div>
             </div>
           </div>
         );

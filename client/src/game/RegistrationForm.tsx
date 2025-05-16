@@ -198,6 +198,42 @@ const RegistrationForm = () => {
   
   return (
     <div className="fixed inset-0 bg-gradient-to-b from-blue-400 to-green-400 flex items-center justify-center z-50 p-4">
+      {/* Botón de instrucciones para la pantalla de registro */}
+      <div className="fixed top-4 right-4 z-[1000]">
+        <button 
+          className="bg-blue-600 text-white p-2 rounded-full shadow-lg hover:bg-blue-700 transition-all"
+          onClick={() => {
+            // Mostrar/ocultar panel de instrucciones
+            const registrationInstructions = document.getElementById('registration-instructions');
+            if (registrationInstructions) {
+              const isVisible = registrationInstructions.style.display !== 'none';
+              registrationInstructions.style.display = isVisible ? 'none' : 'block';
+            }
+          }}
+          title="Ver instrucciones"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </button>
+        
+        {/* Panel de instrucciones oculto por defecto */}
+        <div 
+          id="registration-instructions" 
+          className="absolute top-14 right-0 bg-black/90 text-white p-3 rounded-lg shadow-lg w-64"
+          style={{ display: 'none' }}
+        >
+          <h3 className="text-center font-bold mb-2 text-blue-300">INSTRUCCIONES DEL JUEGO</h3>
+          <div className="space-y-1 text-sm">
+            <p>• WASD o Flechas: Moverse</p>
+            <p>• Click del ratón: Moverse o interactuar</p>
+            <p>• E o Espacio: Interactuar</p>
+            <p>• Botón izquierdo + arrastrar: Rotar cámara</p>
+            <p>• Rueda del ratón: Acercar/alejar</p>
+          </div>
+        </div>
+      </div>
+
       <Card className="w-full max-w-lg">
         <CardHeader>
           <CardTitle className="text-2xl">Bienvenido a Consumo Calórico</CardTitle>
