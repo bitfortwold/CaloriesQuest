@@ -7,9 +7,11 @@ const AudioManager = () => {
     backgroundMusic, 
     hitSound, 
     successSound,
+    voiceSound,
     setBackgroundMusic,
     setHitSound,
     setSuccessSound,
+    setVoiceSound,
     toggleMute
   } = useAudio();
   
@@ -21,7 +23,7 @@ const AudioManager = () => {
     if (!backgroundMusic) {
       const music = new Audio("/sounds/background.mp3");
       music.loop = true;
-      music.volume = 0.3;
+      // El volumen se establecerá automáticamente en setBackgroundMusic
       setBackgroundMusic(music);
     }
     
@@ -35,6 +37,12 @@ const AudioManager = () => {
     if (!successSound) {
       const sound = new Audio("/sounds/success.mp3");
       setSuccessSound(sound);
+    }
+    
+    // Configurar un sonido de voz inicial vacío (se usará más adelante)
+    if (!voiceSound) {
+      // No cargamos ningún archivo por defecto, solo configuramos el estado
+      setVoiceSound(new Audio());
     }
     
     // Unmute audio after user interaction
@@ -60,14 +68,22 @@ const AudioManager = () => {
         backgroundMusic.pause();
         backgroundMusic.currentTime = 0;
       }
+      
+      // Limpiar sonidos de voz si hay alguno reproduciéndose
+      if (voiceSound) {
+        voiceSound.pause();
+        voiceSound.currentTime = 0;
+      }
     };
   }, [
     backgroundMusic, 
     hitSound, 
     successSound,
+    voiceSound,
     setBackgroundMusic, 
     setHitSound, 
     setSuccessSound,
+    setVoiceSound,
     toggleMute
   ]);
   
@@ -75,12 +91,13 @@ const AudioManager = () => {
   useEffect(() => {
     if (!backgroundMusic) return;
     
-    // Obtener el estado actual de mute
+    // Obtener el estado actual de mute de música
     const isMuted = useAudio.getState().isMuted;
     
     // Asegurarnos de que el elemento de audio tenga el estado de mute correcto
     backgroundMusic.muted = isMuted;
     
+    // Reproducir música según el estado del juego
     if (gameState === "playing" || gameState === "market" || gameState === "kitchen") {
       backgroundMusic.play().catch(error => {
         console.log("Background music play prevented:", error);
