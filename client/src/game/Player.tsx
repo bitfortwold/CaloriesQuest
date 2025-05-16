@@ -277,51 +277,54 @@ const Player = () => {
   }, [playerPosition, rotationY]);
   
   return (
-    <group ref={playerRef} position={[playerPosition.x, playerPosition.y, playerPosition.z]}>
-      {/* Character body */}
-      <mesh castShadow position={[0, 1, 0]}>
-        <capsuleGeometry args={[0.5, 1, 4, 8]} />
-        <meshStandardMaterial color={playerData?.gender === 'female' ? '#E38AAE' : '#6495ED'} />
-      </mesh>
-      
-      {/* Character head */}
-      <mesh castShadow position={[0, 2.1, 0]}>
-        <sphereGeometry args={[0.4, 16, 16]} />
-        <meshStandardMaterial color="#F5DEB3" />
-      </mesh>
-      
-      {/* Character eyes */}
-      <mesh position={[0.15, 2.2, 0.3]}>
-        <sphereGeometry args={[0.08, 8, 8]} />
-        <meshBasicMaterial color="black" />
-      </mesh>
-      
-      <mesh position={[-0.15, 2.2, 0.3]}>
-        <sphereGeometry args={[0.08, 8, 8]} />
-        <meshBasicMaterial color="black" />
-      </mesh>
-      
-      {/* Character arms */}
-      <mesh castShadow position={[0.6, 1, 0]}>
-        <capsuleGeometry args={[0.2, 1, 4, 8]} />
-        <meshStandardMaterial color={playerData?.gender === 'female' ? '#E38AAE' : '#6495ED'} />
-      </mesh>
-      
-      <mesh castShadow position={[-0.6, 1, 0]}>
-        <capsuleGeometry args={[0.2, 1, 4, 8]} />
-        <meshStandardMaterial color={playerData?.gender === 'female' ? '#E38AAE' : '#6495ED'} />
-      </mesh>
-      
-      {/* Character legs */}
-      <mesh castShadow position={[0.3, 0, 0]}>
-        <capsuleGeometry args={[0.25, 0.8, 4, 8]} />
-        <meshStandardMaterial color="#4169E1" />
-      </mesh>
-      
-      <mesh castShadow position={[-0.3, 0, 0]}>
-        <capsuleGeometry args={[0.25, 0.8, 4, 8]} />
-        <meshStandardMaterial color="#4169E1" />
-      </mesh>
+    <group ref={playerRef} position={[playerPosition.x, playerPosition.y + 0.5, playerPosition.z]}>
+      {/* Personaje completo con proporciones correctas */}
+      <group position={[0, 0, 0]}>
+        {/* Character body - torso central */}
+        <mesh castShadow position={[0, 1, 0]}>
+          <capsuleGeometry args={[0.5, 1, 4, 8]} />
+          <meshStandardMaterial color={playerData?.gender === 'female' ? '#E38AAE' : '#6495ED'} />
+        </mesh>
+        
+        {/* Character head */}
+        <mesh castShadow position={[0, 2.1, 0]}>
+          <sphereGeometry args={[0.4, 16, 16]} />
+          <meshStandardMaterial color="#F5DEB3" />
+        </mesh>
+        
+        {/* Character eyes */}
+        <mesh position={[0.15, 2.2, 0.3]}>
+          <sphereGeometry args={[0.08, 8, 8]} />
+          <meshBasicMaterial color="black" />
+        </mesh>
+        
+        <mesh position={[-0.15, 2.2, 0.3]}>
+          <sphereGeometry args={[0.08, 8, 8]} />
+          <meshBasicMaterial color="black" />
+        </mesh>
+        
+        {/* Character arms */}
+        <mesh castShadow position={[0.6, 1, 0]}>
+          <capsuleGeometry args={[0.2, 1, 4, 8]} />
+          <meshStandardMaterial color={playerData?.gender === 'female' ? '#E38AAE' : '#6495ED'} />
+        </mesh>
+        
+        <mesh castShadow position={[-0.6, 1, 0]}>
+          <capsuleGeometry args={[0.2, 1, 4, 8]} />
+          <meshStandardMaterial color={playerData?.gender === 'female' ? '#E38AAE' : '#6495ED'} />
+        </mesh>
+        
+        {/* Character legs - rediseñadas para ser visibles sobre el suelo */}
+        <mesh castShadow position={[0.3, -0.6, 0]}>
+          <capsuleGeometry args={[0.25, 1.2, 4, 8]} />
+          <meshStandardMaterial color="#4169E1" />
+        </mesh>
+        
+        <mesh castShadow position={[-0.3, -0.6, 0]}>
+          <capsuleGeometry args={[0.25, 1.2, 4, 8]} />
+          <meshStandardMaterial color="#4169E1" />
+        </mesh>
+      </group>
     </group>
   );
 };
