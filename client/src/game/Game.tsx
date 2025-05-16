@@ -34,20 +34,33 @@ const Game = () => {
     };
   }, [setGameState, isInitialized]);
 
-  // Update camera target to follow player
+  // Sistema de cámara mejorado para permitir zoom durante movimiento
   useEffect(() => {
     if (gameState === "playing" && orbitControlsRef.current) {
-      // Actualizar el objetivo de la cámara para que siga al jugador
+      // Actualizar el objetivo de la cámara para que siga al jugador suavemente
       cameraTarget.current.set(
         playerPosition.x,
         playerPosition.y,
         playerPosition.z
       );
       
-      // Aplicar el target a los controles de órbita
-      orbitControlsRef.current.target.copy(cameraTarget.current);
+      // Aplicar el target a los controles de órbita con interpolación suave
+      // Esto permite hacer zoom mientras el personaje se mueve, sin perder fluidez
+      orbitControlsRef.current.target.lerp(cameraTarget.current, 0.05);
+      
+      // Importante: asegurar que los controles NO se desactiven durante el movimiento
+      orbitControlsRef.current.enabled = true;
     }
   }, [gameState, playerPosition]);
+  
+  // Implementar un sistema adicional para mantener la cámara funcionando durante movimiento
+  useFrame(() => {
+    if (gameState === "playing" && orbitControlsRef.current) {
+      // Actualizar los controles de órbita en cada frame
+      // Esto permite operaciones de zoom durante movimiento
+      orbitControlsRef.current.update();
+    }
+  });
 
   // Initial camera position
   useEffect(() => {
