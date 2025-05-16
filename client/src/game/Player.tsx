@@ -10,11 +10,6 @@ const PLAYER_SPEED = 0.1;
 const INTERACTION_DISTANCE = 3;
 const MOUSE_SPEED = 0.05; // Velocidad para movimiento con mouse
 
-// Definir las constantes para el modelo y sus dimensiones
-const CHARACTER_HEIGHT = 4.0; // Altura total aproximada del personaje
-const LEG_LENGTH = 2.0;       // Longitud de las piernas (incluido el radio)
-const PLAYER_OFFSET = 3.5;    // Elevación significativamente mayor para que esté bien por encima del suelo
-
 const Player = () => {
   const playerRef = useRef<THREE.Group>(null);
   const { gameState, enterBuilding } = useGameStateStore();
@@ -274,16 +269,15 @@ const Player = () => {
   // Update player reference position when playerPosition changes
   useEffect(() => {
     if (playerRef.current) {
-      // Aplicamos el offset de altura para que las piernas toquen el suelo
       playerRef.current.position.x = playerPosition.x;
-      playerRef.current.position.y = playerPosition.y + PLAYER_OFFSET;
+      playerRef.current.position.y = playerPosition.y;
       playerRef.current.position.z = playerPosition.z;
       playerRef.current.rotation.y = rotationY;
     }
   }, [playerPosition, rotationY]);
   
   return (
-    <group ref={playerRef} position={[playerPosition.x, playerPosition.y + PLAYER_OFFSET, playerPosition.z]}>
+    <group ref={playerRef} position={[playerPosition.x, playerPosition.y, playerPosition.z]}>
       {/* Character body */}
       <mesh castShadow position={[0, 1, 0]}>
         <capsuleGeometry args={[0.5, 1, 4, 8]} />
@@ -318,14 +312,14 @@ const Player = () => {
         <meshStandardMaterial color={playerData?.gender === 'female' ? '#E38AAE' : '#6495ED'} />
       </mesh>
       
-      {/* Character legs - ajustadas matemáticamente para tocar el suelo */}
-      <mesh castShadow position={[0.3, -1.0, 0]}>
-        <capsuleGeometry args={[0.25, LEG_LENGTH, 4, 8]} />
+      {/* Character legs */}
+      <mesh castShadow position={[0.3, 0, 0]}>
+        <capsuleGeometry args={[0.25, 0.8, 4, 8]} />
         <meshStandardMaterial color="#4169E1" />
       </mesh>
       
-      <mesh castShadow position={[-0.3, -1.0, 0]}>
-        <capsuleGeometry args={[0.25, LEG_LENGTH, 4, 8]} />
+      <mesh castShadow position={[-0.3, 0, 0]}>
+        <capsuleGeometry args={[0.25, 0.8, 4, 8]} />
         <meshStandardMaterial color="#4169E1" />
       </mesh>
     </group>
