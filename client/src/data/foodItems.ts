@@ -1,6 +1,6 @@
 export const foodItems = [
   {
-    id: "apple",
+    id: "manzana",
     name: "Apple",
     category: "fruits",
     calories: 52,
@@ -28,7 +28,7 @@ export const foodItems = [
     description: "Potassium-rich banana, great for energy. Moderate shipping impact."
   },
   {
-    id: "broccoli",
+    id: "brócoli",
     name: "Broccoli",
     category: "vegetables",
     calories: 34,
@@ -42,7 +42,7 @@ export const foodItems = [
     description: "Nutrient-dense broccoli, high in fiber and vitamins C and K. Low water usage."
   },
   {
-    id: "carrot",
+    id: "zanahoria",
     name: "Carrot",
     category: "vegetables",
     calories: 41,
@@ -56,7 +56,7 @@ export const foodItems = [
     description: "Beta-carotene rich carrots. Low environmental impact to grow."
   },
   {
-    id: "chicken",
+    id: "pollo",
     name: "Chicken Breast",
     category: "protein",
     calories: 165,
@@ -98,7 +98,7 @@ export const foodItems = [
     description: "Rich in omega-3 fatty acids. Sustainably caught with minimal ecosystem impact."
   },
   {
-    id: "rice",
+    id: "arroz",
     name: "Brown Rice",
     category: "grains",
     calories: 216,
@@ -112,7 +112,7 @@ export const foodItems = [
     description: "Whole grain rice with fiber. Moderate water usage for cultivation."
   },
   {
-    id: "bread",
+    id: "pan",
     name: "Whole Wheat Bread",
     category: "grains",
     calories: 69,
@@ -126,7 +126,7 @@ export const foodItems = [
     description: "Complex carbs and fiber. Lower environmental impact than refined bread."
   },
   {
-    id: "potato",
+    id: "patata",
     name: "Potato",
     category: "vegetables",
     calories: 163,
@@ -168,7 +168,7 @@ export const foodItems = [
     description: "High in calcium and protein. Higher environmental impact due to dairy processing."
   },
   {
-    id: "eggs",
+    id: "huevos",
     name: "Eggs",
     category: "protein",
     calories: 155,
@@ -182,7 +182,7 @@ export const foodItems = [
     description: "Nutrient-dense protein source. Moderate environmental impact compared to meat."
   },
   {
-    id: "beans",
+    id: "frijoles",
     name: "Beans",
     category: "protein",
     calories: 127,
@@ -196,7 +196,7 @@ export const foodItems = [
     description: "Excellent plant protein source. Low environmental impact and nitrogen-fixing for soil."
   },
   {
-    id: "spinach",
+    id: "espinaca",
     name: "Spinach",
     category: "vegetables",
     calories: 23,

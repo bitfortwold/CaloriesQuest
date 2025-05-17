@@ -215,13 +215,13 @@ const Kitchen = ({ onExit }: KitchenProps) => {
                             </div>
                             <div className="text-xs text-amber-600 mt-2 grid grid-cols-3 gap-1">
                               <div>
-                                <span className="font-semibold">Protein:</span> {food.nutritionalValue.protein}g
+                                <span className="font-semibold">Proteínas:</span> {food.nutritionalValue.protein}g
                               </div>
                               <div>
-                                <span className="font-semibold">Carbs:</span> {food.nutritionalValue.carbs}g
+                                <span className="font-semibold">Carbos:</span> {food.nutritionalValue.carbs}g
                               </div>
                               <div>
-                                <span className="font-semibold">Fat:</span> {food.nutritionalValue.fat}g
+                                <span className="font-semibold">Grasas:</span> {food.nutritionalValue.fat}g
                               </div>
                             </div>
                             {selectedItems.includes(food.id) && (
@@ -262,13 +262,13 @@ const Kitchen = ({ onExit }: KitchenProps) => {
                             </div>
                             <div className="text-xs text-amber-600 mt-2 grid grid-cols-3 gap-1">
                               <div>
-                                <span className="font-semibold">Protein:</span> {food.nutritionalValue.protein}g
+                                <span className="font-semibold">Proteínas:</span> {food.nutritionalValue.protein}g
                               </div>
                               <div>
-                                <span className="font-semibold">Carbs:</span> {food.nutritionalValue.carbs}g
+                                <span className="font-semibold">Carbos:</span> {food.nutritionalValue.carbs}g
                               </div>
                               <div>
-                                <span className="font-semibold">Fat:</span> {food.nutritionalValue.fat}g
+                                <span className="font-semibold">Grasas:</span> {food.nutritionalValue.fat}g
                               </div>
                             </div>
                             {selectedItems.includes(food.id) && (
