@@ -152,7 +152,9 @@ const Kitchen = ({ onExit }: KitchenProps) => {
   // Cook and consume the meal
   const cookMeal = () => {
     if (selectedItems.length === 0) {
-      toast.error(language === 'en' ? "Select at least one ingredient!" : "¡Selecciona al menos un ingrediente!");
+      toast.error(language === 'en' ? "Select at least one ingredient!" : 
+                 language === 'ca' ? "Selecciona almenys un ingredient!" : 
+                 "¡Selecciona al menos un ingrediente!");
       return;
     }
     
@@ -402,7 +404,11 @@ const Kitchen = ({ onExit }: KitchenProps) => {
                     <div className="grid grid-cols-2 gap-2 max-h-[400px] overflow-y-auto">
                       {pantryFood.length === 0 ? (
                         <p className="text-amber-500 py-6 text-center col-span-2 bg-amber-50 rounded-md border border-amber-200">
-                          {getKitchenTranslation('messages', 'Tu despensa está vacía. ¡Visita el mercado para comprar alimentos no perecederos!')}
+                          {language === 'en' 
+                            ? "Your pantry is empty. Visit the market to buy non-perishable food!" 
+                            : language === 'ca'
+                            ? "El teu rebost està buit. Visita el mercat per comprar aliments no peribles!"
+                            : "Tu despensa está vacía. ¡Visita el mercado para comprar alimentos no perecederos!"}
                         </p>
                       ) : (
                         pantryFood.map((food) => (
@@ -531,7 +537,7 @@ const Kitchen = ({ onExit }: KitchenProps) => {
                       disabled={selectedItems.length === 0}
                       onClick={cookMeal}
                     >
-                      {language === 'en' ? 'Cook & Eat' : 'Cocinar y Comer'}
+                      {language === 'en' ? 'Cook & Eat' : language === 'ca' ? 'Cuinar i Menjar' : 'Cocinar y Comer'}
                     </Button>
                   </div>
                 </div>

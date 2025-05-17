@@ -40,7 +40,9 @@ const SimpleLoginForm = () => {
     
     // Validar que se ha introducido un nombre
     if (!username.trim()) {
-      setError(language === 'es' ? "Por favor, introduce tu nombre" : "Please enter your name");
+      setError(language === 'es' ? "Por favor, introduce tu nombre" : 
+             language === 'ca' ? "Si us plau, introdueix el teu nom" : 
+             "Please enter your name");
       return;
     }
     
@@ -88,12 +90,16 @@ const SimpleLoginForm = () => {
       // Si no se encuentra el usuario, mostrar error
       setError(language === 'es' 
         ? "No encontramos un perfil con ese nombre. Por favor, regístrate." 
+        : language === 'ca'
+        ? "No hem trobat un perfil amb aquest nom. Si us plau, registra't."
         : "We couldn't find a profile with that name. Please register.");
       
     } catch (error) {
       console.error("Error during login:", error);
       setError(language === 'es'
         ? "Ha ocurrido un error. Inténtalo de nuevo."
+        : language === 'ca'
+        ? "S'ha produït un error. Torna-ho a provar."
         : "An error occurred. Please try again.");
     }
   };
@@ -109,7 +115,9 @@ const SimpleLoginForm = () => {
         <CardHeader>
           <div className="flex justify-between items-center mb-4">
             <CardTitle className="text-2xl">
-              {language === 'es' ? 'Bienvenido a Consumo Calórico' : 'Welcome to Caloric Intake'}
+              {language === 'es' ? 'Bienvenido a Consumo Calórico' : 
+               language === 'ca' ? 'Benvingut a Consum Calòric' : 
+               'Welcome to Caloric Intake'}
             </CardTitle>
             <div className="relative">
               <select
