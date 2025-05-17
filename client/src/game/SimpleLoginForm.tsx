@@ -106,7 +106,18 @@ const SimpleLoginForm = () => {
   
   // Ir al formulario de registro completo
   const handleGoToRegistration = () => {
-    setIsRegistered(false); // Esto mostrará el formulario de registro completo
+    // Eliminamos cualquier dato guardado para forzar el formulario de registro
+    try {
+      localStorage.removeItem(USER_DATA_KEY);
+    } catch (error) {
+      console.error("Error removing user data:", error);
+    }
+    
+    // Esto reiniciará la aplicación y mostrará el formulario de registro completo
+    setIsRegistered(false);
+    
+    // Refrescamos la página para asegurar que se cargue el formulario de registro
+    window.location.reload();
   };
 
   return (
