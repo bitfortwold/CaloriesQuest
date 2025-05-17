@@ -153,44 +153,72 @@ const Buildings = () => {
         </Text>
       </group>
       
-      {/* Garden Building */}
+      {/* Garden Building - Version Mejorada */}
       <group position={gardenPos}>
-        {/* Soil/Garden Base */}
+        {/* Suelo/Base del Huerto - Aumentado el tamaño */}
         <mesh receiveShadow position={[0, 0.05, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-          <planeGeometry args={[6, 6]} />
+          <planeGeometry args={[8, 8]} />
+          <meshStandardMaterial color="#7D5A38" />
+        </mesh>
+        
+        {/* Suelo Cultivable Interior - Color diferente */}
+        <mesh receiveShadow position={[0, 0.06, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+          <planeGeometry args={[7, 7]} />
           <meshStandardMaterial color="#553311" />
         </mesh>
         
-        {/* Garden fence structure */}
-        <mesh castShadow receiveShadow position={[0, 0.5, -3]}>
-          <boxGeometry args={[6, 1, 0.3]} />
+        {/* Estructura de valla del Huerto - Aumentada */}
+        <mesh castShadow receiveShadow position={[0, 0.6, -4]}>
+          <boxGeometry args={[8, 1.2, 0.3]} />
           <meshStandardMaterial color="#8B4513" />
         </mesh>
         
-        <mesh castShadow receiveShadow position={[0, 0.5, 3]}>
-          <boxGeometry args={[6, 1, 0.3]} />
+        <mesh castShadow receiveShadow position={[0, 0.6, 4]}>
+          <boxGeometry args={[8, 1.2, 0.3]} />
           <meshStandardMaterial color="#8B4513" />
         </mesh>
         
-        <mesh castShadow receiveShadow position={[-3, 0.5, 0]}>
-          <boxGeometry args={[0.3, 1, 6]} />
+        <mesh castShadow receiveShadow position={[-4, 0.6, 0]}>
+          <boxGeometry args={[0.3, 1.2, 8]} />
           <meshStandardMaterial color="#8B4513" />
         </mesh>
         
-        <mesh castShadow receiveShadow position={[3, 0.5, 0]}>
-          <boxGeometry args={[0.3, 1, 6]} />
+        <mesh castShadow receiveShadow position={[4, 0.6, 0]}>
+          <boxGeometry args={[0.3, 1.2, 8]} />
           <meshStandardMaterial color="#8B4513" />
         </mesh>
         
-        {/* Garden Door - New Addition */}
-        <group position={[0, 0.5, 3]} rotation={[0, Math.PI / 8, 0]}>
-          {/* Door Frame - not interactive anymore */}
+        {/* Punto de entrada visible (círculo brillante) */}
+        <mesh 
+          receiveShadow 
+          position={[0, 0.07, 0]} 
+          rotation={[-Math.PI / 2, 0, 0]}
+        >
+          <circleGeometry args={[1, 32]} />
+          <meshStandardMaterial color="#FFDD55" emissive="#FFDD55" emissiveIntensity={0.5} />
+        </mesh>
+        
+        {/* Texto en el punto de entrada */}
+        <Text
+          position={[0, 0.3, 0]}
+          rotation={[-Math.PI / 2, 0, 0]}
+          fontSize={0.4}
+          color="#8B4513"
+          anchorX="center"
+          anchorY="middle"
+        >
+          ENTRAR
+        </Text>
+        
+        {/* Garden Door - Increased size */}
+        <group position={[0, 0.6, 4]} rotation={[0, Math.PI / 8, 0]}>
+          {/* Door Frame */}
           <mesh 
             castShadow 
             receiveShadow 
             position={[0, 0, 0]}
           >
-            <boxGeometry args={[1.5, 1, 0.1]} />
+            <boxGeometry args={[2, 1.2, 0.15]} />
             <meshStandardMaterial color="#A52A2A" />
           </mesh>
           
@@ -198,17 +226,17 @@ const Buildings = () => {
           <mesh 
             castShadow 
             receiveShadow 
-            position={[0.5, 0, 0.05]}
+            position={[0.6, 0, 0.08]}
           >
-            <sphereGeometry args={[0.1, 8, 8]} />
-            <meshStandardMaterial color="#FFD700" />
+            <sphereGeometry args={[0.15, 16, 16]} />
+            <meshStandardMaterial color="#FFD700" emissive="#FFD700" emissiveIntensity={0.5} />
           </mesh>
           
-          {/* Door Exit Sign */}
+          {/* Door Exit Sign - Bigger and more visible */}
           <Text
-            position={[0, 0.2, 0.06]}
+            position={[0, 0.3, 0.08]}
             rotation={[0, 0, 0]}
-            fontSize={0.2}
+            fontSize={0.3}
             color="#FFFFFF"
             anchorX="center"
             anchorY="middle"
@@ -217,38 +245,75 @@ const Buildings = () => {
           </Text>
         </group>
         
-        {/* Garden Sign */}
-        <mesh castShadow position={[0, 1.5, -3.2]}>
-          <boxGeometry args={[2.5, 1, 0.2]} />
+        {/* Garden Sign - Mejorado */}
+        <mesh castShadow position={[0, 2, -4.2]}>
+          <boxGeometry args={[3, 1.2, 0.2]} />
           <meshStandardMaterial color="#A0522D" />
         </mesh>
         
         <Text
-          position={[0, 1.5, -3.3]}
+          position={[0, 2, -4.3]}
           rotation={[0, 0, 0]}
-          fontSize={0.5}
+          fontSize={0.7}
           color="#F5DEB3"
           anchorX="center"
           anchorY="middle"
         >
-          GARDEN
+          HUERTO
         </Text>
         
-        {/* Some plants for decoration */}
-        <mesh castShadow position={[-2, 0.3, -2]}>
-          <boxGeometry args={[0.5, 0.6, 0.5]} />
-          <meshStandardMaterial color="#228B22" />
-        </mesh>
+        {/* Plantas decorativas más grandes y variadas */}
+        {/* Planta 1 */}
+        <group position={[-2.5, 0, -2.5]}>
+          <mesh castShadow position={[0, 0.3, 0]}>
+            <boxGeometry args={[0.8, 0.6, 0.8]} />
+            <meshStandardMaterial color="#5D4037" />
+          </mesh>
+          <mesh castShadow position={[0, 0.8, 0]}>
+            <sphereGeometry args={[0.6, 8, 8]} />
+            <meshStandardMaterial color="#2E7D32" />
+          </mesh>
+        </group>
         
-        <mesh castShadow position={[1.5, 0.4, 1.5]}>
-          <boxGeometry args={[0.5, 0.8, 0.5]} />
-          <meshStandardMaterial color="#228B22" />
-        </mesh>
+        {/* Planta 2 */}
+        <group position={[2, 0, 2]}>
+          <mesh castShadow position={[0, 0.3, 0]}>
+            <boxGeometry args={[0.8, 0.6, 0.8]} />
+            <meshStandardMaterial color="#5D4037" />
+          </mesh>
+          <mesh castShadow position={[0, 0.9, 0]}>
+            <coneGeometry args={[0.5, 1, 4]} />
+            <meshStandardMaterial color="#33691E" />
+          </mesh>
+        </group>
         
-        <mesh castShadow position={[-1, 0.2, 1]}>
-          <boxGeometry args={[0.5, 0.4, 0.5]} />
-          <meshStandardMaterial color="#228B22" />
-        </mesh>
+        {/* Planta 3 */}
+        <group position={[-1.5, 0, 1.5]}>
+          <mesh castShadow position={[0, 0.2, 0]}>
+            <boxGeometry args={[0.7, 0.4, 0.7]} />
+            <meshStandardMaterial color="#5D4037" />
+          </mesh>
+          <mesh castShadow position={[0, 0.7, 0]}>
+            <sphereGeometry args={[0.4, 8, 8]} />
+            <meshStandardMaterial color="#689F38" />
+          </mesh>
+        </group>
+        
+        {/* Planta 4 - Nueva */}
+        <group position={[1.8, 0, -2.2]}>
+          <mesh castShadow position={[0, 0.25, 0]}>
+            <boxGeometry args={[0.7, 0.5, 0.7]} />
+            <meshStandardMaterial color="#5D4037" />
+          </mesh>
+          <mesh castShadow position={[0, 0.6, 0]}>
+            <cylinderGeometry args={[0.1, 0.1, 1.2, 8]} />
+            <meshStandardMaterial color="#795548" />
+          </mesh>
+          <mesh castShadow position={[0, 1.2, 0]}>
+            <sphereGeometry args={[0.5, 8, 8]} />
+            <meshStandardMaterial color="#8BC34A" />
+          </mesh>
+        </group>
       </group>
       
       {/* Interaction hints */}

@@ -164,6 +164,17 @@ const Garden = ({ onExit }: GardenProps) => {
   return (
     <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center overflow-hidden p-4">
       <div className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-[#FFF8E9] rounded-3xl shadow-2xl border-8 border-[#CD8E3E]">
+        
+        {/* Botón flotante para salir - similar al de Cocina y Mercado */}
+        <button
+          onClick={() => {
+            console.log("Force exiting garden via floating button");
+            onExit();
+          }}
+          className="absolute top-4 right-4 z-10 bg-gradient-to-r from-[#F07167] to-[#D62828] hover:from-[#D62828] hover:to-[#9E1A1A] text-white px-6 py-2 rounded-xl font-bold text-lg shadow-lg border-2 border-[#9E1A1A] transition-all hover:shadow-xl"
+        >
+          SALIR
+        </button>
 
         {/* Header de madera estilizado */}
         <div className="bg-gradient-to-r from-[#C68642] to-[#A05F2C] p-4 rounded-t-2xl relative overflow-hidden">
