@@ -173,7 +173,7 @@ const Market = ({ onExit }: MarketProps) => {
           
           <div className="flex justify-center items-center">
             <div className="bg-amber-700 px-4 py-2 rounded-lg text-amber-50 border-2 border-amber-600 shadow-inner">
-              <span className="font-semibold">iHumancoins: </span>
+              <span className="font-semibold">{t.coins}: </span>
               <span className="text-yellow-300 font-bold text-xl ml-1">{playerData?.coins?.toFixed(0) || 0}</span>
             </div>
           </div>
@@ -274,13 +274,13 @@ const Market = ({ onExit }: MarketProps) => {
                           : 'bg-gray-300 text-gray-500 cursor-not-allowed border-2 border-gray-400'
                       }`}
                     >
-                      Buy
+                      {t.buy}
                     </button>
                     
                     <button 
                       onClick={() => addToCart(food)}
                       className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-3 rounded-lg border-2 border-green-500 transition-all hover:scale-105 flex-shrink-0"
-                      title="Add to cart"
+                      title={t.add}
                     >
                       +
                     </button>
@@ -298,7 +298,7 @@ const Market = ({ onExit }: MarketProps) => {
           style={{ display: showCart ? 'block' : 'none' }}
         >
           <div className="flex justify-between items-center mb-4 border-b border-amber-700 pb-2">
-            <h2 className="text-2xl font-bold">Shopping Cart</h2>
+            <h2 className="text-2xl font-bold">{t.cart}</h2>
             <button 
               onClick={() => setShowCart(false)}
               className="text-amber-300 hover:text-amber-100"

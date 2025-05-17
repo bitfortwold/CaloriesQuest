@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useFoodStore, StorageType, StoredFoodItem } from "../stores/useFoodStore";
 import { usePlayerStore } from "../stores/usePlayerStore";
+import { useLanguage } from "../i18n/LanguageContext";
 import { toast } from "sonner";
 
 interface KitchenProps {
@@ -13,6 +14,7 @@ interface KitchenProps {
 const Kitchen = ({ onExit }: KitchenProps) => {
   const { purchasedFood, removePurchasedFood, refrigeratorFood, pantryFood, removeFromKitchen } = useFoodStore();
   const { playerData, consumeFood, calculateEstimatedLifespan } = usePlayerStore();
+  const { t } = useLanguage(); // Hook para acceder a las traducciones
   
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
   const [cookingMode, setCookingMode] = useState<"guided" | "free">("guided");
@@ -129,7 +131,7 @@ const Kitchen = ({ onExit }: KitchenProps) => {
         <div className="bg-amber-800 text-amber-50 p-3 rounded-t-lg relative overflow-hidden">
           <div className="absolute inset-0 opacity-30 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMCIgaGVpZ2h0PSIzMCI+CjxyZWN0IHdpZHRoPSIzMCIgaGVpZ2h0PSIzMCIgZmlsbD0iI2ZmZiI+PC9yZWN0Pgo8cmVjdCB4PSIxNSIgeT0iMCIgd2lkdGg9IjE1IiBoZWlnaHQ9IjE1IiBmaWxsPSIjZjNmNGY2Ij48L3JlY3Q+CjxyZWN0IHg9IjAiIHk9IjE1IiB3aWR0aD0iMTUiIGhlaWdodD0iMTUiIGZpbGw9IiNmM2Y0ZjYiPjwvcmVjdD4KPC9zdmc+')]"></div>
           <div className="mb-2">
-            <h1 className="text-4xl font-bold text-amber-50 drop-shadow-md tracking-wide text-center">KITCHEN</h1>
+            <h1 className="text-4xl font-bold text-amber-50 drop-shadow-md tracking-wide text-center">{t.kitchen}</h1>
           </div>
           
           <div className="flex justify-between items-center">
