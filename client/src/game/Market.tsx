@@ -326,13 +326,38 @@ const Market = ({ onExit }: MarketProps) => {
         {/* Header con estilo de madera */}
         <div className="bg-amber-800 text-amber-50 p-3 rounded-t-lg relative overflow-hidden">
           <div className="absolute inset-0 opacity-30 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMCIgaGVpZ2h0PSIzMCI+CjxyZWN0IHdpZHRoPSIzMCIgaGVpZ2h0PSIzMCIgZmlsbD0iI2ZmZiI+PC9yZWN0Pgo8cmVjdCB4PSIxNSIgeT0iMCIgd2lkdGg9IjE1IiBoZWlnaHQ9IjE1IiBmaWxsPSIjZjNmNGY2Ij48L3JlY3Q+CjxyZWN0IHg9IjAiIHk9IjE1IiB3aWR0aD0iMTUiIGhlaWdodD0iMTUiIGZpbGw9IiNmM2Y0ZjYiPjwvcmVjdD4KPC9zdmc+')]"></div>
-          <div className="mb-2">
-            <h1 className="text-4xl font-bold text-amber-50 drop-shadow-md tracking-wide text-center">{t.market}</h1>
+          
+          <div className="flex items-center justify-between">
+            {/* Botón de carrito en la parte superior izquierda */}
+            <button
+              onClick={() => setShowCart(!showCart)}
+              className="bg-amber-600 hover:bg-amber-700 text-white font-bold py-2 px-4 rounded-lg shadow-lg border-2 border-amber-500 transition-all hover:scale-105 relative"
+            >
+              <div className="flex items-center">
+                <span className="mr-2">🛒</span>
+                {language === 'en' ? 'CART' : language === 'ca' ? 'CISTELL' : 'CARRITO'}
+                <span className="ml-2 bg-red-600 text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full border-2 border-red-300 transition-all">
+                  {cart.reduce((total, item) => total + item.quantity, 0)}
+                </span>
+              </div>
+            </button>
+            
+            <div className="flex-1 text-center">
+              <h1 className="text-4xl font-bold text-amber-50 drop-shadow-md tracking-wide">{t.market}</h1>
+            </div>
+            
+            {/* Botón Salir en la esquina superior derecha */}
+            <button
+              onClick={onExit}
+              className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg shadow-lg border-2 border-red-500 transition-all hover:scale-105"
+            >
+              {t.exit}
+            </button>
           </div>
           
-          <div className="flex justify-center items-center">
+          <div className="flex justify-center items-center mt-2">
             <div className="bg-amber-700 px-4 py-2 rounded-lg text-amber-50 border-2 border-amber-600 shadow-inner">
-              <span className="font-semibold">{t.coins}: </span>
+              <span className="font-semibold">iHumanCoins: </span>
               <span className="text-yellow-300 font-bold text-xl ml-1">{playerData?.coins?.toFixed(0) || 0}</span>
             </div>
           </div>
@@ -516,25 +541,7 @@ const Market = ({ onExit }: MarketProps) => {
           )}
         </div>
         
-        {/* Botones flotantes */}
-        <div className="fixed bottom-4 right-4 flex flex-col gap-4">
-          <button
-            onClick={onExit}
-            className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-full shadow-lg border-2 border-red-500 transition-all hover:scale-105"
-          >
-            {t.exit}
-          </button>
-          
-          <button
-            onClick={() => setShowCart(!showCart)}
-            className="bg-amber-600 hover:bg-amber-700 text-white font-bold py-3 px-6 rounded-full shadow-lg border-2 border-amber-500 transition-all hover:scale-105 relative"
-          >
-            {language === 'en' ? 'CART' : language === 'ca' ? 'CISTELL' : 'CARRITO'}
-            <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold w-6 h-6 flex items-center justify-center rounded-full border-2 border-red-300 transition-all">
-              {cart.reduce((total, item) => total + item.quantity, 0)}
-            </span>
-          </button>
-        </div>
+        {/* Solo mantenemos el botón flotante de salir en la esquina superior derecha */}
         
         {/* Panel de carrito */}
         {showCart && (
