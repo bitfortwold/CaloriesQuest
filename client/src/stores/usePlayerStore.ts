@@ -22,6 +22,8 @@ export interface FoodItem {
   description: string;
 }
 
+import { DailyChallenge } from "../data/dailyChallenges";
+
 export interface PlayerData {
   name: string;
   age: number;
@@ -35,6 +37,9 @@ export interface PlayerData {
   dailyCalories: number;
   estimatedLifespan: number;
   inventory: FoodItem[];
+  dailyChallenges: DailyChallenge[];
+  lastChallengeReset: number; // Timestamp de la última vez que se resetearon los desafíos
+  achievements: string[]; // Lista de logros obtenidos
 }
 
 // Define store state
@@ -48,10 +53,16 @@ interface PlayerState {
   updateCoins: (amount: number) => void;
   addFood: (food: FoodItem) => void;
   removeFood: (foodId: string) => void;
-  consumeFood: (calories: number) => void;
+  consumeFood: (calories: number, food?: FoodItem) => void;
   increaseCaloriesBurned: (calories: number) => void;
   calculateDailyCalories: (gender: string, age: number, weight: number, height: number, activityLevel: string) => number;
   calculateEstimatedLifespan: () => void;
+  
+  // Desafíos y logros
+  updateChallenges: () => void; // Verifica y actualiza los desafíos diarios
+  completeChallenge: (challengeId: string) => void; // Marca un desafío como completado y otorga recompensa
+  unlockAchievement: (achievementId: string) => void; // Desbloquea un logro
+  resetDailyChallenges: () => void; // Reinicia los desafíos diarios
 }
 
 export const usePlayerStore = create<PlayerState>((set, get) => ({
@@ -101,7 +112,8 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
     }));
   },
   
-  consumeFood: (calories: number) => {
+  consumeFood: (calories: number, food?: FoodItem) => {
+    // Actualizar calorías consumidas
     set((state) => ({
       playerData: state.playerData 
         ? { 
@@ -110,6 +122,37 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
           }
         : null
     }));
+    
+    // Si se proporciona información del alimento, actualizar desafíos relacionados
+    if (food && get().playerData) {
+      // Actualizamos desafíos relacionados con alimentos
+      const action = {
+        type: "food_consumed" as const,
+        food
+      };
+      
+      // Actualizar progreso en desafíos
+      const updatedChallenges = get().playerData!.dailyChallenges.map(challenge => 
+        updateChallengeProgress(challenge, action)
+      );
+      
+      // Actualizar estado con los desafíos actualizados
+      set((state) => ({
+        playerData: state.playerData 
+          ? { 
+              ...state.playerData, 
+              dailyChallenges: updatedChallenges
+            }
+          : null
+      }));
+      
+      // Verificar si algún desafío se completó y otorgar recompensas
+      updatedChallenges.forEach(challenge => {
+        if (challenge.completed && !get().playerData!.dailyChallenges.find(c => c.id === challenge.id)?.completed) {
+          get().completeChallenge(challenge.id);
+        }
+      });
+    }
   },
   
   increaseCaloriesBurned: (calories: number) => {
