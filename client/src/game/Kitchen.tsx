@@ -366,6 +366,7 @@ const Kitchen = ({ onExit }: KitchenProps) => {
             <div className="flex flex-wrap justify-end items-center gap-3">
               <Button 
                 onClick={() => {
+                  console.log("Cambiando a modo recetas guiadas");
                   setCookingMode("guided");
                   setShowGuide(false);
                 }}
@@ -379,6 +380,7 @@ const Kitchen = ({ onExit }: KitchenProps) => {
               </Button>
               <Button 
                 onClick={() => {
+                  console.log("Cambiando a modo cocina libre");
                   setCookingMode("free");
                   setShowGuide(false);
                 }}
@@ -392,6 +394,7 @@ const Kitchen = ({ onExit }: KitchenProps) => {
               </Button>
               <Button 
                 onClick={() => {
+                  console.log("Toggling guía de cocina");
                   setShowGuide(!showGuide);
                 }}
                 className={`px-5 py-2 rounded-xl font-bold transition-all shadow-md ${
