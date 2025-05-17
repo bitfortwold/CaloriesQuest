@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { useEffect, useState } from "react";
 import { Text } from "@react-three/drei"; 
 import { useFoodStore } from "../stores/useFoodStore";
+import { useGameStateStore } from "../stores/useGameStateStore";
 
 // Creamos una interfaz para la posición del huerto
 interface GardenPosition {
@@ -183,18 +184,11 @@ const Buildings = () => {
         
         {/* Garden Door - New Addition */}
         <group position={[0, 0.5, 3]} rotation={[0, Math.PI / 8, 0]}>
-          {/* Door Frame - Now interactive */}
+          {/* Door Frame - not interactive anymore */}
           <mesh 
             castShadow 
             receiveShadow 
             position={[0, 0, 0]}
-            onClick={(e) => {
-              e.stopPropagation();
-              // Importamos dinámicamente el store para evitar problemas de referencias circulares
-              const { exitBuilding } = require("../stores/useGameStateStore").useGameStateStore.getState();
-              console.log("Garden door clicked - exiting garden");
-              exitBuilding();
-            }}
           >
             <boxGeometry args={[1.5, 1, 0.1]} />
             <meshStandardMaterial color="#A52A2A" />
@@ -205,12 +199,6 @@ const Buildings = () => {
             castShadow 
             receiveShadow 
             position={[0.5, 0, 0.05]}
-            onClick={(e) => {
-              e.stopPropagation();
-              const { exitBuilding } = require("../stores/useGameStateStore").useGameStateStore.getState();
-              console.log("Garden door handle clicked - exiting garden");
-              exitBuilding();
-            }}
           >
             <sphereGeometry args={[0.1, 8, 8]} />
             <meshStandardMaterial color="#FFD700" />
