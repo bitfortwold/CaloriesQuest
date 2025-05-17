@@ -25,13 +25,121 @@ const Market = ({ onExit }: MarketProps) => {
   // Log state for debugging purposes
   console.log("Market component rendering, showCart =", showCart);
   
-  // Filter food items by category
-  const filteredFoodItems = selectedCategory === "all" 
-    ? foodItems 
-    : foodItems.filter(item => item.category === selectedCategory);
+  // Get all categories and translate them if needed
+  const { language } = useLanguage();
   
-  // Get all categories
-  const categories = ["all", ...Array.from(new Set(foodItems.map(item => item.category)))];
+  // Mapping for categories translation
+  const categoryTranslations: Record<string, string> = {
+    'frutas': 'fruits',
+    'verduras': 'vegetables',
+    'proteínas': 'proteins',
+    'cereales': 'cereals',
+    'lácteos': 'dairy',
+    'all': 'all'
+  };
+  
+  // Function to translate categories
+  const translateCategory = (category: string) => {
+    if (language === 'en' && categoryTranslations[category]) {
+      return categoryTranslations[category];
+    }
+    return category;
+  };
+  
+  // Function to translate food names and descriptions
+  const translateFoodItem = (item: typeof foodItems[0]) => {
+    if (language === 'es') return item;
+    
+    // English translations for food names
+    const nameTranslations: Record<string, string> = {
+      'Manzana': 'Apple',
+      'Plátano': 'Banana',
+      'Brócoli': 'Broccoli',
+      'Zanahoria': 'Carrot',
+      'Pechuga de Pollo': 'Chicken Breast',
+      'Bistec de Ternera': 'Beef Steak',
+      'Pescado Sostenible': 'Sustainable Fish',
+      'Arroz Integral': 'Brown Rice',
+      'Pan Integral': 'Whole Wheat Bread',
+      'Patata': 'Potato',
+      'Leche': 'Milk',
+      'Queso': 'Cheese',
+      'Huevos': 'Eggs',
+      'Frijoles': 'Beans',
+      'Espinaca': 'Spinach',
+      'Todos': 'All'
+    };
+    
+    // English translations for descriptions
+    const descriptionTranslations: Record<string, string> = {
+      "Una manzana crujiente, rica en fibra y vitaminas. Bajo impacto ambiental.": 
+        "A crisp apple, rich in fiber and vitamins. Low environmental impact.",
+        
+      "Plátano rico en potasio, excelente para la energía. Impacto moderado en transporte.": 
+        "Banana rich in potassium, excellent for energy. Moderate impact on transportation.",
+        
+      "Brócoli denso en nutrientes, alto en fibra y vitaminas C y K. Bajo consumo de agua.": 
+        "Broccoli dense in nutrients, high in fiber and vitamins C and K. Low water consumption.",
+        
+      "Zanahorias ricas en beta-caroteno. Bajo impacto ambiental en su cultivo.": 
+        "Carrots rich in beta-carotene. Low environmental impact in cultivation.",
+        
+      "Fuente de proteína magra. Impacto ambiental moderado comparado con la carne roja.": 
+        "Source of lean protein. Moderate environmental impact compared to red meat.",
+        
+      "Alto en hierro y proteínas. Alto impacto ambiental con uso significativo de agua.": 
+        "High in iron and protein. High environmental impact with significant water usage.",
+        
+      "Rico en ácidos grasos omega-3. Capturado de forma sostenible con mínimo impacto en el ecosistema.": 
+        "Rich in omega-3 fatty acids. Sustainably caught with minimal impact on the ecosystem.",
+        
+      "Arroz integral con fibra. Uso moderado de agua para su cultivo.": 
+        "Brown rice with fiber. Moderate water usage for cultivation.",
+        
+      "Carbohidratos complejos y fibra. Menor impacto ambiental que el pan refinado.": 
+        "Complex carbohydrates and fiber. Lower environmental impact than refined bread.",
+        
+      "Hortaliza de raíz versátil. Requisitos relativamente bajos de agua y tierra para su cultivo.": 
+        "Versatile root vegetable. Relatively low water and land requirements for cultivation.",
+        
+      "Buena fuente de calcio. Impacto ambiental moderado por la producción láctea.": 
+        "Good source of calcium. Moderate environmental impact from dairy production.",
+        
+      "Alto en calcio y proteínas. Mayor impacto ambiental debido al procesamiento lácteo.": 
+        "High in calcium and protein. Higher environmental impact due to dairy processing.",
+        
+      "Fuente de proteínas rica en nutrientes. Impacto ambiental moderado comparado con la carne.": 
+        "Nutrient-rich protein source. Moderate environmental impact compared to meat.",
+        
+      "Excelente fuente de proteína vegetal. Bajo impacto ambiental y fijación de nitrógeno para el suelo.": 
+        "Excellent source of plant protein. Low environmental impact and nitrogen fixation for soil.",
+        
+      "Rica en hierro y vitaminas. Baja huella ambiental en su cultivo.": 
+        "Rich in iron and vitamins. Low environmental footprint in cultivation."
+    };
+    
+    // Get translated name or use original
+    const translatedName = nameTranslations[item.name] || item.name;
+    
+    // Get translated description or use original
+    const translatedDescription = descriptionTranslations[item.description] || item.description;
+    
+    return {
+      ...item,
+      name: translatedName,
+      category: translateCategory(item.category),
+      description: translatedDescription
+    };
+  };
+  
+  // Get all categories and translate if language is English
+  const allCategories = ["all", ...Array.from(new Set(foodItems.map(item => item.category)))];
+  const categories = allCategories.map(translateCategory);
+  
+  // Translate food items if needed
+  const translatedFoodItems = language === 'en' 
+    ? foodItems.map(translateFoodItem) 
+    : foodItems;
   
   // Add item to cart
   const addToCart = (foodItem: typeof foodItems[0]) => {
