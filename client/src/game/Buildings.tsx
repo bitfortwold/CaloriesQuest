@@ -3,23 +3,40 @@ import { useEffect, useState } from "react";
 import { Text, useTexture } from "@react-three/drei"; 
 import { useFoodStore } from "../stores/useFoodStore";
 
+// Creamos una interfaz para la posición del huerto
+interface GardenPosition {
+  x: number;
+  y: number;
+  z: number;
+}
+
+// Función global para acceder a la posición del huerto desde otros componentes
+let gardenPosition: GardenPosition = { x: 0, y: 0, z: -8 };
+export const getGardenPosition = () => gardenPosition;
+
 const Buildings = () => {
   const { setMarketPosition, setKitchenPosition } = useFoodStore();
   const woodTexture = useTexture("/textures/wood.jpg");
+  const groundTexture = useTexture("/textures/ground.jpg");
   
   // Set predefined positions for buildings
   const marketPos = [-8, 0, 0];
   const kitchenPos = [8, 0, 0];
+  const gardenPos = [0, 0, -8]; // Posición del huerto detrás del punto de inicio
   
   useEffect(() => {
     // Register building positions in the store
     setMarketPosition({ x: marketPos[0], y: marketPos[1], z: marketPos[2] });
     setKitchenPosition({ x: kitchenPos[0], y: kitchenPos[1], z: kitchenPos[2] });
+    gardenPosition = { x: gardenPos[0], y: gardenPos[1], z: gardenPos[2] };
     
-    // Configure texture
+    // Configure textures
     woodTexture.wrapS = woodTexture.wrapT = THREE.RepeatWrapping;
     woodTexture.repeat.set(2, 2);
-  }, [setMarketPosition, setKitchenPosition, woodTexture]);
+    
+    groundTexture.wrapS = groundTexture.wrapT = THREE.RepeatWrapping;
+    groundTexture.repeat.set(4, 4);
+  }, [setMarketPosition, setKitchenPosition, woodTexture, groundTexture]);
   
   return (
     <group>
