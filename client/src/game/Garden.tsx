@@ -352,11 +352,17 @@ const Garden = ({ onExit }: GardenProps) => {
         
         {selectedPlot && selectedPlot.plant && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-10">
-            <div className="bg-white rounded-lg p-6 max-w-md w-full">
+            <div className="bg-white rounded-lg p-6 max-w-md w-full max-h-[90vh] overflow-y-auto">
               <h2 className="text-xl font-bold mb-3">{selectedPlot.plant.name}</h2>
-              <p className="mb-2">{selectedPlot.plant.description}</p>
               
-              <div className="plant-stats mb-4">
+              {/* Visualización 3D mejorada */}
+              <div className="garden-3d-view mb-4 h-48">
+                <GardenView3D plot={selectedPlot} height="180px" width="100%" />
+              </div>
+              
+              <p className="mb-4">{selectedPlot.plant.description}</p>
+              
+              <div className="plant-stats mb-6">
                 <p><span className="font-medium">Estado:</span> {
                   selectedPlot.state === "seedling" ? "Germinando" :
                   selectedPlot.state === "growing" ? "Creciendo" :
@@ -383,8 +389,62 @@ const Garden = ({ onExit }: GardenProps) => {
                   </div>
                   <span className="ml-2">{Math.round(selectedPlot.waterLevel)}%</span>
                 </div>
-                <div className="flex items-center mt-1">
-                  <span className="font-medium mr-2">Salud:</span>
+                
+                {/* Información nutricional */}
+                <div className="mt-4 p-3 bg-green-50 rounded-lg">
+                  <h3 className="font-medium text-lg mb-2">Información Nutricional</h3>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div>
+                      <p className="font-medium">Calorías:</p>
+                      <p>{selectedPlot.plant.nutritionalValue.calories} kcal</p>
+                    </div>
+                    <div>
+                      <p className="font-medium">Proteínas:</p>
+                      <p>{selectedPlot.plant.nutritionalValue.protein}g</p>
+                    </div>
+                    <div>
+                      <p className="font-medium">Carbohidratos:</p>
+                      <p>{selectedPlot.plant.nutritionalValue.carbs}g</p>
+                    </div>
+                    <div>
+                      <p className="font-medium">Grasas:</p>
+                      <p>{selectedPlot.plant.nutritionalValue.fat}g</p>
+                    </div>
+                  </div>
+                  
+                  {selectedPlot.plant.nutritionalValue.vitamins && (
+                    <div className="mt-2">
+                      <p className="font-medium">Vitaminas y minerales:</p>
+                      <p>{selectedPlot.plant.nutritionalValue.vitamins.join(", ")}</p>
+                    </div>
+                  )}
+                </div>
+                
+                {/* Información de sostenibilidad */}
+                <div className="mt-3 p-3 bg-blue-50 rounded-lg">
+                  <h3 className="font-medium text-lg mb-2">Sostenibilidad</h3>
+                  <div className="flex items-center">
+                    <span className="mr-2">Puntuación:</span>
+                    <div className="flex">
+                      {Array(5).fill(0).map((_, i) => (
+                        <span key={i} className={`text-xl ${i < selectedPlot.plant.sustainabilityScore ? "text-green-600" : "text-gray-300"}`}>
+                          ★
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                  <p className="mt-2 text-sm">
+                    {selectedPlot.plant.sustainabilityScore >= 4 
+                      ? "Alto impacto positivo en el medio ambiente. Requiere pocos recursos y genera mínimos residuos."
+                      : selectedPlot.plant.sustainabilityScore >= 3
+                      ? "Buen equilibrio entre beneficios nutricionales e impacto ambiental."
+                      : "Impacto moderado. Considera complementar con alimentos de mayor sostenibilidad."}
+                  </p>
+                </div>
+                
+                {/* Estado de salud de la planta */}
+                <div className="flex items-center mt-4">
+                  <span className="font-medium mr-2">Salud de la planta:</span>
                   <div className="progress bg-gray-200 rounded-full h-2.5 flex-grow">
                     <div 
                       className="bg-green-500 h-2.5 rounded-full" 
@@ -395,15 +455,29 @@ const Garden = ({ onExit }: GardenProps) => {
                 </div>
               </div>
               
-              <div className="nutritional-info mb-4">
-                <h3 className="font-semibold">Valor nutricional (por unidad):</h3>
-                <p>Calorías: {selectedPlot.plant.nutritionalValue.calories}</p>
-                <p>Proteínas: {selectedPlot.plant.nutritionalValue.protein}g</p>
-                <p>Carbohidratos: {selectedPlot.plant.nutritionalValue.carbs}g</p>
-                <p>Grasas: {selectedPlot.plant.nutritionalValue.fat}g</p>
+              <div className="buttons-container flex justify-between mt-4">
+                <button
+                  className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
+                  onClick={() => handleWaterPlant(playerData!.garden.findIndex(p => p.id === selectedPlot.id))}
+                  disabled={selectedPlot.waterLevel >= 90 || selectedPlot.state === "harvestable"}
+                >
+                  Regar planta
+                </button>
+                
+                {selectedPlot.state === "harvestable" && (
+                  <button
+                    className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded"
+                    onClick={() => {
+                      handleHarvestPlant(playerData!.garden.findIndex(p => p.id === selectedPlot.id));
+                      setSelectedPlot(null);
+                    }}
+                  >
+                    Cosechar
+                  </button>
+                )}
               </div>
               
-              <div className="flex justify-end">
+              <div className="flex justify-end mt-4">
                 <button 
                   className="bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded"
                   onClick={() => setSelectedPlot(null)}
