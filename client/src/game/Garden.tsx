@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useLanguage } from "../i18n/LanguageContext";
 import { usePlayerStore } from "../stores/usePlayerStore";
 import { Plant, GardenPlot, calculateGrowthProgress, updatePlantState, waterPlant, plantSeed, harvestPlant } from "../data/gardenItems";
+import GardenView3D from "./GardenView3D";
 
 interface GardenProps {
   onExit: () => void;
@@ -186,7 +187,12 @@ const Garden = ({ onExit }: GardenProps) => {
                 } p-4 rounded-lg cursor-pointer`}
                 onClick={() => setSelectedPlot(plot)}
               >
-                <div className="plot-content min-h-32 flex flex-col items-center justify-center">
+                <div className="plot-content min-h-48 flex flex-col items-center justify-center">
+                  {/* Visualización 3D de la planta */}
+                  <div className="garden-3d-view mb-2">
+                    <GardenView3D plot={plot} height="150px" width="100%" />
+                  </div>
+                  
                   {plot.state === "empty" ? (
                     <div className="empty-plot text-center">
                       <p className="text-gray-500">Parcela vacía</p>
