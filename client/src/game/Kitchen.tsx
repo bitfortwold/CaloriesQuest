@@ -19,97 +19,93 @@ const Kitchen = ({ onExit }: KitchenProps) => {
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
   const [cookingMode, setCookingMode] = useState<"guided" | "free">("guided");
   
-  // Función para manejar traducciones en la cocina
-  const getKitchenTranslation = (key: string, text: string): string => {
-    if (language === 'es') return text; // Mantener el español si ese es el idioma seleccionado
+  // Diccionarios de traducciones para la cocina - Definidos fuera de la función para acceso global
+  const kitchenTranslationsEN: Record<string, Record<string, string>> = {
+    // Ingredientes
+    'ingredients': {
+      'Huevos': 'Eggs',
+      'Pan': 'Bread',
+      'Manzana': 'Apple',
+      'Frijoles': 'Beans',
+      'Arroz': 'Rice',
+      'Brócoli': 'Broccoli',
+      'Zanahoria': 'Carrot',
+      'Pollo': 'Chicken',
+      'Patata': 'Potato',
+      'Espinaca': 'Spinach',
+      'Lechuga': 'Lettuce',
+      'Tomate': 'Tomato',
+      'Cebolla': 'Onion',
+      'Ajo': 'Garlic',
+      'Carne': 'Meat',
+      'Pescado': 'Fish'
+    },
+    // Etiquetas nutricionales
+    'labels': {
+      'Proteínas': 'Proteins',
+      'Carbos': 'Carbs',
+      'Grasas': 'Fats',
+      'Tu Comida': 'Your Meal',
+      'Ingredientes Seleccionados': 'Selected Ingredients',
+      'kcal': 'kcal',
+      'g': 'g'
+    },
+    // Mensajes
+    'messages': {
+      '¡Selecciona ingredientes del refrigerador o la despensa para comenzar a cocinar!': 'Select ingredients from the refrigerator or pantry to start cooking!',
+      'Tu despensa está vacía. ¡Visita el mercado para comprar alimentos no perecederos!': 'Your pantry is empty. Visit the market to buy non-perishable food!',
+      'Tu refrigerador está vacío. ¡Visita el mercado para comprar alimentos frescos!': 'Your refrigerator is empty. Visit the market to buy fresh food!',
+      '¡Comida cocinada y consumida!': 'Food cooked and consumed!',
+      '¡Selecciona al menos un ingrediente!': 'Select at least one ingredient!'
+    }
+  };
+  
+  const kitchenTranslationsCA: Record<string, Record<string, string>> = {
+    // Ingredientes
+    'ingredients': {
+      'Huevos': 'Ous',
+      'Pan': 'Pa',
+      'Manzana': 'Poma',
+      'Frijoles': 'Mongetes',
+      'Arroz': 'Arròs',
+      'Brócoli': 'Bròquil',
+      'Zanahoria': 'Pastanaga',
+      'Pollo': 'Pollastre',
+      'Patata': 'Patata',
+      'Espinaca': 'Espinacs',
+      'Lechuga': 'Enciam',
+      'Tomate': 'Tomàquet',
+      'Cebolla': 'Ceba',
+      'Ajo': 'All',
+      'Carne': 'Carn',
+      'Pescado': 'Peix'
+    },
+    // Etiquetas nutricionales
+    'labels': {
+      'Proteínas': 'Proteïnes',
+      'Carbos': 'Carbohidrats',
+      'Grasas': 'Greixos',
+      'Tu Comida': 'El teu Àpat',
+      'Ingredientes Seleccionados': 'Ingredients Seleccionats',
+      'kcal': 'kcal',
+      'g': 'g'
+    },
+    // Mensajes
+    'messages': {
+      '¡Selecciona ingredientes del refrigerador o la despensa para comenzar a cocinar!': 'Selecciona ingredients de la nevera o el rebost per començar a cuinar!',
+      'Tu despensa está vacía. ¡Visita el mercado para comprar alimentos no perecederos!': 'El teu rebost està buit. Visita el mercat per comprar aliments no peribles!',
+      'Tu refrigerador está vacío. ¡Visita el mercado para comprar alimentos frescos!': 'La teva nevera està buida. Visita el mercat per comprar aliments frescos!',
+      '¡Comida cocinada y consumida!': 'Menjar cuinat i consumit!',
+      '¡Selecciona al menos un ingrediente!': 'Selecciona almenys un ingredient!'
+    }
+  };
+  
+  // Función para traducir texto según el idioma actual
+  const translateText = (text: string, category: string): string => {
+    if (language === 'es') return text; // Mantener el texto original en español
     
-    // Diccionario de traducciones inglesas para la cocina
-    const kitchenTranslationsEN: Record<string, Record<string, string>> = {
-      // Ingredientes
-      'ingredients': {
-        'Huevos': 'Eggs',
-        'Pan': 'Bread',
-        'Manzana': 'Apple',
-        'Frijoles': 'Beans',
-        'Arroz': 'Rice',
-        'Brócoli': 'Broccoli',
-        'Zanahoria': 'Carrot',
-        'Pollo': 'Chicken',
-        'Patata': 'Potato',
-        'Espinaca': 'Spinach',
-        'Lechuga': 'Lettuce',
-        'Tomate': 'Tomato',
-        'Cebolla': 'Onion',
-        'Ajo': 'Garlic',
-        'Carne': 'Meat',
-        'Pescado': 'Fish'
-      },
-      // Etiquetas nutricionales
-      'labels': {
-        'Proteínas': 'Proteins',
-        'Carbos': 'Carbs',
-        'Grasas': 'Fats',
-        'Tu Comida': 'Your Meal',
-        'Ingredientes Seleccionados': 'Selected Ingredients',
-        'kcal': 'kcal',
-        'g': 'g'
-      },
-      // Mensajes
-      'messages': {
-        '¡Selecciona ingredientes del refrigerador o la despensa para comenzar a cocinar!': 'Select ingredients from the refrigerator or pantry to start cooking!',
-        'Tu despensa está vacía. ¡Visita el mercado para comprar alimentos no perecederos!': 'Your pantry is empty. Visit the market to buy non-perishable food!',
-        'Tu refrigerador está vacío. ¡Visita el mercado para comprar alimentos frescos!': 'Your refrigerator is empty. Visit the market to buy fresh food!',
-        '¡Comida cocinada y consumida!': 'Food cooked and consumed!',
-        '¡Selecciona al menos un ingrediente!': 'Select at least one ingredient!'
-      }
-    };
-    
-    // Diccionario de traducciones catalanas para la cocina
-    const kitchenTranslationsCA: Record<string, Record<string, string>> = {
-      // Ingredientes
-      'ingredients': {
-        'Huevos': 'Ous',
-        'Pan': 'Pa',
-        'Manzana': 'Poma',
-        'Frijoles': 'Mongetes',
-        'Arroz': 'Arròs',
-        'Brócoli': 'Bròquil',
-        'Zanahoria': 'Pastanaga',
-        'Pollo': 'Pollastre',
-        'Patata': 'Patata',
-        'Espinaca': 'Espinacs',
-        'Lechuga': 'Enciam',
-        'Tomate': 'Tomàquet',
-        'Cebolla': 'Ceba',
-        'Ajo': 'All',
-        'Carne': 'Carn',
-        'Pescado': 'Peix'
-      },
-      // Etiquetas nutricionales
-      'labels': {
-        'Proteínas': 'Proteïnes',
-        'Carbos': 'Carbohidrats',
-        'Grasas': 'Greixos',
-        'Tu Comida': 'El teu Àpat',
-        'Ingredientes Seleccionados': 'Ingredients Seleccionats',
-        'kcal': 'kcal',
-        'g': 'g'
-      },
-      // Mensajes
-      'messages': {
-        '¡Selecciona ingredientes del refrigerador o la despensa para comenzar a cocinar!': 'Selecciona ingredients de la nevera o el rebost per començar a cuinar!',
-        'Tu despensa está vacía. ¡Visita el mercado para comprar alimentos no perecederos!': 'El teu rebost està buit. Visita el mercat per comprar aliments no peribles!',
-        'Tu refrigerador está vacío. ¡Visita el mercado para comprar alimentos frescos!': 'La teva nevera està buida. Visita el mercat per comprar aliments frescos!',
-        '¡Comida cocinada y consumida!': 'Menjar cuinat i consumit!',
-        '¡Selecciona al menos un ingrediente!': 'Selecciona almenys un ingredient!'
-      }
-    };
-    
-    // Seleccionar el diccionario adecuado según el idioma
-    const kitchenTranslations = language === 'ca' ? kitchenTranslationsCA : kitchenTranslationsEN;
-    
-    // Buscar la traducción en la categoría correspondiente
-    return kitchenTranslations[key]?.[text] || text;
+    const translations = language === 'ca' ? kitchenTranslationsCA : kitchenTranslationsEN;
+    return translations[category]?.[text] || text;
   };
   
   // Función para traducir los nombres de los ingredientes (alias de la función principal)
