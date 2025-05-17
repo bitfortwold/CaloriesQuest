@@ -176,27 +176,38 @@ const Player = () => {
     
     // Handler para detectar si es un clic puro o parte de una acción de zoom/rotación
     const handleCanvasClick = (event: MouseEvent) => {
+      console.log("Canvas click detected, game state:", gameState);
+      
       // Solo procesar clics si estamos en estado "playing"
-      if (gameState !== "playing") return;
+      if (gameState !== "playing") {
+        console.log("Click ignored - game not in playing state");
+        return;
+      }
       
       // Si se está presionando algún botón del teclado o la rueda del ratón, no considerar como clic para movimiento
       if (event.altKey || event.ctrlKey || event.shiftKey || event.metaKey) {
+        console.log("Click ignored - modifier key pressed");
         return; // No manejar este clic como orden de movimiento
       }
       
       // Verificar si es un clic rápido y no parte de un arrastre o zoom
       if (event.detail === 1) { // Es un clic simple
+        console.log("Processing ground click for movement");
         handleGroundClick(event);
       }
     };
     
-    // Siempre mantener el event listener activo, pero solo procesar los clics cuando estamos en estado "playing"
-    canvas.addEventListener('click', handleCanvasClick);
+    // Añadir y eliminar el listener explícitamente cuando cambia el estado del juego
+    if (gameState === "playing") {
+      console.log("Adding click event listener to canvas");
+      canvas.addEventListener('click', handleCanvasClick);
+    }
     
     return () => {
+      console.log("Removing click event listener from canvas");
       canvas.removeEventListener('click', handleCanvasClick);
     };
-  }, [gameState, gl.domElement, playerPosition]);
+  }, [gameState, gl.domElement]);
   
   // Handle movement and interactions in each frame
   useFrame(() => {
