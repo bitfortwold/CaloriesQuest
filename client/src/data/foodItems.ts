@@ -1,7 +1,7 @@
 export const foodItems = [
   {
     id: "manzana",
-    name: "Apple",
+    name: "Manzana",
     category: "fruits",
     calories: 52,
     nutritionalValue: {
@@ -11,11 +11,11 @@ export const foodItems = [
     },
     sustainabilityScore: 8,
     price: 10,
-    description: "A crunchy apple, rich in fiber and vitamins. Low environmental impact."
+    description: "Una manzana crujiente, rica en fibra y vitaminas. Bajo impacto ambiental."
   },
   {
     id: "banana",
-    name: "Banana",
+    name: "Plátano",
     category: "fruits",
     calories: 89,
     nutritionalValue: {
@@ -25,11 +25,11 @@ export const foodItems = [
     },
     sustainabilityScore: 6,
     price: 12,
-    description: "Potassium-rich banana, great for energy. Moderate shipping impact."
+    description: "Plátano rico en potasio, excelente para la energía. Impacto moderado en transporte."
   },
   {
     id: "brócoli",
-    name: "Broccoli",
+    name: "Brócoli",
     category: "vegetables",
     calories: 34,
     nutritionalValue: {
@@ -39,11 +39,11 @@ export const foodItems = [
     },
     sustainabilityScore: 9,
     price: 15,
-    description: "Nutrient-dense broccoli, high in fiber and vitamins C and K. Low water usage."
+    description: "Brócoli denso en nutrientes, alto en fibra y vitaminas C y K. Bajo consumo de agua."
   },
   {
     id: "zanahoria",
-    name: "Carrot",
+    name: "Zanahoria",
     category: "vegetables",
     calories: 41,
     nutritionalValue: {
@@ -53,11 +53,11 @@ export const foodItems = [
     },
     sustainabilityScore: 9,
     price: 8,
-    description: "Beta-carotene rich carrots. Low environmental impact to grow."
+    description: "Zanahorias ricas en beta-caroteno. Bajo impacto ambiental en su cultivo."
   },
   {
     id: "pollo",
-    name: "Chicken Breast",
+    name: "Pechuga de Pollo",
     category: "protein",
     calories: 165,
     nutritionalValue: {
@@ -67,11 +67,11 @@ export const foodItems = [
     },
     sustainabilityScore: 5,
     price: 40,
-    description: "Lean protein source. Moderate environmental impact compared to red meat."
+    description: "Fuente de proteína magra. Impacto ambiental moderado comparado con la carne roja."
   },
   {
     id: "beef",
-    name: "Beef Steak",
+    name: "Bistec de Ternera",
     category: "protein",
     calories: 271,
     nutritionalValue: {
@@ -81,11 +81,11 @@ export const foodItems = [
     },
     sustainabilityScore: 2,
     price: 65,
-    description: "High in iron and protein. High environmental impact with significant water usage."
+    description: "Alto en hierro y proteínas. Alto impacto ambiental con uso significativo de agua."
   },
   {
     id: "fish",
-    name: "Sustainable Fish",
+    name: "Pescado Sostenible",
     category: "protein",
     calories: 136,
     nutritionalValue: {
@@ -95,11 +95,11 @@ export const foodItems = [
     },
     sustainabilityScore: 7,
     price: 45,
-    description: "Rich in omega-3 fatty acids. Sustainably caught with minimal ecosystem impact."
+    description: "Rico en ácidos grasos omega-3. Capturado de forma sostenible con mínimo impacto en el ecosistema."
   },
   {
     id: "arroz",
-    name: "Brown Rice",
+    name: "Arroz Integral",
     category: "grains",
     calories: 216,
     nutritionalValue: {
@@ -109,11 +109,11 @@ export const foodItems = [
     },
     sustainabilityScore: 6,
     price: 18,
-    description: "Whole grain rice with fiber. Moderate water usage for cultivation."
+    description: "Arroz integral con fibra. Uso moderado de agua para su cultivo."
   },
   {
     id: "pan",
-    name: "Whole Wheat Bread",
+    name: "Pan Integral",
     category: "grains",
     calories: 69,
     nutritionalValue: {
@@ -123,11 +123,11 @@ export const foodItems = [
     },
     sustainabilityScore: 7,
     price: 20,
-    description: "Complex carbs and fiber. Lower environmental impact than refined bread."
+    description: "Carbohidratos complejos y fibra. Menor impacto ambiental que el pan refinado."
   },
   {
     id: "patata",
-    name: "Potato",
+    name: "Patata",
     category: "vegetables",
     calories: 163,
     nutritionalValue: {
@@ -137,7 +137,7 @@ export const foodItems = [
     },
     sustainabilityScore: 8,
     price: 12,
-    description: "Versatile root vegetable. Relatively low water and land use requirements."
+    description: "Hortaliza de raíz versátil. Requisitos relativamente bajos de agua y tierra para su cultivo."
   },
   {
     id: "milk",
