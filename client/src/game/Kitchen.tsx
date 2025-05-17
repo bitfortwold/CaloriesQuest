@@ -434,7 +434,7 @@ const Kitchen = ({ onExit }: KitchenProps) => {
                         setCookingMode("free");
                       }}
                     >
-                      Seguir Receta
+                      {t.language === 'en' ? 'Follow Recipe' : 'Seguir Receta'}
                     </Button>
                   </div>
                 </div>
@@ -442,19 +442,27 @@ const Kitchen = ({ onExit }: KitchenProps) => {
               
               <div className="col-span-full mt-4">
                 <div className="bg-amber-100 border-2 border-amber-300 p-4 rounded-lg shadow-md">
-                  <h3 className="text-lg font-bold text-amber-800 mb-3">Consejos Nutricionales:</h3>
+                  <h3 className="text-lg font-bold text-amber-800 mb-3">{t.language === 'en' ? 'Nutritional Tips:' : 'Consejos Nutricionales:'}</h3>
                   <ul className="grid grid-cols-2 gap-3">
                     <li className="bg-amber-50 p-3 rounded-md border border-amber-200 text-amber-700">
-                      Busca una mezcla equilibrada de proteínas, carbohidratos y grasas saludables para una nutrición óptima.
+                      {t.language === 'en' 
+                        ? 'Look for a balanced mix of proteins, carbohydrates, and healthy fats for optimal nutrition.' 
+                        : 'Busca una mezcla equilibrada de proteínas, carbohidratos y grasas saludables para una nutrición óptima.'}
                     </li>
                     <li className="bg-amber-50 p-3 rounded-md border border-amber-200 text-amber-700">
-                      Incluye abundantes frutas y verduras para obtener vitaminas y minerales esenciales.
+                      {t.language === 'en'
+                        ? 'Include plenty of fruits and vegetables to get essential vitamins and minerals.'
+                        : 'Incluye abundantes frutas y verduras para obtener vitaminas y minerales esenciales.'}
                     </li>
                     <li className="bg-amber-50 p-3 rounded-md border border-amber-200 text-amber-700">
-                      Elige alimentos con mayor puntuación de sostenibilidad para apoyar la salud ambiental.
+                      {t.language === 'en'
+                        ? 'Choose foods with higher sustainability scores to support environmental health.'
+                        : 'Elige alimentos con mayor puntuación de sostenibilidad para apoyar la salud ambiental.'}
                     </li>
                     <li className="bg-amber-50 p-3 rounded-md border border-amber-200 text-amber-700">
-                      Presta atención a tus necesidades calóricas diarias según tu edad, peso y nivel de actividad.
+                      {t.language === 'en'
+                        ? 'Pay attention to your daily caloric needs based on your age, weight, and activity level.'
+                        : 'Presta atención a tus necesidades calóricas diarias según tu edad, peso y nivel de actividad.'}
                     </li>
                   </ul>
                 </div>
