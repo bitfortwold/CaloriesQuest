@@ -17,6 +17,54 @@ const defaultContext: LanguageContextType = {
 // Crear el contexto
 const LanguageContext = createContext<LanguageContextType>(defaultContext);
 
+// Función auxiliar para traducir textos dinámicos
+export function translateFoodNames(language: Language) {
+  // Mapa de traducciones para categorías
+  const categoryTranslations: Record<string, string> = {
+    // Español -> Inglés
+    'frutas': 'fruits',
+    'verduras': 'vegetables',
+    'proteínas': 'proteins',
+    'cereales': 'cereals',
+    'lácteos': 'dairy'
+  };
+
+  // Mapa de traducciones para nombres de alimentos
+  const foodNameTranslations: Record<string, string> = {
+    'Manzana': 'Apple',
+    'Plátano': 'Banana',
+    'Brócoli': 'Broccoli',
+    'Zanahoria': 'Carrot',
+    'Pechuga de Pollo': 'Chicken Breast',
+    'Bistec de Ternera': 'Beef Steak',
+    'Pescado Sostenible': 'Sustainable Fish',
+    'Arroz Integral': 'Brown Rice',
+    'Pan Integral': 'Whole Wheat Bread',
+    'Patata': 'Potato',
+    'Leche': 'Milk',
+    'Queso': 'Cheese',
+    'Huevos': 'Eggs',
+    'Frijoles': 'Beans',
+    'Espinaca': 'Spinach'
+  };
+
+  // Mapa de traducciones para nombres de recetas
+  const recipeNameTranslations: Record<string, string> = {
+    'Desayuno Equilibrado': 'Balanced Breakfast',
+    'Almuerzo Vegetariano': 'Vegetarian Lunch',
+    'Cena Proteica': 'Protein Dinner',
+    'Ingredientes': 'Ingredients',
+    'Beneficios para la Salud': 'Health Benefits',
+    'Seguir Receta': 'Follow Recipe'
+  };
+
+  return {
+    categoryTranslations,
+    foodNameTranslations,
+    recipeNameTranslations
+  };
+}
+
 // Proveedor del contexto para envolver la aplicación
 export const LanguageProvider: React.FC<{children: React.ReactNode}> = ({ children }) => {
   // Intentar recuperar el idioma guardado en localStorage
@@ -44,6 +92,11 @@ export const LanguageProvider: React.FC<{children: React.ReactNode}> = ({ childr
     // Guardar preferencia en localStorage
     try {
       localStorage.setItem('language', lang);
+      
+      // Para hacer que el cambio de idioma se aplique correctamente a todos los elementos
+      // incluyendo los datos dinámicos, forzamos una recarga de la página
+      window.location.reload();
+      
     } catch (error) {
       console.error("Error guardando el idioma en localStorage:", error);
     }

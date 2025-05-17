@@ -1,3 +1,22 @@
+import { Language } from '../i18n/translations';
+
+// Definimos el tipo para los alimentos
+export interface FoodItem {
+  id: string;
+  name: string;
+  category: string;
+  calories: number;
+  nutritionalValue: {
+    protein: number;
+    carbs: number;
+    fat: number;
+  };
+  sustainabilityScore: number;
+  price: number;
+  description: string;
+}
+
+// Datos de alimentos en español
 export const foodItems = [
   {
     id: "manzana",
