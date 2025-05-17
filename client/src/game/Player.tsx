@@ -141,25 +141,10 @@ const Player = () => {
       ).length();
       
       if (distToGarden < INTERACTION_DISTANCE) {
-        // Primero mover al jugador cerca del huerto
-        targetPoint.copy(new THREE.Vector3(gardenPosition.x, playerPosition.y, gardenPosition.z));
-        targetPoint.addScaledVector(new THREE.Vector3(1, 0, 1).normalize(), 1.5); // Posición ligeramente alejada
-        setTargetPosition(targetPoint);
-        setIsMovingToTarget(true);
+        console.log("Player is near garden, automatically entering");
         
-        // Calcular dirección para mirar hacia el huerto
-        const direction = new THREE.Vector3().subVectors(
-          new THREE.Vector3(gardenPosition.x, playerPosition.y, gardenPosition.z),
-          new THREE.Vector3(targetPoint.x, playerPosition.y, targetPoint.z)
-        );
-        const targetRotation = Math.atan2(direction.x, direction.z);
-        setRotationY(targetRotation);
-        
-        // Entrar al huerto después de un breve retraso
-        setTimeout(() => {
-          console.log("Entering garden");
-          enterBuilding("garden");
-        }, 500);
+        // Entrar inmediatamente al huerto 3D
+        enterBuilding("garden");
         
         return;
       }
@@ -233,13 +218,12 @@ const Player = () => {
       // Marcar que acabamos de salir de un edificio para evitar interacciones inmediatas
       setJustExitedBuilding(true);
       
-      // SOLUCIÓN DEFINITIVA: Asegurar que el jugador siempre aparece en una posición segura
-      // Ponemos al jugador en una posición específica lejos de cualquier edificio
-      console.log("Teleporting to guaranteed safe position");
+      // SOLUCIÓN DEFINITIVA: Colocar al jugador en el centro del juego 3D
+      console.log("Teleporting player to center of the 3D game");
       setPlayerPosition({
-        x: 15, // Bastante lejos de todos los edificios conocidos
-        y: 0,  // Altura base
-        z: 15  // Posición diagonal más alejada
+        x: 0, // Posición central del mapa
+        y: 0, // Altura base
+        z: 0  // Posición central del mapa
       });
       
       // Restaurar la capacidad de interactuar después de un periodo más largo
