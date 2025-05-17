@@ -157,10 +157,9 @@ const GameUI = () => {
                         <button 
                           className="bg-red-600 hover:bg-red-700 text-white text-sm px-3 py-1 rounded flex-1 transition-colors"
                           onClick={() => {
-                            // Cerrar el juego y dirigir al jugador a la ventana de inicio de sesión
-                            // Esto permite que pueda volver a entrar con su nombre ya registrado
-                            useGameStateStore.getState().setIsRegistered(false);
-                            useGameStateStore.getState().setGameState("ready");
+                            // Usar la función de logout que existe en el store para cerrar sesión correctamente
+                            // Esta función ya establece gameState = "ready" e isRegistered = false
+                            useGameStateStore.getState().logout();
                             setShowProfilePanel(false);
                           }}
                         >
