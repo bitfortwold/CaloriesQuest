@@ -3,6 +3,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { useGameStateStore } from "../stores/useGameStateStore";
 import { usePlayerStore } from "../stores/usePlayerStore";
+import { useLanguage } from "../i18n/LanguageContext";
+import { Language } from "../i18n/translations";
 
 // Clave para almacenar datos de usuario en localStorage
 const USER_DATA_KEY = "caloric_consumption_user_data";
@@ -10,6 +12,7 @@ const USER_DATA_KEY = "caloric_consumption_user_data";
 const SimpleLoginForm = () => {
   const { setIsRegistered } = useGameStateStore();
   const { setPlayerData, calculateDailyCalories } = usePlayerStore();
+  const { language, changeLanguage } = useLanguage(); // Obtener funciones de idioma
   
   // Estado para el nombre de usuario
   const [username, setUsername] = useState("");
@@ -37,7 +40,7 @@ const SimpleLoginForm = () => {
     
     // Validar que se ha introducido un nombre
     if (!username.trim()) {
-      setError("Por favor, introduce tu nombre");
+      setError(language === 'es' ? "Por favor, introduce tu nombre" : "Please enter your name");
       return;
     }
     
@@ -83,11 +86,15 @@ const SimpleLoginForm = () => {
       }
       
       // Si no se encuentra el usuario, mostrar error
-      setError("No encontramos un perfil con ese nombre. Por favor, regístrate.");
+      setError(language === 'es' 
+        ? "No encontramos un perfil con ese nombre. Por favor, regístrate." 
+        : "We couldn't find a profile with that name. Please register.");
       
     } catch (error) {
       console.error("Error during login:", error);
-      setError("Ha ocurrido un error. Inténtalo de nuevo.");
+      setError(language === 'es'
+        ? "Ha ocurrido un error. Inténtalo de nuevo."
+        : "An error occurred. Please try again.");
     }
   };
   
@@ -100,16 +107,34 @@ const SimpleLoginForm = () => {
     <div className="fixed inset-0 bg-gradient-to-b from-blue-400 to-green-400 flex items-center justify-center z-50 p-4">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle className="text-2xl">Bienvenido a Consumo Calórico</CardTitle>
+          <div className="flex justify-between items-center mb-4">
+            <CardTitle className="text-2xl">
+              {language === 'es' ? 'Bienvenido a Consumo Calórico' : 'Welcome to Caloric Intake'}
+            </CardTitle>
+            <div className="relative">
+              <select
+                value={language}
+                onChange={(e) => changeLanguage(e.target.value as Language)}
+                className="bg-blue-500 text-white py-2 px-4 rounded-md cursor-pointer hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300"
+              >
+                <option value="es">Español</option>
+                <option value="en">English</option>
+              </select>
+            </div>
+          </div>
           <CardDescription>
-            Ingresa tu nombre para continuar con tu aventura nutricional
+            {language === 'es' 
+              ? 'Ingresa tu nombre para continuar con tu aventura nutricional' 
+              : 'Enter your name to continue your nutritional adventure'}
           </CardDescription>
         </CardHeader>
         
         <CardContent>
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium mb-1">Nombre</label>
+              <label className="block text-sm font-medium mb-1">
+                {language === 'es' ? 'Nombre' : 'Name'}
+              </label>
               <div className="relative">
                 <input
                   type="text"
@@ -122,7 +147,9 @@ const SimpleLoginForm = () => {
                     }
                   }}
                   className={`w-full p-2 border rounded-md ${error ? 'border-red-500' : 'border-gray-300'}`}
-                  placeholder={savedUsers.length > 0 ? `Sugerencia: ${savedUsers[0]}` : "Introduce tu nombre"}
+                  placeholder={savedUsers.length > 0 
+                    ? (language === 'es' ? `Sugerencia: ${savedUsers[0]}` : `Suggestion: ${savedUsers[0]}`) 
+                    : (language === 'es' ? "Introduce tu nombre" : "Enter your name")}
                 />
                 
                 {savedUsers.length > 0 && !username && (
@@ -132,23 +159,31 @@ const SimpleLoginForm = () => {
                       onClick={() => setUsername(savedUsers[0])}
                       className="text-blue-600 text-sm font-medium hover:text-blue-800 hover:underline"
                     >
-                      Usar
+                      {language === 'es' ? 'Usar' : 'Use'}
                     </button>
                   </div>
                 )}
               </div>
-              {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
+              {error && <p className="text-red-500 text-xs mt-1">
+                {error === "Por favor, introduce tu nombre" 
+                  ? (language === 'es' ? "Por favor, introduce tu nombre" : "Please enter your name")
+                  : error === "No encontramos un perfil con ese nombre. Por favor, regístrate." 
+                  ? (language === 'es' ? "No encontramos un perfil con ese nombre. Por favor, regístrate." : "We couldn't find a profile with that name. Please register.")
+                  : error === "Ha ocurrido un error. Inténtalo de nuevo."
+                  ? (language === 'es' ? "Ha ocurrido un error. Inténtalo de nuevo." : "An error occurred. Please try again.")
+                  : error}
+              </p>}
             </div>
             
             <div className="pt-2">
               <Button type="submit" className="w-full bg-green-600 hover:bg-green-700">
-                Entrar
+                {language === 'es' ? 'Entrar' : 'Enter'}
               </Button>
             </div>
             
             <div className="pt-2">
               <Button type="button" onClick={handleGoToRegistration} variant="outline" className="w-full">
-                Registrarse como nuevo usuario
+                {language === 'es' ? 'Registrarse como nuevo usuario' : 'Register as a new user'}
               </Button>
             </div>
 
