@@ -46,6 +46,23 @@ const Market = ({ onExit }: MarketProps) => {
     noSuficiente: "You don't have enough iHumancoins!",
     compraExitosa: "Purchase completed successfully! Your items have been delivered to your kitchen.",
     itemComprado: "purchased successfully"
+  } : language === 'ca' ? {
+    carbos: "Carbohidrats",
+    proteinas: "Proteïnes",
+    grasas: "Greixos",
+    sostenibilidad: "Sostenibilitat",
+    comprar: "Comprar",
+    agregar: "Afegir",
+    todoItems: "Tots",
+    frutas: "Fruites",
+    verduras: "Verdures",
+    proteínas: "Proteïnes",
+    cereales: "Cereals",
+    lácteos: "Làctics",
+    all: "Tots",
+    noSuficiente: "No tens prou iHumancoins!",
+    compraExitosa: "Compra completada amb èxit! Els teus articles han estat lliurats a la teva cuina.",
+    itemComprado: "comprat correctament"
   } : {
     carbos: "Carbos",
     proteinas: "Proteínas",
@@ -232,13 +249,19 @@ const Market = ({ onExit }: MarketProps) => {
                   : 'bg-amber-300 text-amber-700 border border-amber-400 opacity-80 hover:opacity-100'
               }`}
             >
-              {category === 'all' ? (language === 'en' ? 'All' : 'Todos') : 
-               category === 'frutas' ? (language === 'en' ? 'Fruits' : 'Frutas') :
-               category === 'verduras' ? (language === 'en' ? 'Vegetables' : 'Verduras') :
-               category === 'proteínas' ? (language === 'en' ? 'Proteins' : 'Proteínas') :
-               category === 'cereales' ? (language === 'en' ? 'Cereals' : 'Cereales') :
-               category === 'lácteos' ? (language === 'en' ? 'Dairy' : 'Lácteos') :
-               category}
+              {category === 'all' ? 
+                (language === 'en' ? 'All' : language === 'ca' ? 'Tots' : 'Todos') : 
+                category === 'frutas' ? 
+                (language === 'en' ? 'Fruits' : language === 'ca' ? 'Fruites' : 'Frutas') :
+                category === 'verduras' ? 
+                (language === 'en' ? 'Vegetables' : language === 'ca' ? 'Verdures' : 'Verduras') :
+                category === 'proteínas' ? 
+                (language === 'en' ? 'Proteins' : language === 'ca' ? 'Proteïnes' : 'Proteínas') :
+                category === 'cereales' ? 
+                (language === 'en' ? 'Cereals' : language === 'ca' ? 'Cereals' : 'Cereales') :
+                category === 'lácteos' ? 
+                (language === 'en' ? 'Dairy' : language === 'ca' ? 'Làctics' : 'Lácteos') :
+                category}
             </button>
           ))}
         </div>
@@ -284,11 +307,11 @@ const Market = ({ onExit }: MarketProps) => {
                     {/* Columna izquierda */}
                     <div className="flex flex-col gap-1">
                       <div className="flex items-center">
-                        <span className="w-24 text-xs text-amber-800">{language === 'en' ? 'Calories:' : 'Calorías:'}</span>
+                        <span className="w-24 text-xs text-amber-800">{language === 'en' ? 'Calories:' : language === 'ca' ? 'Calories:' : 'Calorías:'}</span>
                         <span className="font-bold text-amber-900">{food.calories} kcal</span>
                       </div>
                       <div className="flex items-center">
-                        <span className="w-24 text-xs text-amber-800">{language === 'en' ? 'Carbs:' : 'Carbos:'}</span>
+                        <span className="w-24 text-xs text-amber-800">{language === 'en' ? 'Carbs:' : language === 'ca' ? 'Carbohidrats:' : 'Carbos:'}</span>
                         <span className="font-bold text-amber-900">{food.nutritionalValue.carbs}g</span>
                       </div>
                     </div>
@@ -296,11 +319,11 @@ const Market = ({ onExit }: MarketProps) => {
                     {/* Columna derecha */}
                     <div className="flex flex-col gap-1">
                       <div className="flex items-center">
-                        <span className="w-24 text-xs text-amber-800">{language === 'en' ? 'Proteins:' : 'Proteínas:'}</span>
+                        <span className="w-24 text-xs text-amber-800">{language === 'en' ? 'Proteins:' : language === 'ca' ? 'Proteïnes:' : 'Proteínas:'}</span>
                         <span className="font-bold text-amber-900">{food.nutritionalValue.protein}g</span>
                       </div>
                       <div className="flex items-center">
-                        <span className="w-24 text-xs text-amber-800">{language === 'en' ? 'Fats:' : 'Grasas:'}</span>
+                        <span className="w-24 text-xs text-amber-800">{language === 'en' ? 'Fats:' : language === 'ca' ? 'Greixos:' : 'Grasas:'}</span>
                         <span className="font-bold text-amber-900">{food.nutritionalValue.fat}g</span>
                       </div>
                     </div>
