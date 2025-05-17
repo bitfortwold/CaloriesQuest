@@ -164,23 +164,6 @@ const Garden = ({ onExit }: GardenProps) => {
   return (
     <div className="fixed inset-0 z-50 bg-black bg-opacity-75 flex items-center justify-center overflow-hidden">
       <div className="relative rounded-lg shadow-lg w-full max-w-4xl max-h-screen overflow-y-auto">
-        {/* Botón de salir flotante en la esquina superior derecha (fuera del panel) */}
-        <div className="absolute top-0 right-0">
-          <button 
-            className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-md font-semibold shadow-md"
-            onClick={() => {
-              console.log("SOLUCIÓN FINAL: Salida directa del huerto");
-              onExit();
-              
-              // Usando teleportación después para asegurar que la salida es limpia
-              setTimeout(() => {
-                console.log("Teleportación ejecutada correctamente");
-              }, 100);
-            }}
-          >
-            Salir
-          </button>
-        </div>
 
         {/* Panel principal */}
         <div className="bg-amber-800 rounded-t-lg">
