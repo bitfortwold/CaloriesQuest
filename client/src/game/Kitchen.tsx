@@ -54,7 +54,7 @@ const Kitchen = ({ onExit }: KitchenProps) => {
   // Cook and consume the meal
   const cookMeal = () => {
     if (selectedItems.length === 0) {
-      toast.error("Select at least one ingredient!");
+      toast.error("¡Selecciona al menos un ingrediente!");
       return;
     }
     
@@ -92,7 +92,7 @@ const Kitchen = ({ onExit }: KitchenProps) => {
     calculateEstimatedLifespan();
     
     // Show success message
-    toast.success("Meal cooked and consumed!");
+    toast.success("¡Comida cocinada y consumida!");
   };
   
   // Get predefined recipes for guided mode
@@ -287,12 +287,12 @@ const Kitchen = ({ onExit }: KitchenProps) => {
               {/* Right side - Meal preview */}
               <div>
                 <div className="bg-amber-50 border-2 border-amber-300 rounded-lg p-4 shadow-md">
-                  <h3 className="text-xl font-bold text-amber-800 mb-4 pb-2 border-b border-amber-200">Your Meal</h3>
+                  <h3 className="text-xl font-bold text-amber-800 mb-4 pb-2 border-b border-amber-200">Tu Comida</h3>
                   
-                  <h4 className="font-semibold text-amber-700">Selected Ingredients:</h4>
+                  <h4 className="font-semibold text-amber-700">Ingredientes Seleccionados:</h4>
                   {selectedItems.length === 0 ? (
                     <p className="text-amber-500 my-3 p-3 bg-amber-50 border border-amber-200 rounded-md text-center">
-                      Select ingredients from the refrigerator or pantry to start cooking!
+                      ¡Selecciona ingredientes del refrigerador o la despensa para comenzar a cocinar!
                     </p>
                   ) : (
                     <div className="my-3 grid grid-cols-3 gap-2">
