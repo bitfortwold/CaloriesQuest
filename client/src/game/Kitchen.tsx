@@ -364,48 +364,8 @@ const Kitchen = ({ onExit }: KitchenProps) => {
               </span>
             </div>
             
-            <div className="flex flex-wrap justify-end items-center gap-3">
-              <Button 
-                onClick={() => {
-                  console.log("Cambiando a modo recetas guiadas");
-                  setCookingMode("guided");
-                  setShowGuide(false);
-                }}
-                className={`px-5 py-2 rounded-xl font-bold transition-all shadow-md ${
-                  cookingMode === "guided" && !showGuide
-                    ? 'bg-gradient-to-r from-[#F48E11] to-[#F9A826] text-white border-3 border-[#E47F0E]' 
-                    : 'bg-gradient-to-r from-[#FFD166] to-[#FFBD3E] text-[#7E4E1B] border-2 border-[#FFBD3E] hover:brightness-105'
-                }`}
-              >
-                {language === 'en' ? 'Guided Recipes' : language === 'ca' ? 'Receptes Guiades' : 'Recetas Guiadas'}
-              </Button>
-              <Button 
-                onClick={() => {
-                  console.log("Cambiando a modo cocina libre");
-                  setCookingMode("free");
-                  setShowGuide(false);
-                }}
-                className={`px-5 py-2 rounded-xl font-bold transition-all shadow-md ${
-                  cookingMode === "free" && !showGuide
-                    ? 'bg-gradient-to-r from-[#F48E11] to-[#F9A826] text-white border-3 border-[#E47F0E]' 
-                    : 'bg-gradient-to-r from-[#FFD166] to-[#FFBD3E] text-[#7E4E1B] border-2 border-[#FFBD3E] hover:brightness-105'
-                }`}
-              >
-                {language === 'en' ? 'Free Cooking' : language === 'ca' ? 'Cuina Lliure' : 'Cocina Libre'}
-              </Button>
-              <Button 
-                onClick={() => {
-                  console.log("Toggling guía de cocina");
-                  setShowGuide(!showGuide);
-                }}
-                className={`px-5 py-2 rounded-xl font-bold transition-all shadow-md ${
-                  showGuide 
-                    ? 'bg-gradient-to-r from-[#F48E11] to-[#F9A826] text-white border-3 border-[#E47F0E]' 
-                    : 'bg-gradient-to-r from-[#FFD166] to-[#FFBD3E] text-[#7E4E1B] border-2 border-[#FFBD3E] hover:brightness-105'
-                }`}
-              >
-                {language === 'en' ? 'Cooking Guide' : language === 'ca' ? 'Guia de Cuina' : 'Guía de Cocina'}
-              </Button>
+            <div className="flex justify-end">
+              {/* Contador de calorías (Ya no mostramos botones duplicados aquí) */}
             </div>
           </div>
         </div>
