@@ -1,19 +1,19 @@
 export const activities = [
   {
     id: "biking",
-    name: "Biking",
-    description: "Ride a bicycle for transportation or leisure",
+    name: "Ciclismo",
+    description: "Montar en bicicleta para transporte o diversión",
     caloriesBurned: 150,
     coins: 300,
-    educationalTip: "Biking reduces carbon emissions and improves cardiovascular health."
+    educationalTip: "El ciclismo reduce las emisiones de carbono y mejora la salud cardiovascular."
   },
   {
     id: "walking",
-    name: "Walking",
-    description: "Take a walk around the neighborhood",
+    name: "Caminar",
+    description: "Dar un paseo por el vecindario",
     caloriesBurned: 100,
     coins: 200,
-    educationalTip: "Regular walking helps maintain a healthy weight and reduces stress."
+    educationalTip: "Caminar regularmente ayuda a mantener un peso saludable y reduce el estrés."
   },
   {
     id: "gardening",

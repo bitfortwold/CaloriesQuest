@@ -30,6 +30,13 @@ export interface Translation {
   refrigeratedItems: string;
   pantryItems: string;
   
+  // Actividades
+  activities: string;
+  performActivities: string;
+  burns: string;
+  earns: string;
+  doIt: string;
+  
   // Controles
   controls: string;
   moveKeys: string;
@@ -112,6 +119,13 @@ export const es: Translation = {
   refrigeratedItems: "Alimentos Refrigerados",
   pantryItems: "Alimentos de Despensa",
   
+  // Actividades
+  activities: "Actividades",
+  performActivities: "Realiza actividades para quemar calorías y ganar iHumanCoins. ¡Mantente activo para mejor salud!",
+  burns: "Quema",
+  earns: "Gana",
+  doIt: "Hazlo",
+  
   // Controles
   controls: "CONTROLES DEL JUEGO",
   moveKeys: "• WASD o Flechas: Moverse",
@@ -193,6 +207,13 @@ export const en: Translation = {
   pantry: "Pantry",
   refrigeratedItems: "Refrigerated Items",
   pantryItems: "Pantry Items",
+  
+  // Actividades
+  activities: "Activities",
+  performActivities: "Perform activities to burn calories and earn iHumancoins. Stay active for better health!",
+  burns: "Burns",
+  earns: "Earns",
+  doIt: "Do it",
   
   // Controles
   controls: "GAME CONTROLS",

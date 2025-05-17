@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { activities } from "../data/activities";
 import { usePlayerStore } from "../stores/usePlayerStore";
+import { useLanguage } from "../i18n/LanguageContext";
 import { toast } from "sonner";
 
 const Activities = () => {
@@ -11,6 +12,7 @@ const Activities = () => {
     updateCoins, 
     calculateEstimatedLifespan 
   } = usePlayerStore();
+  const { t } = useLanguage(); // Hook para acceder a las traducciones
   
   // Handle activity participation
   const performActivity = (activity: typeof activities[0]) => {
@@ -37,8 +39,8 @@ const Activities = () => {
   
   return (
     <div className="p-4 max-h-[500px] overflow-y-auto">
-      <h2 className="text-lg font-bold mb-3">Activities</h2>
-      <p className="text-sm mb-4">Perform activities to burn calories and earn iHumancoins. Stay active for better health!</p>
+      <h2 className="text-lg font-bold mb-3">{t.activities}</h2>
+      <p className="text-sm mb-4">{t.performActivities}</p>
       
       <div className="grid grid-cols-1 gap-3">
         {activities.map((activity) => (
