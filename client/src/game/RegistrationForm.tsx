@@ -366,7 +366,9 @@ const RegistrationForm = () => {
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium mb-1">Altura (cm)</label>
+                  <label className="block text-sm font-medium mb-1">
+                    {language === 'es' ? 'Altura (cm)' : 'Height (cm)'}
+                  </label>
                   <input
                     type="number"
                     name="height"
@@ -375,14 +377,18 @@ const RegistrationForm = () => {
                     className={`w-full p-2 border rounded-md ${errors.height ? 'border-red-500' : 'border-gray-300'}`}
                   />
                   {errors.height && <p className="text-red-500 text-xs mt-1">
-                    {errors.height === "Valid height is required" ? "La altura es obligatoria" : 
-                     errors.height === "Height must be between 50 and 250 cm" ? "La altura debe estar entre 50 y 250 cm" : 
-                     errors.height}
+                    {errors.height === "Valid height is required" 
+                      ? (language === 'es' ? "La altura es obligatoria" : "Valid height is required")
+                      : errors.height === "Height must be between 50 and 250 cm" 
+                      ? (language === 'es' ? "La altura debe estar entre 50 y 250 cm" : "Height must be between 50 and 250 cm")
+                      : errors.height}
                   </p>}
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium mb-1">Peso (kg)</label>
+                  <label className="block text-sm font-medium mb-1">
+                    {language === 'es' ? 'Peso (kg)' : 'Weight (kg)'}
+                  </label>
                   <input
                     type="number"
                     name="weight"
@@ -391,35 +397,53 @@ const RegistrationForm = () => {
                     className={`w-full p-2 border rounded-md ${errors.weight ? 'border-red-500' : 'border-gray-300'}`}
                   />
                   {errors.weight && <p className="text-red-500 text-xs mt-1">
-                    {errors.weight === "Valid weight is required" ? "El peso es obligatorio" : 
-                     errors.weight === "Weight must be between 15 and 300 kg" ? "El peso debe estar entre 15 y 300 kg" : 
-                     errors.weight}
+                    {errors.weight === "Valid weight is required" 
+                      ? (language === 'es' ? "El peso es obligatorio" : "Valid weight is required")
+                      : errors.weight === "Weight must be between 15 and 300 kg" 
+                      ? (language === 'es' ? "El peso debe estar entre 15 y 300 kg" : "Weight must be between 15 and 300 kg")
+                      : errors.weight}
                   </p>}
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium mb-1">Nivel de actividad</label>
+                  <label className="block text-sm font-medium mb-1">
+                    {language === 'es' ? 'Nivel de actividad' : 'Activity level'}
+                  </label>
                   <select
                     name="activityLevel"
                     value={formData.activityLevel}
                     onChange={handleChange}
                     className={`w-full p-2 border rounded-md ${errors.activityLevel ? 'border-red-500' : 'border-gray-300'}`}
                   >
-                    <option value="">Selecciona nivel de actividad</option>
-                    <option value="sedentary">Sedentario (poco o nada de ejercicio)</option>
-                    <option value="light">Ligero (ejercicio ligero 1-3 días/semana)</option>
-                    <option value="moderate">Moderado (ejercicio moderado 3-5 días/semana)</option>
-                    <option value="active">Activo (ejercicio intenso 6-7 días/semana)</option>
-                    <option value="veryActive">Muy activo (ejercicio muy intenso y trabajo físico)</option>
+                    <option value="">
+                      {language === 'es' ? 'Selecciona nivel de actividad' : 'Select activity level'}
+                    </option>
+                    <option value="sedentary">
+                      {language === 'es' ? 'Sedentario (poco o nada de ejercicio)' : 'Sedentary (little or no exercise)'}
+                    </option>
+                    <option value="light">
+                      {language === 'es' ? 'Ligero (ejercicio ligero 1-3 días/semana)' : 'Light (light exercise 1-3 days/week)'}
+                    </option>
+                    <option value="moderate">
+                      {language === 'es' ? 'Moderado (ejercicio moderado 3-5 días/semana)' : 'Moderate (moderate exercise 3-5 days/week)'}
+                    </option>
+                    <option value="active">
+                      {language === 'es' ? 'Activo (ejercicio intenso 6-7 días/semana)' : 'Active (intense exercise 6-7 days/week)'}
+                    </option>
+                    <option value="veryActive">
+                      {language === 'es' ? 'Muy activo (ejercicio muy intenso y trabajo físico)' : 'Very active (very intense exercise and physical work)'}
+                    </option>
                   </select>
                   {errors.activityLevel && <p className="text-red-500 text-xs mt-1">
-                    {errors.activityLevel === "Activity level is required" ? "El nivel de actividad es obligatorio" : errors.activityLevel}
+                    {errors.activityLevel === "Activity level is required" 
+                      ? (language === 'es' ? "El nivel de actividad es obligatorio" : "Activity level is required") 
+                      : errors.activityLevel}
                   </p>}
                 </div>
                 
                 <div className="pt-2">
                   <Button type="submit" className="w-full">
-                    Comenzar Juego
+                    {language === 'es' ? 'Comenzar Juego' : 'Start Game'}
                   </Button>
                 </div>
 
@@ -430,7 +454,9 @@ const RegistrationForm = () => {
                       onClick={() => setShowQuickLogin(true)}
                       className="text-blue-600 hover:underline text-sm"
                     >
-                      ¿Ya tienes un perfil? Volver a la pantalla anterior
+                      {language === 'es' 
+                        ? '¿Ya tienes un perfil? Volver a la pantalla anterior' 
+                        : 'Already have a profile? Back to previous screen'}
                     </button>
                   </div>
                 )}
