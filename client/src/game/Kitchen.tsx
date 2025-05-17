@@ -331,11 +331,12 @@ const Kitchen = ({ onExit }: KitchenProps) => {
     </div>
   );
   
-  // Añadir un efecto para ver los valores de refrigeratorFood y pantryFood
+  // Añadir un efecto para ver los valores de refrigeratorFood y pantryFood y estado de botones
   useEffect(() => {
     console.log("Nevera:", refrigeratorFood);
     console.log("Despensa:", pantryFood);
-  }, [refrigeratorFood, pantryFood]);
+    console.log("Estado actual - Modo:", cookingMode, "- Guía:", showGuide);
+  }, [refrigeratorFood, pantryFood, cookingMode, showGuide]);
 
   return (
     <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 overflow-auto">
@@ -410,6 +411,53 @@ const Kitchen = ({ onExit }: KitchenProps) => {
         </div>
         
         <div className="p-6">
+          {/* Franja de botones para selección de página */}
+          <div className="flex justify-center gap-4 mb-6">
+            <Button 
+              onClick={() => {
+                console.log("Seleccionando Recetas Guiadas desde botones centrales");
+                setCookingMode("guided");
+                setShowGuide(false);
+              }}
+              className={`py-3 px-8 rounded-xl font-bold transition-all shadow-md 
+                ${cookingMode === "guided" && !showGuide 
+                ? 'bg-gradient-to-r from-[#F48E11] to-[#F9A826] text-white border-3 border-[#E47F0E]' 
+                : 'bg-gradient-to-r from-[#FFD166] to-[#FFBD3E] text-[#7E4E1B] border-2 border-[#FFBD3E]'}
+              `}
+            >
+              {language === 'en' ? 'Guided Recipes' : language === 'ca' ? 'Receptes Guiades' : 'Recetas Guiadas'}
+            </Button>
+            
+            <Button 
+              onClick={() => {
+                console.log("Seleccionando Cocina Libre desde botones centrales");
+                setCookingMode("free");
+                setShowGuide(false);
+              }}
+              className={`py-3 px-8 rounded-xl font-bold transition-all shadow-md 
+                ${cookingMode === "free" && !showGuide 
+                ? 'bg-gradient-to-r from-[#F48E11] to-[#F9A826] text-white border-3 border-[#E47F0E]' 
+                : 'bg-gradient-to-r from-[#FFD166] to-[#FFBD3E] text-[#7E4E1B] border-2 border-[#FFBD3E]'}
+              `}
+            >
+              {language === 'en' ? 'Free Cooking' : language === 'ca' ? 'Cuina Lliure' : 'Cocina Libre'}
+            </Button>
+            
+            <Button 
+              onClick={() => {
+                console.log("Seleccionando Guía de Cocina desde botones centrales");
+                setShowGuide(true);
+              }}
+              className={`py-3 px-8 rounded-xl font-bold transition-all shadow-md 
+                ${showGuide 
+                ? 'bg-gradient-to-r from-[#F48E11] to-[#F9A826] text-white border-3 border-[#E47F0E]' 
+                : 'bg-gradient-to-r from-[#FFD166] to-[#FFBD3E] text-[#7E4E1B] border-2 border-[#FFBD3E]'}
+              `}
+            >
+              {language === 'en' ? 'Cooking Guide' : language === 'ca' ? 'Guia de Cuina' : 'Guía de Cocina'}
+            </Button>
+          </div>
+          
           {showGuide ? (
             // Guía de Cocina
             renderCookingGuide()
@@ -560,23 +608,22 @@ const Kitchen = ({ onExit }: KitchenProps) => {
           ) : (
             // Modo de Recetas Guiadas
             <div>
-              {/* Mostrar Botón para cambiar a Cocina Libre */}
-              <div className="mb-4 text-center">
-                <Button 
-                  onClick={() => setCookingMode("free")}
-                  className="bg-gradient-to-r from-[#F48E11] to-[#F9A826] text-white hover:brightness-110 font-bold py-3 px-6 rounded-xl transition-all shadow-md border-2 border-[#E47F0E]"
-                >
-                  {language === 'en' ? 'Switch to Free Cooking Mode' : language === 'ca' ? 'Canviar a Mode Cuina Lliure' : 'Cambiar a Modo Cocina Libre'}
-                </Button>
-                <p className="mt-2 text-[#8B5E34] italic">
+              {renderGuidedRecipes()}
+              
+              {/* Nota al pie para indicar cómo ver ingredientes disponibles */}
+              <div className="mt-8 p-4 bg-[#FDF6E3] border-2 border-[#F5D6A4] rounded-xl">
+                <h4 className="font-bold text-[#8B5E34] flex items-center mb-2">
+                  <span className="text-xl mr-2">💡</span> 
+                  {language === 'en' ? 'Tip' : language === 'ca' ? 'Consell' : 'Consejo'}
+                </h4>
+                <p className="text-[#8B5E34]">
                   {language === 'en' 
-                    ? "Free cooking mode allows you to see your refrigerator and pantry items" 
+                    ? "To see your available ingredients, click on the 'Free Cooking' button above. There you can view what's in your refrigerator and pantry." 
                     : language === 'ca'
-                    ? "El mode cuina lliure et permet veure els productes de la nevera i el rebost" 
-                    : "El modo cocina libre te permite ver los productos de la nevera y la despensa"}
+                    ? "Per veure els teus ingredients disponibles, fes clic al botó 'Cuina Lliure' a la part superior. Allà podràs veure el que hi ha a la teva nevera i rebost." 
+                    : "Para ver tus ingredientes disponibles, haz clic en el botón 'Cocina Libre' de arriba. Allí podrás ver lo que hay en tu nevera y despensa."}
                 </p>
               </div>
-              {renderGuidedRecipes()}
             </div>
           )}
         </div>
