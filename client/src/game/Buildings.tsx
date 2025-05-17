@@ -188,21 +188,21 @@ const Buildings = () => {
           <meshStandardMaterial color="#8B4513" />
         </mesh>
         
-        {/* Punto de entrada visible (círculo brillante) - Movido fuera del huerto */}
+        {/* Punto de entrada visible (círculo brillante) - Completamente separado de la puerta */}
         <mesh 
           receiveShadow 
-          position={[0, 0.07, 4.5]} 
+          position={[0, 0.07, 6.5]} 
           rotation={[-Math.PI / 2, 0, 0]}
         >
-          <circleGeometry args={[1.2, 32]} />
-          <meshStandardMaterial color="#FFDD55" emissive="#FFDD55" emissiveIntensity={0.5} />
+          <circleGeometry args={[1.5, 32]} />
+          <meshStandardMaterial color="#FFDD55" emissive="#FFDD55" emissiveIntensity={0.6} />
         </mesh>
         
         {/* Texto en el punto de entrada */}
         <Text
-          position={[0, 0.3, 4.5]}
+          position={[0, 0.3, 6.5]}
           rotation={[-Math.PI / 2, 0, 0]}
-          fontSize={0.4}
+          fontSize={0.5}
           color="#8B4513"
           anchorX="center"
           anchorY="middle"
