@@ -38,6 +38,17 @@ export const LanguageSelector: React.FC = () => {
         >
           EN
         </button>
+        <button
+          onClick={() => handleLanguageChange('ca')}
+          className={`px-3 py-1 text-sm font-medium transition-colors ${
+            language === 'ca' 
+              ? 'bg-blue-600 text-white' 
+              : 'text-gray-300 hover:bg-gray-700'
+          }`}
+          title={t.catalan}
+        >
+          CA
+        </button>
       </div>
     </div>
   );
