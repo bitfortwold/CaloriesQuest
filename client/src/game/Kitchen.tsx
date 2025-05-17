@@ -481,29 +481,29 @@ const Kitchen = ({ onExit }: KitchenProps) => {
                   )}
                   
                   <div className="mt-4 pt-4 border-t border-amber-200">
-                    <h4 className="font-semibold text-amber-700 mb-2">{language === 'en' ? 'Nutritional Information:' : 'Información Nutricional:'}</h4>
+                    <h4 className="font-semibold text-amber-700 mb-2">{language === 'en' ? 'Nutritional Information:' : language === 'ca' ? 'Informació Nutricional:' : 'Información Nutricional:'}</h4>
                     <div className="grid grid-cols-2 gap-4">
                       <div className="bg-amber-100 rounded-md p-3 text-center">
                         <span className="block text-amber-800 text-lg font-bold">{totals.calories.toFixed(0)}</span>
-                        <span className="text-xs text-amber-600">{language === 'en' ? 'Total Calories (kcal)' : 'Calorías Totales (kcal)'}</span>
+                        <span className="text-xs text-amber-600">{language === 'en' ? 'Total Calories (kcal)' : language === 'ca' ? 'Calories Totals (kcal)' : 'Calorías Totales (kcal)'}</span>
                       </div>
                       <div className="bg-amber-100 rounded-md p-3 text-center">
                         <span className="block text-amber-800 text-lg font-bold">{totals.protein.toFixed(1)}g</span>
-                        <span className="text-xs text-amber-600">{language === 'en' ? 'Protein' : 'Proteínas'}</span>
+                        <span className="text-xs text-amber-600">{language === 'en' ? 'Protein' : language === 'ca' ? 'Proteïnes' : 'Proteínas'}</span>
                       </div>
                       <div className="bg-amber-100 rounded-md p-3 text-center">
                         <span className="block text-amber-800 text-lg font-bold">{totals.carbs.toFixed(1)}g</span>
-                        <span className="text-xs text-amber-600">{language === 'en' ? 'Carbohydrates' : 'Carbohidratos'}</span>
+                        <span className="text-xs text-amber-600">{language === 'en' ? 'Carbohydrates' : language === 'ca' ? 'Carbohidrats' : 'Carbohidratos'}</span>
                       </div>
                       <div className="bg-amber-100 rounded-md p-3 text-center">
                         <span className="block text-amber-800 text-lg font-bold">{totals.fat.toFixed(1)}g</span>
-                        <span className="text-xs text-amber-600">{language === 'en' ? 'Fat' : 'Grasas'}</span>
+                        <span className="text-xs text-amber-600">{language === 'en' ? 'Fat' : language === 'ca' ? 'Greixos' : 'Grasas'}</span>
                       </div>
                     </div>
                     
                     <div className="mt-4">
                       <div className="text-sm flex items-center mb-1">
-                        <span className="mr-2 text-amber-700 font-medium">{language === 'en' ? 'Sustainability Score:' : 'Puntuación de Sostenibilidad:'}</span>
+                        <span className="mr-2 text-amber-700 font-medium">{language === 'en' ? 'Sustainability Score:' : language === 'ca' ? 'Puntuació de Sostenibilitat:' : 'Puntuación de Sostenibilidad:'}</span>
                         <div className="h-3 flex-1 bg-amber-100 rounded-full border border-amber-200">
                           <div 
                             className={`h-full rounded-full ${
