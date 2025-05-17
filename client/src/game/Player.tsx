@@ -171,29 +171,31 @@ const Player = () => {
   
   // Set up mouse click event listener
   useEffect(() => {
-    // Only add event listeners if in playing state
-    if (gameState === "playing") {
-      const canvas = gl.domElement;
+    // Obtener el canvas para eventos de clic
+    const canvas = gl.domElement;
+    
+    // Handler para detectar si es un clic puro o parte de una acción de zoom/rotación
+    const handleCanvasClick = (event: MouseEvent) => {
+      // Solo procesar clics si estamos en estado "playing"
+      if (gameState !== "playing") return;
       
-      // Handler para detectar si es un clic puro o parte de una acción de zoom/rotación
-      const handleCanvasClick = (event: MouseEvent) => {
-        // Si se está presionando algún botón del teclado o la rueda del ratón, no considerar como clic para movimiento
-        if (event.altKey || event.ctrlKey || event.shiftKey || event.metaKey) {
-          return; // No manejar este clic como orden de movimiento
-        }
-        
-        // Verificar si es un clic rápido y no parte de un arrastre o zoom
-        if (event.detail === 1) { // Es un clic simple
-          handleGroundClick(event);
-        }
-      };
+      // Si se está presionando algún botón del teclado o la rueda del ratón, no considerar como clic para movimiento
+      if (event.altKey || event.ctrlKey || event.shiftKey || event.metaKey) {
+        return; // No manejar este clic como orden de movimiento
+      }
       
-      canvas.addEventListener('click', handleCanvasClick);
-      
-      return () => {
-        canvas.removeEventListener('click', handleCanvasClick);
-      };
-    }
+      // Verificar si es un clic rápido y no parte de un arrastre o zoom
+      if (event.detail === 1) { // Es un clic simple
+        handleGroundClick(event);
+      }
+    };
+    
+    // Siempre mantener el event listener activo, pero solo procesar los clics cuando estamos en estado "playing"
+    canvas.addEventListener('click', handleCanvasClick);
+    
+    return () => {
+      canvas.removeEventListener('click', handleCanvasClick);
+    };
   }, [gameState, gl.domElement, playerPosition]);
   
   // Handle movement and interactions in each frame
