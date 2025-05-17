@@ -192,11 +192,11 @@ const Market = ({ onExit }: MarketProps) => {
               }`}
             >
               {category === 'all' ? 'Todos' : 
-               category === 'fruits' ? 'Frutas' :
-               category === 'vegetables' ? 'Verduras' :
-               category === 'protein' ? 'Proteínas' :
-               category === 'grains' ? 'Cereales' :
-               category === 'dairy' ? 'Lácteos' :
+               category === 'frutas' ? 'Frutas' :
+               category === 'verduras' ? 'Verduras' :
+               category === 'proteínas' ? 'Proteínas' :
+               category === 'cereales' ? 'Cereales' :
+               category === 'lácteos' ? 'Lácteos' :
                category}
             </button>
           ))}

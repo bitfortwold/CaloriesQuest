@@ -198,7 +198,7 @@ export const foodItems = [
   {
     id: "espinaca",
     name: "Espinaca",
-    category: "vegetables",
+    category: "verduras",
     calories: 23,
     nutritionalValue: {
       protein: 2.9,
