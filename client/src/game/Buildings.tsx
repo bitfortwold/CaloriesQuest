@@ -181,6 +181,33 @@ const Buildings = () => {
           <meshStandardMaterial color="#8B4513" />
         </mesh>
         
+        {/* Garden Door - New Addition */}
+        <group position={[0, 0.5, 3]} rotation={[0, Math.PI / 8, 0]}>
+          {/* Door Frame */}
+          <mesh castShadow receiveShadow position={[0, 0, 0]}>
+            <boxGeometry args={[1.5, 1, 0.1]} />
+            <meshStandardMaterial color="#A52A2A" />
+          </mesh>
+          
+          {/* Door Handle */}
+          <mesh castShadow receiveShadow position={[0.5, 0, 0.05]}>
+            <sphereGeometry args={[0.1, 8, 8]} />
+            <meshStandardMaterial color="#FFD700" />
+          </mesh>
+          
+          {/* Door Exit Sign */}
+          <Text
+            position={[0, 0.2, 0.06]}
+            rotation={[0, 0, 0]}
+            fontSize={0.2}
+            color="#FFFFFF"
+            anchorX="center"
+            anchorY="middle"
+          >
+            SALIR
+          </Text>
+        </group>
+        
         {/* Garden Sign */}
         <mesh castShadow position={[0, 1.5, -3.2]}>
           <boxGeometry args={[2.5, 1, 0.2]} />
