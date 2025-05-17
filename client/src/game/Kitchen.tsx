@@ -234,19 +234,19 @@ const Kitchen = ({ onExit }: KitchenProps) => {
         {
           name: "Esmorzar Equilibrat",
           description: "Un esmorzar nutritiu amb ous, pa i fruita",
-          ingredients: ["huevos", "pan", "manzana"],
+          ingredients: ["ous", "pa", "poma"],
           benefits: "Alt en proteïnes i carbohidrats complexos per a energia sostinguda"
         },
         {
           name: "Dinar Vegetarià",
           description: "Un dinar a base de plantes amb mongetes, arròs i verdures",
-          ingredients: ["frijoles", "arroz", "brócoli", "zanahoria"],
+          ingredients: ["mongetes", "arròs", "bròquil", "pastanaga"],
           benefits: "Ric en fibra i proporciona vitamines i minerals essencials"
         },
         {
           name: "Sopar Proteic",
           description: "Un sopar ric en proteïnes amb pollastre, patates i verdures",
-          ingredients: ["pollo", "patata", "espinaca"],
+          ingredients: ["pollastre", "patata", "espinacs"],
           benefits: "Ajuda a la recuperació muscular i la salut en general"
         }
       ]
