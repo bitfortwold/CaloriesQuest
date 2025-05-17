@@ -52,8 +52,8 @@ const SimpleLoginForm = () => {
       if (savedData) {
         const userData = JSON.parse(savedData);
         
-        // Si el nombre coincide, cargar los datos guardados
-        if (userData.name === username) {
+        // Si el nombre coincide (ignorando mayúsculas/minúsculas), cargar los datos guardados
+        if (userData.name.toLowerCase() === username.toLowerCase()) {
           // Calcular calorías diarias
           const dailyCalories = calculateDailyCalories(
             userData.gender,
