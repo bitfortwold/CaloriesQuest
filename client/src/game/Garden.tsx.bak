@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useLanguage } from "../i18n/LanguageContext";
 import { usePlayerStore } from "../stores/usePlayerStore";
 import { Plant, GardenPlot, calculateGrowthProgress, updatePlantState, waterPlant, plantSeed, harvestPlant } from "../data/gardenItems";
+import GardenView3D from "./GardenView3D";
 
 interface GardenProps {
   onExit: () => void;
@@ -48,7 +49,7 @@ const Garden = ({ onExit }: GardenProps) => {
     
     // Verificar si el jugador tiene suficientes semillas
     const seedIndex = playerData.seeds.findIndex(seed => seed.id === selectedSeed.id);
-    if (seedIndex === -1 || !playerData.seeds[seedIndex].quantity || playerData.seeds[seedIndex].quantity <= 0) {
+    if (seedIndex === -1 || playerData.seeds[seedIndex].quantity <= 0) {
       console.log("No tienes suficientes semillas");
       return;
     }
@@ -59,9 +60,7 @@ const Garden = ({ onExit }: GardenProps) => {
     
     // Actualizar el inventario de semillas
     const updatedSeeds = [...playerData.seeds];
-    if (updatedSeeds[seedIndex].quantity) {
-      updatedSeeds[seedIndex].quantity -= 1;
-    }
+    updatedSeeds[seedIndex].quantity -= 1;
     
     updatePlayer({
       ...playerData,
@@ -130,7 +129,7 @@ const Garden = ({ onExit }: GardenProps) => {
     const seedIndex = updatedSeeds.findIndex(seed => seed.id === plant.id);
     
     if (seedIndex >= 0) {
-      updatedSeeds[seedIndex].quantity = (updatedSeeds[seedIndex].quantity || 0) + 1;
+      updatedSeeds[seedIndex].quantity += 1;
     } else {
       updatedSeeds.push({
         ...plant,
@@ -189,22 +188,9 @@ const Garden = ({ onExit }: GardenProps) => {
                 onClick={() => setSelectedPlot(plot)}
               >
                 <div className="plot-content min-h-48 flex flex-col items-center justify-center">
-                  {/* Representación visual de la planta */}
-                  <div className="plant-visual mb-2">
-                    {plot.state !== "empty" && (
-                      <div className={`plant-icon h-24 w-24 flex items-center justify-center rounded-full 
-                        ${plot.state === "seedling" ? "bg-green-100 text-green-800" : 
-                          plot.state === "growing" ? "bg-green-200 text-green-800" : 
-                          plot.state === "mature" ? "bg-green-300 text-green-800" : 
-                          "bg-yellow-200 text-yellow-800"}`}
-                      >
-                        <span className="text-4xl">
-                          {plot.state === "seedling" ? "🌱" : 
-                           plot.state === "growing" ? "🌿" :
-                           plot.state === "mature" ? "🌻" : "🌽"}
-                        </span>
-                      </div>
-                    )}
+                  {/* Visualización 3D de la planta */}
+                  <div className="garden-3d-view mb-2">
+                    <GardenView3D plot={plot} height="150px" width="100%" />
                   </div>
                   
                   {plot.state === "empty" ? (
@@ -287,7 +273,7 @@ const Garden = ({ onExit }: GardenProps) => {
                       className={`seed-item border rounded-lg p-3 ${
                         selectedSeed?.id === seed.id ? "border-green-500 bg-green-50" : "border-gray-200"
                       }`}
-                      onClick={() => setSelectedSeed(seed.quantity && seed.quantity > 0 ? seed : null)}
+                      onClick={() => setSelectedSeed(seed.quantity > 0 ? seed : null)}
                     >
                       <h4 className="font-medium">{seed.name}</h4>
                       <p className="text-sm text-gray-600">Cantidad: {seed.quantity}</p>
@@ -303,60 +289,63 @@ const Garden = ({ onExit }: GardenProps) => {
             
             <h3 className="text-lg font-medium mb-2">Semillas disponibles para comprar:</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {["Tomate", "Lechuga", "Zanahoria", "Patata", "Pepino"].map((plantName, index) => {
-                const plant = {
-                  id: `plant_${index + 1}`,
-                  name: plantName,
-                  description: `Semillas de ${plantName.toLowerCase()}`,
-                  growthTime: 120 + index * 30,
-                  waterNeeded: 3 + index % 3,
-                  sustainabilityScore: 3 + index % 3,
-                  nutritionalValue: {
-                    calories: 50 + index * 10,
-                    protein: 2 + index,
-                    carbs: 10 + index * 2,
-                    fat: 1 + index % 2,
-                    vitamins: ["A", "C"]
-                  },
-                  harvestYield: 3 + index % 3,
-                  price: 20 + index * 10,
-                  difficulty: index < 2 ? "beginner" as const : index < 4 ? "intermediate" as const : "advanced" as const,
-                  season: index % 4 === 0 ? "spring" as const : index % 4 === 1 ? "summer" as const : 
-                           index % 4 === 2 ? "autumn" as const : "winter" as const,
-                  image: ""
-                };
-                
-                return (
-                  <div key={plant.id} className="seed-shop-item border rounded-lg p-4">
-                    <h4 className="font-medium">{plant.name}</h4>
-                    <div className="seed-details text-sm mt-2">
-                      <p>Precio: {plant.price} monedas</p>
-                      <p>Tiempo de crecimiento: {plant.growthTime / 60} minutos</p>
-                      <p>Dificultad: {
-                        plant.difficulty === "beginner" ? "Principiante" :
-                        plant.difficulty === "intermediate" ? "Intermedio" : "Avanzado"
-                      }</p>
-                      <p>Temporada: {
-                        plant.season === "spring" ? "Primavera" :
-                        plant.season === "summer" ? "Verano" :
-                        plant.season === "autumn" ? "Otoño" :
-                        plant.season === "winter" ? "Invierno" : "Todas"
-                      }</p>
+              {playerData?.garden[0].plant ? 
+                // Importamos Plant desde gardenItems
+                ["Tomate", "Lechuga", "Zanahoria", "Patata", "Pepino"].map((plantName, index) => {
+                  const plant = {
+                    id: `plant_${index + 1}`,
+                    name: plantName,
+                    description: `Semillas de ${plantName.toLowerCase()}`,
+                    growthTime: 120 + index * 30,
+                    waterNeeded: 3 + index % 3,
+                    sustainabilityScore: 3 + index % 3,
+                    nutritionalValue: {
+                      calories: 50 + index * 10,
+                      protein: 2 + index,
+                      carbs: 10 + index * 2,
+                      fat: 1 + index % 2,
+                      vitamins: ["A", "C"]
+                    },
+                    harvestYield: 3 + index % 3,
+                    price: 20 + index * 10,
+                    difficulty: index < 2 ? "beginner" : index < 4 ? "intermediate" : "advanced",
+                    season: index % 4 === 0 ? "spring" : index % 4 === 1 ? "summer" : 
+                             index % 4 === 2 ? "autumn" : "winter",
+                    image: ""
+                  } as Plant;
+                  
+                  return (
+                    <div key={plant.id} className="seed-shop-item border rounded-lg p-4">
+                      <h4 className="font-medium">{plant.name}</h4>
+                      <div className="seed-details text-sm mt-2">
+                        <p>Precio: {plant.price} monedas</p>
+                        <p>Tiempo de crecimiento: {plant.growthTime / 60} minutos</p>
+                        <p>Dificultad: {
+                          plant.difficulty === "beginner" ? "Principiante" :
+                          plant.difficulty === "intermediate" ? "Intermedio" : "Avanzado"
+                        }</p>
+                        <p>Temporada: {
+                          plant.season === "spring" ? "Primavera" :
+                          plant.season === "summer" ? "Verano" :
+                          plant.season === "autumn" ? "Otoño" :
+                          plant.season === "winter" ? "Invierno" : "Todas"
+                        }</p>
+                      </div>
+                      <button 
+                        className={`mt-3 px-3 py-1 rounded text-white ${
+                          playerData?.coins >= plant.price 
+                            ? "bg-green-500 hover:bg-green-600" 
+                            : "bg-gray-400 cursor-not-allowed"
+                        }`}
+                        onClick={() => buySeed(plant)}
+                        disabled={playerData?.coins < plant.price}
+                      >
+                        Comprar
+                      </button>
                     </div>
-                    <button 
-                      className={`mt-3 px-3 py-1 rounded text-white ${
-                        playerData?.coins >= plant.price 
-                          ? "bg-green-500 hover:bg-green-600" 
-                          : "bg-gray-400 cursor-not-allowed"
-                      }`}
-                      onClick={() => buySeed(plant)}
-                      disabled={!playerData || playerData.coins < plant.price}
-                    >
-                      Comprar
-                    </button>
-                  </div>
-                );
-              })}
+                  );
+                }) : null
+              }
             </div>
           </div>
         )}
@@ -365,6 +354,11 @@ const Garden = ({ onExit }: GardenProps) => {
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-10">
             <div className="bg-white rounded-lg p-6 max-w-md w-full max-h-[90vh] overflow-y-auto">
               <h2 className="text-xl font-bold mb-3">{selectedPlot.plant.name}</h2>
+              
+              {/* Visualización 3D mejorada */}
+              <div className="garden-3d-view mb-4 h-48">
+                <GardenView3D plot={selectedPlot} height="180px" width="100%" />
+              </div>
               
               <p className="mb-4">{selectedPlot.plant.description}</p>
               
@@ -463,14 +457,8 @@ const Garden = ({ onExit }: GardenProps) => {
               
               <div className="buttons-container flex justify-between mt-4">
                 <button
-                  className={`bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded ${
-                    selectedPlot.waterLevel >= 90 || selectedPlot.state === "harvestable" 
-                      ? "opacity-50 cursor-not-allowed" : ""
-                  }`}
-                  onClick={() => {
-                    const plotIndex = playerData?.garden.findIndex(p => p.id === selectedPlot.id) || 0;
-                    handleWaterPlant(plotIndex);
-                  }}
+                  className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
+                  onClick={() => handleWaterPlant(playerData!.garden.findIndex(p => p.id === selectedPlot.id))}
                   disabled={selectedPlot.waterLevel >= 90 || selectedPlot.state === "harvestable"}
                 >
                   Regar planta
@@ -480,8 +468,7 @@ const Garden = ({ onExit }: GardenProps) => {
                   <button
                     className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded"
                     onClick={() => {
-                      const plotIndex = playerData?.garden.findIndex(p => p.id === selectedPlot.id) || 0;
-                      handleHarvestPlant(plotIndex);
+                      handleHarvestPlant(playerData!.garden.findIndex(p => p.id === selectedPlot.id));
                       setSelectedPlot(null);
                     }}
                   >
