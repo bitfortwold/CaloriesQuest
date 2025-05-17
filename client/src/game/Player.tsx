@@ -133,7 +133,7 @@ const Player = () => {
         return;
       }
       
-      // Comprobar la distancia al círculo amarillo del huerto
+      // Comprobar si el clic fue sobre el círculo amarillo del huerto
       const gardenCircle = getGardenCirclePosition();
       const distToGardenCircle = new THREE.Vector3(
         playerPosition.x - gardenCircle.x,
@@ -141,11 +141,27 @@ const Player = () => {
         playerPosition.z - gardenCircle.z
       ).length();
       
-      if (distToGardenCircle < GARDEN_CIRCLE_RADIUS) {
-        console.log("Player is on garden circle, entering on click");
+      // Calcular si el punto donde se hizo clic está en el círculo
+      const clickToCircle = new THREE.Vector3(
+        targetPoint.x - gardenCircle.x,
+        0,
+        targetPoint.z - gardenCircle.z
+      ).length();
+      
+      console.log(`Distancia al círculo: ${distToGardenCircle.toFixed(2)}, Clic a círculo: ${clickToCircle.toFixed(2)}, Radio: ${GARDEN_CIRCLE_RADIUS}`);
+      
+      // Si el jugador está cerca del círculo Y el clic fue dentro del círculo
+      if (distToGardenCircle < GARDEN_CIRCLE_RADIUS * 1.5 && clickToCircle < GARDEN_CIRCLE_RADIUS) {
+        console.log("Player clicked on garden circle, entering garden");
         
-        // Entrar al huerto cuando el jugador haga clic estando sobre el círculo
-        enterBuilding("garden");
+        // Primero moverse al centro del círculo
+        setTargetPosition(new THREE.Vector3(gardenCircle.x, playerPosition.y, gardenCircle.z));
+        setIsMovingToTarget(true);
+        
+        // Entrar al huerto con un pequeño retraso para que se vea el movimiento
+        setTimeout(() => {
+          enterBuilding("garden");
+        }, 300);
         
         return;
       }
