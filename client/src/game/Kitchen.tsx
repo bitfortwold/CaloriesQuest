@@ -5,6 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useFoodStore, StorageType, StoredFoodItem } from "../stores/useFoodStore";
 import { usePlayerStore } from "../stores/usePlayerStore";
 import { useLanguage } from "../i18n/LanguageContext";
+import TranslatedFoodName from "./TranslatedFoodName";
 import { toast } from "sonner";
 
 interface KitchenProps {
