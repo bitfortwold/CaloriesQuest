@@ -233,30 +233,14 @@ const Player = () => {
       // Marcar que acabamos de salir de un edificio para evitar interacciones inmediatas
       setJustExitedBuilding(true);
       
-      // SOLUCIÓN FINAL: Cuando salimos de un edificio, teleportar al jugador a una posición segura
-      // dependiendo de qué edificio acabamos de salir
-      if (lastGameStateRef.current === "garden") {
-        console.log("Teleporting away from garden");
-        setPlayerPosition({
-          x: gardenPosition.x - 8, // Bastante lejos del huerto
-          y: playerPosition.y,
-          z: gardenPosition.z + 8  // Bastante lejos del huerto
-        });
-      } else if (lastGameStateRef.current === "market") {
-        console.log("Teleporting away from market");
-        setPlayerPosition({
-          x: marketPosition.x + 8, // Bastante lejos del mercado
-          y: playerPosition.y,
-          z: marketPosition.z - 8  // Bastante lejos del mercado
-        });
-      } else if (lastGameStateRef.current === "kitchen") {
-        console.log("Teleporting away from kitchen");
-        setPlayerPosition({
-          x: kitchenPosition.x - 8, // Bastante lejos de la cocina
-          y: playerPosition.y,
-          z: kitchenPosition.z + 8  // Bastante lejos de la cocina
-        });
-      }
+      // SOLUCIÓN DEFINITIVA: En lugar de teleportar dependiendo del edificio,
+      // teleportamos a una posición fija y segura en el centro del mapa
+      console.log("Teleporting to safe position in the center of the map");
+      setPlayerPosition({
+        x: 0, // Posición central del mapa
+        y: 0, // Altura base
+        z: 5  // Un poco adelante para evitar cualquier edificio
+      });
       
       // Restaurar la capacidad de interactuar después de un periodo más largo
       setTimeout(() => {
