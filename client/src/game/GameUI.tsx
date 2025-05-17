@@ -10,6 +10,7 @@ import Kitchen from "./Kitchen";
 import Activities from "./Activities";
 import ProfilePanel from "./ProfilePanel";
 import DailyChallenges from "./DailyChallenges";
+import Garden from "./Garden";
 
 const GameUI = () => {
   // Access game state and translations

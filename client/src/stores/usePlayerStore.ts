@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { generateRandomChallenges, updateChallengeProgress } from "../data/dailyChallenges";
 import { toast } from "sonner";
+import { createNewGarden, waterPlant, plantSeed, harvestPlant, updatePlantState } from "../data/gardenItems";
 
 // Define types
 export interface Position {
