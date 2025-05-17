@@ -21,28 +21,28 @@ const Kitchen = ({ onExit }: KitchenProps) => {
   
   // Función para manejar traducciones en la cocina
   const getKitchenTranslation = (key: string, text: string): string => {
-    if (language !== 'en') return text; // Mantener el español si ese es el idioma seleccionado
+    if (language === 'es') return text; // Mantener el español si ese es el idioma seleccionado
     
-    // Diccionario de traducciones para la cocina
-    const kitchenTranslations: Record<string, Record<string, string>> = {
+    // Diccionario de traducciones inglesas para la cocina
+    const kitchenTranslationsEN: Record<string, Record<string, string>> = {
       // Ingredientes
       'ingredients': {
-        'huevos': 'Eggs',
-        'pan': 'Bread',
-        'manzana': 'Apple',
-        'frijoles': 'Beans',
-        'arroz': 'Rice',
-        'brócoli': 'Broccoli',
-        'zanahoria': 'Carrot',
-        'pollo': 'Chicken',
-        'patata': 'Potato',
-        'espinaca': 'Spinach',
-        'lechuga': 'Lettuce',
-        'tomate': 'Tomato',
-        'cebolla': 'Onion',
-        'ajo': 'Garlic',
-        'carne': 'Meat',
-        'pescado': 'Fish'
+        'Huevos': 'Eggs',
+        'Pan': 'Bread',
+        'Manzana': 'Apple',
+        'Frijoles': 'Beans',
+        'Arroz': 'Rice',
+        'Brócoli': 'Broccoli',
+        'Zanahoria': 'Carrot',
+        'Pollo': 'Chicken',
+        'Patata': 'Potato',
+        'Espinaca': 'Spinach',
+        'Lechuga': 'Lettuce',
+        'Tomate': 'Tomato',
+        'Cebolla': 'Onion',
+        'Ajo': 'Garlic',
+        'Carne': 'Meat',
+        'Pescado': 'Fish'
       },
       // Etiquetas nutricionales
       'labels': {
@@ -63,6 +63,50 @@ const Kitchen = ({ onExit }: KitchenProps) => {
         '¡Selecciona al menos un ingrediente!': 'Select at least one ingredient!'
       }
     };
+    
+    // Diccionario de traducciones catalanas para la cocina
+    const kitchenTranslationsCA: Record<string, Record<string, string>> = {
+      // Ingredientes
+      'ingredients': {
+        'Huevos': 'Ous',
+        'Pan': 'Pa',
+        'Manzana': 'Poma',
+        'Frijoles': 'Mongetes',
+        'Arroz': 'Arròs',
+        'Brócoli': 'Bròquil',
+        'Zanahoria': 'Pastanaga',
+        'Pollo': 'Pollastre',
+        'Patata': 'Patata',
+        'Espinaca': 'Espinacs',
+        'Lechuga': 'Enciam',
+        'Tomate': 'Tomàquet',
+        'Cebolla': 'Ceba',
+        'Ajo': 'All',
+        'Carne': 'Carn',
+        'Pescado': 'Peix'
+      },
+      // Etiquetas nutricionales
+      'labels': {
+        'Proteínas': 'Proteïnes',
+        'Carbos': 'Carbohidrats',
+        'Grasas': 'Greixos',
+        'Tu Comida': 'El teu Àpat',
+        'Ingredientes Seleccionados': 'Ingredients Seleccionats',
+        'kcal': 'kcal',
+        'g': 'g'
+      },
+      // Mensajes
+      'messages': {
+        '¡Selecciona ingredientes del refrigerador o la despensa para comenzar a cocinar!': 'Selecciona ingredients de la nevera o el rebost per començar a cuinar!',
+        'Tu despensa está vacía. ¡Visita el mercado para comprar alimentos no perecederos!': 'El teu rebost està buit. Visita el mercat per comprar aliments no peribles!',
+        'Tu refrigerador está vacío. ¡Visita el mercado para comprar alimentos frescos!': 'La teva nevera està buida. Visita el mercat per comprar aliments frescos!',
+        '¡Comida cocinada y consumida!': 'Menjar cuinat i consumit!',
+        '¡Selecciona al menos un ingrediente!': 'Selecciona almenys un ingredient!'
+      }
+    };
+    
+    // Seleccionar el diccionario adecuado según el idioma
+    const kitchenTranslations = language === 'ca' ? kitchenTranslationsCA : kitchenTranslationsEN;
     
     // Buscar la traducción en la categoría correspondiente
     return kitchenTranslations[key]?.[text] || text;
@@ -151,48 +195,82 @@ const Kitchen = ({ onExit }: KitchenProps) => {
   
   // Get predefined recipes for guided mode
   const getGuidedRecipes = () => {
-    // Ensure we're using the current language from the translation context
+    // Define recipe types
+    interface Recipe {
+      name: string;
+      description: string;
+      ingredients: string[];
+      benefits: string;
+    }
     
-    const recipes = language === 'en' ? [
-      {
-        name: "Balanced Breakfast",
-        description: "A nutritious breakfast with eggs, bread and fruit",
-        ingredients: ["huevos", "pan", "manzana"],
-        benefits: "High in protein and complex carbohydrates for sustained energy"
-      },
-      {
-        name: "Vegetarian Lunch",
-        description: "A plant-based lunch with beans, rice and vegetables",
-        ingredients: ["frijoles", "arroz", "brócoli", "zanahoria"],
-        benefits: "Rich in fiber and provides essential vitamins and minerals"
-      },
-      {
-        name: "Protein Dinner",
-        description: "A protein-rich dinner with chicken, potatoes and vegetables",
-        ingredients: ["pollo", "patata", "espinaca"],
-        benefits: "Supports muscle recovery and overall health"
-      }
-    ] : [
-      {
-        name: "Desayuno Equilibrado",
-        description: "Un desayuno nutritivo con huevos, pan y fruta",
-        ingredients: ["huevos", "pan", "manzana"],
-        benefits: "Alto en proteínas y carbohidratos complejos para energía sostenida"
-      },
-      {
-        name: "Almuerzo Vegetariano",
-        description: "Un almuerzo a base de plantas con frijoles, arroz y verduras",
-        ingredients: ["frijoles", "arroz", "brócoli", "zanahoria"],
-        benefits: "Rico en fibra y proporciona vitaminas y minerales esenciales"
-      },
-      {
-        name: "Cena Proteica",
-        description: "Una cena rica en proteínas con pollo, patatas y verduras",
-        ingredients: ["pollo", "patata", "espinaca"],
-        benefits: "Apoya la recuperación muscular y la salud en general"
-      }
-    ];
-    
+    // Obtener las recetas según el idioma
+    const recipes: Recipe[] = language === 'en' ? 
+      // Recetas en inglés
+      [
+        {
+          name: "Balanced Breakfast",
+          description: "A nutritious breakfast with eggs, bread and fruit",
+          ingredients: ["huevos", "pan", "manzana"],
+          benefits: "High in protein and complex carbohydrates for sustained energy"
+        },
+        {
+          name: "Vegetarian Lunch",
+          description: "A plant-based lunch with beans, rice and vegetables",
+          ingredients: ["frijoles", "arroz", "brócoli", "zanahoria"],
+          benefits: "Rich in fiber and provides essential vitamins and minerals"
+        },
+        {
+          name: "Protein Dinner",
+          description: "A protein-rich dinner with chicken, potatoes and vegetables",
+          ingredients: ["pollo", "patata", "espinaca"],
+          benefits: "Supports muscle recovery and overall health"
+        }
+      ] 
+      : language === 'ca' ?
+      // Recetas en catalán
+      [
+        {
+          name: "Esmorzar Equilibrat",
+          description: "Un esmorzar nutritiu amb ous, pa i fruita",
+          ingredients: ["huevos", "pan", "manzana"],
+          benefits: "Alt en proteïnes i carbohidrats complexos per a energia sostinguda"
+        },
+        {
+          name: "Dinar Vegetarià",
+          description: "Un dinar a base de plantes amb mongetes, arròs i verdures",
+          ingredients: ["frijoles", "arroz", "brócoli", "zanahoria"],
+          benefits: "Ric en fibra i proporciona vitamines i minerals essencials"
+        },
+        {
+          name: "Sopar Proteic",
+          description: "Un sopar ric en proteïnes amb pollastre, patates i verdures",
+          ingredients: ["pollo", "patata", "espinaca"],
+          benefits: "Ajuda a la recuperació muscular i la salut en general"
+        }
+      ]
+      : 
+      // Recetas en español (por defecto)
+      [
+        {
+          name: "Desayuno Equilibrado",
+          description: "Un desayuno nutritivo con huevos, pan y fruta",
+          ingredients: ["huevos", "pan", "manzana"],
+          benefits: "Alto en proteínas y carbohidratos complejos para energía sostenida"
+        },
+        {
+          name: "Almuerzo Vegetariano",
+          description: "Un almuerzo a base de plantas con frijoles, arroz y verduras",
+          ingredients: ["frijoles", "arroz", "brócoli", "zanahoria"],
+          benefits: "Rico en fibra y proporciona vitaminas y minerales esenciales"
+        },
+        {
+          name: "Cena Proteica",
+          description: "Una cena rica en proteínas con pollo, patatas y verduras",
+          ingredients: ["pollo", "patata", "espinaca"],
+          benefits: "Apoya la recuperación muscular y la salud en general"
+        }
+      ];
+      
     // For debugging
     console.log("Current language:", language);
     console.log("First recipe name:", recipes[0].name);
