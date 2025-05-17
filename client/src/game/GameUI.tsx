@@ -156,7 +156,11 @@ const GameUI = () => {
                         </button>
                         <button 
                           className="bg-red-600 hover:bg-red-700 text-white text-sm px-3 py-1 rounded flex-1 transition-colors"
-                          onClick={() => useGameStateStore.getState().logout()}
+                          onClick={() => {
+                            // Redirigir a la página de inicio en lugar de cerrar sesión
+                            useGameStateStore.getState().setGameState("ready");
+                            setShowProfilePanel(false);
+                          }}
                         >
                           {t.exit}
                         </button>
