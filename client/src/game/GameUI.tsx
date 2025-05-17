@@ -213,15 +213,7 @@ const GameUI = () => {
                         <span className="text-yellow-400 font-bold">{playerData?.coins?.toFixed(0) || 0}</span>
                       </div>
                       
-                      <div className="flex justify-between items-center bg-gray-800 p-2 rounded">
-                        <span className="text-purple-400 font-semibold flex items-center">
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
-                          </svg>
-                          Inventory:
-                        </span>
-                        <span className="text-purple-400">{playerData?.inventory?.length || 0} items</span>
-                      </div>
+
                     </div>
                   </div>
                 )}
