@@ -53,7 +53,7 @@ const Market = ({ onExit }: MarketProps) => {
     // Ya no mostramos automáticamente el panel, solo actualizamos el contador
     
     // Show notification
-    toast.success(`${foodItem.name} added to cart`);
+    toast.success(`${foodItem.name} añadido al carrito`);
     
     // Log para depuración
     console.log("Item added to cart:", foodItem.name, "- Cart now has", cart.length + (existingItem ? 0 : 1), "different items");
@@ -146,7 +146,7 @@ const Market = ({ onExit }: MarketProps) => {
   const handlePurchase = (foodItem: typeof foodItems[0]) => {
     // Check if player has enough coins
     if ((playerData?.coins || 0) < foodItem.price) {
-      toast.error("Not enough iHumancoins!");
+      toast.error("¡No tienes suficientes iHumancoins!");
       return;
     }
     
@@ -191,7 +191,13 @@ const Market = ({ onExit }: MarketProps) => {
                   : 'bg-amber-300 text-amber-700 border border-amber-400 opacity-80 hover:opacity-100'
               }`}
             >
-              {category === 'all' ? 'All' : category}
+              {category === 'all' ? 'Todos' : 
+               category === 'fruits' ? 'Frutas' :
+               category === 'vegetables' ? 'Verduras' :
+               category === 'protein' ? 'Proteínas' :
+               category === 'grains' ? 'Cereales' :
+               category === 'dairy' ? 'Lácteos' :
+               category}
             </button>
           ))}
         </div>
@@ -218,11 +224,11 @@ const Market = ({ onExit }: MarketProps) => {
                     {/* Columna izquierda */}
                     <div className="flex flex-col gap-1">
                       <div className="flex items-center">
-                        <span className="w-24 text-xs text-amber-800">Calories:</span>
+                        <span className="w-24 text-xs text-amber-800">Calorías:</span>
                         <span className="font-bold text-amber-900">{food.calories} kcal</span>
                       </div>
                       <div className="flex items-center">
-                        <span className="w-24 text-xs text-amber-800">Carbs:</span>
+                        <span className="w-24 text-xs text-amber-800">Carbos:</span>
                         <span className="font-bold text-amber-900">{food.nutritionalValue.carbs}g</span>
                       </div>
                     </div>
