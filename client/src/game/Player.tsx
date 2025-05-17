@@ -5,7 +5,7 @@ import { useKeyboardControls } from "@react-three/drei";
 import { useGameStateStore } from "../stores/useGameStateStore";
 import { usePlayerStore } from "../stores/usePlayerStore";
 import { useFoodStore } from "../stores/useFoodStore";
-import { getGardenPosition } from "./Buildings";
+import { getGardenPosition, getGardenCirclePosition, GARDEN_CIRCLE_RADIUS } from "./Buildings";
 
 const PLAYER_SPEED = 0.1;
 const INTERACTION_DISTANCE = 3;
@@ -133,17 +133,18 @@ const Player = () => {
         return;
       }
       
-      // Comprobar la distancia al huerto
-      const distToGarden = new THREE.Vector3(
-        playerPosition.x - gardenPosition.x,
+      // Comprobar la distancia al círculo amarillo del huerto
+      const gardenCircle = getGardenCirclePosition();
+      const distToGardenCircle = new THREE.Vector3(
+        playerPosition.x - gardenCircle.x,
         0,
-        playerPosition.z - gardenPosition.z
+        playerPosition.z - gardenCircle.z
       ).length();
       
-      if (distToGarden < INTERACTION_DISTANCE) {
-        console.log("Player is near garden, automatically entering");
+      if (distToGardenCircle < GARDEN_CIRCLE_RADIUS) {
+        console.log("Player is on garden circle, entering on click");
         
-        // Entrar inmediatamente al huerto 3D
+        // Entrar al huerto cuando el jugador haga clic estando sobre el círculo
         enterBuilding("garden");
         
         return;

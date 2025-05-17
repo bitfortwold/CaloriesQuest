@@ -4,16 +4,21 @@ import { Text } from "@react-three/drei";
 import { useFoodStore } from "../stores/useFoodStore";
 import { useGameStateStore } from "../stores/useGameStateStore";
 
-// Creamos una interfaz para la posición del huerto
-interface GardenPosition {
+// Creamos una interfaz para las posiciones
+interface Position {
   x: number;
   y: number;
   z: number;
 }
 
 // Función global para acceder a la posición del huerto desde otros componentes
-let gardenPosition: GardenPosition = { x: 0, y: 0, z: -8 };
+let gardenPosition: Position = { x: 0, y: 0, z: -8 };
 export const getGardenPosition = () => gardenPosition;
+
+// Función global para acceder a la posición del círculo amarillo
+let gardenCirclePosition: Position = { x: 0, y: 0.07, z: 6.5 };
+export const getGardenCirclePosition = () => gardenCirclePosition;
+export const GARDEN_CIRCLE_RADIUS = 1.5; // Radio del círculo amarillo
 
 const Buildings = () => {
   const { setMarketPosition, setKitchenPosition } = useFoodStore();
