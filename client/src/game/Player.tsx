@@ -47,9 +47,9 @@ const Player = () => {
     // Cancelar si se está usando el botón derecho para mover la cámara
     if (event.button !== 0) return;
     
-    // Si acabamos de salir del huerto, ignorar el primer clic para evitar bucles
-    if (justExitedGarden) {
-      console.log("Click ignored - just exited garden");
+    // Si acabamos de salir de un edificio, ignorar el primer clic para evitar bucles
+    if (justExitedBuilding) {
+      console.log("Click ignored - just exited a building");
       return;
     }
     
@@ -216,33 +216,28 @@ const Player = () => {
     };
   }, [gameState, gl.domElement]);
   
-  // Variable para rastrear si acabamos de salir del huerto
-  const [justExitedGarden, setJustExitedGarden] = useState(false);
+  // Variable para rastrear si acabamos de salir de cualquier edificio
+  const [justExitedBuilding, setJustExitedBuilding] = useState(false);
   
   // Referencia para almacenar el último estado conocido
   const lastGameStateRef = useRef<string | null>(null);
   
-  // Detectar cuando volvemos al estado "playing" desde el estado "garden"
+  // Detectar cuando volvemos al estado "playing" desde cualquier edificio
   useEffect(() => {
-    // Si venimos específicamente del huerto (garden) y ahora estamos jugando
-    if (lastGameStateRef.current === "garden" && gameState === "playing") {
-      console.log("Detected exit from garden - applying safety measures");
+    const buildingStates = ["garden", "market", "kitchen"];
+    
+    // Si venimos de cualquier edificio y ahora estamos jugando
+    if (buildingStates.includes(lastGameStateRef.current || "") && gameState === "playing") {
+      console.log(`Detected exit from ${lastGameStateRef.current} - applying cooldown`);
       
-      // Marcar que acabamos de salir del huerto para evitar interacciones inmediatas
-      setJustExitedGarden(true);
+      // Marcar que acabamos de salir de un edificio para evitar interacciones inmediatas
+      setJustExitedBuilding(true);
       
-      // Teleportar al jugador lejos del huerto para evitar reentradas accidentales
-      setPlayerPosition({
-        x: -5, // Posición más alejada del huerto
-        y: playerPosition.y,
-        z: -5 // Posición más alejada del huerto
-      });
-      
-      // Restaurar la capacidad de interactuar después de un tiempo más largo
+      // Restaurar la capacidad de interactuar después de un breve periodo
       setTimeout(() => {
-        console.log("Garden exit cooldown finished");
-        setJustExitedGarden(false);
-      }, 1000); // Tiempo más largo para asegurar
+        console.log("Building exit cooldown finished");
+        setJustExitedBuilding(false);
+      }, 500); // Medio segundo es suficiente para evitar reentradas accidentales
     }
     
     // Actualizar la referencia del estado anterior
