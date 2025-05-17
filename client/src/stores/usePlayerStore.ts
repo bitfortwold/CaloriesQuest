@@ -1,7 +1,7 @@
 import { create } from "zustand";
-import { generateRandomChallenges, updateChallengeProgress } from "../data/dailyChallenges";
+import { generateRandomChallenges, updateChallengeProgress, DailyChallenge } from "../data/dailyChallenges";
 import { toast } from "sonner";
-import { createNewGarden, waterPlant, plantSeed, harvestPlant, updatePlantState } from "../data/gardenItems";
+import { createNewGarden, waterPlant, plantSeed, harvestPlant, updatePlantState, GardenPlot, Plant } from "../data/gardenItems";
 
 // Define types
 export interface Position {
@@ -27,9 +27,6 @@ export interface FoodItem {
   description: string;
   quantity?: number; // Cantidad del item que tiene el jugador
 }
-
-import { DailyChallenge } from "../data/dailyChallenges";
-import { GardenPlot, Plant } from "../data/gardenItems";
 
 export interface PlayerData {
   name: string;
@@ -85,7 +82,7 @@ interface PlayerState {
 }
 
 export const usePlayerStore = create<PlayerState>((set, get) => ({
-  // Initial state
+  // Estado inicial
   playerPosition: { x: 0, y: 0, z: 0 },
   playerData: null,
   
@@ -116,9 +113,19 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
     
     if (plot.plant !== null) return; // La parcela ya tiene una planta
     
+    // Comprobar si el jugador tiene suficientes semillas
+    if (!seed.quantity || seed.quantity <= 0) return;
+    
     // Eliminar la semilla del inventario
     const updatedSeeds = [...get().playerData!.seeds];
-    updatedSeeds.splice(seedIndex, 1);
+    updatedSeeds[seedIndex] = {
+      ...seed,
+      quantity: seed.quantity - 1
+    };
+    
+    if (updatedSeeds[seedIndex].quantity <= 0) {
+      updatedSeeds.splice(seedIndex, 1);
+    }
     
     // Plantar la semilla
     const updatedGarden = [...get().playerData!.garden];
@@ -138,14 +145,16 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
     
     // Buscar la parcela
     const plotIndex = get().playerData!.garden.findIndex(plot => plot.id === plotId);
+    
     if (plotIndex === -1) return;
     
-    const plot = get().playerData!.garden[plotIndex];
-    if (!plot.plant) return; // No hay planta para regar
-    
     // Regar la planta
+    const plot = get().playerData!.garden[plotIndex];
+    const updatedPlot = waterPlant(plot);
+    
+    // Actualizar el jardín
     const updatedGarden = [...get().playerData!.garden];
-    updatedGarden[plotIndex] = waterPlant(plot);
+    updatedGarden[plotIndex] = updatedPlot;
     
     set(state => ({
       playerData: {
@@ -165,56 +174,51 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
     const plot = get().playerData!.garden[plotIndex];
     if (!plot.plant || plot.state !== 'harvestable') return; // No hay nada para cosechar
     
-    // Cosechar la planta
-    const harvestResult = harvestPlant(plot);
+    // Guardar referencia a la planta antes de cosechar
+    const harvestedPlant = {...plot.plant};
+    const yieldAmount = harvestedPlant.harvestYield;
+    
+    // Cosechar la planta (devuelve parcela vacía)
+    const updatedPlot = harvestPlant(plot);
     const updatedGarden = [...get().playerData!.garden];
-    updatedGarden[plotIndex] = harvestResult.plot;
+    updatedGarden[plotIndex] = updatedPlot;
     
     // Añadir alimentos al inventario basados en la planta cosechada
-    if (plot.plant && harvestResult.yield > 0) {
-      const foodFromPlant = {
-        id: `harvested-${plot.plant.id}-${Date.now()}`,
-        name: plot.plant.name,
-        category: "Cultivado",
-        calories: plot.plant.nutritionalValue.calories,
-        nutritionalValue: {
-          protein: plot.plant.nutritionalValue.protein,
-          carbs: plot.plant.nutritionalValue.carbs,
-          fat: plot.plant.nutritionalValue.fat
-        },
-        sustainabilityScore: plot.plant.sustainabilityScore,
-        price: Math.round(plot.plant.price / 2), // Menor precio que comprar
-        description: `${plot.plant.name} cultivado en tu huerto. Fresco y nutritivo.`
-      };
-      
-      // Actualizar inventario y cosecha
-      set(state => ({
-        playerData: {
-          ...state.playerData!,
-          garden: updatedGarden,
-          inventory: [...state.playerData!.inventory, foodFromPlant]
-        }
-      }));
-    } else {
-      set(state => ({
-        playerData: {
-          ...state.playerData!,
-          garden: updatedGarden
-        }
-      }));
-    }
+    const foodFromPlant: FoodItem = {
+      id: `harvested-${harvestedPlant.id}-${Date.now()}`,
+      name: harvestedPlant.name,
+      category: "Cultivado",
+      calories: harvestedPlant.nutritionalValue.calories,
+      nutritionalValue: {
+        protein: harvestedPlant.nutritionalValue.protein,
+        carbs: harvestedPlant.nutritionalValue.carbs,
+        fat: harvestedPlant.nutritionalValue.fat,
+        vitamins: harvestedPlant.nutritionalValue.vitamins
+      },
+      sustainabilityScore: harvestedPlant.sustainabilityScore,
+      price: Math.round(harvestedPlant.price / 2), // Menor precio que comprar
+      description: `${harvestedPlant.name} cultivado en tu huerto. Fresco y nutritivo.`,
+      quantity: yieldAmount
+    };
+    
+    // Actualizar inventario y cosecha
+    const updatedInventory = [...get().playerData!.inventory];
+    updatedInventory.push(foodFromPlant);
+    
+    set(state => ({
+      playerData: {
+        ...state.playerData!,
+        garden: updatedGarden,
+        inventory: updatedInventory,
+        coins: state.playerData!.coins + Math.round(harvestedPlant.sustainabilityScore * 5) // Recompensa de monedas
+      }
+    }));
   },
   
   updateGarden: () => {
-    if (!get().playerData) return;
+    if (!get().playerData || !get().playerData.garden) return;
     
-    // Actualizar el estado de todas las parcelas
-    const updatedGarden = get().playerData!.garden.map(plot => {
-      if (plot.plant) {
-        return updatePlantState(plot);
-      }
-      return plot;
-    });
+    const updatedGarden = get().playerData!.garden.map(plot => updatePlantState(plot));
     
     set(state => ({
       playerData: {
@@ -227,10 +231,28 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   addSeed: (plant: Plant) => {
     if (!get().playerData) return;
     
+    // Comprobar si ya tenemos esta semilla
+    const seedIndex = get().playerData!.seeds.findIndex(seed => seed.id === plant.id);
+    const updatedSeeds = [...get().playerData!.seeds];
+    
+    if (seedIndex >= 0) {
+      // Incrementar cantidad
+      updatedSeeds[seedIndex] = {
+        ...updatedSeeds[seedIndex],
+        quantity: (updatedSeeds[seedIndex].quantity || 0) + 1
+      };
+    } else {
+      // Añadir nueva semilla
+      updatedSeeds.push({
+        ...plant,
+        quantity: 1
+      });
+    }
+    
     set(state => ({
       playerData: {
         ...state.playerData!,
-        seeds: [...state.playerData!.seeds, plant]
+        seeds: updatedSeeds
       }
     }));
   },
@@ -242,7 +264,16 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
     if (seedIndex === -1) return;
     
     const updatedSeeds = [...get().playerData!.seeds];
-    updatedSeeds.splice(seedIndex, 1);
+    if (updatedSeeds[seedIndex].quantity && updatedSeeds[seedIndex].quantity! > 1) {
+      // Decrementar cantidad
+      updatedSeeds[seedIndex] = {
+        ...updatedSeeds[seedIndex],
+        quantity: updatedSeeds[seedIndex].quantity! - 1
+      };
+    } else {
+      // Eliminar semilla
+      updatedSeeds.splice(seedIndex, 1);
+    }
     
     set(state => ({
       playerData: {
@@ -252,111 +283,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
     }));
   },
   
-  // Funciones para desafíos diarios
-  updateChallenges: () => {
-    if (!get().playerData) return;
-    
-    // Verificar si necesitamos resetear los desafíos (cada día)
-    const now = Date.now();
-    const lastReset = get().playerData?.lastChallengeReset || 0;
-    const oneDayMs = 24 * 60 * 60 * 1000;
-    
-    if (now - lastReset > oneDayMs) {
-      get().resetDailyChallenges();
-    }
-  },
-  
-  // Marca un desafío como completado y otorga recompensas
-  completeChallenge: (challengeId: string) => {
-    if (!get().playerData) return;
-    
-    const challenge = get().playerData.dailyChallenges.find(c => c.id === challengeId);
-    if (!challenge || challenge.completed) return;
-    
-    // Otorgar recompensas
-    const { coins, healthBoost, lifespan } = challenge.reward;
-    
-    // Actualizar monedas
-    get().updateCoins(coins);
-    
-    // Actualizar esperanza de vida si aplica
-    if (lifespan && get().playerData) {
-      set((state) => ({
-        playerData: state.playerData 
-          ? { 
-              ...state.playerData, 
-              estimatedLifespan: state.playerData.estimatedLifespan + lifespan
-            }
-          : null
-      }));
-    }
-    
-    // Marcar como completado
-    set((state) => ({
-      playerData: state.playerData 
-        ? { 
-            ...state.playerData, 
-            dailyChallenges: state.playerData.dailyChallenges.map(c => 
-              c.id === challengeId ? { ...c, completed: true } : c
-            )
-          }
-        : null
-    }));
-    
-    // Notificar al usuario
-    toast.success(`¡Desafío completado! Recompensa: ${coins} iHumanCoins`, {
-      description: challenge.title
-    });
-  },
-  
-  // Desbloquea un logro
-  unlockAchievement: (achievementId: string) => {
-    if (!get().playerData) return;
-    
-    // Verificar si ya tiene el logro
-    if (get().playerData.achievements.includes(achievementId)) return;
-    
-    // Añadir a la lista de logros
-    set((state) => ({
-      playerData: state.playerData 
-        ? { 
-            ...state.playerData, 
-            achievements: [...state.playerData.achievements, achievementId]
-          }
-        : null
-    }));
-    
-    // Notificar al usuario
-    toast.success("¡Nuevo logro desbloqueado!", {
-      description: achievementId
-    });
-  },
-  
-  // Reinicia los desafíos diarios
-  resetDailyChallenges: () => {
-    if (!get().playerData) return;
-    
-    // Generar nuevos desafíos aleatorios
-    const newChallenges = generateRandomChallenges();
-    
-    // Actualizar estado
-    set((state) => ({
-      playerData: state.playerData 
-        ? { 
-            ...state.playerData, 
-            dailyChallenges: newChallenges,
-            lastChallengeReset: Date.now()
-          }
-        : null
-    }));
-    
-    // Notificar al usuario
-    toast.info("¡Nuevos desafíos diarios disponibles!", {
-      description: "Completa los desafíos para ganar recompensas"
-    });
-  },
-  
-  // Actions
+  // Basic actions
   setPlayerPosition: (position: Position) => {
     set({ playerPosition: position });
   },
@@ -372,10 +299,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   updateCoins: (amount: number) => {
     set((state) => ({
       playerData: state.playerData 
-        ? { 
-            ...state.playerData, 
-            coins: Math.max(0, (state.playerData.coins || 0) + amount) 
-          }
+        ? { ...state.playerData, coins: state.playerData.coins + amount }
         : null
     }));
   },
@@ -383,184 +307,236 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   addFood: (food: FoodItem) => {
     set((state) => ({
       playerData: state.playerData 
-        ? { 
-            ...state.playerData, 
-            inventory: [...(state.playerData.inventory || []), food] 
-          }
+        ? { ...state.playerData, inventory: [...state.playerData.inventory, food] }
         : null
     }));
   },
   
   removeFood: (foodId: string) => {
-    set((state) => ({
-      playerData: state.playerData 
-        ? { 
-            ...state.playerData, 
-            inventory: state.playerData.inventory.filter(item => item.id !== foodId) 
-          }
-        : null
-    }));
+    set((state) => {
+      if (!state.playerData) return { playerData: null };
+      
+      const updatedInventory = state.playerData.inventory.filter(
+        item => item.id !== foodId
+      );
+      
+      return {
+        playerData: { ...state.playerData, inventory: updatedInventory }
+      };
+    });
   },
   
   consumeFood: (calories: number, food?: FoodItem) => {
-    // Actualizar calorías consumidas
-    set((state) => ({
-      playerData: state.playerData 
-        ? { 
-            ...state.playerData, 
-            caloriesConsumed: (state.playerData.caloriesConsumed || 0) + calories 
-          }
-        : null
-    }));
-    
-    // Si se proporciona información del alimento, actualizar desafíos relacionados
-    if (food && get().playerData) {
-      // Actualizamos desafíos relacionados con alimentos
-      const action = {
-        type: "food_consumed" as const,
-        food
-      };
+    set((state) => {
+      if (!state.playerData) return { playerData: null };
       
-      // Actualizar progreso en desafíos
-      const updatedChallenges = get().playerData!.dailyChallenges.map(challenge => 
-        updateChallengeProgress(challenge, action)
-      );
+      // Actualizar calorías consumidas
+      const updatedCaloriesConsumed = state.playerData.caloriesConsumed + calories;
       
-      // Actualizar estado con los desafíos actualizados
-      set((state) => ({
-        playerData: state.playerData 
-          ? { 
-              ...state.playerData, 
-              dailyChallenges: updatedChallenges
-            }
-          : null
-      }));
+      // Si se proporciona un alimento específico, eliminar del inventario
+      let updatedInventory = state.playerData.inventory;
+      if (food) {
+        updatedInventory = updatedInventory.filter(item => item.id !== food.id);
+      }
       
-      // Verificar si algún desafío se completó y otorgar recompensas
-      updatedChallenges.forEach(challenge => {
-        if (challenge.completed && !get().playerData!.dailyChallenges.find(c => c.id === challenge.id)?.completed) {
-          get().completeChallenge(challenge.id);
-        }
+      // Actualizar desafíos relacionados con alimentación
+      const updatedChallenges = state.playerData.dailyChallenges.map(challenge => {
+        return updateChallengeProgress(challenge, 0, food);
       });
-    }
+      
+      return {
+        playerData: {
+          ...state.playerData,
+          caloriesConsumed: updatedCaloriesConsumed,
+          inventory: updatedInventory,
+          dailyChallenges: updatedChallenges
+        }
+      };
+    });
   },
   
   increaseCaloriesBurned: (calories: number) => {
-    // Actualizar calorías quemadas
-    set((state) => ({
-      playerData: state.playerData 
-        ? { 
-            ...state.playerData, 
-            caloriesBurned: (state.playerData.caloriesBurned || 0) + calories 
-          }
-        : null
-    }));
-    
-    // Actualizar desafíos relacionados con actividad física
-    if (get().playerData) {
-      const action = {
-        type: "activity_performed" as const,
-        caloriesBurned: calories
-      };
+    set((state) => {
+      if (!state.playerData) return { playerData: null };
       
-      // Actualizar progreso en desafíos
-      const updatedChallenges = get().playerData!.dailyChallenges.map(challenge => 
-        updateChallengeProgress(challenge, action)
+      // Actualizar calorías quemadas
+      const updatedCaloriesBurned = state.playerData.caloriesBurned + calories;
+      
+      // Actualizar desafíos relacionados con actividad física
+      const updatedChallenges = state.playerData.dailyChallenges.map(challenge => {
+        return updateChallengeProgress(challenge, calories);
+      });
+      
+      return {
+        playerData: {
+          ...state.playerData,
+          caloriesBurned: updatedCaloriesBurned,
+          dailyChallenges: updatedChallenges
+        }
+      };
+    });
+  },
+  
+  calculateDailyCalories: (gender: string, age: number, weight: number, height: number, activityLevel: string) => {
+    // Cálculo del BMR (Basal Metabolic Rate) usando la fórmula de Harris-Benedict
+    let bmr = 0;
+    if (gender === "male") {
+      bmr = 66.5 + (13.75 * weight) + (5.003 * height) - (6.755 * age);
+    } else {
+      bmr = 655.1 + (9.563 * weight) + (1.850 * height) - (4.676 * age);
+    }
+    
+    // Factor de actividad
+    const activityFactor = 
+      activityLevel === "sedentary" ? 1.2 :
+      activityLevel === "light" ? 1.375 :
+      activityLevel === "moderate" ? 1.55 :
+      activityLevel === "active" ? 1.725 : 1.9;
+    
+    // Calorías diarias requeridas
+    return Math.round(bmr * activityFactor);
+  },
+  
+  calculateEstimatedLifespan: () => {
+    set((state) => {
+      if (!state.playerData) return { playerData: null };
+      
+      // Factores base según género
+      const baseLifespan = state.playerData.gender === "male" ? 76 : 81;
+      
+      // Factores de ajuste
+      let adjustments = 0;
+      
+      // Ajuste por actividad física
+      if (state.playerData.activityLevel === "sedentary") {
+        adjustments -= 2;
+      } else if (state.playerData.activityLevel === "active" || state.playerData.activityLevel === "very_active") {
+        adjustments += 3;
+      }
+      
+      // Ajuste por consumo calórico (balance)
+      const calorieBalance = state.playerData.caloriesConsumed - state.playerData.caloriesBurned;
+      const dailyCalories = state.playerData.dailyCalories;
+      
+      if (calorieBalance > dailyCalories * 1.5) { // Consumo excesivo
+        adjustments -= 2;
+      } else if (calorieBalance < dailyCalories * 0.5) { // Consumo insuficiente
+        adjustments -= 1;
+      } else if (calorieBalance >= dailyCalories * 0.8 && calorieBalance <= dailyCalories * 1.2) { // Balance óptimo
+        adjustments += 2;
+      }
+      
+      // Estimación final
+      const estimatedLifespan = baseLifespan + adjustments;
+      
+      return {
+        playerData: { ...state.playerData, estimatedLifespan }
+      };
+    });
+  },
+  
+  // Métodos para desafíos diarios
+  updateChallenges: () => {
+    set((state) => {
+      if (!state.playerData) return { playerData: null };
+      
+      // Comprobar si necesitamos reiniciar los desafíos diarios
+      const currentTime = Date.now();
+      const lastResetTime = state.playerData.lastChallengeReset;
+      const oneDayMs = 24 * 60 * 60 * 1000;
+      
+      // Si ha pasado más de un día desde el último reinicio, generar nuevos desafíos
+      if (currentTime - lastResetTime > oneDayMs) {
+        const newChallenges = generateRandomChallenges();
+        return {
+          playerData: {
+            ...state.playerData,
+            dailyChallenges: newChallenges,
+            lastChallengeReset: currentTime
+          }
+        };
+      }
+      
+      return { playerData: state.playerData };
+    });
+  },
+  
+  completeChallenge: (challengeId: string) => {
+    set((state) => {
+      if (!state.playerData) return { playerData: null };
+      
+      // Buscar el desafío
+      const challengeIndex = state.playerData.dailyChallenges.findIndex(
+        challenge => challenge.id === challengeId
       );
       
-      // Actualizar estado con los desafíos actualizados
-      set((state) => ({
-        playerData: state.playerData 
-          ? { 
-              ...state.playerData, 
-              dailyChallenges: updatedChallenges
-            }
-          : null
-      }));
+      if (challengeIndex === -1) return { playerData: state.playerData };
       
-      // Verificar si algún desafío se completó y otorgar recompensas
-      updatedChallenges.forEach(challenge => {
-        if (challenge.completed && !get().playerData!.dailyChallenges.find(c => c.id === challenge.id)?.completed) {
-          get().completeChallenge(challenge.id);
+      const challenge = state.playerData.dailyChallenges[challengeIndex];
+      
+      // Comprobar si ya está completado
+      if (challenge.completed) return { playerData: state.playerData };
+      
+      // Marcar como completado
+      const updatedChallenges = [...state.playerData.dailyChallenges];
+      updatedChallenges[challengeIndex] = {
+        ...challenge,
+        completed: true
+      };
+      
+      // Otorgar recompensas
+      const updatedCoins = state.playerData.coins + challenge.reward.coins;
+      
+      // Mostrar notificación
+      toast.success(`¡Desafío completado! +${challenge.reward.coins} iHumanCoins`);
+      
+      return {
+        playerData: {
+          ...state.playerData,
+          dailyChallenges: updatedChallenges,
+          coins: updatedCoins
         }
-      });
-    }
+      };
+    });
   },
   
-  // Harris-Benedict equation to estimate daily calorie needs
-  calculateDailyCalories: (gender, age, weight, height, activityLevel) => {
-    // Base Metabolic Rate calculation (Harris-Benedict equation)
-    let bmr = 0;
-    
-    if (gender === 'male') {
-      bmr = 88.362 + (13.397 * weight) + (4.799 * height) - (5.677 * age);
-    } else {
-      bmr = 447.593 + (9.247 * weight) + (3.098 * height) - (4.330 * age);
-    }
-    
-    // Activity multiplier
-    let activityMultiplier = 1.2; // Default to sedentary
-    
-    switch (activityLevel) {
-      case 'sedentary':
-        activityMultiplier = 1.2;
-        break;
-      case 'light':
-        activityMultiplier = 1.375;
-        break;
-      case 'moderate':
-        activityMultiplier = 1.55;
-        break;
-      case 'active':
-        activityMultiplier = 1.725;
-        break;
-      case 'veryActive':
-        activityMultiplier = 1.9;
-        break;
-    }
-    
-    // Calculate total daily calories
-    const dailyCalories = Math.round(bmr * activityMultiplier);
-    
-    // Sistema Económico Virtual: 1 Kcal = 1 IHC
-    // Actualmente, el valor calculado es exactamente las calorías diarias recomendadas
-    // basadas en criterios médicos (Harris-Benedict)
-    return dailyCalories;
-  },
-  
-  // Calculate estimated lifespan based on player habits
-  calculateEstimatedLifespan: () => {
-    const { playerData } = get();
-    if (!playerData) return;
-    
-    // Base lifespan based on current scientific averages
-    let baseLifespan = 75;
-    
-    // Adjust based on calorie management
-    const calorieRatio = playerData.caloriesConsumed / playerData.dailyCalories;
-    
-    // Penalize for under or overeating
-    let calorieImpact = 0;
-    if (calorieRatio < 0.5) {
-      calorieImpact = -2; // Undernourished
-    } else if (calorieRatio > 1.5) {
-      calorieImpact = -3; // Overeating
-    } else if (calorieRatio >= 0.8 && calorieRatio <= 1.2) {
-      calorieImpact = 2; // Balanced diet
-    }
-    
-    // Impact of physical activity
-    const activityImpact = playerData.caloriesBurned > 300 ? 2 : 0;
-    
-    // Calculate total lifespan
-    const estimatedLifespan = baseLifespan + calorieImpact + activityImpact;
-    
-    // Update state
-    set({
-      playerData: {
-        ...playerData,
-        estimatedLifespan
+  unlockAchievement: (achievementId: string) => {
+    set((state) => {
+      if (!state.playerData) return { playerData: null };
+      
+      // Comprobar si ya tiene el logro
+      if (state.playerData.achievements.includes(achievementId)) {
+        return { playerData: state.playerData };
       }
+      
+      // Añadir logro
+      const updatedAchievements = [...state.playerData.achievements, achievementId];
+      
+      // Mostrar notificación
+      toast.success(`¡Nuevo logro desbloqueado!`);
+      
+      return {
+        playerData: {
+          ...state.playerData,
+          achievements: updatedAchievements
+        }
+      };
+    });
+  },
+  
+  resetDailyChallenges: () => {
+    set((state) => {
+      if (!state.playerData) return { playerData: null };
+      
+      const newChallenges = generateRandomChallenges();
+      
+      return {
+        playerData: {
+          ...state.playerData,
+          dailyChallenges: newChallenges,
+          lastChallengeReset: Date.now()
+        }
+      };
     });
   }
 }));
