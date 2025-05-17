@@ -4,9 +4,7 @@ import { Language } from '../i18n/translations';
 export interface FoodItem {
   id: string;
   name: string;
-  nameEn: string;  // Nombre en inglés
   category: string;
-  categoryEn: string; // Categoría en inglés
   calories: number;
   nutritionalValue: {
     protein: number;
@@ -16,23 +14,9 @@ export interface FoodItem {
   sustainabilityScore: number;
   price: number;
   description: string;
-  descriptionEn: string; // Descripción en inglés
 }
 
-// Función para obtener los alimentos según el idioma seleccionado
-export function getLocalizedFoodItems(language: Language): FoodItem[] {
-  if (language === 'en') {
-    return foodItems.map(item => ({
-      ...item,
-      name: item.nameEn,
-      category: item.categoryEn,
-      description: item.descriptionEn
-    }));
-  }
-  return foodItems;
-}
-
-// Datos de alimentos con traducciones
+// Datos de alimentos
 export const foodItems = [
   {
     id: "manzana",
