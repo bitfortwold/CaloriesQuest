@@ -233,13 +233,13 @@ const Player = () => {
       // Marcar que acabamos de salir de un edificio para evitar interacciones inmediatas
       setJustExitedBuilding(true);
       
-      // SOLUCIÓN DEFINITIVA: En lugar de teleportar dependiendo del edificio,
-      // teleportamos a una posición fija y segura en el centro del mapa
-      console.log("Teleporting to safe position in the center of the map");
+      // SOLUCIÓN DEFINITIVA: Asegurar que el jugador siempre aparece en una posición segura
+      // Ponemos al jugador en una posición específica lejos de cualquier edificio
+      console.log("Teleporting to guaranteed safe position");
       setPlayerPosition({
-        x: 0, // Posición central del mapa
-        y: 0, // Altura base
-        z: 5  // Un poco adelante para evitar cualquier edificio
+        x: 15, // Bastante lejos de todos los edificios conocidos
+        y: 0,  // Altura base
+        z: 15  // Posición diagonal más alejada
       });
       
       // Restaurar la capacidad de interactuar después de un periodo más largo
