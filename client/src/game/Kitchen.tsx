@@ -14,7 +14,7 @@ interface KitchenProps {
 const Kitchen = ({ onExit }: KitchenProps) => {
   const { purchasedFood, removePurchasedFood, refrigeratorFood, pantryFood, removeFromKitchen } = useFoodStore();
   const { playerData, consumeFood, calculateEstimatedLifespan } = usePlayerStore();
-  const { t } = useLanguage(); // Hook para acceder a las traducciones
+  const { t, language } = useLanguage(); // Hook para acceder a las traducciones y el idioma actual
   
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
   const [cookingMode, setCookingMode] = useState<"guided" | "free">("guided");
@@ -97,7 +97,9 @@ const Kitchen = ({ onExit }: KitchenProps) => {
   
   // Get predefined recipes for guided mode
   const getGuidedRecipes = () => {
-    const recipes = t.language === 'en' ? [
+    // Ensure we're using the current language from the translation context
+    
+    const recipes = language === 'en' ? [
       {
         name: "Balanced Breakfast",
         description: "A nutritious breakfast with eggs, bread and fruit",
@@ -136,6 +138,10 @@ const Kitchen = ({ onExit }: KitchenProps) => {
         benefits: "Apoya la recuperación muscular y la salud en general"
       }
     ];
+    
+    // For debugging
+    console.log("Current language:", language);
+    console.log("First recipe name:", recipes[0].name);
     
     return recipes;
   };
