@@ -5,6 +5,7 @@ import { useKeyboardControls } from "@react-three/drei";
 import { useGameStateStore } from "../stores/useGameStateStore";
 import { usePlayerStore } from "../stores/usePlayerStore";
 import { useFoodStore } from "../stores/useFoodStore";
+import { getGardenPosition } from "./Buildings";
 
 const PLAYER_SPEED = 0.1;
 const INTERACTION_DISTANCE = 3;

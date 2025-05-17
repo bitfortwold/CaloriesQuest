@@ -16,8 +16,9 @@ export const getGardenPosition = () => gardenPosition;
 
 const Buildings = () => {
   const { setMarketPosition, setKitchenPosition } = useFoodStore();
-  const woodTexture = useTexture("/textures/wood.jpg");
-  const groundTexture = useTexture("/textures/ground.jpg");
+  // Usar colores en lugar de texturas para simplificar
+  const woodColor = "#8B4513";  // Marrón para madera
+  const groundColor = "#654321"; // Marrón para tierra
   
   // Set predefined positions for buildings
   const marketPos = [-8, 0, 0];
@@ -119,7 +120,7 @@ const Buildings = () => {
         {/* Kitchen base */}
         <mesh castShadow receiveShadow position={[0, 2, 0]}>
           <boxGeometry args={[6, 4, 5]} />
-          <meshStandardMaterial map={woodTexture} color="#F5F5DC" />
+          <meshStandardMaterial color="#F5F5DC" />
         </mesh>
         
         {/* Kitchen roof */}
@@ -156,6 +157,69 @@ const Buildings = () => {
         >
           KITCHEN
         </Text>
+      </group>
+      
+      {/* Garden Building */}
+      <group position={gardenPos}>
+        {/* Soil/Garden Base */}
+        <mesh receiveShadow position={[0, 0.05, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+          <planeGeometry args={[6, 6]} />
+          <meshStandardMaterial map={groundTexture} color="#553311" />
+        </mesh>
+        
+        {/* Garden fence structure */}
+        <mesh castShadow receiveShadow position={[0, 0.5, -3]}>
+          <boxGeometry args={[6, 1, 0.3]} />
+          <meshStandardMaterial map={woodTexture} color="#8B4513" />
+        </mesh>
+        
+        <mesh castShadow receiveShadow position={[0, 0.5, 3]}>
+          <boxGeometry args={[6, 1, 0.3]} />
+          <meshStandardMaterial map={woodTexture} color="#8B4513" />
+        </mesh>
+        
+        <mesh castShadow receiveShadow position={[-3, 0.5, 0]}>
+          <boxGeometry args={[0.3, 1, 6]} />
+          <meshStandardMaterial map={woodTexture} color="#8B4513" />
+        </mesh>
+        
+        <mesh castShadow receiveShadow position={[3, 0.5, 0]}>
+          <boxGeometry args={[0.3, 1, 6]} />
+          <meshStandardMaterial map={woodTexture} color="#8B4513" />
+        </mesh>
+        
+        {/* Garden Sign */}
+        <mesh castShadow position={[0, 1.5, -3.2]}>
+          <boxGeometry args={[2.5, 1, 0.2]} />
+          <meshStandardMaterial color="#A0522D" />
+        </mesh>
+        
+        <Text
+          position={[0, 1.5, -3.3]}
+          rotation={[0, 0, 0]}
+          fontSize={0.5}
+          color="#F5DEB3"
+          anchorX="center"
+          anchorY="middle"
+        >
+          GARDEN
+        </Text>
+        
+        {/* Some plants for decoration */}
+        <mesh castShadow position={[-2, 0.3, -2]}>
+          <boxGeometry args={[0.5, 0.6, 0.5]} />
+          <meshStandardMaterial color="#228B22" />
+        </mesh>
+        
+        <mesh castShadow position={[1.5, 0.4, 1.5]}>
+          <boxGeometry args={[0.5, 0.8, 0.5]} />
+          <meshStandardMaterial color="#228B22" />
+        </mesh>
+        
+        <mesh castShadow position={[-1, 0.2, 1]}>
+          <boxGeometry args={[0.5, 0.4, 0.5]} />
+          <meshStandardMaterial color="#228B22" />
+        </mesh>
       </group>
       
       {/* Interaction hints */}
