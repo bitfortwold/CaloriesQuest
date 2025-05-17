@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useLanguage } from "../i18n/LanguageContext";
 import { usePlayerStore } from "../stores/usePlayerStore";
 import { Plant, GardenPlot, calculateGrowthProgress, updatePlantState, waterPlant, plantSeed, harvestPlant } from "../data/gardenItems";
+import { toast } from "sonner"; // Para mostrar notificaciones
 
 interface GardenProps {
   onExit: () => void;
@@ -147,23 +148,66 @@ const Garden = ({ onExit }: GardenProps) => {
   };
 
   return (
-    <div className="garden-interface bg-green-50 min-h-screen p-4">
-      <div className="container mx-auto">
-        <h1 className="text-2xl font-bold text-green-800 mb-4">Huerto Virtual</h1>
-        
-        <div className="flex mb-4">
-          <div className="tabs flex">
+    <div className="fixed inset-0 z-50 bg-black bg-opacity-75 flex items-center justify-center overflow-hidden">
+      <div className="relative bg-gradient-to-b from-amber-700 to-amber-600 rounded-lg shadow-lg w-full max-w-4xl max-h-screen overflow-y-auto">
+        {/* Header con título central y botones en los extremos */}
+        <div className="flex justify-between items-center p-4 bg-amber-800 text-white">
+          <div className="flex-1">
+            {/* Botón para ver inventario en esquina superior izquierda */}
             <button 
-              className={`tab px-4 py-2 mr-2 rounded-t-lg ${activeTab === "garden" ? "bg-green-600 text-white" : "bg-green-200"}`}
+              className="relative bg-amber-600 hover:bg-amber-500 text-white py-2 px-4 rounded-md flex items-center font-semibold shadow-md"
+              onClick={() => {}}
+            >
+              <span className="mr-2">🧰</span> Inventario
+            </button>
+          </div>
+          
+          {/* Título central */}
+          <h2 className="text-2xl font-bold text-center flex-1">{t('garden.title')}</h2>
+          
+          {/* Botón de salir en esquina superior derecha */}
+          <div className="flex-1 flex justify-end">
+            <button 
+              className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-md font-semibold shadow-md"
+              onClick={() => {
+                console.log("SOLUCIÓN FINAL: Salida directa del huerto");
+                onExit();
+                
+                // Usando teleportación después para asegurar que la salida es limpia
+                setTimeout(() => {
+                  console.log("Teleportación ejecutada correctamente");
+                }, 100);
+              }}
+            >
+              {t('common.exit')}
+            </button>
+          </div>
+        </div>
+        
+        {/* Saldo de monedas */}
+        <div className="text-center p-2 bg-amber-700 text-white">
+          <span className="font-semibold">iHumanCoins: </span>
+          <span className="text-yellow-300 font-bold">{playerData?.coins || 0}</span>
+        </div>
+        
+        {/* Pestañas */}
+        <div className="bg-amber-400 mb-0">
+          <div className="flex">
+            <button
+              className={`px-5 py-3 font-semibold transition-colors ${activeTab === "garden" 
+                ? "bg-amber-300 text-amber-900 border-b-4 border-amber-500" 
+                : "bg-amber-400 text-amber-800 hover:bg-amber-300"}`}
               onClick={() => setActiveTab("garden")}
             >
-              Huerto
+              {t('garden.tab.garden')}
             </button>
-            <button 
-              className={`tab px-4 py-2 rounded-t-lg ${activeTab === "seeds" ? "bg-green-600 text-white" : "bg-green-200"}`}
+            <button
+              className={`px-5 py-3 font-semibold transition-colors ${activeTab === "seeds" 
+                ? "bg-amber-300 text-amber-900 border-b-4 border-amber-500" 
+                : "bg-amber-400 text-amber-800 hover:bg-amber-300"}`}
               onClick={() => setActiveTab("seeds")}
             >
-              Semillas
+              {t('garden.tab.seeds')}
             </button>
           </div>
         </div>
