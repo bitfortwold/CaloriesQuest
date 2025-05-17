@@ -92,12 +92,31 @@ const Kitchen = ({ onExit }: KitchenProps) => {
     calculateEstimatedLifespan();
     
     // Show success message
-    toast.success("¡Comida cocinada y consumida!");
+    toast.success(t.language === 'en' ? "Food cooked and consumed!" : "¡Comida cocinada y consumida!");
   };
   
   // Get predefined recipes for guided mode
   const getGuidedRecipes = () => {
-    const recipes = [
+    const recipes = t.language === 'en' ? [
+      {
+        name: "Balanced Breakfast",
+        description: "A nutritious breakfast with eggs, bread and fruit",
+        ingredients: ["huevos", "pan", "manzana"],
+        benefits: "High in protein and complex carbohydrates for sustained energy"
+      },
+      {
+        name: "Vegetarian Lunch",
+        description: "A plant-based lunch with beans, rice and vegetables",
+        ingredients: ["frijoles", "arroz", "brócoli", "zanahoria"],
+        benefits: "Rich in fiber and provides essential vitamins and minerals"
+      },
+      {
+        name: "Protein Dinner",
+        description: "A protein-rich dinner with chicken, potatoes and vegetables",
+        ingredients: ["pollo", "patata", "espinaca"],
+        benefits: "Supports muscle recovery and overall health"
+      }
+    ] : [
       {
         name: "Desayuno Equilibrado",
         description: "Un desayuno nutritivo con huevos, pan y fruta",
@@ -194,7 +213,9 @@ const Kitchen = ({ onExit }: KitchenProps) => {
                     <div className="grid grid-cols-2 gap-2 max-h-[400px] overflow-y-auto">
                       {refrigeratorFood.length === 0 ? (
                         <p className="text-amber-500 py-6 text-center col-span-2 bg-amber-50 rounded-md border border-amber-200">
-                          Tu refrigerador está vacío. ¡Visita el mercado para comprar alimentos frescos!
+                          {t.language === 'en' ? 
+                            "Your refrigerator is empty. Visit the market to buy fresh food!" : 
+                            "Tu refrigerador está vacío. ¡Visita el mercado para comprar alimentos frescos!"}
                         </p>
                       ) : (
                         refrigeratorFood.map((food) => (
