@@ -136,7 +136,7 @@ const Kitchen = ({ onExit }: KitchenProps) => {
           
           <div className="flex justify-between items-center">
             <div className="bg-amber-700 px-4 py-2 rounded-lg text-amber-50 border-2 border-amber-600 shadow-inner">
-              <span className="font-semibold">Calories: </span>
+              <span className="font-semibold">{t.calories}: </span>
               <span className="text-yellow-300 font-bold text-xl ml-1">
                 {playerData?.caloriesConsumed?.toFixed(0) || 0} / {playerData?.dailyCalories?.toFixed(0) || 0}
               </span>

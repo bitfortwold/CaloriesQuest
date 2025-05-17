@@ -21,6 +21,15 @@ export interface Translation {
   market: string;
   kitchen: string;
   
+  // Cocina
+  guidedRecipes: string;
+  freeCooking: string;
+  cookMeal: string;
+  refrigerator: string;
+  pantry: string;
+  refrigeratedItems: string;
+  pantryItems: string;
+  
   // Controles
   controls: string;
   moveKeys: string;
@@ -94,6 +103,15 @@ export const es: Translation = {
   market: "Mercado",
   kitchen: "Cocina",
   
+  // Cocina
+  guidedRecipes: "Recetas Guiadas",
+  freeCooking: "Cocina Libre",
+  cookMeal: "Cocinar Comida",
+  refrigerator: "Refrigerador",
+  pantry: "Despensa",
+  refrigeratedItems: "Alimentos Refrigerados",
+  pantryItems: "Alimentos de Despensa",
+  
   // Controles
   controls: "CONTROLES DEL JUEGO",
   moveKeys: "• WASD o Flechas: Moverse",
@@ -166,6 +184,15 @@ export const en: Translation = {
   // Edificios
   market: "Market",
   kitchen: "Kitchen",
+  
+  // Cocina
+  guidedRecipes: "Guided Recipes",
+  freeCooking: "Free Cooking",
+  cookMeal: "Cook Meal",
+  refrigerator: "Refrigerator",
+  pantry: "Pantry",
+  refrigeratedItems: "Refrigerated Items",
+  pantryItems: "Pantry Items",
   
   // Controles
   controls: "GAME CONTROLS",
