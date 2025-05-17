@@ -124,7 +124,13 @@ const GameUI = () => {
               <button
                 onClick={() => {
                   console.log("Force exiting garden via floating button");
-                  exitBuilding();
+                  // Primero cambiar el estado local
+                  setActiveTab(null);
+                  // Luego cambiar el estado global del juego - con un pequeño retraso
+                  setTimeout(() => {
+                    console.log("Executing exitBuilding after delay");
+                    exitBuilding();
+                  }, 50);
                 }}
                 className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg border-2 border-red-500 shadow-lg text-xl transition-all hover:scale-105"
               >
@@ -136,7 +142,11 @@ const GameUI = () => {
               <Garden onExit={() => {
                 console.log("GameUI attempting to exit garden");
                 setActiveTab(null);
-                exitBuilding();
+                // Pequeño retraso para evitar conflictos de estado
+                setTimeout(() => {
+                  console.log("Executing exitBuilding from Garden component");
+                  exitBuilding();
+                }, 50);
               }} />
             </div>
           </>
