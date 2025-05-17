@@ -12,6 +12,7 @@ import SimpleLoginForm from "./game/SimpleLoginForm";
 import AudioManager from "./game/AudioManager";
 import { SoundButton } from "./components/ui/SoundButton";
 import { useGameStateStore } from "./stores/useGameStateStore";
+import { LanguageProvider } from "./i18n/LanguageContext";
 
 // Define control keys for the game
 const controls = [
@@ -44,46 +45,48 @@ function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <div style={{ width: '100vw', height: '100vh', position: 'relative', overflow: 'hidden' }}>
-        {showCanvas && (
-          <KeyboardControls map={controls}>
-            {!isRegistered && (
-              // Si existe un perfil guardado, muestra el inicio de sesión simple
-              // Si no hay perfil guardado o se está registrando por primera vez, muestra el formulario completo
-              hasStoredProfile ? 
-                <SimpleLoginForm /> : 
-                <RegistrationForm />
-            )}
-            
-            {isRegistered && (
-              <>
-                <Canvas
-                  shadows
-                  camera={{
-                    position: [0, 5, 10],
-                    fov: 60,
-                    near: 0.1,
-                    far: 1000
-                  }}
-                  gl={{
-                    antialias: true,
-                    powerPreference: "default"
-                  }}
-                >
-                  <color attach="background" args={["#87CEEB"]} />
-                  <Suspense fallback={null}>
-                    <Game />
-                  </Suspense>
-                </Canvas>
-                <GameUI />
-              </>
-            )}
-            
-            <AudioManager />
-          </KeyboardControls>
-        )}
-        <Toaster position="bottom-right" />
-      </div>
+      <LanguageProvider>
+        <div style={{ width: '100vw', height: '100vh', position: 'relative', overflow: 'hidden' }}>
+          {showCanvas && (
+            <KeyboardControls map={controls}>
+              {!isRegistered && (
+                // Si existe un perfil guardado, muestra el inicio de sesión simple
+                // Si no hay perfil guardado o se está registrando por primera vez, muestra el formulario completo
+                hasStoredProfile ? 
+                  <SimpleLoginForm /> : 
+                  <RegistrationForm />
+              )}
+              
+              {isRegistered && (
+                <>
+                  <Canvas
+                    shadows
+                    camera={{
+                      position: [0, 5, 10],
+                      fov: 60,
+                      near: 0.1,
+                      far: 1000
+                    }}
+                    gl={{
+                      antialias: true,
+                      powerPreference: "default"
+                    }}
+                  >
+                    <color attach="background" args={["#87CEEB"]} />
+                    <Suspense fallback={null}>
+                      <Game />
+                    </Suspense>
+                  </Canvas>
+                  <GameUI />
+                </>
+              )}
+              
+              <AudioManager />
+            </KeyboardControls>
+          )}
+          <Toaster position="bottom-right" />
+        </div>
+      </LanguageProvider>
     </QueryClientProvider>
   );
 }

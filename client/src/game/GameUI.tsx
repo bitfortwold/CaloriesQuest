@@ -3,15 +3,18 @@ import { createPortal } from "react-dom";
 import { useGameStateStore } from "../stores/useGameStateStore";
 import { usePlayerStore } from "../stores/usePlayerStore";
 import { SoundButton } from "../components/ui/SoundButton";
+import { LanguageSelector } from "../components/ui/LanguageSelector";
+import { useLanguage } from "../i18n/LanguageContext";
 import Market from "./Market";
 import Kitchen from "./Kitchen";
 import Activities from "./Activities";
 import ProfilePanel from "./ProfilePanel";
 
 const GameUI = () => {
-  // Access game state
+  // Access game state and translations
   const { gameState, exitBuilding } = useGameStateStore();
   const { playerData } = usePlayerStore();
+  const { t } = useLanguage(); // Hook para acceder a las traducciones
   
   // Track whether DOM is ready for portals
   const [domReady, setDomReady] = useState(false);
@@ -118,7 +121,7 @@ const GameUI = () => {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
                   </div>
-                  <span className="text-xl">PLAYER STATS</span>
+                  <span className="text-xl">{t.playerStats}</span>
                   <div className="ml-2">
                     <svg xmlns="http://www.w3.org/2000/svg" className={`h-5 w-5 transition-transform ${showProfilePanel ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -135,7 +138,7 @@ const GameUI = () => {
                           className="bg-blue-600 hover:bg-blue-700 text-white text-sm px-3 py-1 rounded flex-1 transition-colors"
                           onClick={() => setActiveTab('profile')}
                         >
-                          Perfil
+                          {t.profile}
                         </button>
                         <button 
                           className="bg-yellow-600 hover:bg-yellow-700 text-white text-sm px-3 py-1 rounded flex-1 transition-colors"
@@ -149,13 +152,13 @@ const GameUI = () => {
                           }}
                           title="Ver instrucciones"
                         >
-                          Ayuda
+                          {t.help}
                         </button>
                         <button 
                           className="bg-red-600 hover:bg-red-700 text-white text-sm px-3 py-1 rounded flex-1 transition-colors"
                           onClick={() => useGameStateStore.getState().logout()}
                         >
-                          Salir
+                          {t.exit}
                         </button>
                       </div>
                     </div>
@@ -166,13 +169,13 @@ const GameUI = () => {
                       className="bg-black/95 text-white p-3 rounded-lg shadow-lg w-full mb-3"
                       style={{ display: 'none' }}
                     >
-                      <h3 className="text-center font-bold mb-2 text-blue-300 text-xs">CONTROLES DEL JUEGO</h3>
+                      <h3 className="text-center font-bold mb-2 text-blue-300 text-xs">{t.controls}</h3>
                       <div className="space-y-1 text-xs">
-                        <p>• WASD o Flechas: Moverse</p>
-                        <p>• Click: Moverse/interactuar</p>
-                        <p>• E/Espacio: Interactuar</p>
-                        <p>• Botón izq. + arrastrar: Rotar</p>
-                        <p>• Rueda: Acercar/alejar</p>
+                        <p>{t.moveKeys}</p>
+                        <p>{t.clickToMove}</p>
+                        <p>{t.interactKey}</p>
+                        <p>{t.rotateCamera}</p>
+                        <p>{t.zoomCamera}</p>
                       </div>
                     </div>
                     
@@ -183,7 +186,7 @@ const GameUI = () => {
                     <div className="space-y-4">
                       <div>
                         <div className="flex justify-between items-center mb-1">
-                          <span className="text-yellow-400 font-semibold">Health:</span>
+                          <span className="text-yellow-400 font-semibold">{t.health}:</span>
                           <span className="text-yellow-400 font-bold">50%</span>
                         </div>
                         <div className="w-full bg-gray-800 rounded-full h-3 overflow-hidden">
@@ -193,7 +196,7 @@ const GameUI = () => {
                       
                       <div>
                         <div className="flex justify-between items-center mb-1">
-                          <span className="text-blue-400 font-semibold">Calories:</span>
+                          <span className="text-blue-400 font-semibold">{t.calories}:</span>
                           <span className="text-white">{playerData?.caloriesConsumed || 0}/{playerData?.dailyCalories?.toFixed(0) || 0}</span>
                         </div>
                         <div className="w-full bg-gray-800 rounded-full h-3 overflow-hidden">
