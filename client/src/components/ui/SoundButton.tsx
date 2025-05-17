@@ -42,7 +42,7 @@ export const SoundButton = () => {
   }, []);
   
   return (
-    <div className="fixed left-4 bottom-4 z-[1000]" ref={soundButtonRef}>
+    <div className="fixed left-4 bottom-20 z-[1000]" ref={soundButtonRef}>
       <div className="relative">
         {/* Botón principal de sonido */}
         <button
