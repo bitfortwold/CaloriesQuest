@@ -5,6 +5,7 @@ import { useGameStateStore } from "../stores/useGameStateStore";
 import { usePlayerStore } from "../stores/usePlayerStore";
 import { useLanguage } from "../i18n/LanguageContext";
 import { Language } from "../i18n/translations";
+import { generateRandomChallenges } from "../data/dailyChallenges";
 
 // Clave para almacenar datos de usuario en localStorage
 const USER_DATA_KEY = "caloric_consumption_user_data";
@@ -164,7 +165,11 @@ const RegistrationForm = () => {
         caloriesBurned: 0,
         dailyCalories: 0, // Will be calculated next
         estimatedLifespan: 75, // Default value
-        inventory: []
+        inventory: [],
+        // Inicializar nuevas funcionalidades
+        dailyChallenges: generateRandomChallenges(),
+        lastChallengeReset: Date.now(),
+        achievements: []
       };
       
       // Calculate daily calorie needs based on profile
@@ -178,10 +183,14 @@ const RegistrationForm = () => {
       
       // Update player data with calculated calories
       // Actualizar player data con calorías calculadas y monedas (1 Kcal = 1 IHC)
+      // Mantener los desafíos diarios y logros cuando actualizamos los datos
       setPlayerData({
         ...playerData,
         dailyCalories,
-        coins: dailyCalories // Sistema Económico Virtual: 1 Kcal = 1 IHC
+        coins: dailyCalories, // Sistema Económico Virtual: 1 Kcal = 1 IHC
+        dailyChallenges: playerData.dailyChallenges,
+        lastChallengeReset: playerData.lastChallengeReset,
+        achievements: playerData.achievements
       });
       
       // Guardar datos en localStorage para futuras sesiones

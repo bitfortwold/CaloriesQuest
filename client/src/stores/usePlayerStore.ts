@@ -25,6 +25,7 @@ export interface FoodItem {
 }
 
 import { DailyChallenge } from "../data/dailyChallenges";
+import { GardenPlot, Plant } from "../data/gardenItems";
 
 export interface PlayerData {
   name: string;
@@ -42,6 +43,8 @@ export interface PlayerData {
   dailyChallenges: DailyChallenge[];
   lastChallengeReset: number; // Timestamp de la última vez que se resetearon los desafíos
   achievements: string[]; // Lista de logros obtenidos
+  garden: GardenPlot[]; // Huerto virtual con parcelas
+  seeds: Plant[]; // Semillas disponibles para plantar
 }
 
 // Define store state
@@ -65,6 +68,15 @@ interface PlayerState {
   completeChallenge: (challengeId: string) => void; // Marca un desafío como completado y otorga recompensa
   unlockAchievement: (achievementId: string) => void; // Desbloquea un logro
   resetDailyChallenges: () => void; // Reinicia los desafíos diarios
+  
+  // Huerto virtual
+  initializeGarden: () => void; // Inicializa el huerto virtual
+  plantSeed: (plotId: string, plantId: string) => void; // Planta una semilla en una parcela
+  waterPlot: (plotId: string) => void; // Riega una parcela
+  harvestPlot: (plotId: string) => void; // Cosecha una parcela
+  updateGarden: () => void; // Actualiza el estado del huerto
+  addSeed: (plant: Plant) => void; // Añade una semilla al inventario
+  removeSeed: (plantId: string) => void; // Elimina una semilla del inventario
 }
 
 export const usePlayerStore = create<PlayerState>((set, get) => ({

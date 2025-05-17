@@ -113,7 +113,10 @@ const SimpleLoginForm = () => {
         // Inicializar nuevas funcionalidades
         dailyChallenges: generateRandomChallenges(),
         lastChallengeReset: Date.now(),
-        achievements: []
+        achievements: [],
+        // Inicializar huerto virtual
+        garden: createNewGarden(9),
+        seeds: []
       };
       
       // Actualizar estado global
@@ -150,12 +153,16 @@ const SimpleLoginForm = () => {
             height: Number(userData.height),
             weight: Number(userData.weight),
             activityLevel: userData.activityLevel,
-            coins: 100,
+            coins: dailyCalories, // 1 Kcal = 1 IHC
             caloriesConsumed: 0,
             caloriesBurned: 0,
             dailyCalories,
             estimatedLifespan: 80,
-            inventory: []
+            inventory: [],
+            // Inicializar nuevas funcionalidades
+            dailyChallenges: generateRandomChallenges(),
+            lastChallengeReset: Date.now(),
+            achievements: []
           };
           
           // Actualizar estado global
