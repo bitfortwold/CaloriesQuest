@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { useEffect, useState } from "react";
-import { Text, useTexture } from "@react-three/drei"; 
+import { Text } from "@react-three/drei"; 
 import { useFoodStore } from "../stores/useFoodStore";
 
 // Creamos una interfaz para la posición del huerto
@@ -21,23 +21,16 @@ const Buildings = () => {
   const groundColor = "#654321"; // Marrón para tierra
   
   // Set predefined positions for buildings
-  const marketPos = [-8, 0, 0];
-  const kitchenPos = [8, 0, 0];
-  const gardenPos = [0, 0, -8]; // Posición del huerto detrás del punto de inicio
+  const marketPos = new THREE.Vector3(-8, 0, 0);
+  const kitchenPos = new THREE.Vector3(8, 0, 0);
+  const gardenPos = new THREE.Vector3(0, 0, -8); // Posición del huerto detrás del punto de inicio
   
   useEffect(() => {
     // Register building positions in the store
-    setMarketPosition({ x: marketPos[0], y: marketPos[1], z: marketPos[2] });
-    setKitchenPosition({ x: kitchenPos[0], y: kitchenPos[1], z: kitchenPos[2] });
-    gardenPosition = { x: gardenPos[0], y: gardenPos[1], z: gardenPos[2] };
-    
-    // Configure textures
-    woodTexture.wrapS = woodTexture.wrapT = THREE.RepeatWrapping;
-    woodTexture.repeat.set(2, 2);
-    
-    groundTexture.wrapS = groundTexture.wrapT = THREE.RepeatWrapping;
-    groundTexture.repeat.set(4, 4);
-  }, [setMarketPosition, setKitchenPosition, woodTexture, groundTexture]);
+    setMarketPosition({ x: marketPos.x, y: marketPos.y, z: marketPos.z });
+    setKitchenPosition({ x: kitchenPos.x, y: kitchenPos.y, z: kitchenPos.z });
+    gardenPosition = { x: gardenPos.x, y: gardenPos.y, z: gardenPos.z };
+  }, [setMarketPosition, setKitchenPosition]);
   
   return (
     <group>
@@ -46,7 +39,7 @@ const Buildings = () => {
         {/* Market base/stall */}
         <mesh castShadow receiveShadow position={[0, 1.5, 0]}>
           <boxGeometry args={[5, 3, 4]} />
-          <meshStandardMaterial map={woodTexture} color="#CD853F" />
+          <meshStandardMaterial color="#CD853F" />
         </mesh>
         
         {/* Market roof */}
@@ -164,28 +157,28 @@ const Buildings = () => {
         {/* Soil/Garden Base */}
         <mesh receiveShadow position={[0, 0.05, 0]} rotation={[-Math.PI / 2, 0, 0]}>
           <planeGeometry args={[6, 6]} />
-          <meshStandardMaterial map={groundTexture} color="#553311" />
+          <meshStandardMaterial color="#553311" />
         </mesh>
         
         {/* Garden fence structure */}
         <mesh castShadow receiveShadow position={[0, 0.5, -3]}>
           <boxGeometry args={[6, 1, 0.3]} />
-          <meshStandardMaterial map={woodTexture} color="#8B4513" />
+          <meshStandardMaterial color="#8B4513" />
         </mesh>
         
         <mesh castShadow receiveShadow position={[0, 0.5, 3]}>
           <boxGeometry args={[6, 1, 0.3]} />
-          <meshStandardMaterial map={woodTexture} color="#8B4513" />
+          <meshStandardMaterial color="#8B4513" />
         </mesh>
         
         <mesh castShadow receiveShadow position={[-3, 0.5, 0]}>
           <boxGeometry args={[0.3, 1, 6]} />
-          <meshStandardMaterial map={woodTexture} color="#8B4513" />
+          <meshStandardMaterial color="#8B4513" />
         </mesh>
         
         <mesh castShadow receiveShadow position={[3, 0.5, 0]}>
           <boxGeometry args={[0.3, 1, 6]} />
-          <meshStandardMaterial map={woodTexture} color="#8B4513" />
+          <meshStandardMaterial color="#8B4513" />
         </mesh>
         
         {/* Garden Sign */}
@@ -236,6 +229,17 @@ const Buildings = () => {
       
       <Text
         position={[8, 6, 0]}
+        rotation={[0, 0, 0]}
+        fontSize={0.4}
+        color="black"
+        anchorX="center"
+        anchorY="middle"
+      >
+        Press E to interact
+      </Text>
+      
+      <Text
+        position={[0, 2, -8]}
         rotation={[0, 0, 0]}
         fontSize={0.4}
         color="black"

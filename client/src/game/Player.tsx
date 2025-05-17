@@ -21,6 +21,8 @@ const Player = () => {
     increaseCaloriesBurned
   } = usePlayerStore();
   const { marketPosition, kitchenPosition } = useFoodStore();
+  // Obtener la posición del huerto
+  const gardenPosition = getGardenPosition();
   
   // Subscribe to keyboard controls
   const [, getKeys] = useKeyboardControls();
