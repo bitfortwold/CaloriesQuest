@@ -127,6 +127,36 @@ const Player = () => {
         return;
       }
       
+      // Comprobar la distancia al huerto
+      const distToGarden = Math.sqrt(
+        Math.pow(playerPosition.x - gardenPosition.x, 2) +
+        Math.pow(playerPosition.z - gardenPosition.z, 2)
+      );
+      
+      if (distToGarden < INTERACTION_DISTANCE) {
+        // Primero mover al jugador cerca del huerto
+        targetPoint.copy(new THREE.Vector3(gardenPosition.x, playerPosition.y, gardenPosition.z));
+        targetPoint.addScaledVector(new THREE.Vector3(1, 0, 1).normalize(), 1.5); // Posición ligeramente alejada
+        setTargetPosition(targetPoint);
+        setIsMovingToTarget(true);
+        
+        // Calcular dirección para mirar hacia el huerto
+        const direction = new THREE.Vector3().subVectors(
+          new THREE.Vector3(gardenPosition.x, playerPosition.y, gardenPosition.z),
+          new THREE.Vector3(targetPoint.x, playerPosition.y, targetPoint.z)
+        );
+        const targetRotation = Math.atan2(direction.x, direction.z);
+        setRotationY(targetRotation);
+        
+        // Entrar al huerto después de un breve retraso
+        setTimeout(() => {
+          console.log("Entering garden");
+          enterBuilding("garden");
+        }, 500);
+        
+        return;
+      }
+      
       // Si no está cerca de un edificio, simplemente moverse allí
       targetPoint.y = playerPosition.y;
       setTargetPosition(targetPoint);

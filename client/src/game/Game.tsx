@@ -9,6 +9,7 @@ import Environment from "./Environment";
 import Player from "./Player";
 import Buildings from "./Buildings";
 import GameUI from "./GameUI";
+import Garden from "./Garden";
 
 const Game = () => {
   const { gameState, setGameState, enterBuilding, exitBuilding } = useGameStateStore();
@@ -131,6 +132,13 @@ const Game = () => {
           <Player />
           <Buildings />
         </>
+      )}
+      
+      {/* Mostrar el huerto cuando el jugador interactúa con él */}
+      {gameState === "garden" && (
+        <Html fullscreen>
+          <Garden onExit={exitBuilding} />
+        </Html>
       )}
       
       {/* GameUI removed from 3D context - it's rendered through a portal */}

@@ -9,7 +9,7 @@ interface GameStateStore {
   // Actions
   setGameState: (state: GameState) => void;
   setIsRegistered: (registered: boolean) => void;
-  enterBuilding: (building: "market" | "kitchen") => void;
+  enterBuilding: (building: "market" | "kitchen" | "garden") => void;
   exitBuilding: () => void;
   logout: () => void; // Función para cerrar sesión
 }
