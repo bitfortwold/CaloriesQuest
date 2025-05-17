@@ -28,75 +28,41 @@ const Market = ({ onExit }: MarketProps) => {
   // Get all categories and translate them if needed
   const { language } = useLanguage();
   
-  // Traducciones de categorías
-  const categoryTranslations: Record<string, string> = {
-    'frutas': 'fruits',
-    'verduras': 'vegetables',
-    'proteínas': 'proteins',
-    'cereales': 'cereals',
-    'lácteos': 'dairy',
-    'all': 'all'
-  };
-  
-  // Traducciones de nombres de alimentos
-  const nameTranslations: Record<string, string> = {
-    'Manzana': 'Apple',
-    'Plátano': 'Banana',
-    'Brócoli': 'Broccoli',
-    'Zanahoria': 'Carrot',
-    'Pechuga de Pollo': 'Chicken Breast',
-    'Bistec de Ternera': 'Beef Steak',
-    'Pescado Sostenible': 'Sustainable Fish',
-    'Arroz Integral': 'Brown Rice',
-    'Pan Integral': 'Whole Wheat Bread',
-    'Patata': 'Potato',
-    'Leche': 'Milk',
-    'Queso': 'Cheese',
-    'Huevos': 'Eggs',
-    'Frijoles': 'Beans',
-    'Espinaca': 'Spinach'
-  };
-  
-  // Traducciones de descripciones
-  const descriptionTranslations: Record<string, string> = {
-    "Una manzana crujiente, rica en fibra y vitaminas. Bajo impacto ambiental.": 
-      "A crisp apple, rich in fiber and vitamins. Low environmental impact.",
-    "Plátano rico en potasio, excelente para la energía. Impacto moderado en transporte.": 
-      "Banana rich in potassium, excellent for energy. Moderate impact on transportation.",
-    "Brócoli denso en nutrientes, alto en fibra y vitaminas C y K. Bajo consumo de agua.": 
-      "Broccoli dense in nutrients, high in fiber and vitamins C and K. Low water consumption.",
-    "Zanahorias ricas en beta-caroteno. Bajo impacto ambiental en su cultivo.": 
-      "Carrots rich in beta-carotene. Low environmental impact in cultivation.",
-    "Fuente de proteína magra. Impacto ambiental moderado comparado con la carne roja.": 
-      "Source of lean protein. Moderate environmental impact compared to red meat.",
-    "Alto en hierro y proteínas. Alto impacto ambiental con uso significativo de agua.": 
-      "High in iron and protein. High environmental impact with significant water usage.",
-    "Rico en ácidos grasos omega-3. Capturado de forma sostenible con mínimo impacto en el ecosistema.": 
-      "Rich in omega-3 fatty acids. Sustainably caught with minimal impact on the ecosystem.",
-    "Arroz integral con fibra. Uso moderado de agua para su cultivo.": 
-      "Brown rice with fiber. Moderate water usage for cultivation.",
-    "Carbohidratos complejos y fibra. Menor impacto ambiental que el pan refinado.": 
-      "Complex carbohydrates and fiber. Lower environmental impact than refined bread.",
-    "Hortaliza de raíz versátil. Requisitos relativamente bajos de agua y tierra para su cultivo.": 
-      "Versatile root vegetable. Relatively low water and land requirements for cultivation.",
-    "Buena fuente de calcio. Impacto ambiental moderado por la producción láctea.": 
-      "Good source of calcium. Moderate environmental impact from dairy production.",
-    "Alto en calcio y proteínas. Mayor impacto ambiental debido al procesamiento lácteo.": 
-      "High in calcium and protein. Higher environmental impact due to dairy processing.",
-    "Fuente de proteínas rica en nutrientes. Impacto ambiental moderado comparado con la carne.": 
-      "Nutrient-rich protein source. Moderate environmental impact compared to meat.",
-    "Excelente fuente de proteína vegetal. Bajo impacto ambiental y fijación de nitrógeno para el suelo.": 
-      "Excellent source of plant protein. Low environmental impact and nitrogen fixation for soil.",
-    "Rica en hierro y vitaminas. Baja huella ambiental en su cultivo.": 
-      "Rich in iron and vitamins. Low environmental footprint in cultivation."
-  };
-  
-  // Función para traducir según el idioma seleccionado
-  const translate = (text: string, translations: Record<string, string>) => {
-    if (language === 'en' && translations[text]) {
-      return translations[text];
-    }
-    return text;
+  // Textos de la interfaz según el idioma
+  const uiTexts = language === 'en' ? {
+    carbos: "Carbs",
+    proteinas: "Proteins",
+    grasas: "Fats",
+    sostenibilidad: "Sustainability",
+    comprar: "Buy",
+    agregar: "Add",
+    todoItems: "All",
+    frutas: "Fruits",
+    verduras: "Vegetables",
+    proteínas: "Proteins",
+    cereales: "Cereals",
+    lácteos: "Dairy",
+    all: "All",
+    noSuficiente: "You don't have enough iHumancoins!",
+    compraExitosa: "Purchase completed successfully! Your items have been delivered to your kitchen.",
+    itemComprado: "purchased successfully"
+  } : {
+    carbos: "Carbos",
+    proteinas: "Proteínas",
+    grasas: "Grasas",
+    sostenibilidad: "Sostenibilidad",
+    comprar: "Comprar",
+    agregar: "Agregar",
+    todoItems: "Todos",
+    frutas: "Frutas",
+    verduras: "Verduras",
+    proteínas: "Proteínas",
+    cereales: "Cereales",
+    lácteos: "Lácteos",
+    all: "Todos",
+    noSuficiente: "¡No tienes suficientes iHumancoins!",
+    compraExitosa: "¡Compra completada con éxito! Tus artículos han sido entregados en tu cocina.",
+    itemComprado: "comprado correctamente"
   };
   
   // Filtrar alimentos por categoría
@@ -104,7 +70,7 @@ const Market = ({ onExit }: MarketProps) => {
     ? foodItems 
     : foodItems.filter(item => item.category === selectedCategory);
   
-  // Get all categories
+  // Obtener todas las categorías
   const allCategories = ["all", ...Array.from(new Set(foodItems.map(item => item.category)))];
   const categories = allCategories;
   
@@ -266,12 +232,12 @@ const Market = ({ onExit }: MarketProps) => {
                   : 'bg-amber-300 text-amber-700 border border-amber-400 opacity-80 hover:opacity-100'
               }`}
             >
-              {category === 'all' ? 'Todos' : 
-               category === 'frutas' ? 'Frutas' :
-               category === 'verduras' ? 'Verduras' :
-               category === 'proteínas' ? 'Proteínas' :
-               category === 'cereales' ? 'Cereales' :
-               category === 'lácteos' ? 'Lácteos' :
+              {category === 'all' ? (language === 'en' ? 'All' : 'Todos') : 
+               category === 'frutas' ? (language === 'en' ? 'Fruits' : 'Frutas') :
+               category === 'verduras' ? (language === 'en' ? 'Vegetables' : 'Verduras') :
+               category === 'proteínas' ? (language === 'en' ? 'Proteins' : 'Proteínas') :
+               category === 'cereales' ? (language === 'en' ? 'Cereals' : 'Cereales') :
+               category === 'lácteos' ? (language === 'en' ? 'Dairy' : 'Lácteos') :
                category}
             </button>
           ))}
