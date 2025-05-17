@@ -29,57 +29,198 @@ const Market = ({ onExit }: MarketProps) => {
   const { language } = useLanguage();
   
   // Textos de la interfaz según el idioma
-  const uiTexts = language === 'en' ? {
-    carbos: "Carbs",
-    proteinas: "Proteins",
-    grasas: "Fats",
-    sostenibilidad: "Sustainability",
-    comprar: "Buy",
-    agregar: "Add",
-    todoItems: "All",
-    frutas: "Fruits",
-    verduras: "Vegetables",
-    proteínas: "Proteins",
-    cereales: "Cereals",
-    lácteos: "Dairy",
-    all: "All",
-    noSuficiente: "You don't have enough iHumancoins!",
-    compraExitosa: "Purchase completed successfully! Your items have been delivered to your kitchen.",
-    itemComprado: "purchased successfully"
-  } : language === 'ca' ? {
-    carbos: "Carbohidrats",
-    proteinas: "Proteïnes",
-    grasas: "Greixos",
-    sostenibilidad: "Sostenibilitat",
-    comprar: "Comprar",
-    agregar: "Afegir",
-    todoItems: "Tots",
-    frutas: "Fruites",
-    verduras: "Verdures",
-    proteínas: "Proteïnes",
-    cereales: "Cereals",
-    lácteos: "Làctics",
-    all: "Tots",
-    noSuficiente: "No tens prou iHumancoins!",
-    compraExitosa: "Compra completada amb èxit! Els teus articles han estat lliurats a la teva cuina.",
-    itemComprado: "comprat correctament"
-  } : {
-    carbos: "Carbos",
-    proteinas: "Proteínas",
-    grasas: "Grasas",
-    sostenibilidad: "Sostenibilidad",
-    comprar: "Comprar",
-    agregar: "Agregar",
-    todoItems: "Todos",
-    frutas: "Frutas",
-    verduras: "Verduras",
-    proteínas: "Proteínas",
-    cereales: "Cereales",
-    lácteos: "Lácteos",
-    all: "Todos",
-    noSuficiente: "¡No tienes suficientes iHumancoins!",
-    compraExitosa: "¡Compra completada con éxito! Tus artículos han sido entregados en tu cocina.",
-    itemComprado: "comprado correctamente"
+  const uiTexts = (() => {
+    if (language === 'en') {
+      return {
+        carbos: "Carbs",
+        proteinas: "Proteins",
+        grasas: "Fats",
+        sostenibilidad: "Sustainability",
+        comprar: "Buy",
+        agregar: "Add",
+        todoItems: "All",
+        frutas: "Fruits",
+        verduras: "Vegetables",
+        proteínas: "Proteins",
+        cereales: "Cereals",
+        lácteos: "Dairy",
+        all: "All",
+        noSuficiente: "You don't have enough iHumancoins!",
+        compraExitosa: "Purchase completed successfully! Your items have been delivered to your kitchen.",
+        itemComprado: "purchased successfully",
+        calories: "Calories:",
+        carbs: "Carbs:",
+        proteins: "Proteins:",
+        fats: "Fats:",
+        sustainability: "Sustainability:"
+      };
+    } else if (language === 'ca') {
+      return {
+        carbos: "Carbohidrats",
+        proteinas: "Proteïnes",
+        grasas: "Greixos",
+        sostenibilidad: "Sostenibilitat",
+        comprar: "Comprar",
+        agregar: "Afegir",
+        todoItems: "Tots",
+        frutas: "Fruites",
+        verduras: "Verdures",
+        proteínas: "Proteïnes",
+        cereales: "Cereals",
+        lácteos: "Làctics",
+        all: "Tots",
+        noSuficiente: "No tens prou iHumancoins!",
+        compraExitosa: "Compra completada amb èxit! Els teus articles han estat lliurats a la teva cuina.",
+        itemComprado: "comprat correctament",
+        calories: "Calories:",
+        carbs: "Carbohidrats:",
+        proteins: "Proteïnes:",
+        fats: "Greixos:",
+        sustainability: "Sostenibilitat:"
+      };
+    } else {
+      return {
+        carbos: "Carbos",
+        proteinas: "Proteínas",
+        grasas: "Grasas",
+        sostenibilidad: "Sostenibilidad",
+        comprar: "Comprar",
+        agregar: "Agregar",
+        todoItems: "Todos",
+        frutas: "Frutas",
+        verduras: "Verduras",
+        proteínas: "Proteínas",
+        cereales: "Cereales",
+        lácteos: "Lácteos",
+        all: "Todos",
+        noSuficiente: "¡No tienes suficientes iHumancoins!",
+        compraExitosa: "¡Compra completada con éxito! Tus artículos han sido entregados en tu cocina.",
+        itemComprado: "comprado correctamente",
+        calories: "Calorías:",
+        carbs: "Carbos:",
+        proteins: "Proteínas:",
+        fats: "Grasas:",
+        sustainability: "Sostenibilidad:"
+      };
+    }
+  })();
+  
+  // Función para traducir los nombres de alimentos
+  const translateFoodName = (foodName: string): string => {
+    if (language === 'en') {
+      const translations: Record<string, string> = {
+        'Manzana': 'Apple',
+        'Plátano': 'Banana',
+        'Brócoli': 'Broccoli',
+        'Zanahoria': 'Carrot',
+        'Pechuga de Pollo': 'Chicken Breast',
+        'Bistec de Ternera': 'Beef Steak',
+        'Pescado Sostenible': 'Sustainable Fish',
+        'Arroz Integral': 'Brown Rice',
+        'Pan Integral': 'Whole Wheat Bread',
+        'Patata': 'Potato',
+        'Leche': 'Milk',
+        'Queso': 'Cheese',
+        'Huevos': 'Eggs',
+        'Frijoles': 'Beans',
+        'Espinaca': 'Spinach'
+      };
+      return translations[foodName] || foodName;
+    } else if (language === 'ca') {
+      const translations: Record<string, string> = {
+        'Manzana': 'Poma',
+        'Plátano': 'Plàtan',
+        'Brócoli': 'Bròquil',
+        'Zanahoria': 'Pastanaga',
+        'Pechuga de Pollo': 'Pit de Pollastre',
+        'Bistec de Ternera': 'Bistec de Vedella',
+        'Pescado Sostenible': 'Peix Sostenible',
+        'Arroz Integral': 'Arròs Integral',
+        'Pan Integral': 'Pa Integral',
+        'Patata': 'Patata',
+        'Leche': 'Llet',
+        'Queso': 'Formatge',
+        'Huevos': 'Ous',
+        'Frijoles': 'Mongetes',
+        'Espinaca': 'Espinacs'
+      };
+      return translations[foodName] || foodName;
+    }
+    return foodName; // Español por defecto
+  };
+
+  // Función para traducir las descripciones de alimentos
+  const translateFoodDescription = (desc: string): string => {
+    if (language === 'en') {
+      const translations: Record<string, string> = {
+        "Una manzana crujiente, rica en fibra y vitaminas. Bajo impacto ambiental.": 
+          "A crisp apple, rich in fiber and vitamins. Low environmental impact.",
+        "Plátano rico en potasio, excelente para la energía. Impacto moderado en transporte.":
+          "Banana rich in potassium, excellent for energy. Moderate impact on transportation.",
+        "Brócoli denso en nutrientes, alto en fibra y vitaminas C y K. Bajo consumo de agua.":
+          "Broccoli dense in nutrients, high in fiber and vitamins C and K. Low water consumption.",
+        "Zanahorias ricas en beta-caroteno. Bajo impacto ambiental en su cultivo.":
+          "Carrots rich in beta-carotene. Low environmental impact in cultivation.",
+        "Fuente de proteína magra. Impacto ambiental moderado comparado con la carne roja.":
+          "Source of lean protein. Moderate environmental impact compared to red meat.",
+        "Alto en hierro y proteínas. Alto impacto ambiental con uso significativo de agua.":
+          "High in iron and protein. High environmental impact with significant water usage.",
+        "Rico en ácidos grasos omega-3. Capturado de forma sostenible con mínimo impacto en el ecosistema.":
+          "Rich in omega-3 fatty acids. Sustainably caught with minimal impact on the ecosystem.",
+        "Arroz integral con fibra. Uso moderado de agua para su cultivo.":
+          "Brown rice with fiber. Moderate water usage for cultivation.",
+        "Carbohidratos complejos y fibra. Menor impacto ambiental que el pan refinado.":
+          "Complex carbohydrates and fiber. Lower environmental impact than refined bread.",
+        "Hortaliza de raíz versátil. Requisitos relativamente bajos de agua y tierra para su cultivo.":
+          "Versatile root vegetable. Relatively low water and land requirements for cultivation.",
+        "Buena fuente de calcio. Impacto ambiental moderado por la producción láctea.":
+          "Good source of calcium. Moderate environmental impact from dairy production.",
+        "Alto en calcio y proteínas. Mayor impacto ambiental debido al procesamiento lácteo.":
+          "High in calcium and protein. Higher environmental impact due to dairy processing.",
+        "Fuente de proteínas rica en nutrientes. Impacto ambiental moderado comparado con la carne.":
+          "Nutrient-rich protein source. Moderate environmental impact compared to meat.",
+        "Excelente fuente de proteína vegetal. Bajo impacto ambiental y fijación de nitrógeno para el suelo.":
+          "Excellent source of plant protein. Low environmental impact and nitrogen fixation for soil.",
+        "Rica en hierro y vitaminas. Baja huella ambiental en su cultivo.":
+          "Rich in iron and vitamins. Low environmental footprint in cultivation."
+      };
+      return translations[desc] || desc;
+    } else if (language === 'ca') {
+      const translations: Record<string, string> = {
+        "Una manzana crujiente, rica en fibra y vitaminas. Bajo impacto ambiental.": 
+          "Una poma cruixent, rica en fibra i vitamines. Baix impacte ambiental.",
+        "Plátano rico en potasio, excelente para la energía. Impacto moderado en transporte.":
+          "Plàtan ric en potassi, excel·lent per a l'energia. Impacte moderat en transport.",
+        "Brócoli denso en nutrientes, alto en fibra y vitaminas C y K. Bajo consumo de agua.":
+          "Bròquil dens en nutrients, alt en fibra i vitamines C i K. Baix consum d'aigua.",
+        "Zanahorias ricas en beta-caroteno. Bajo impacto ambiental en su cultivo.":
+          "Pastanagues riques en beta-carotè. Baix impacte ambiental en el seu cultiu.",
+        "Fuente de proteína magra. Impacto ambiental moderado comparado con la carne roja.":
+          "Font de proteïna magra. Impacte ambiental moderat comparat amb la carn vermella.",
+        "Alto en hierro y proteínas. Alto impacto ambiental con uso significativo de agua.":
+          "Alt en ferro i proteïnes. Alt impacte ambiental amb ús significatiu d'aigua.",
+        "Rico en ácidos grasos omega-3. Capturado de forma sostenible con mínimo impacto en el ecosistema.":
+          "Ric en àcids grassos omega-3. Capturat de forma sostenible amb mínim impacte en l'ecosistema.",
+        "Arroz integral con fibra. Uso moderado de agua para su cultivo.":
+          "Arròs integral amb fibra. Ús moderat d'aigua pel seu cultiu.",
+        "Carbohidratos complejos y fibra. Menor impacto ambiental que el pan refinado.":
+          "Carbohidrats complexos i fibra. Menor impacte ambiental que el pa refinat.",
+        "Hortaliza de raíz versátil. Requisitos relativamente bajos de agua y tierra para su cultivo.":
+          "Hortalissa d'arrel versàtil. Requisits relativament baixos d'aigua i terra pel seu cultiu.",
+        "Buena fuente de calcio. Impacto ambiental moderado por la producción láctea.":
+          "Bona font de calci. Impacte ambiental moderat per la producció làctia.",
+        "Alto en calcio y proteínas. Mayor impacto ambiental debido al procesamiento lácteo.":
+          "Alt en calci i proteïnes. Major impacte ambiental a causa del processament làctic.",
+        "Fuente de proteínas rica en nutrientes. Impacto ambiental moderado comparado con la carne.":
+          "Font de proteïnes rica en nutrients. Impacte ambiental moderat comparat amb la carn.",
+        "Excelente fuente de proteína vegetal. Bajo impacto ambiental y fijación de nitrógeno para el suelo.":
+          "Excel·lent font de proteïna vegetal. Baix impacte ambiental i fixació de nitrogen pel sòl.",
+        "Rica en hierro y vitaminas. Baja huella ambiental en su cultivo.":
+          "Rica en ferro i vitamines. Baixa petjada ambiental en el seu cultiu."
+      };
+      return translations[desc] || desc;
+    }
+    return desc; // Español por defecto
   };
   
   // Filtrar alimentos por categoría
@@ -111,7 +252,7 @@ const Market = ({ onExit }: MarketProps) => {
     // Ya no mostramos automáticamente el panel, solo actualizamos el contador
     
     // Show notification
-    toast.success(`${foodItem.name} añadido al carrito`);
+    toast.success(`${translateFoodName(foodItem.name)} ${language === 'en' ? 'added to cart' : language === 'ca' ? 'afegit al cistell' : 'añadido al carrito'}`);
     
     // Log para depuración
     console.log("Item added to cart:", foodItem.name, "- Cart now has", cart.length + (existingItem ? 0 : 1), "different items");
@@ -148,7 +289,7 @@ const Market = ({ onExit }: MarketProps) => {
     
     // Check if player has enough coins
     if ((playerData?.coins || 0) < totalPrice) {
-      toast.error("Not enough iHumancoins for checkout!");
+      toast.error(uiTexts.noSuficiente);
       return;
     }
     
@@ -185,7 +326,7 @@ const Market = ({ onExit }: MarketProps) => {
     setCart([]);
     
     // Show success message
-    toast.success(`¡Compra completada con éxito! Tus artículos han sido entregados en tu cocina.`);
+    toast.success(uiTexts.compraExitosa);
     
     // Ocultar el panel del carrito
     const cartPanel = document.getElementById('cart-panel');
@@ -204,7 +345,7 @@ const Market = ({ onExit }: MarketProps) => {
   const handlePurchase = (foodItem: typeof foodItems[0]) => {
     // Check if player has enough coins
     if ((playerData?.coins || 0) < foodItem.price) {
-      toast.error("¡No tienes suficientes iHumancoins!");
+      toast.error(uiTexts.noSuficiente);
       return;
     }
     
@@ -216,7 +357,18 @@ const Market = ({ onExit }: MarketProps) => {
     addFood(foodItem);
     
     // Show success message
-    toast.success(`${foodItem.name} comprado correctamente`);
+    toast.success(`${translateFoodName(foodItem.name)} ${uiTexts.itemComprado}`);
+  };
+  
+  // Translate category name based on current language
+  const translateCategory = (category: string): string => {
+    if (category === 'all') return uiTexts.all;
+    if (category === 'frutas') return language === 'en' ? 'Fruits' : language === 'ca' ? 'Fruites' : 'Frutas';
+    if (category === 'verduras') return language === 'en' ? 'Vegetables' : language === 'ca' ? 'Verdures' : 'Verduras';
+    if (category === 'proteínas') return language === 'en' ? 'Proteins' : language === 'ca' ? 'Proteïnes' : 'Proteínas';
+    if (category === 'cereales') return language === 'en' ? 'Cereals' : language === 'ca' ? 'Cereals' : 'Cereales';
+    if (category === 'lácteos') return language === 'en' ? 'Dairy' : language === 'ca' ? 'Làctics' : 'Lácteos';
+    return category;
   };
   
   return (
@@ -249,19 +401,7 @@ const Market = ({ onExit }: MarketProps) => {
                   : 'bg-amber-300 text-amber-700 border border-amber-400 opacity-80 hover:opacity-100'
               }`}
             >
-              {category === 'all' ? 
-                (language === 'en' ? 'All' : language === 'ca' ? 'Tots' : 'Todos') : 
-                category === 'frutas' ? 
-                (language === 'en' ? 'Fruits' : language === 'ca' ? 'Fruites' : 'Frutas') :
-                category === 'verduras' ? 
-                (language === 'en' ? 'Vegetables' : language === 'ca' ? 'Verdures' : 'Verduras') :
-                category === 'proteínas' ? 
-                (language === 'en' ? 'Proteins' : language === 'ca' ? 'Proteïnes' : 'Proteínas') :
-                category === 'cereales' ? 
-                (language === 'en' ? 'Cereals' : language === 'ca' ? 'Cereals' : 'Cereales') :
-                category === 'lácteos' ? 
-                (language === 'en' ? 'Dairy' : language === 'ca' ? 'Làctics' : 'Lácteos') :
-                category}
+              {translateCategory(category)}
             </button>
           ))}
         </div>
@@ -277,24 +417,7 @@ const Market = ({ onExit }: MarketProps) => {
                 {/* Cabecera del item */}
                 <div className="bg-gradient-to-r from-amber-500 to-amber-600 p-3 flex justify-between items-center border-b-2 border-amber-400">
                   <h3 className="text-lg font-bold text-white truncate">
-                    {language === 'en' ? 
-                      (food.name === 'Manzana' ? 'Apple' :
-                      food.name === 'Plátano' ? 'Banana' :
-                      food.name === 'Brócoli' ? 'Broccoli' :
-                      food.name === 'Zanahoria' ? 'Carrot' :
-                      food.name === 'Pechuga de Pollo' ? 'Chicken Breast' :
-                      food.name === 'Bistec de Ternera' ? 'Beef Steak' :
-                      food.name === 'Pescado Sostenible' ? 'Sustainable Fish' :
-                      food.name === 'Arroz Integral' ? 'Brown Rice' :
-                      food.name === 'Pan Integral' ? 'Whole Wheat Bread' :
-                      food.name === 'Patata' ? 'Potato' :
-                      food.name === 'Leche' ? 'Milk' :
-                      food.name === 'Queso' ? 'Cheese' :
-                      food.name === 'Huevos' ? 'Eggs' :
-                      food.name === 'Frijoles' ? 'Beans' :
-                      food.name === 'Espinaca' ? 'Spinach' :
-                      food.name) : 
-                      food.name}
+                    {translateFoodName(food.name)}
                   </h3>
                   <span className="font-bold text-yellow-100 bg-amber-700 px-2 py-1 rounded-full text-sm border border-amber-800">
                     {food.price} IHC
@@ -307,11 +430,11 @@ const Market = ({ onExit }: MarketProps) => {
                     {/* Columna izquierda */}
                     <div className="flex flex-col gap-1">
                       <div className="flex items-center">
-                        <span className="w-24 text-xs text-amber-800">{language === 'en' ? 'Calories:' : language === 'ca' ? 'Calories:' : 'Calorías:'}</span>
+                        <span className="w-24 text-xs text-amber-800">{uiTexts.calories}</span>
                         <span className="font-bold text-amber-900">{food.calories} kcal</span>
                       </div>
                       <div className="flex items-center">
-                        <span className="w-24 text-xs text-amber-800">{language === 'en' ? 'Carbs:' : language === 'ca' ? 'Carbohidrats:' : 'Carbos:'}</span>
+                        <span className="w-24 text-xs text-amber-800">{uiTexts.carbs}</span>
                         <span className="font-bold text-amber-900">{food.nutritionalValue.carbs}g</span>
                       </div>
                     </div>
@@ -319,11 +442,11 @@ const Market = ({ onExit }: MarketProps) => {
                     {/* Columna derecha */}
                     <div className="flex flex-col gap-1">
                       <div className="flex items-center">
-                        <span className="w-24 text-xs text-amber-800">{language === 'en' ? 'Proteins:' : language === 'ca' ? 'Proteïnes:' : 'Proteínas:'}</span>
+                        <span className="w-24 text-xs text-amber-800">{uiTexts.proteins}</span>
                         <span className="font-bold text-amber-900">{food.nutritionalValue.protein}g</span>
                       </div>
                       <div className="flex items-center">
-                        <span className="w-24 text-xs text-amber-800">{language === 'en' ? 'Fats:' : language === 'ca' ? 'Greixos:' : 'Grasas:'}</span>
+                        <span className="w-24 text-xs text-amber-800">{uiTexts.fats}</span>
                         <span className="font-bold text-amber-900">{food.nutritionalValue.fat}g</span>
                       </div>
                     </div>
@@ -331,7 +454,7 @@ const Market = ({ onExit }: MarketProps) => {
                   
                   {/* Barra de sostenibilidad */}
                   <div className="mb-3">
-                    <div className="text-xs text-amber-800 mb-1">{language === 'en' ? 'Sustainability:' : 'Sostenibilidad:'}</div>
+                    <div className="text-xs text-amber-800 mb-1">{uiTexts.sustainability}</div>
                     <div className="flex items-center gap-2">
                       <div className="h-4 flex-1 bg-amber-200 rounded-full border border-amber-300 overflow-hidden">
                         <div 
@@ -351,39 +474,7 @@ const Market = ({ onExit }: MarketProps) => {
                   
                   {/* Descripción */}
                   <p className="text-xs text-amber-700 mb-3 h-12 overflow-hidden">
-                    {language === 'en' ? 
-                      (food.description === "Una manzana crujiente, rica en fibra y vitaminas. Bajo impacto ambiental." ? 
-                        "A crisp apple, rich in fiber and vitamins. Low environmental impact." :
-                      food.description === "Plátano rico en potasio, excelente para la energía. Impacto moderado en transporte." ? 
-                        "Banana rich in potassium, excellent for energy. Moderate impact on transportation." :
-                      food.description === "Brócoli denso en nutrientes, alto en fibra y vitaminas C y K. Bajo consumo de agua." ? 
-                        "Broccoli dense in nutrients, high in fiber and vitamins C and K. Low water consumption." :
-                      food.description === "Zanahorias ricas en beta-caroteno. Bajo impacto ambiental en su cultivo." ? 
-                        "Carrots rich in beta-carotene. Low environmental impact in cultivation." :
-                      food.description === "Fuente de proteína magra. Impacto ambiental moderado comparado con la carne roja." ? 
-                        "Source of lean protein. Moderate environmental impact compared to red meat." :
-                      food.description === "Alto en hierro y proteínas. Alto impacto ambiental con uso significativo de agua." ? 
-                        "High in iron and protein. High environmental impact with significant water usage." :
-                      food.description === "Rico en ácidos grasos omega-3. Capturado de forma sostenible con mínimo impacto en el ecosistema." ? 
-                        "Rich in omega-3 fatty acids. Sustainably caught with minimal impact on the ecosystem." :
-                      food.description === "Arroz integral con fibra. Uso moderado de agua para su cultivo." ? 
-                        "Brown rice with fiber. Moderate water usage for cultivation." :
-                      food.description === "Carbohidratos complejos y fibra. Menor impacto ambiental que el pan refinado." ? 
-                        "Complex carbohydrates and fiber. Lower environmental impact than refined bread." :
-                      food.description === "Hortaliza de raíz versátil. Requisitos relativamente bajos de agua y tierra para su cultivo." ? 
-                        "Versatile root vegetable. Relatively low water and land requirements for cultivation." :
-                      food.description === "Buena fuente de calcio. Impacto ambiental moderado por la producción láctea." ? 
-                        "Good source of calcium. Moderate environmental impact from dairy production." :
-                      food.description === "Alto en calcio y proteínas. Mayor impacto ambiental debido al procesamiento lácteo." ? 
-                        "High in calcium and protein. Higher environmental impact due to dairy processing." :
-                      food.description === "Fuente de proteínas rica en nutrientes. Impacto ambiental moderado comparado con la carne." ? 
-                        "Nutrient-rich protein source. Moderate environmental impact compared to meat." :
-                      food.description === "Excelente fuente de proteína vegetal. Bajo impacto ambiental y fijación de nitrógeno para el suelo." ? 
-                        "Excellent source of plant protein. Low environmental impact and nitrogen fixation for soil." :
-                      food.description === "Rica en hierro y vitaminas. Baja huella ambiental en su cultivo." ? 
-                        "Rich in iron and vitamins. Low environmental footprint in cultivation." :
-                      food.description) : 
-                      food.description}
+                    {translateFoodDescription(food.description)}
                   </p>
                   
                   {/* Botones de compra y añadir al carrito */}
@@ -413,84 +504,88 @@ const Market = ({ onExit }: MarketProps) => {
             ))}
           </div>
         </div>
-
-        {/* Panel del carrito de compra - con ID para controlar desde el botón externo */}
-        <div 
-          id="cart-panel" 
-          className="fixed top-0 right-0 w-1/3 h-full bg-amber-800/95 text-white p-4 shadow-xl border-l-4 border-amber-900 overflow-auto z-[2000]"
-          style={{ display: showCart ? 'block' : 'none' }}
-        >
-          <div className="flex justify-between items-center mb-4 border-b border-amber-700 pb-2">
-            <h2 className="text-2xl font-bold">{t.cart}</h2>
-            <button 
-              onClick={() => setShowCart(false)}
-              className="text-amber-300 hover:text-amber-100"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
+        
+        {/* Botón flotante para mostrar/ocultar carrito */}
+        <div className="fixed bottom-4 right-4 flex flex-col gap-4">
+          <button
+            onClick={onExit}
+            className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-full shadow-lg border-2 border-red-500 transition-all hover:scale-105"
+          >
+            {t.exit}
+          </button>
+          
+          <button
+            onClick={() => {
+              setShowCart(!showCart);
+              const cartPanel = document.getElementById('cart-panel');
+              if (cartPanel) {
+                cartPanel.style.display = showCart ? 'none' : 'block';
+              }
+            }}
+            className="bg-amber-600 hover:bg-amber-700 text-white font-bold py-3 px-6 rounded-full shadow-lg border-2 border-amber-500 transition-all hover:scale-105 relative"
+          >
+            {language === 'en' ? 'CART' : language === 'ca' ? 'CISTELL' : 'CARRITO'}
+            <span id="cart-counter" className="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold w-6 h-6 flex items-center justify-center rounded-full border-2 border-red-300 transition-all">
+              {cart.reduce((total, item) => total + item.quantity, 0)}
+            </span>
+          </button>
+        </div>
+        
+        {/* Panel de carrito (inicialmente oculto) */}
+        <div id="cart-panel" className="fixed right-4 bottom-32 w-80 bg-white rounded-lg shadow-xl border-2 border-amber-600 overflow-hidden" style={{ display: 'none' }}>
+          <div className="bg-amber-600 text-white font-bold p-3">
+            {language === 'en' ? 'YOUR CART' : language === 'ca' ? 'EL TEU CISTELL' : 'TU CARRITO'}
+            <span className="ml-2 opacity-80">({cart.reduce((total, item) => total + item.quantity, 0)} {language === 'en' ? 'Items' : language === 'ca' ? 'Articles' : 'Artículos'})</span>
           </div>
           
-          {cart.length === 0 ? (
-            <div className="text-center py-8 text-amber-300">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mx-auto mb-4 opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-              </svg>
-              <p>Your cart is empty</p>
-              <p className="text-sm text-amber-400 mt-2">Add items by clicking the + button</p>
-            </div>
-          ) : (
-            <>
-              <div className="space-y-3 max-h-[60vh] overflow-auto">
-                {cart.map(cartItem => (
-                  <div key={cartItem.item.id} className="flex justify-between items-center bg-amber-700/50 p-2 rounded-lg">
-                    <div className="flex items-center">
-                      <div className="mr-2 bg-amber-600 text-white w-6 h-6 flex items-center justify-center rounded-full">
-                        {cartItem.quantity}
-                      </div>
-                      <div>
-                        <p className="font-medium">{cartItem.item.name}</p>
-                        <p className="text-xs text-amber-300">{cartItem.item.price} IHC × {cartItem.quantity}</p>
-                      </div>
+          <div className="p-3 max-h-72 overflow-auto">
+            {cart.length === 0 ? (
+              <p className="text-gray-500 text-center py-2">
+                {language === 'en' ? 'Your cart is empty' : language === 'ca' ? 'El teu cistell està buit' : 'Tu carrito está vacío'}
+              </p>
+            ) : (
+              <div className="space-y-2">
+                {cart.map(item => (
+                  <div key={item.item.id} className="flex items-center justify-between border-b border-gray-200 pb-2">
+                    <div>
+                      <div className="font-medium">{translateFoodName(item.item.name)}</div>
+                      <div className="text-xs text-gray-500">{item.quantity} x {item.item.price} IHC</div>
                     </div>
-                    <div className="flex gap-2">
-                      <span className="font-bold text-amber-300">
-                        {(cartItem.item.price * cartItem.quantity)} IHC
-                      </span>
+                    <div className="flex gap-2 items-center">
+                      <div className="font-bold text-amber-700">{item.item.price * item.quantity} IHC</div>
                       <button 
-                        onClick={() => removeFromCart(cartItem.item.id)}
-                        className="text-red-400 hover:text-red-300"
+                        onClick={() => removeFromCart(item.item.id)}
+                        className="text-xs bg-red-100 hover:bg-red-200 text-red-600 font-bold p-1 rounded"
                       >
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                        </svg>
+                        X
                       </button>
                     </div>
                   </div>
                 ))}
               </div>
-              
-              <div className="border-t border-amber-700 mt-4 pt-4">
-                <div className="flex justify-between text-xl font-bold mb-4">
-                  <span>Total:</span>
-                  <span className="text-amber-300">{getTotalCartPrice()} IHC</span>
-                </div>
-                
-                <button 
-                  onClick={handleCheckout}
-                  disabled={(playerData?.coins || 0) < getTotalCartPrice()}
-                  className={`w-full py-3 rounded-lg font-bold text-center text-lg transition-all ${
-                    (playerData?.coins || 0) >= getTotalCartPrice()
-                      ? 'bg-green-600 hover:bg-green-700 text-white'
-                      : 'bg-gray-600 text-gray-400 cursor-not-allowed'
-                  }`}
-                >
-                  Checkout
-                </button>
-              </div>
-            </>
-          )}
+            )}
+          </div>
+          
+          <div className="bg-gray-100 p-3 border-t border-gray-200">
+            <div className="flex justify-between font-bold mb-3">
+              <span>{language === 'en' ? 'Total Price:' : language === 'ca' ? 'Preu Total:' : 'Precio Total:'}</span>
+              <span>{getTotalCartPrice()} IHC</span>
+            </div>
+            
+            <div className="flex gap-2">
+              <button
+                onClick={handleCheckout}
+                disabled={cart.length === 0 || (playerData?.coins || 0) < getTotalCartPrice()}
+                className={`w-full py-2 rounded-lg font-bold text-center transition-all ${
+                  cart.length > 0 && (playerData?.coins || 0) >= getTotalCartPrice()
+                    ? 'bg-green-600 hover:bg-green-700 text-white'
+                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                }`}
+              >
+                {language === 'en' ? 'Checkout' : language === 'ca' ? 'Pagar' : 'Pagar'}
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
