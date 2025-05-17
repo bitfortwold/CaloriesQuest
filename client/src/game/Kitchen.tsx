@@ -101,19 +101,19 @@ const Kitchen = ({ onExit }: KitchenProps) => {
       {
         name: "Desayuno Equilibrado",
         description: "Un desayuno nutritivo con huevos, pan y fruta",
-        ingredients: ["eggs", "bread", "apple"],
+        ingredients: ["huevos", "pan", "manzana"],
         benefits: "Alto en proteínas y carbohidratos complejos para energía sostenida"
       },
       {
         name: "Almuerzo Vegetariano",
         description: "Un almuerzo a base de plantas con frijoles, arroz y verduras",
-        ingredients: ["beans", "rice", "broccoli", "carrot"],
+        ingredients: ["frijoles", "arroz", "brócoli", "zanahoria"],
         benefits: "Rico en fibra y proporciona vitaminas y minerales esenciales"
       },
       {
         name: "Cena Proteica",
         description: "Una cena rica en proteínas con pollo, patatas y verduras",
-        ingredients: ["chicken", "potato", "spinach"],
+        ingredients: ["pollo", "patata", "espinaca"],
         benefits: "Apoya la recuperación muscular y la salud en general"
       }
     ];
