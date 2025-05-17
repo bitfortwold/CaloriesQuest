@@ -5,7 +5,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useFoodStore, StorageType, StoredFoodItem } from "../stores/useFoodStore";
 import { usePlayerStore } from "../stores/usePlayerStore";
 import { useLanguage } from "../i18n/LanguageContext";
-import TranslatedFoodName from "./TranslatedFoodName";
 import { toast } from "sonner";
 
 interface KitchenProps {
@@ -101,7 +100,7 @@ const Kitchen = ({ onExit }: KitchenProps) => {
     }
   };
   
-  // Función para traducir texto según el idioma actual
+  // Función para traducir nombres de alimentos según el idioma actual
   const translateFoodName = (foodName: string): string => {
     if (language === 'es') return foodName; // Mantener el texto original en español
     if (language === 'ca') return kitchenTranslationsCA.ingredients[foodName] || foodName;
@@ -109,9 +108,12 @@ const Kitchen = ({ onExit }: KitchenProps) => {
     return foodName;
   };
   
-  // Función para traducir los nombres de los ingredientes (alias de la función principal)
-  const translateIngredient = (ingredient: string): string => {
-    return translateFoodName(ingredient);
+  // Función para traducir etiquetas según el idioma actual
+  const translateLabel = (label: string): string => {
+    if (language === 'es') return label; // Mantener el texto original en español
+    if (language === 'ca') return kitchenTranslationsCA.labels[label] || label;
+    if (language === 'en') return kitchenTranslationsEN.labels[label] || label;
+    return label;
   };
   
   // Calculate nutritional totals for the selected items
@@ -350,7 +352,7 @@ const Kitchen = ({ onExit }: KitchenProps) => {
                     <div className="grid grid-cols-2 gap-2 max-h-[400px] overflow-y-auto">
                       {refrigeratorFood.length === 0 ? (
                         <p className="text-amber-500 py-6 text-center col-span-2 bg-amber-50 rounded-md border border-amber-200">
-                          {t.language === 'en' ? 
+                          {language === 'en' ? 
                             "Your refrigerator is empty. Visit the market to buy fresh food!" : 
                             language === 'ca' ? 
                             "La teva nevera està buida. Visita el mercat per comprar aliments frescos!" :
@@ -368,20 +370,20 @@ const Kitchen = ({ onExit }: KitchenProps) => {
                             onClick={() => toggleItemSelection(food.id)}
                           >
                             <div className="flex justify-between items-center">
-                              <span className="font-bold text-amber-800">{food.name}</span>
+                              <span className="font-bold text-amber-800">{translateFoodName(food.name)}</span>
                               <span className="bg-amber-200 px-2 py-1 rounded-full text-xs font-semibold text-amber-800">
                                 {food.calories} kcal
                               </span>
                             </div>
                             <div className="text-xs text-amber-600 mt-2 grid grid-cols-3 gap-1">
                               <div>
-                                <span className="font-semibold">Proteínas:</span> {food.nutritionalValue.protein}g
+                                <span className="font-semibold">{language === 'en' ? 'Protein:' : language === 'ca' ? 'Proteïnes:' : 'Proteínas:'}</span> {food.nutritionalValue.protein}g
                               </div>
                               <div>
-                                <span className="font-semibold">Carbos:</span> {food.nutritionalValue.carbs}g
+                                <span className="font-semibold">{language === 'en' ? 'Carbs:' : language === 'ca' ? 'Carbohidrats:' : 'Carbos:'}</span> {food.nutritionalValue.carbs}g
                               </div>
                               <div>
-                                <span className="font-semibold">Grasas:</span> {food.nutritionalValue.fat}g
+                                <span className="font-semibold">{language === 'en' ? 'Fat:' : language === 'ca' ? 'Greixos:' : 'Grasas:'}</span> {food.nutritionalValue.fat}g
                               </div>
                             </div>
                             {selectedItems.includes(food.id) && (
@@ -419,20 +421,20 @@ const Kitchen = ({ onExit }: KitchenProps) => {
                             onClick={() => toggleItemSelection(food.id)}
                           >
                             <div className="flex justify-between items-center">
-                              <span className="font-bold text-amber-800">{food.name}</span>
+                              <span className="font-bold text-amber-800">{translateFoodName(food.name)}</span>
                               <span className="bg-amber-200 px-2 py-1 rounded-full text-xs font-semibold text-amber-800">
                                 {food.calories} kcal
                               </span>
                             </div>
                             <div className="text-xs text-amber-600 mt-2 grid grid-cols-3 gap-1">
                               <div>
-                                <span className="font-semibold">Proteínas:</span> {food.nutritionalValue.protein}g
+                                <span className="font-semibold">{language === 'en' ? 'Protein:' : language === 'ca' ? 'Proteïnes:' : 'Proteínas:'}</span> {food.nutritionalValue.protein}g
                               </div>
                               <div>
-                                <span className="font-semibold">Carbos:</span> {food.nutritionalValue.carbs}g
+                                <span className="font-semibold">{language === 'en' ? 'Carbs:' : language === 'ca' ? 'Carbohidrats:' : 'Carbos:'}</span> {food.nutritionalValue.carbs}g
                               </div>
                               <div>
-                                <span className="font-semibold">Grasas:</span> {food.nutritionalValue.fat}g
+                                <span className="font-semibold">{language === 'en' ? 'Fat:' : language === 'ca' ? 'Greixos:' : 'Grasas:'}</span> {food.nutritionalValue.fat}g
                               </div>
                             </div>
                             {selectedItems.includes(food.id) && (
@@ -469,7 +471,7 @@ const Kitchen = ({ onExit }: KitchenProps) => {
                         
                         return item ? (
                           <div key={itemId} className="bg-amber-100 rounded-md p-2 text-center border border-amber-200">
-                            <span className="text-sm font-medium text-amber-800">{item.name}</span>
+                            <span className="text-sm font-medium text-amber-800">{translateFoodName(item.name)}</span>
                             <span className="block text-xs text-amber-600">{item.calories} kcal</span>
                           </div>
                         ) : null;
@@ -506,123 +508,133 @@ const Kitchen = ({ onExit }: KitchenProps) => {
                             className={`h-full rounded-full ${
                               selectedItems.length ? (
                                 totals.sustainabilityScore / selectedItems.length > 7 
-                                ? 'bg-gradient-to-r from-green-400 to-green-600' 
-                                : totals.sustainabilityScore / selectedItems.length > 4 
-                                ? 'bg-gradient-to-r from-yellow-400 to-yellow-600' 
-                                : 'bg-gradient-to-r from-red-400 to-red-600'
+                                  ? 'bg-green-500' 
+                                  : totals.sustainabilityScore / selectedItems.length > 4 
+                                    ? 'bg-yellow-500' 
+                                    : 'bg-red-500'
                               ) : 'bg-gray-300'
                             }`}
-                            style={{ 
-                              width: selectedItems.length 
-                                ? `${(totals.sustainabilityScore / selectedItems.length) * 10}%` 
-                                : '0%' 
+                            style={{
+                              width: `${selectedItems.length ? Math.min(100, (totals.sustainabilityScore / selectedItems.length) * 10) : 0}%`
                             }}
                           ></div>
                         </div>
-                        <span className="ml-2 font-bold text-amber-800">
-                          {selectedItems.length 
-                            ? (totals.sustainabilityScore / selectedItems.length).toFixed(1)
-                            : 0}/10
+                        <span className="ml-2 text-amber-800 font-bold">
+                          {selectedItems.length ? (totals.sustainabilityScore / selectedItems.length).toFixed(1) : '-'}/10
                         </span>
                       </div>
                     </div>
                   </div>
                   
-                  <div className="mt-6">
-                    <Button 
-                      className="w-full py-3 rounded-lg font-bold text-center text-lg transition-all bg-gradient-to-b from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 border-2 border-green-400 text-white hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
-                      disabled={selectedItems.length === 0}
-                      onClick={cookMeal}
-                    >
-                      {language === 'en' ? 'Cook & Eat' : language === 'ca' ? 'Cuinar i Menjar' : 'Cocinar y Comer'}
-                    </Button>
-                  </div>
+                  <Button 
+                    onClick={cookMeal}
+                    disabled={selectedItems.length === 0}
+                    className="w-full mt-6 py-3 bg-amber-600 hover:bg-amber-700 text-white rounded-lg font-bold text-lg flex justify-center items-center disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                  >
+                    <span className="mr-2">🍳</span>
+                    {t.cookMeal}
+                  </Button>
                 </div>
               </div>
             </div>
           ) : (
-            // Guided recipes mode - con estilo similar al mercado
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {recipes.map((recipe, index) => (
-                <div key={index} className="bg-amber-50 border-2 border-amber-300 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-all">
-                  <div className="bg-gradient-to-r from-amber-500 to-amber-600 p-3 flex justify-center items-center border-b-2 border-amber-400">
-                    <h3 className="text-xl font-bold text-white">{recipe.name}</h3>
-                  </div>
-                  
-                  <div className="p-4">
-                    <p className="text-amber-700 mb-4">{recipe.description}</p>
-                    
-                    <div className="mb-4">
-                      <h4 className="font-semibold text-amber-800 mb-2">{language === 'en' ? 'Ingredients:' : language === 'ca' ? 'Ingredients:' : 'Ingredientes:'}</h4>
-                      <div className="grid grid-cols-3 gap-2">
-                        {recipe.ingredients.map((ingredient, idx) => (
-                          <div key={idx} className="bg-amber-100 p-2 rounded-md text-center border border-amber-200">
-                            <span className="text-sm capitalize">
-                              {language === 'en' ? translateIngredient(ingredient) : ingredient}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                    
-                    <div className="mb-4">
-                      <h4 className="font-semibold text-amber-800 mb-2">{language === 'en' ? 'Health Benefits:' : language === 'ca' ? 'Beneficis per a la Salut:' : 'Beneficios para la Salud:'}</h4>
-                      <p className="text-sm text-amber-700 p-2 bg-amber-100/50 rounded-md border border-amber-200">
-                        {recipe.benefits}
-                      </p>
-                    </div>
-                    
-                    <Button 
-                      className="w-full py-2 bg-gradient-to-b from-amber-500 to-amber-600 text-white border-2 border-amber-400 hover:from-amber-600 hover:to-amber-700 hover:scale-105 rounded-lg font-bold text-center transition-all"
-                      onClick={() => {
-                        toast.info("Follow this recipe by selecting the ingredients in Free Cooking mode!");
-                        setCookingMode("free");
-                      }}
-                    >
-                      {language === 'en' ? 'Follow Recipe' : language === 'ca' ? 'Seguir Recepta' : 'Seguir Receta'}
-                    </Button>
-                  </div>
+              {/* Left: Recipe selection */}
+              <div className="bg-amber-50 border-2 border-amber-300 rounded-lg shadow-md overflow-hidden">
+                <div className="bg-amber-200 p-3 border-b-2 border-amber-300">
+                  <h3 className="text-xl font-bold text-amber-800">{language === 'en' ? 'Guided Recipes' : language === 'ca' ? 'Receptes Guiades' : 'Recetas Guiadas'}</h3>
                 </div>
-              ))}
+                <div className="p-4 max-h-[500px] overflow-y-auto">
+                  {recipes.map((recipe, index) => (
+                    <Card key={index} className="mb-4 border-amber-200 hover:shadow-md transition-shadow">
+                      <CardHeader className="pb-2">
+                        <CardTitle className="text-amber-800">{recipe.name}</CardTitle>
+                        <CardDescription>{recipe.description}</CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="mb-3">
+                          <h4 className="font-semibold text-amber-700 mb-2">{language === 'en' ? 'Ingredients:' : language === 'ca' ? 'Ingredients:' : 'Ingredientes:'}</h4>
+                          <div className="grid grid-cols-3 gap-2">
+                            {recipe.ingredients.map((ingredient, i) => (
+                              <div key={i} className="bg-amber-100 p-2 rounded-md text-center">
+                                {language === 'ca' ? translateFoodName(ingredient.charAt(0).toUpperCase() + ingredient.slice(1)) : ingredient.charAt(0).toUpperCase() + ingredient.slice(1)}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                        <div>
+                          <h4 className="font-semibold text-amber-700 mb-1">{language === 'en' ? 'Health Benefits:' : language === 'ca' ? 'Beneficis per a la Salut:' : 'Beneficios para la Salud:'}</h4>
+                          <p className="text-sm text-amber-600">{recipe.benefits}</p>
+                        </div>
+                        <Button 
+                          className="w-full mt-4 bg-amber-500 hover:bg-amber-600 text-white"
+                          onClick={() => {
+                            // Aquí iría la lógica para seguir la receta
+                            toast.info(language === 'en' ? 'Feature coming soon!' : language === 'ca' ? 'Funcionalitat pròximament!' : '¡Funcionalidad próximamente!');
+                          }}
+                        >
+                          {language === 'en' ? 'Follow Recipe' : language === 'ca' ? 'Seguir Recepta' : 'Seguir Receta'}
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
               
-              <div className="col-span-full mt-4">
-                <div className="bg-amber-100 border-2 border-amber-300 p-4 rounded-lg shadow-md">
-                  <h3 className="text-lg font-bold text-amber-800 mb-3">{language === 'en' ? 'Nutritional Tips:' : language === 'ca' ? 'Consells Nutricionals:' : 'Consejos Nutricionales:'}</h3>
-                  <ul className="grid grid-cols-2 gap-3">
-                    <li className="bg-amber-50 p-3 rounded-md border border-amber-200 text-amber-700">
-                      {language === 'en' 
-                        ? 'Look for a balanced mix of proteins, carbohydrates, and healthy fats for optimal nutrition.' 
-                        : language === 'ca'
-                        ? 'Busca una barreja equilibrada de proteïnes, carbohidrats i greixos saludables per a una nutrició òptima.'
-                        : 'Busca una mezcla equilibrada de proteínas, carbohidratos y grasas saludables para una nutrición óptima.'}
-                    </li>
-                    <li className="bg-amber-50 p-3 rounded-md border border-amber-200 text-amber-700">
-                      {language === 'en'
-                        ? 'Include plenty of fruits and vegetables to get essential vitamins and minerals.'
-                        : language === 'ca'
-                        ? 'Inclou abundants fruites i verdures per obtenir vitamines i minerals essencials.'
-                        : 'Incluye abundantes frutas y verduras para obtener vitaminas y minerales esenciales.'}
-                    </li>
-                    <li className="bg-amber-50 p-3 rounded-md border border-amber-200 text-amber-700">
-                      {language === 'en'
-                        ? 'Choose foods with higher sustainability scores to support environmental health.'
-                        : language === 'ca'
-                        ? 'Tria aliments amb major puntuació de sostenibilitat per donar suport a la salut ambiental.'
-                        : 'Elige alimentos con mayor puntuación de sostenibilidad para apoyar la salud ambiental.'}
-                    </li>
-                    <li className="bg-amber-50 p-3 rounded-md border border-amber-200 text-amber-700">
-                      {language === 'en'
-                        ? 'Pay attention to your daily caloric needs based on your age, weight, and activity level.'
-                        : language === 'ca'
-                        ? 'Presta atenció a les teves necessitats calòriques diàries segons la teva edat, pes i nivell d\'activitat.'
-                        : 'Presta atención a tus necesidades calóricas diarias según tu edad, peso y nivel de actividad.'}
-                    </li>
+              {/* Right: Instructions and nutrition info */}
+              <div className="bg-amber-50 border-2 border-amber-300 rounded-lg p-4 shadow-md">
+                <h3 className="text-xl font-bold text-amber-800 mb-4 pb-2 border-b border-amber-200">{language === 'en' ? 'Cooking Guide' : language === 'ca' ? 'Guia de Cuina' : 'Guía de Cocina'}</h3>
+                <div className="prose prose-amber max-w-none">
+                  <p>{language === 'en' 
+                    ? 'Select a guided recipe from the left panel to get step-by-step instructions on how to prepare the meal. Each recipe is designed to be nutritionally balanced and uses ingredients available in your refrigerator and pantry.' 
+                    : language === 'ca'
+                    ? 'Selecciona una recepta guiada del panell esquerre per obtenir instruccions pas a pas sobre com preparar l\'àpat. Cada recepta està dissenyada per ser nutricionalment equilibrada i utilitza ingredients disponibles a la teva nevera i rebost.'
+                    : 'Selecciona una receta guiada del panel izquierdo para obtener instrucciones paso a paso sobre cómo preparar la comida. Cada receta está diseñada para ser nutricionalmente equilibrada y utiliza ingredientes disponibles en tu refrigerador y despensa.'}</p>
+                  <h4>{language === 'en' ? 'Tips for Healthy Cooking:' : language === 'ca' ? 'Consells per a una Cuina Saludable:' : 'Consejos para una Cocina Saludable:'}</h4>
+                  <ul>
+                    <li>{language === 'en' 
+                      ? 'Balance your meals with proteins, carbohydrates, and healthy fats.' 
+                      : language === 'ca'
+                      ? 'Equilibra els teus àpats amb proteïnes, carbohidrats i greixos saludables.'
+                      : 'Equilibra tus comidas con proteínas, carbohidratos y grasas saludables.'}</li>
+                    <li>{language === 'en' 
+                      ? 'Include a variety of colorful vegetables for essential vitamins and minerals.' 
+                      : language === 'ca'
+                      ? 'Inclou una varietat de verdures colorides per obtenir vitamines i minerals essencials.'
+                      : 'Incluye una variedad de verduras coloridas para obtener vitaminas y minerales esenciales.'}</li>
+                    <li>{language === 'en' 
+                      ? 'Pay attention to portion sizes to maintain a healthy calorie intake.' 
+                      : language === 'ca'
+                      ? 'Presta atenció a les mides de les porcions per mantenir una ingesta calòrica saludable.'
+                      : 'Presta atención a los tamaños de las porciones para mantener una ingesta calórica saludable.'}</li>
+                    <li>{language === 'en' 
+                      ? 'Consider the sustainability score of your ingredients to make environmentally friendly choices.' 
+                      : language === 'ca'
+                      ? 'Considera la puntuació de sostenibilitat dels teus ingredients per prendre decisions respectuoses amb el medi ambient.'
+                      : 'Considera la puntuación de sostenibilidad de tus ingredientes para tomar decisiones respetuosas con el medio ambiente.'}</li>
                   </ul>
+                </div>
+                <div className="mt-6 pt-4 border-t border-amber-200">
+                  <Button 
+                    onClick={() => setCookingMode("free")}
+                    className="w-full py-3 bg-amber-600 hover:bg-amber-700 text-white rounded-lg font-bold text-lg flex justify-center items-center transition-all"
+                  >
+                    <span className="mr-2">🧪</span>
+                    {language === 'en' ? 'Switch to Free Cooking Mode' : language === 'ca' ? 'Canviar a Mode de Cuina Lliure' : 'Cambiar a Modo de Cocina Libre'}
+                  </Button>
                 </div>
               </div>
             </div>
           )}
         </div>
+        
+        {/* Botón flotante circular para volver al mapa */}
+        <Button 
+          onClick={onExit}
+          className="absolute top-2 right-2 w-10 h-10 rounded-full bg-amber-600 hover:bg-amber-700 text-white shadow-md flex items-center justify-center p-0 border-2 border-amber-500"
+        >
+          <span className="text-xl">×</span>
+        </Button>
       </div>
     </div>
   );
