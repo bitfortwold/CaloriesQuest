@@ -167,13 +167,26 @@ const Garden = ({ onExit }: GardenProps) => {
           </div>
         </div>
         
-        {/* Botón flotante de salir, igual que en otros componentes */}
-        <button 
-          className="fixed top-4 right-4 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg z-50 shadow-md"
-          onClick={onExit}
-        >
-          Salir
-        </button>
+        {/* Puerta de salida del huerto - diseño mejorado */}
+        <div className="fixed top-4 right-4 z-50">
+          <button 
+            className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg border-2 border-red-500 shadow-lg flex items-center transition-all hover:scale-105"
+            onClick={() => {
+              console.log("Exit button clicked in Garden component");
+              // Limpiar cualquier estado interno que sea necesario
+              setSelectedPlot(null);
+              setSelectedSeed(null);
+              
+              // Llamar a la función de salida pasada como prop
+              onExit();
+            }}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+            Salir del Huerto
+          </button>
+        </div>
         
         {activeTab === "garden" ? (
           <div className="garden-plots grid grid-cols-3 gap-4">
