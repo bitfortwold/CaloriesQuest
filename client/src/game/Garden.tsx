@@ -150,7 +150,7 @@ const Garden = ({ onExit }: GardenProps) => {
       <div className="container mx-auto">
         <h1 className="text-2xl font-bold text-green-800 mb-4">Huerto Virtual</h1>
         
-        <div className="flex justify-between mb-4">
+        <div className="flex mb-4">
           <div className="tabs flex">
             <button 
               className={`tab px-4 py-2 mr-2 rounded-t-lg ${activeTab === "garden" ? "bg-green-600 text-white" : "bg-green-200"}`}
@@ -165,14 +165,15 @@ const Garden = ({ onExit }: GardenProps) => {
               Semillas
             </button>
           </div>
-          
-          <button 
-            className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
-            onClick={onExit}
-          >
-            Salir
-          </button>
         </div>
+        
+        {/* Botón flotante de salir, igual que en otros componentes */}
+        <button 
+          className="fixed top-4 right-4 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg z-50 shadow-md"
+          onClick={onExit}
+        >
+          Salir
+        </button>
         
         {activeTab === "garden" ? (
           <div className="garden-plots grid grid-cols-3 gap-4">
