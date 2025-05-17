@@ -218,24 +218,34 @@ const Player = () => {
   // Variable para rastrear si acabamos de salir del huerto
   const [justExitedGarden, setJustExitedGarden] = useState(false);
   
+  // Referencia para almacenar el último estado conocido
+  const lastGameStateRef = useRef<string | null>(null);
+  
   // Detectar cuando volvemos al estado "playing" desde el estado "garden"
   useEffect(() => {
-    if (gameState === "playing") {
-      // Si acabamos de volver de otro estado, marcamos un tiempo de espera para evitar interacciones inmediatas
-      setJustExitedGarden(true);
-      setTimeout(() => {
-        setJustExitedGarden(false);
-      }, 500); // Esperar 500ms antes de permitir nuevas interacciones
+    // Si venimos específicamente del huerto (garden) y ahora estamos jugando
+    if (lastGameStateRef.current === "garden" && gameState === "playing") {
+      console.log("Detected exit from garden - applying safety measures");
       
-      // Mover al jugador un poco alejado del huerto para evitar reactivar la interacción
-      if (playerPosition.x === gardenPosition.x && playerPosition.z === gardenPosition.z) {
-        setPlayerPosition({
-          x: playerPosition.x + 4, // Mover significativamente hacia la derecha
-          y: playerPosition.y,
-          z: playerPosition.z + 4  // Mover significativamente hacia atrás
-        });
-      }
+      // Marcar que acabamos de salir del huerto para evitar interacciones inmediatas
+      setJustExitedGarden(true);
+      
+      // Teleportar al jugador lejos del huerto para evitar reentradas accidentales
+      setPlayerPosition({
+        x: -5, // Posición más alejada del huerto
+        y: playerPosition.y,
+        z: -5 // Posición más alejada del huerto
+      });
+      
+      // Restaurar la capacidad de interactuar después de un tiempo más largo
+      setTimeout(() => {
+        console.log("Garden exit cooldown finished");
+        setJustExitedGarden(false);
+      }, 1000); // Tiempo más largo para asegurar
     }
+    
+    // Actualizar la referencia del estado anterior
+    lastGameStateRef.current = gameState;
   }, [gameState]);
 
   // Handle movement and interactions in each frame
