@@ -416,7 +416,7 @@ const Kitchen = ({ onExit }: KitchenProps) => {
                     <p className="text-amber-700 mb-4">{recipe.description}</p>
                     
                     <div className="mb-4">
-                      <h4 className="font-semibold text-amber-800 mb-2">{t.language === 'en' ? 'Ingredients:' : 'Ingredientes:'}</h4>
+                      <h4 className="font-semibold text-amber-800 mb-2">{language === 'en' ? 'Ingredients:' : 'Ingredientes:'}</h4>
                       <div className="grid grid-cols-3 gap-2">
                         {recipe.ingredients.map((ingredient, idx) => (
                           <div key={idx} className="bg-amber-100 p-2 rounded-md text-center border border-amber-200">
@@ -427,7 +427,7 @@ const Kitchen = ({ onExit }: KitchenProps) => {
                     </div>
                     
                     <div className="mb-4">
-                      <h4 className="font-semibold text-amber-800 mb-2">{t.language === 'en' ? 'Health Benefits:' : 'Beneficios para la Salud:'}</h4>
+                      <h4 className="font-semibold text-amber-800 mb-2">{language === 'en' ? 'Health Benefits:' : 'Beneficios para la Salud:'}</h4>
                       <p className="text-sm text-amber-700 p-2 bg-amber-100/50 rounded-md border border-amber-200">
                         {recipe.benefits}
                       </p>
@@ -440,7 +440,7 @@ const Kitchen = ({ onExit }: KitchenProps) => {
                         setCookingMode("free");
                       }}
                     >
-                      {t.language === 'en' ? 'Follow Recipe' : 'Seguir Receta'}
+                      {language === 'en' ? 'Follow Recipe' : 'Seguir Receta'}
                     </Button>
                   </div>
                 </div>
