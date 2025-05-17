@@ -590,7 +590,7 @@ const Market = ({ onExit }: MarketProps) => {
               </div>
               <div className="flex justify-between gap-2">
                 <button 
-                  onClick={() => setShowCart(false)}
+                  onClick={() => toggleCartVisibility()}
                   className="bg-gray-300 text-gray-700 py-2 px-4 rounded font-bold hover:bg-gray-400 flex-1"
                 >
                   {uiTexts.back}
