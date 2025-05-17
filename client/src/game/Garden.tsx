@@ -185,7 +185,7 @@ const Garden = ({ onExit }: GardenProps) => {
         {/* Panel principal */}
         <div className="bg-amber-800 rounded-t-lg">
           {/* Header con título central */}
-          <div className="flex justify-center items-center p-4">
+          <div className="p-4">
             <h2 className="text-2xl font-bold text-center text-white">Huerto Virtual</h2>
           </div>
           
