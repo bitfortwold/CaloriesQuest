@@ -5,6 +5,7 @@ import { useGameStateStore } from "../stores/useGameStateStore";
 import { usePlayerStore } from "../stores/usePlayerStore";
 import { useLanguage } from "../i18n/LanguageContext";
 import { Language } from "../i18n/translations";
+import { generateRandomChallenges } from "../data/dailyChallenges";
 
 // Claves para almacenar datos de usuario en localStorage
 const USER_DATA_KEY = "caloric_consumption_user_data"; // Usuario actual/último
@@ -108,7 +109,11 @@ const SimpleLoginForm = () => {
         caloriesBurned: 0,
         dailyCalories,
         estimatedLifespan: 80,
-        inventory: []
+        inventory: [],
+        // Inicializar nuevas funcionalidades
+        dailyChallenges: generateRandomChallenges(),
+        lastChallengeReset: Date.now(),
+        achievements: []
       };
       
       // Actualizar estado global

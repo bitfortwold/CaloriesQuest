@@ -1,4 +1,6 @@
 import { create } from "zustand";
+import { generateRandomChallenges, updateChallengeProgress } from "../data/dailyChallenges";
+import { toast } from "sonner";
 
 // Define types
 export interface Position {
@@ -69,6 +71,110 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   // Initial state
   playerPosition: { x: 0, y: 0, z: 0 },
   playerData: null,
+  
+  // Funciones para desafíos diarios
+  updateChallenges: () => {
+    if (!get().playerData) return;
+    
+    // Verificar si necesitamos resetear los desafíos (cada día)
+    const now = Date.now();
+    const lastReset = get().playerData?.lastChallengeReset || 0;
+    const oneDayMs = 24 * 60 * 60 * 1000;
+    
+    if (now - lastReset > oneDayMs) {
+      get().resetDailyChallenges();
+    }
+  },
+  
+  // Marca un desafío como completado y otorga recompensas
+  completeChallenge: (challengeId: string) => {
+    if (!get().playerData) return;
+    
+    const challenge = get().playerData.dailyChallenges.find(c => c.id === challengeId);
+    if (!challenge || challenge.completed) return;
+    
+    // Otorgar recompensas
+    const { coins, healthBoost, lifespan } = challenge.reward;
+    
+    // Actualizar monedas
+    get().updateCoins(coins);
+    
+    // Actualizar esperanza de vida si aplica
+    if (lifespan && get().playerData) {
+      set((state) => ({
+        playerData: state.playerData 
+          ? { 
+              ...state.playerData, 
+              estimatedLifespan: state.playerData.estimatedLifespan + lifespan
+            }
+          : null
+      }));
+    }
+    
+    // Marcar como completado
+    set((state) => ({
+      playerData: state.playerData 
+        ? { 
+            ...state.playerData, 
+            dailyChallenges: state.playerData.dailyChallenges.map(c => 
+              c.id === challengeId ? { ...c, completed: true } : c
+            )
+          }
+        : null
+    }));
+    
+    // Notificar al usuario
+    toast.success(`¡Desafío completado! Recompensa: ${coins} iHumanCoins`, {
+      description: challenge.title
+    });
+  },
+  
+  // Desbloquea un logro
+  unlockAchievement: (achievementId: string) => {
+    if (!get().playerData) return;
+    
+    // Verificar si ya tiene el logro
+    if (get().playerData.achievements.includes(achievementId)) return;
+    
+    // Añadir a la lista de logros
+    set((state) => ({
+      playerData: state.playerData 
+        ? { 
+            ...state.playerData, 
+            achievements: [...state.playerData.achievements, achievementId]
+          }
+        : null
+    }));
+    
+    // Notificar al usuario
+    toast.success("¡Nuevo logro desbloqueado!", {
+      description: achievementId
+    });
+  },
+  
+  // Reinicia los desafíos diarios
+  resetDailyChallenges: () => {
+    if (!get().playerData) return;
+    
+    // Generar nuevos desafíos aleatorios
+    const newChallenges = generateRandomChallenges();
+    
+    // Actualizar estado
+    set((state) => ({
+      playerData: state.playerData 
+        ? { 
+            ...state.playerData, 
+            dailyChallenges: newChallenges,
+            lastChallengeReset: Date.now()
+          }
+        : null
+    }));
+    
+    // Notificar al usuario
+    toast.info("¡Nuevos desafíos diarios disponibles!", {
+      description: "Completa los desafíos para ganar recompensas"
+    });
+  },
   
   // Actions
   setPlayerPosition: (position: Position) => {
@@ -156,6 +262,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   },
   
   increaseCaloriesBurned: (calories: number) => {
+    // Actualizar calorías quemadas
     set((state) => ({
       playerData: state.playerData 
         ? { 
@@ -164,6 +271,36 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
           }
         : null
     }));
+    
+    // Actualizar desafíos relacionados con actividad física
+    if (get().playerData) {
+      const action = {
+        type: "activity_performed" as const,
+        caloriesBurned: calories
+      };
+      
+      // Actualizar progreso en desafíos
+      const updatedChallenges = get().playerData!.dailyChallenges.map(challenge => 
+        updateChallengeProgress(challenge, action)
+      );
+      
+      // Actualizar estado con los desafíos actualizados
+      set((state) => ({
+        playerData: state.playerData 
+          ? { 
+              ...state.playerData, 
+              dailyChallenges: updatedChallenges
+            }
+          : null
+      }));
+      
+      // Verificar si algún desafío se completó y otorgar recompensas
+      updatedChallenges.forEach(challenge => {
+        if (challenge.completed && !get().playerData!.dailyChallenges.find(c => c.id === challenge.id)?.completed) {
+          get().completeChallenge(challenge.id);
+        }
+      });
+    }
   },
   
   // Harris-Benedict equation to estimate daily calorie needs

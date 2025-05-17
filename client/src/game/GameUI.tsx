@@ -9,6 +9,7 @@ import Market from "./Market";
 import Kitchen from "./Kitchen";
 import Activities from "./Activities";
 import ProfilePanel from "./ProfilePanel";
+import DailyChallenges from "./DailyChallenges";
 
 const GameUI = () => {
   // Access game state and translations
@@ -268,11 +269,18 @@ const GameUI = () => {
                   >
                     {t.activities}
                   </button>
+                  <button 
+                    className={`px-3 py-1 text-sm rounded ${activeTab === 'challenges' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+                    onClick={() => setActiveTab('challenges')}
+                  >
+                    Desafíos
+                  </button>
                 </div>
                 
                 <div className="max-h-[60vh] overflow-auto">
                   {activeTab === 'profile' && <ProfilePanel />}
                   {activeTab === 'activities' && <Activities />}
+                  {activeTab === 'challenges' && <DailyChallenges />}
                 </div>
                 
                 {/* Close button */}
