@@ -17,7 +17,8 @@ const Kitchen = ({ onExit }: KitchenProps) => {
   const { t, language } = useLanguage(); // Hook para acceder a las traducciones y el idioma actual
   
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
-  const [cookingMode, setCookingMode] = useState<"guided" | "free">("guided");
+  const [cookingMode, setCookingMode] = useState<"guided" | "free" | "guide">("guided");
+  const [showGuide, setShowGuide] = useState<boolean>(false);
   
   // Diccionarios de traducciones para la cocina - Definidos fuera de la función para acceso global
   const kitchenTranslationsEN: Record<string, Record<string, string>> = {
@@ -306,9 +307,12 @@ const Kitchen = ({ onExit }: KitchenProps) => {
               </span>
             </div>
             
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap justify-end items-center gap-3">
               <Button 
-                onClick={() => setCookingMode("guided")}
+                onClick={() => {
+                  setCookingMode("guided");
+                  setShowGuide(false);
+                }}
                 className={`px-5 py-2 rounded-xl font-bold transition-all shadow-md ${
                   cookingMode === "guided" 
                     ? 'bg-gradient-to-r from-[#F48E11] to-[#F9A826] text-white border-3 border-[#E47F0E]' 
@@ -318,7 +322,10 @@ const Kitchen = ({ onExit }: KitchenProps) => {
                 {t.guidedRecipes}
               </Button>
               <Button 
-                onClick={() => setCookingMode("free")}
+                onClick={() => {
+                  setCookingMode("free");
+                  setShowGuide(false);
+                }}
                 className={`px-5 py-2 rounded-xl font-bold transition-all shadow-md ${
                   cookingMode === "free" 
                     ? 'bg-gradient-to-r from-[#F48E11] to-[#F9A826] text-white border-3 border-[#E47F0E]' 
@@ -327,26 +334,120 @@ const Kitchen = ({ onExit }: KitchenProps) => {
               >
                 {t.freeCooking}
               </Button>
+              <Button 
+                onClick={() => {
+                  setShowGuide(!showGuide);
+                }}
+                className={`px-5 py-2 rounded-xl font-bold transition-all shadow-md ${
+                  showGuide 
+                    ? 'bg-gradient-to-r from-[#F48E11] to-[#F9A826] text-white border-3 border-[#E47F0E]' 
+                    : 'bg-gradient-to-r from-[#FFD166] to-[#FFBD3E] text-[#7E4E1B] border-2 border-[#FFBD3E] hover:brightness-105'
+                }`}
+              >
+                {language === 'en' ? 'Cooking Guide' : language === 'ca' ? 'Guia de Cuina' : 'Guía de Cocina'}
+              </Button>
             </div>
           </div>
         </div>
         
-        <div className="p-4">
-          {cookingMode === "free" ? (
+        <div className="p-6">
+          {showGuide ? (
+            // Guía de Cocina
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="bg-[#FFF8E9] p-5 rounded-2xl border-4 border-[#F5D6A4] shadow-lg">
+                <h3 className="text-2xl font-bold text-[#8B5E34] mb-4 pb-2 border-b-2 border-[#F5D6A4]">
+                  {language === 'en' ? 'Cooking Guide' : language === 'ca' ? 'Guia de Cuina' : 'Guía de Cocina'}
+                </h3>
+                
+                <div className="text-[#7E4E1B] space-y-4">
+                  <p>
+                    {language === 'en' 
+                      ? 'Select a guided recipe from the left panel to get step-by-step instructions on how to prepare the meal. Each recipe is designed to be nutritionally balanced and uses ingredients available in your refrigerator and pantry.'
+                      : language === 'ca'
+                      ? 'Selecciona una recepta guiada del panell esquerre per obtenir instruccions pas a pas sobre com preparar el menjar. Cada recepta està dissenyada per ser nutricionalment equilibrada i utilitza ingredients disponibles al teu refrigerador i rebost.'
+                      : 'Selecciona una receta guiada del panel izquierdo para obtener instrucciones paso a paso sobre cómo preparar la comida. Cada receta está diseñada para ser nutricionalmente equilibrada y utiliza ingredientes disponibles en tu refrigerador y despensa.'}
+                  </p>
+                  
+                  <h4 className="text-xl font-bold text-[#8B5E34] mt-6 mb-2">
+                    {language === 'en' ? 'Tips for Healthy Cooking' : language === 'ca' ? 'Consells per a una Cuina Saludable' : 'Consejos para una Cocina Saludable'}:
+                  </h4>
+                  
+                  <ul className="list-disc pl-6 space-y-2">
+                    <li>
+                      {language === 'en' 
+                        ? 'Balance your meals with proteins, carbohydrates, and healthy fats.'
+                        : language === 'ca'
+                        ? 'Equilibra els teus àpats amb proteïnes, carbohidrats i greixos saludables.'
+                        : 'Equilibra tus comidas con proteínas, carbohidratos y grasas saludables.'}
+                    </li>
+                    <li>
+                      {language === 'en' 
+                        ? 'Include a variety of colorful vegetables to get essential vitamins and minerals.'
+                        : language === 'ca'
+                        ? 'Inclou una varietat de verdures colorides per obtenir vitamines i minerals essencials.'
+                        : 'Incluye una variedad de verduras coloridas para obtener vitaminas y minerales esenciales.'}
+                    </li>
+                    <li>
+                      {language === 'en' 
+                        ? 'Pay attention to portion sizes to maintain a healthy caloric intake.'
+                        : language === 'ca'
+                        ? 'Presta atenció a les mides de les porcions per mantenir una ingesta calòrica saludable.'
+                        : 'Presta atención a los tamaños de las porciones para mantener una ingesta calórica saludable.'}
+                    </li>
+                    <li>
+                      {language === 'en' 
+                        ? 'Consider the sustainability score of your ingredients to make environmentally responsible decisions.'
+                        : language === 'ca'
+                        ? 'Considera la puntuació de sostenibilitat dels teus ingredients per prendre decisions respectuoses amb el medi ambient.'
+                        : 'Considera la puntuación de sostenibilidad de tus ingredientes para tomar decisiones respetuosas con el medio ambiente.'}
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              
+              <div className="bg-[#FFF8E9] p-5 rounded-2xl border-4 border-[#F5D6A4] shadow-lg">
+                <img src="/img/cooking_guide.jpg" alt="Cooking Guide" className="w-full h-64 object-cover rounded-xl mb-4" onError={(e) => {
+                  e.currentTarget.style.display = 'none';
+                }} />
+                
+                <h4 className="text-xl font-bold text-[#8B5E34] mb-2">
+                  {language === 'en' ? 'Refrigerator and Pantry Organization' : language === 'ca' ? 'Organització del Refrigerador i Rebost' : 'Organización del Refrigerador y Despensa'}:
+                </h4>
+                
+                <ul className="list-disc pl-6 space-y-2 text-[#7E4E1B]">
+                  <li>
+                    {language === 'en' 
+                      ? 'Refrigerator: Store perishable items that need cooling to stay fresh, like dairy, fruits, vegetables, and proteins.'
+                      : language === 'ca'
+                      ? 'Refrigerador: Emmagatzema articles peribles que necessiten refrigeració per mantenir-se frescos, com làctics, fruites, verdures i proteïnes.'
+                      : 'Refrigerador: Almacena artículos perecederos que necesitan refrigeración para mantenerse frescos, como lácteos, frutas, verduras y proteínas.'}
+                  </li>
+                  <li>
+                    {language === 'en' 
+                      ? 'Pantry: Store non-perishable items like grains, canned goods, spices, and oils at room temperature.'
+                      : language === 'ca'
+                      ? 'Rebost: Emmagatzema articles no peribles com cereals, conserves, espècies i olis a temperatura ambient.'
+                      : 'Despensa: Almacena artículos no perecederos como cereales, conservas, especias y aceites a temperatura ambiente.'}
+                  </li>
+                </ul>
+              </div>
+            </div>
+          ) : cookingMode === "free" ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Left side - Available ingredients with tabs for Refrigerator and Pantry */}
               <div>
+                <h3 className="text-2xl font-bold text-[#8B5E34] mb-4 pb-2 border-b-2 border-[#F5D6A4]">Alimentos Disponibles</h3>
                 <Tabs defaultValue="refrigerator" className="w-full">
-                  <TabsList className="grid grid-cols-2 mb-4 bg-amber-200 px-2 pt-2 flex space-x-1 overflow-x-auto border-b-2 border-amber-700">
+                  <TabsList className="grid grid-cols-2 mb-4 bg-[#FFD166] px-4 pt-3 flex space-x-2 overflow-x-auto border-b-4 border-[#CD8E3E]">
                     <TabsTrigger 
                       value="refrigerator" 
-                      className="capitalize font-bold py-2 px-4 rounded-t-lg transition-all hover:brightness-110 data-[state=active]:bg-amber-50 data-[state=active]:text-amber-900 data-[state=active]:border-2 data-[state=active]:border-b-0 data-[state=active]:border-amber-700 data-[state=inactive]:bg-amber-300 data-[state=inactive]:text-amber-700 data-[state=inactive]:border data-[state=inactive]:border-amber-400 data-[state=inactive]:opacity-80 data-[state=inactive]:hover:opacity-100"
+                      className="font-bold py-3 px-5 rounded-t-xl transition-all text-lg transform data-[state=active]:bg-[#FFF8E9] data-[state=active]:text-[#8B5E34] data-[state=active]:border-4 data-[state=active]:border-b-0 data-[state=active]:border-[#CD8E3E] data-[state=active]:shadow-md data-[state=active]:scale-105 data-[state=inactive]:bg-[#FFBD3E] data-[state=inactive]:text-[#7E4E1B] data-[state=inactive]:hover:bg-[#FFC154] data-[state=inactive]:shadow-inner"
                     >
                       {t.refrigerator}
                     </TabsTrigger>
                     <TabsTrigger 
                       value="pantry" 
-                      className="capitalize font-bold py-2 px-4 rounded-t-lg transition-all hover:brightness-110 data-[state=active]:bg-amber-50 data-[state=active]:text-amber-900 data-[state=active]:border-2 data-[state=active]:border-b-0 data-[state=active]:border-amber-700 data-[state=inactive]:bg-amber-300 data-[state=inactive]:text-amber-700 data-[state=inactive]:border data-[state=inactive]:border-amber-400 data-[state=inactive]:opacity-80 data-[state=inactive]:hover:opacity-100"
+                      className="font-bold py-3 px-5 rounded-t-xl transition-all text-lg transform data-[state=active]:bg-[#FFF8E9] data-[state=active]:text-[#8B5E34] data-[state=active]:border-4 data-[state=active]:border-b-0 data-[state=active]:border-[#CD8E3E] data-[state=active]:shadow-md data-[state=active]:scale-105 data-[state=inactive]:bg-[#FFBD3E] data-[state=inactive]:text-[#7E4E1B] data-[state=inactive]:hover:bg-[#FFC154] data-[state=inactive]:shadow-inner"
                     >
                       {t.pantry}
                     </TabsTrigger>
