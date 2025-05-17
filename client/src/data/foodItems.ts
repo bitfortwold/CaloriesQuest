@@ -4,7 +4,9 @@ import { Language } from '../i18n/translations';
 export interface FoodItem {
   id: string;
   name: string;
+  nameEn: string;  // Nombre en inglés
   category: string;
+  categoryEn: string; // Categoría en inglés
   calories: number;
   nutritionalValue: {
     protein: number;
@@ -14,14 +16,30 @@ export interface FoodItem {
   sustainabilityScore: number;
   price: number;
   description: string;
+  descriptionEn: string; // Descripción en inglés
 }
 
-// Datos de alimentos en español
+// Función para obtener los alimentos según el idioma seleccionado
+export function getLocalizedFoodItems(language: Language): FoodItem[] {
+  if (language === 'en') {
+    return foodItems.map(item => ({
+      ...item,
+      name: item.nameEn,
+      category: item.categoryEn,
+      description: item.descriptionEn
+    }));
+  }
+  return foodItems;
+}
+
+// Datos de alimentos con traducciones
 export const foodItems = [
   {
     id: "manzana",
     name: "Manzana",
+    nameEn: "Apple",
     category: "frutas",
+    categoryEn: "fruits",
     calories: 52,
     nutritionalValue: {
       protein: 0.3,
@@ -30,12 +48,15 @@ export const foodItems = [
     },
     sustainabilityScore: 8,
     price: 10,
-    description: "Una manzana crujiente, rica en fibra y vitaminas. Bajo impacto ambiental."
+    description: "Una manzana crujiente, rica en fibra y vitaminas. Bajo impacto ambiental.",
+    descriptionEn: "A crisp apple, rich in fiber and vitamins. Low environmental impact."
   },
   {
     id: "banana",
     name: "Plátano",
+    nameEn: "Banana",
     category: "frutas",
+    categoryEn: "fruits",
     calories: 89,
     nutritionalValue: {
       protein: 1.1,
@@ -44,7 +65,8 @@ export const foodItems = [
     },
     sustainabilityScore: 6,
     price: 12,
-    description: "Plátano rico en potasio, excelente para la energía. Impacto moderado en transporte."
+    description: "Plátano rico en potasio, excelente para la energía. Impacto moderado en transporte.",
+    descriptionEn: "Banana rich in potassium, excellent for energy. Moderate impact on transportation."
   },
   {
     id: "brócoli",
