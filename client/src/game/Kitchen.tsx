@@ -19,6 +19,31 @@ const Kitchen = ({ onExit }: KitchenProps) => {
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
   const [cookingMode, setCookingMode] = useState<"guided" | "free">("guided");
   
+  // Función para traducir los nombres de los ingredientes
+  const translateIngredient = (ingredient: string): string => {
+    const translations: Record<string, string> = {
+      // Español -> Inglés
+      'huevos': 'Eggs',
+      'pan': 'Bread',
+      'manzana': 'Apple',
+      'frijoles': 'Beans',
+      'arroz': 'Rice',
+      'brócoli': 'Broccoli',
+      'zanahoria': 'Carrot',
+      'pollo': 'Chicken',
+      'patata': 'Potato',
+      'espinaca': 'Spinach',
+      'lechuga': 'Lettuce',
+      'tomate': 'Tomato',
+      'cebolla': 'Onion',
+      'ajo': 'Garlic',
+      'carne': 'Meat',
+      'pescado': 'Fish'
+    };
+    
+    return translations[ingredient.toLowerCase()] || ingredient;
+  };
+  
   // Calculate nutritional totals for the selected items
   const calculateTotals = () => {
     return selectedItems.reduce((totals, itemId) => {
@@ -420,7 +445,9 @@ const Kitchen = ({ onExit }: KitchenProps) => {
                       <div className="grid grid-cols-3 gap-2">
                         {recipe.ingredients.map((ingredient, idx) => (
                           <div key={idx} className="bg-amber-100 p-2 rounded-md text-center border border-amber-200">
-                            <span className="text-sm capitalize">{ingredient}</span>
+                            <span className="text-sm capitalize">
+                              {language === 'en' ? translateIngredient(ingredient) : ingredient}
+                            </span>
                           </div>
                         ))}
                       </div>
@@ -448,15 +475,15 @@ const Kitchen = ({ onExit }: KitchenProps) => {
               
               <div className="col-span-full mt-4">
                 <div className="bg-amber-100 border-2 border-amber-300 p-4 rounded-lg shadow-md">
-                  <h3 className="text-lg font-bold text-amber-800 mb-3">{t.language === 'en' ? 'Nutritional Tips:' : 'Consejos Nutricionales:'}</h3>
+                  <h3 className="text-lg font-bold text-amber-800 mb-3">{language === 'en' ? 'Nutritional Tips:' : 'Consejos Nutricionales:'}</h3>
                   <ul className="grid grid-cols-2 gap-3">
                     <li className="bg-amber-50 p-3 rounded-md border border-amber-200 text-amber-700">
-                      {t.language === 'en' 
+                      {language === 'en' 
                         ? 'Look for a balanced mix of proteins, carbohydrates, and healthy fats for optimal nutrition.' 
                         : 'Busca una mezcla equilibrada de proteínas, carbohidratos y grasas saludables para una nutrición óptima.'}
                     </li>
                     <li className="bg-amber-50 p-3 rounded-md border border-amber-200 text-amber-700">
-                      {t.language === 'en'
+                      {language === 'en'
                         ? 'Include plenty of fruits and vegetables to get essential vitamins and minerals.'
                         : 'Incluye abundantes frutas y verduras para obtener vitaminas y minerales esenciales.'}
                     </li>
