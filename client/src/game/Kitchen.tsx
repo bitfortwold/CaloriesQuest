@@ -151,7 +151,7 @@ const Kitchen = ({ onExit }: KitchenProps) => {
                     : 'bg-amber-300 hover:bg-amber-400 text-amber-800 border border-amber-400'
                 }`}
               >
-                Guided Recipes
+                {t.guidedRecipes}
               </Button>
               <Button 
                 onClick={() => setCookingMode("free")}
@@ -161,7 +161,7 @@ const Kitchen = ({ onExit }: KitchenProps) => {
                     : 'bg-amber-300 hover:bg-amber-400 text-amber-800 border border-amber-400'
                 }`}
               >
-                Free Cooking
+                {t.freeCooking}
               </Button>
             </div>
           </div>
@@ -178,19 +178,19 @@ const Kitchen = ({ onExit }: KitchenProps) => {
                       value="refrigerator" 
                       className="capitalize font-bold py-2 px-4 rounded-t-lg transition-all hover:brightness-110 data-[state=active]:bg-amber-50 data-[state=active]:text-amber-900 data-[state=active]:border-2 data-[state=active]:border-b-0 data-[state=active]:border-amber-700 data-[state=inactive]:bg-amber-300 data-[state=inactive]:text-amber-700 data-[state=inactive]:border data-[state=inactive]:border-amber-400 data-[state=inactive]:opacity-80 data-[state=inactive]:hover:opacity-100"
                     >
-                      Refrigerator
+                      {t.refrigerator}
                     </TabsTrigger>
                     <TabsTrigger 
                       value="pantry" 
                       className="capitalize font-bold py-2 px-4 rounded-t-lg transition-all hover:brightness-110 data-[state=active]:bg-amber-50 data-[state=active]:text-amber-900 data-[state=active]:border-2 data-[state=active]:border-b-0 data-[state=active]:border-amber-700 data-[state=inactive]:bg-amber-300 data-[state=inactive]:text-amber-700 data-[state=inactive]:border data-[state=inactive]:border-amber-400 data-[state=inactive]:opacity-80 data-[state=inactive]:hover:opacity-100"
                     >
-                      Pantry
+                      {t.pantry}
                     </TabsTrigger>
                   </TabsList>
                   
                   {/* Refrigerator Content */}
                   <TabsContent value="refrigerator" className="mt-0">
-                    <h3 className="text-lg font-semibold mb-2 text-amber-800">Refrigerated Items</h3>
+                    <h3 className="text-lg font-semibold mb-2 text-amber-800">{t.refrigeratedItems}</h3>
                     <div className="grid grid-cols-2 gap-2 max-h-[400px] overflow-y-auto">
                       {refrigeratorFood.length === 0 ? (
                         <p className="text-amber-500 py-6 text-center col-span-2 bg-amber-50 rounded-md border border-amber-200">
@@ -237,7 +237,7 @@ const Kitchen = ({ onExit }: KitchenProps) => {
                   
                   {/* Pantry Content */}
                   <TabsContent value="pantry" className="mt-0">
-                    <h3 className="text-lg font-semibold mb-2 text-amber-800">Pantry Items</h3>
+                    <h3 className="text-lg font-semibold mb-2 text-amber-800">{t.pantryItems}</h3>
                     <div className="grid grid-cols-2 gap-2 max-h-[400px] overflow-y-auto">
                       {pantryFood.length === 0 ? (
                         <p className="text-amber-500 py-6 text-center col-span-2 bg-amber-50 rounded-md border border-amber-200">
