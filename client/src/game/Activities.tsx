@@ -27,7 +27,7 @@ const Activities = () => {
     calculateEstimatedLifespan();
     
     // Show success message
-    toast.success(`You ${activity.name}! Burned ${activity.caloriesBurned} calories and earned ${coinsEarned} iHumancoins.`);
+    toast.success(`¡Has realizado ${activity.name}! Quemaste ${activity.caloriesBurned} calorías y ganaste ${coinsEarned} iHumancoins.`);
     
     // Show educational tip if available
     if (activity.educationalTip) {
@@ -58,7 +58,7 @@ const Activities = () => {
                   size="sm"
                   onClick={() => performActivity(activity)}
                 >
-                  Do it
+                  {t.doIt}
                 </Button>
               </div>
               <p className="text-xs text-gray-500 mt-2">{activity.description}</p>

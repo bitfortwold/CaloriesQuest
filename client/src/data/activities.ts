@@ -17,66 +17,66 @@ export const activities = [
   },
   {
     id: "gardening",
-    name: "Gardening",
-    description: "Plant and tend to fruits and vegetables",
+    name: "Jardinería",
+    description: "Plantar y cuidar frutas y verduras",
     caloriesBurned: 120,
     coins: 240,
-    educationalTip: "Growing your own food reduces transportation emissions and packaging waste."
+    educationalTip: "Cultivar tu propia comida reduce las emisiones de transporte y los desechos de embalaje."
   },
   {
     id: "recycling",
-    name: "Recycling",
-    description: "Sort and recycle waste materials",
+    name: "Reciclaje",
+    description: "Clasificar y reciclar materiales de desecho",
     caloriesBurned: 50,
     coins: 100,
-    educationalTip: "Recycling one aluminum can saves enough energy to power a TV for three hours."
+    educationalTip: "Reciclar una lata de aluminio ahorra suficiente energía para alimentar un televisor durante tres horas."
   },
   {
     id: "swimming",
-    name: "Swimming",
-    description: "Swim laps at the local pool",
+    name: "Natación",
+    description: "Nadar en la piscina local",
     caloriesBurned: 200,
     coins: 400,
-    educationalTip: "Swimming is a full-body workout that's gentle on joints while burning calories."
+    educationalTip: "La natación es un ejercicio de cuerpo completo que es suave con las articulaciones mientras quema calorías."
   },
   {
     id: "reading",
-    name: "Reading About Nutrition",
-    description: "Learn about healthy eating and sustainability",
+    name: "Lectura sobre Nutrición",
+    description: "Aprender sobre alimentación saludable y sostenibilidad",
     caloriesBurned: 30,
     coins: 60,
-    educationalTip: "Education about nutrition leads to better food choices and healthier lifestyles."
+    educationalTip: "La educación sobre nutrición conduce a mejores elecciones alimenticias y estilos de vida más saludables."
   },
   {
     id: "composting",
-    name: "Composting",
-    description: "Turn food scraps into rich soil",
+    name: "Compostaje",
+    description: "Convertir restos de comida en tierra fértil",
     caloriesBurned: 80,
     coins: 160,
-    educationalTip: "Composting reduces methane emissions from landfills and creates nutrient-rich soil."
+    educationalTip: "El compostaje reduce las emisiones de metano de los vertederos y crea suelo rico en nutrientes."
   },
   {
     id: "dancing",
-    name: "Dancing",
-    description: "Dance to your favorite music",
+    name: "Bailar",
+    description: "Bailar con tu música favorita",
     caloriesBurned: 180,
     coins: 360,
-    educationalTip: "Dancing improves coordination, strengthens bones, and boosts mood."
+    educationalTip: "Bailar mejora la coordinación, fortalece los huesos y mejora el estado de ánimo."
   },
   {
     id: "yoga",
     name: "Yoga",
-    description: "Practice yoga poses and breathing",
+    description: "Practicar posturas y respiración de yoga",
     caloriesBurned: 120,
     coins: 240,
-    educationalTip: "Yoga combines physical activity with mindfulness for holistic health benefits."
+    educationalTip: "El yoga combina la actividad física con la atención plena para beneficios holísticos para la salud."
   },
   {
     id: "cooking",
-    name: "Cooking Class",
-    description: "Learn new recipes and cooking techniques",
+    name: "Clase de Cocina",
+    description: "Aprender nuevas recetas y técnicas de cocina",
     caloriesBurned: 90,
     coins: 180,
-    educationalTip: "Cooking at home usually results in healthier meals with controlled ingredients."
+    educationalTip: "Cocinar en casa generalmente resulta en comidas más saludables con ingredientes controlados."
   }
 ];
