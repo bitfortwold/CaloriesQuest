@@ -86,19 +86,24 @@ export const LanguageProvider: React.FC<{children: React.ReactNode}> = ({ childr
 
   // Función para cambiar el idioma
   const changeLanguage = (lang: Language) => {
-    setLanguage(lang);
-    setTranslations(lang === 'en' ? en : es);
-    
-    // Guardar preferencia en localStorage
+    // Guardar preferencia en localStorage primero
     try {
       localStorage.setItem('language', lang);
       
-      // Para hacer que el cambio de idioma se aplique correctamente a todos los elementos
-      // incluyendo los datos dinámicos, forzamos una recarga de la página
-      window.location.reload();
+      // Actualizar la URL con un parámetro de consulta para forzar la recarga con el nuevo idioma
+      const url = new URL(window.location.href);
+      url.searchParams.set('lang', lang);
+      
+      // Redireccionar a la misma página pero con el parámetro de idioma
+      // Esto garantizará que toda la aplicación se recargue con el nuevo idioma
+      window.location.href = url.toString();
       
     } catch (error) {
       console.error("Error guardando el idioma en localStorage:", error);
+      
+      // Intentar actualizar los estados de todos modos
+      setLanguage(lang);
+      setTranslations(lang === 'en' ? en : es);
     }
   };
 
