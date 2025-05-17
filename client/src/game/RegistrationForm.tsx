@@ -3,6 +3,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { useGameStateStore } from "../stores/useGameStateStore";
 import { usePlayerStore } from "../stores/usePlayerStore";
+import { useLanguage } from "../i18n/LanguageContext";
+import { Language } from "../i18n/translations";
 
 // Clave para almacenar datos de usuario en localStorage
 const USER_DATA_KEY = "caloric_consumption_user_data";
@@ -10,6 +12,7 @@ const USER_DATA_KEY = "caloric_consumption_user_data";
 const RegistrationForm = () => {
   const { setIsRegistered } = useGameStateStore();
   const { setPlayerData, calculateDailyCalories } = usePlayerStore();
+  const { language, changeLanguage, t } = useLanguage(); // Obtener funciones de idioma
   
   // Form state
   const [formData, setFormData] = useState({
@@ -236,11 +239,25 @@ const RegistrationForm = () => {
 
       <Card className="w-full max-w-lg">
         <CardHeader>
-          <CardTitle className="text-2xl">Bienvenido a Consumo Calórico</CardTitle>
+          <div className="flex justify-between items-center mb-4">
+            <CardTitle className="text-2xl">Bienvenido a Consumo Calórico</CardTitle>
+            <div className="relative">
+              <select
+                value={language}
+                onChange={(e) => changeLanguage(e.target.value as Language)}
+                className="bg-blue-500 text-white py-2 px-4 rounded-md cursor-pointer hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300"
+              >
+                <option value="es">Español</option>
+                <option value="en">English</option>
+              </select>
+            </div>
+          </div>
           <CardDescription>
             {showQuickLogin 
-              ? `¡Bienvenido de nuevo! Puedes continuar con tu perfil guardado o crear uno nuevo.`
-              : `¡Registra tu perfil para comenzar tu aventura nutricional! El juego calculará tus necesidades calóricas diarias.`
+              ? (language === 'es' ? '¡Bienvenido de nuevo! Puedes continuar con tu perfil guardado o crear uno nuevo.' 
+                                   : 'Welcome back! You can continue with your saved profile or create a new one.')
+              : (language === 'es' ? '¡Registra tu perfil para comenzar tu aventura nutricional! El juego calculará tus necesidades calóricas diarias.'
+                                   : 'Register your profile to start your nutritional adventure! The game will calculate your daily caloric needs.')
             }
           </CardDescription>
         </CardHeader>
@@ -249,15 +266,22 @@ const RegistrationForm = () => {
           {showQuickLogin ? (
             <div className="space-y-4">
               <div className="bg-blue-50 p-4 rounded-md">
-                <h3 className="font-medium text-lg text-blue-700 mb-2">Perfil guardado</h3>
-                <p className="mb-4">Hemos encontrado un perfil guardado para <span className="font-bold">{savedUsername}</span>.</p>
+                <h3 className="font-medium text-lg text-blue-700 mb-2">
+                  {language === 'es' ? 'Perfil guardado' : 'Saved Profile'}
+                </h3>
+                <p className="mb-4">
+                  {language === 'es' 
+                    ? <>Hemos encontrado un perfil guardado para <span className="font-bold">{savedUsername}</span>.</>
+                    : <>We found a saved profile for <span className="font-bold">{savedUsername}</span>.</>
+                  }
+                </p>
                 
                 <div className="flex flex-col space-y-2">
                   <Button 
                     onClick={handleQuickLogin}
                     className="w-full bg-green-600 hover:bg-green-700"
                   >
-                    Continuar como {savedUsername}
+                    {language === 'es' ? `Continuar como ${savedUsername}` : `Continue as ${savedUsername}`}
                   </Button>
                   
                   <Button 
@@ -265,7 +289,7 @@ const RegistrationForm = () => {
                     variant="outline"
                     className="w-full"
                   >
-                    Crear un nuevo perfil
+                    {language === 'es' ? 'Crear un nuevo perfil' : 'Create a new profile'}
                   </Button>
                 </div>
               </div>
@@ -274,7 +298,9 @@ const RegistrationForm = () => {
             <form onSubmit={handleSubmit}>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium mb-1">Nombre</label>
+                  <label className="block text-sm font-medium mb-1">
+                    {language === 'es' ? 'Nombre' : 'Name'}
+                  </label>
                   <input
                     type="text"
                     name="name"
@@ -282,11 +308,17 @@ const RegistrationForm = () => {
                     onChange={handleChange}
                     className={`w-full p-2 border rounded-md ${errors.name ? 'border-red-500' : 'border-gray-300'}`}
                   />
-                  {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name === "Name is required" ? "El nombre es obligatorio" : errors.name}</p>}
+                  {errors.name && <p className="text-red-500 text-xs mt-1">
+                    {errors.name === "Name is required" 
+                      ? (language === 'es' ? "El nombre es obligatorio" : "Name is required") 
+                      : errors.name}
+                  </p>}
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium mb-1">Edad</label>
+                  <label className="block text-sm font-medium mb-1">
+                    {language === 'es' ? 'Edad' : 'Age'}
+                  </label>
                   <input
                     type="number"
                     name="age"
@@ -295,27 +327,41 @@ const RegistrationForm = () => {
                     className={`w-full p-2 border rounded-md ${errors.age ? 'border-red-500' : 'border-gray-300'}`}
                   />
                   {errors.age && <p className="text-red-500 text-xs mt-1">
-                    {errors.age === "Valid age is required" ? "La edad es obligatoria" : 
-                     errors.age === "Age must be between 7 and 120" ? "La edad debe estar entre 7 y 120 años" : 
-                     errors.age}
+                    {errors.age === "Valid age is required" 
+                      ? (language === 'es' ? "La edad es obligatoria" : "Valid age is required") 
+                      : errors.age === "Age must be between 7 and 120" 
+                      ? (language === 'es' ? "La edad debe estar entre 7 y 120 años" : "Age must be between 7 and 120") 
+                      : errors.age}
                   </p>}
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium mb-1">Género</label>
+                  <label className="block text-sm font-medium mb-1">
+                    {language === 'es' ? 'Género' : 'Gender'}
+                  </label>
                   <select
                     name="gender"
                     value={formData.gender}
                     onChange={handleChange}
                     className={`w-full p-2 border rounded-md ${errors.gender ? 'border-red-500' : 'border-gray-300'}`}
                   >
-                    <option value="">Selecciona género</option>
-                    <option value="male">Masculino</option>
-                    <option value="female">Femenino</option>
-                    <option value="other">Otro</option>
+                    <option value="">
+                      {language === 'es' ? 'Selecciona género' : 'Select gender'}
+                    </option>
+                    <option value="male">
+                      {language === 'es' ? 'Masculino' : 'Male'}
+                    </option>
+                    <option value="female">
+                      {language === 'es' ? 'Femenino' : 'Female'}
+                    </option>
+                    <option value="other">
+                      {language === 'es' ? 'Otro' : 'Other'}
+                    </option>
                   </select>
                   {errors.gender && <p className="text-red-500 text-xs mt-1">
-                    {errors.gender === "Gender is required" ? "El género es obligatorio" : errors.gender}
+                    {errors.gender === "Gender is required" 
+                      ? (language === 'es' ? "El género es obligatorio" : "Gender is required") 
+                      : errors.gender}
                   </p>}
                 </div>
                 
