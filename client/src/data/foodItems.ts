@@ -58,7 +58,7 @@ export const foodItems = [
   {
     id: "pollo",
     name: "Pechuga de Pollo",
-    category: "protein",
+    category: "proteínas",
     calories: 165,
     nutritionalValue: {
       protein: 31,
@@ -72,7 +72,7 @@ export const foodItems = [
   {
     id: "beef",
     name: "Bistec de Ternera",
-    category: "protein",
+    category: "proteínas",
     calories: 271,
     nutritionalValue: {
       protein: 26,
@@ -86,7 +86,7 @@ export const foodItems = [
   {
     id: "fish",
     name: "Pescado Sostenible",
-    category: "protein",
+    category: "proteínas",
     calories: 136,
     nutritionalValue: {
       protein: 22,
@@ -100,7 +100,7 @@ export const foodItems = [
   {
     id: "arroz",
     name: "Arroz Integral",
-    category: "grains",
+    category: "cereales",
     calories: 216,
     nutritionalValue: {
       protein: 5,
@@ -114,7 +114,7 @@ export const foodItems = [
   {
     id: "pan",
     name: "Pan Integral",
-    category: "grains",
+    category: "cereales",
     calories: 69,
     nutritionalValue: {
       protein: 3.6,
@@ -128,7 +128,7 @@ export const foodItems = [
   {
     id: "patata",
     name: "Patata",
-    category: "vegetables",
+    category: "verduras",
     calories: 163,
     nutritionalValue: {
       protein: 4.3,
@@ -142,7 +142,7 @@ export const foodItems = [
   {
     id: "milk",
     name: "Leche",
-    category: "dairy",
+    category: "lácteos",
     calories: 122,
     nutritionalValue: {
       protein: 8.1,
@@ -156,7 +156,7 @@ export const foodItems = [
   {
     id: "cheese",
     name: "Queso",
-    category: "dairy",
+    category: "lácteos",
     calories: 113,
     nutritionalValue: {
       protein: 7,
@@ -170,7 +170,7 @@ export const foodItems = [
   {
     id: "huevos",
     name: "Huevos",
-    category: "protein",
+    category: "proteínas",
     calories: 155,
     nutritionalValue: {
       protein: 13,
@@ -184,7 +184,7 @@ export const foodItems = [
   {
     id: "frijoles",
     name: "Frijoles",
-    category: "protein",
+    category: "proteínas",
     calories: 127,
     nutritionalValue: {
       protein: 9,
