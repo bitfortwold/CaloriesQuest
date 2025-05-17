@@ -628,13 +628,7 @@ const Kitchen = ({ onExit }: KitchenProps) => {
           )}
         </div>
         
-        {/* Botón flotante circular para volver al mapa */}
-        <Button 
-          onClick={onExit}
-          className="absolute top-2 right-2 w-10 h-10 rounded-full bg-amber-600 hover:bg-amber-700 text-white shadow-md flex items-center justify-center p-0 border-2 border-amber-500"
-        >
-          <span className="text-xl">×</span>
-        </Button>
+        {/* El botón de salir ahora se maneja desde GameUI.tsx */}
       </div>
     </div>
   );
