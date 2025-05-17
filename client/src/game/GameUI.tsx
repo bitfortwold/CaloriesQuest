@@ -119,6 +119,25 @@ const GameUI = () => {
       case "garden":
         return (
           <>
+            {/* Botón flotante para salir del huerto */}
+            <div className="fixed top-4 right-4 z-[1000]">
+              <button
+                onClick={() => {
+                  console.log("Force exiting garden via floating button");
+                  // Primero cambiar el estado local
+                  setActiveTab(null);
+                  // Luego cambiar el estado global del juego - con un pequeño retraso
+                  setTimeout(() => {
+                    console.log("Executing exitBuilding after delay");
+                    exitBuilding();
+                  }, 50);
+                }}
+                className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg border-2 border-red-500 shadow-lg text-xl transition-all hover:scale-105"
+              >
+                {t.exit}
+              </button>
+            </div>
+            
             <div className="fixed inset-0 z-50 flex items-center justify-center">
               <Garden onExit={() => {
                 console.log("GameUI attempting to exit garden");
