@@ -228,21 +228,46 @@ const Player = () => {
     
     // Si venimos de cualquier edificio y ahora estamos jugando
     if (buildingStates.includes(lastGameStateRef.current || "") && gameState === "playing") {
-      console.log(`Detected exit from ${lastGameStateRef.current} - applying cooldown`);
+      console.log(`Detected exit from ${lastGameStateRef.current} - applying cooldown and teleporting`);
       
       // Marcar que acabamos de salir de un edificio para evitar interacciones inmediatas
       setJustExitedBuilding(true);
       
-      // Restaurar la capacidad de interactuar después de un breve periodo
+      // SOLUCIÓN FINAL: Cuando salimos de un edificio, teleportar al jugador a una posición segura
+      // dependiendo de qué edificio acabamos de salir
+      if (lastGameStateRef.current === "garden") {
+        console.log("Teleporting away from garden");
+        setPlayerPosition({
+          x: gardenPosition.x - 8, // Bastante lejos del huerto
+          y: playerPosition.y,
+          z: gardenPosition.z + 8  // Bastante lejos del huerto
+        });
+      } else if (lastGameStateRef.current === "market") {
+        console.log("Teleporting away from market");
+        setPlayerPosition({
+          x: marketPosition.x + 8, // Bastante lejos del mercado
+          y: playerPosition.y,
+          z: marketPosition.z - 8  // Bastante lejos del mercado
+        });
+      } else if (lastGameStateRef.current === "kitchen") {
+        console.log("Teleporting away from kitchen");
+        setPlayerPosition({
+          x: kitchenPosition.x - 8, // Bastante lejos de la cocina
+          y: playerPosition.y,
+          z: kitchenPosition.z + 8  // Bastante lejos de la cocina
+        });
+      }
+      
+      // Restaurar la capacidad de interactuar después de un periodo más largo
       setTimeout(() => {
         console.log("Building exit cooldown finished");
         setJustExitedBuilding(false);
-      }, 500); // Medio segundo es suficiente para evitar reentradas accidentales
+      }, 1000); // Un segundo completo para evitar reentradas accidentales
     }
     
     // Actualizar la referencia del estado anterior
     lastGameStateRef.current = gameState;
-  }, [gameState]);
+  }, [gameState, playerPosition, marketPosition, kitchenPosition, gardenPosition]);
 
   // Handle movement and interactions in each frame
   useFrame(() => {
