@@ -294,6 +294,8 @@ const Market = ({ onExit }: MarketProps) => {
         hasSeedItems = true;
         // Procesar semillas
         for (let i = 0; i < item.quantity; i++) {
+          console.log("Añadiendo semilla al inventario:", item.item.name);
+          const { addSeed } = usePlayerStore.getState();
           addSeed(item.item);
         }
       }
