@@ -22,8 +22,9 @@ export const LanguageProvider: React.FC<{children: React.ReactNode}> = ({ childr
   // Intentar recuperar el idioma guardado en localStorage
   const getSavedLanguage = (): Language => {
     try {
-      const savedLanguage = localStorage.getItem('language') as Language;
-      return savedLanguage === 'en' ? 'en' : 'es'; // Validar que sea un idioma válido
+      // Forzar español como idioma predeterminado
+      localStorage.setItem('language', 'es');
+      return 'es';
     } catch {
       return 'es'; // Por defecto español si hay algún error
     }

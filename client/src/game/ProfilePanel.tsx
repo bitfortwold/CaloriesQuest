@@ -79,10 +79,10 @@ const ProfilePanel = () => {
         </div>
         
         <div>
-          <h3 className="text-sm font-medium text-gray-600">Health Indicators</h3>
+          <h3 className="text-sm font-medium text-gray-600">{t.healthStatus}</h3>
           <div className="mt-1 p-3 bg-white rounded-md shadow-sm border border-gray-200">
             <div className="flex justify-between mb-2">
-              <span>Nutritional Status:</span>
+              <span>Estado Nutricional:</span>
               <span className={`font-medium ${
                 healthStatus === "Balanced" 
                   ? "text-green-600" 
@@ -93,19 +93,19 @@ const ProfilePanel = () => {
             </div>
             
             <div className="flex justify-between">
-              <span>Estimated Lifespan:</span>
-              <span className="font-medium">{playerData.estimatedLifespan.toFixed(0)} years</span>
+              <span>{t.estimatedLifespan}:</span>
+              <span className="font-medium">{playerData.estimatedLifespan.toFixed(0)} {t.years}</span>
             </div>
           </div>
         </div>
         
         <div className="bg-blue-50 p-3 rounded-md text-sm">
-          <h3 className="font-medium text-blue-700">Health Tips</h3>
+          <h3 className="font-medium text-blue-700">{t.healthTips}</h3>
           <ul className="mt-1 space-y-1 list-disc list-inside text-blue-600">
-            <li>Balance your calorie intake with your daily needs</li>
-            <li>Engage in regular physical activities to burn calories</li>
-            <li>Choose sustainable food options for better environmental impact</li>
-            <li>Maintain a diverse diet with all essential nutrients</li>
+            <li>{t.tipBalance}</li>
+            <li>{t.tipActivity}</li>
+            <li>{t.tipSustainable}</li>
+            <li>{t.tipDiet}</li>
           </ul>
         </div>
       </div>
