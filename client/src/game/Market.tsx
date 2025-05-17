@@ -351,31 +351,37 @@ const Market = ({ onExit }: MarketProps) => {
   
   return (
     <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 overflow-auto">
-      <div className="w-full max-w-5xl max-h-[90vh] overflow-auto bg-gradient-to-b from-amber-50 to-amber-100 rounded-lg shadow-xl border-4 border-amber-800">
-        {/* Header con estilo de madera */}
-        <div className="bg-amber-800 text-amber-50 p-3 rounded-t-lg relative overflow-hidden">
+      <div className="w-full max-w-5xl max-h-[90vh] overflow-auto bg-[#FFF8E9] rounded-3xl shadow-2xl border-8 border-[#CD8E3E]">
+        {/* Header de madera estilizado */}
+        <div className="bg-gradient-to-r from-[#C68642] to-[#A05F2C] p-4 rounded-t-2xl relative overflow-hidden">
+          {/* Textura de madera */}
           <div className="absolute inset-0 opacity-30 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMCIgaGVpZ2h0PSIzMCI+CjxyZWN0IHdpZHRoPSIzMCIgaGVpZ2h0PSIzMCIgZmlsbD0iI2ZmZiI+PC9yZWN0Pgo8cmVjdCB4PSIxNSIgeT0iMCIgd2lkdGg9IjE1IiBoZWlnaHQ9IjE1IiBmaWxsPSIjZjNmNGY2Ij48L3JlY3Q+CjxyZWN0IHg9IjAiIHk9IjE1IiB3aWR0aD0iMTUiIGhlaWdodD0iMTUiIGZpbGw9IiNmM2Y0ZjYiPjwvcmVjdD4KPC9zdmc+')]"></div>
           
-          <div className="flex items-center justify-center">
-            <h1 className="text-4xl font-bold text-amber-50 drop-shadow-md tracking-wide">{t.market}</h1>
+          {/* Título con aspecto de cartel de madera */}
+          <div className="flex justify-center">
+            <div className="bg-[#BA7D45] px-12 py-3 rounded-2xl shadow-lg border-4 border-[#8B5E34] transform rotate-0 relative">
+              <div className="absolute inset-0 rounded-xl opacity-20 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMCIgaGVpZ2h0PSIzMCI+CjxyZWN0IHdpZHRoPSIzMCIgaGVpZ2h0PSIzMCIgZmlsbD0iI2ZmZiI+PC9yZWN0Pgo8cmVjdCB4PSIxNSIgeT0iMCIgd2lkdGg9IjE1IiBoZWlnaHQ9IjE1IiBmaWxsPSIjZjNmNGY2Ij48L3JlY3Q+CjxyZWN0IHg9IjAiIHk9IjE1IiB3aWR0aD0iMTUiIGhlaWdodD0iMTUiIGZpbGw9IiNmM2Y0ZjYiPjwvcmVjdD4KPC9zdmc+')]"></div>
+              <h1 className="text-4xl font-bold text-white drop-shadow-lg tracking-wide uppercase">{t.market}</h1>
+            </div>
           </div>
           
-          <div className="flex justify-center items-center mt-2">
-            <div className="bg-amber-700 px-4 py-2 rounded-lg text-amber-50 border-2 border-amber-600 shadow-inner">
-              <span className="font-semibold">iHumanCoins: </span>
-              <span className="text-yellow-300 font-bold text-xl ml-1">{playerData?.coins?.toFixed(0) || 0}</span>
+          {/* Contador de monedas estilizado */}
+          <div className="flex justify-center items-center mt-4">
+            <div className="bg-gradient-to-r from-[#F9D423] to-[#F5AB1B] px-6 py-3 rounded-xl text-[#7E4E1B] border-2 border-[#EDA617] shadow-lg">
+              <span className="font-bold">iHumanCoins: </span>
+              <span className="text-[#7E4E1B] font-bold text-xl ml-1">{playerData?.coins?.toFixed(0) || 0}</span>
             </div>
           </div>
         </div>
         
         {/* Pestañas principales: Alimentos y Semillas */}
-        <div className="bg-amber-300 px-4 pt-2 flex space-x-4 border-b-2 border-amber-700">
+        <div className="bg-[#FFD166] px-6 pt-3 flex space-x-6 border-b-4 border-[#CD8E3E]">
           <button 
             onClick={() => setActiveTab('food')}
-            className={`font-bold py-3 px-6 rounded-t-lg transition-all text-lg ${
+            className={`font-bold py-3 px-8 rounded-t-xl transition-all text-lg transform ${
               activeTab === 'food' 
-                ? 'bg-amber-50 text-amber-900 border-2 border-b-0 border-amber-700' 
-                : 'bg-amber-400 text-amber-800 hover:bg-amber-300'
+                ? 'bg-[#FFF8E9] text-[#8B5E34] border-4 border-b-0 border-[#CD8E3E] shadow-md scale-105' 
+                : 'bg-[#FFBD3E] text-[#7E4E1B] hover:bg-[#FFC154] shadow-inner'
             }`}
           >
             {uiTexts.foodTab}
@@ -385,10 +391,10 @@ const Market = ({ onExit }: MarketProps) => {
               setActiveTab('seeds');
               setSelectedCategory('all'); // Reset category filter when switching tabs
             }}
-            className={`font-bold py-3 px-6 rounded-t-lg transition-all text-lg ${
+            className={`font-bold py-3 px-8 rounded-t-xl transition-all text-lg transform ${
               activeTab === 'seeds' 
-                ? 'bg-amber-50 text-amber-900 border-2 border-b-0 border-amber-700' 
-                : 'bg-amber-400 text-amber-800 hover:bg-amber-300'
+                ? 'bg-[#FFF8E9] text-[#8B5E34] border-4 border-b-0 border-[#CD8E3E] shadow-md scale-105' 
+                : 'bg-[#FFBD3E] text-[#7E4E1B] hover:bg-[#FFC154] shadow-inner'
             }`}
           >
             {uiTexts.seedsTab}
@@ -397,15 +403,15 @@ const Market = ({ onExit }: MarketProps) => {
         
         {/* Tabs de categoría con estilo de pestañas - Solo visible cuando activeTab es 'food' */}
         {activeTab === 'food' && (
-          <div className="bg-amber-200 px-2 pt-2 flex space-x-1 overflow-x-auto border-b-2 border-amber-700">
+          <div className="bg-[#FFF0D4] px-4 pt-3 flex space-x-2 overflow-x-auto border-b-4 border-[#CD8E3E]">
             {categories.map(category => (
               <button 
                 key={category}
                 onClick={() => setSelectedCategory(category)}
-                className={`capitalize font-bold py-2 px-4 rounded-t-lg transition-all hover:brightness-110 ${
+                className={`capitalize font-bold py-2 px-5 rounded-t-xl transition-all hover:brightness-110 ${
                   selectedCategory === category 
-                    ? 'bg-amber-50 text-amber-900 border-2 border-b-0 border-amber-700 shadow-inner-top' 
-                    : 'bg-amber-300 text-amber-700 border border-amber-400 opacity-80 hover:opacity-100'
+                    ? 'bg-[#FFF8E9] text-[#8B5E34] border-4 border-b-0 border-[#CD8E3E] shadow-md' 
+                    : 'bg-[#FFE0A3] text-[#7E4E1B] border-2 border-[#EECA81] opacity-90 hover:opacity-100'
                 }`}
               >
                 {translateCategory(category)}
