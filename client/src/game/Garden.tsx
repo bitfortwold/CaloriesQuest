@@ -12,6 +12,7 @@ const Garden = ({ onExit }: GardenProps) => {
   const { playerData, updatePlayer } = usePlayerStore();
   const [selectedPlot, setSelectedPlot] = useState<GardenPlot | null>(null);
   const [selectedSeed, setSelectedSeed] = useState<Plant | null>(null);
+  // Tab "garden" para ver el huerto y "seeds" para ver semillas (similar a Market)
   const [activeTab, setActiveTab] = useState<"garden" | "seeds">("garden");
 
   // Actualizar el estado de las plantas cada segundo

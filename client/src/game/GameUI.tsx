@@ -136,11 +136,7 @@ const GameUI = () => {
               <Garden onExit={() => {
                 console.log("GameUI attempting to exit garden");
                 setActiveTab(null);
-                // Pequeño retraso para evitar conflictos de estado
-                setTimeout(() => {
-                  console.log("Executing exitBuilding from Garden component");
-                  exitBuilding();
-                }, 50);
+                exitBuilding();
               }} />
             </div>
           </>
