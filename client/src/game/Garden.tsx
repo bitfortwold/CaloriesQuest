@@ -1,80 +1,53 @@
 import { useState, useEffect } from "react";
-import { useLanguage } from "../i18n/LanguageContext";
 import { usePlayerStore } from "../stores/usePlayerStore";
 import { Plant, GardenPlot, calculateGrowthProgress, updatePlantState, waterPlant, plantSeed, harvestPlant } from "../data/gardenItems";
-import { toast } from "sonner"; // Para mostrar notificaciones
+import { useLanguage } from "../i18n/LanguageContext";
+import { toast } from "sonner";
 
 interface GardenProps {
   onExit: () => void;
 }
 
 const Garden = ({ onExit }: GardenProps) => {
-  const { t } = useLanguage();
   const { playerData, updatePlayer } = usePlayerStore();
+  const { t } = useLanguage();
   const [selectedPlot, setSelectedPlot] = useState<GardenPlot | null>(null);
   const [selectedSeed, setSelectedSeed] = useState<Plant | null>(null);
-  // Tab "garden" para ver el huerto y "seeds" para ver semillas (similar a Market)
   const [activeTab, setActiveTab] = useState<"garden" | "seeds">("garden");
 
   // Actualizar el estado de las plantas cada segundo
   useEffect(() => {
     const intervalId = setInterval(() => {
-      if (playerData && playerData.garden) {
-        const updatedGarden = playerData.garden.map(plot => updatePlantState(plot));
+      if (!playerData || !playerData.garden) return;
+      
+      const updatedGarden = playerData.garden.map(plot => updatePlantState(plot));
+      
+      // Solo actualizar si hay cambios
+      if (JSON.stringify(updatedGarden) !== JSON.stringify(playerData.garden)) {
         updatePlayer({
           ...playerData,
           garden: updatedGarden
         });
       }
     }, 1000);
-
+    
     return () => clearInterval(intervalId);
   }, [playerData, updatePlayer]);
 
-  // Manejar la acción de regar una planta
+  // Manejar el riego de una planta
   const handleWaterPlant = (plotIndex: number) => {
-    if (playerData && playerData.garden) {
-      const updatedGarden = [...playerData.garden];
-      updatedGarden[plotIndex] = waterPlant(updatedGarden[plotIndex]);
-      
-      updatePlayer({
-        ...playerData,
-        garden: updatedGarden
-      });
-    }
-  };
-
-  // Manejar la acción de plantar una semilla
-  const handlePlantSeed = (plotIndex: number) => {
-    if (!selectedSeed || !playerData || !playerData.garden || !playerData.seeds) return;
+    if (!playerData || !playerData.garden) return;
     
-    // Verificar si el jugador tiene suficientes semillas
-    const seedIndex = playerData.seeds.findIndex(seed => seed.id === selectedSeed.id);
-    if (seedIndex === -1 || !playerData.seeds[seedIndex].quantity || playerData.seeds[seedIndex].quantity <= 0) {
-      console.log("No tienes suficientes semillas");
-      return;
-    }
-    
-    // Plantar la semilla
     const updatedGarden = [...playerData.garden];
-    updatedGarden[plotIndex] = plantSeed(updatedGarden[plotIndex], selectedSeed);
-    
-    // Actualizar el inventario de semillas
-    const updatedSeeds = [...playerData.seeds];
-    if (updatedSeeds[seedIndex].quantity) {
-      updatedSeeds[seedIndex].quantity -= 1;
-    }
+    updatedGarden[plotIndex] = waterPlant(playerData.garden[plotIndex]);
     
     updatePlayer({
       ...playerData,
-      garden: updatedGarden,
-      seeds: updatedSeeds
+      garden: updatedGarden
     });
-    
-    setSelectedSeed(null);
   };
 
-  // Manejar la acción de cosechar una planta
+  // Manejar la cosecha de una planta
   const handleHarvestPlant = (plotIndex: number) => {
     if (!playerData || !playerData.garden) return;
     
@@ -115,15 +88,53 @@ const Garden = ({ onExit }: GardenProps) => {
       inventory: updatedInventory,
       coins: playerData.coins + harvestReward
     });
+    
+    // Notificar al usuario
+    toast.success(`Has cosechado ${plot.plant.name} y ganado ${harvestReward} IHC`);
   };
 
-  // Comprar una semilla del mercado
+  // Plantar una semilla
+  const handlePlantSeed = (seed: Plant) => {
+    if (!playerData || !selectedPlot) return;
+    
+    // Comprobar si tenemos suficientes semillas
+    const selectedSeedInInventory = playerData.seeds.find(s => s.id === seed.id);
+    if (!selectedSeedInInventory || !selectedSeedInInventory.quantity || selectedSeedInInventory.quantity <= 0) {
+      toast.error("No tienes semillas de este tipo");
+      return;
+    }
+    
+    // Actualizar el huerto
+    const plotIndex = playerData.garden.findIndex(p => p.id === selectedPlot.id);
+    const updatedGarden = [...playerData.garden];
+    updatedGarden[plotIndex] = plantSeed(selectedPlot, seed);
+    
+    // Actualizar el inventario de semillas
+    const updatedSeeds = [...playerData.seeds];
+    const seedIndex = updatedSeeds.findIndex(s => s.id === seed.id);
+    updatedSeeds[seedIndex].quantity = (updatedSeeds[seedIndex].quantity || 0) - 1;
+    
+    updatePlayer({
+      ...playerData,
+      garden: updatedGarden,
+      seeds: updatedSeeds
+    });
+    
+    // Notificar al usuario
+    toast.success(`Has plantado ${seed.name}`);
+    
+    // Resetear selecciones
+    setSelectedPlot(null);
+    setActiveTab("garden");
+  };
+
+  // Comprar una semilla
   const buySeed = (plant: Plant) => {
     if (!playerData) return;
     
-    // Verificar si el jugador tiene suficientes monedas
+    // Comprobar si tenemos suficientes monedas
     if (playerData.coins < plant.price) {
-      console.log("No tienes suficientes monedas");
+      toast.error("No tienes suficientes IHC");
       return;
     }
     
@@ -145,6 +156,9 @@ const Garden = ({ onExit }: GardenProps) => {
       seeds: updatedSeeds,
       coins: playerData.coins - plant.price
     });
+    
+    // Notificar al usuario
+    toast.success(`Has comprado semillas de ${plant.name}`);
   };
 
   return (
@@ -153,17 +167,11 @@ const Garden = ({ onExit }: GardenProps) => {
         {/* Header con título central y botones en los extremos */}
         <div className="flex justify-between items-center p-4 bg-amber-800 text-white">
           <div className="flex-1">
-            {/* Botón para ver inventario en esquina superior izquierda */}
-            <button 
-              className="relative bg-amber-600 hover:bg-amber-500 text-white py-2 px-4 rounded-md flex items-center font-semibold shadow-md"
-              onClick={() => {}}
-            >
-              <span className="mr-2">🧰</span> Inventario
-            </button>
+            {/* Espacio para botón futuro */}
           </div>
           
           {/* Título central */}
-          <h2 className="text-2xl font-bold text-center flex-1">{t('garden.title')}</h2>
+          <h2 className="text-2xl font-bold text-center flex-1">Huerto Virtual</h2>
           
           {/* Botón de salir en esquina superior derecha */}
           <div className="flex-1 flex justify-end">
@@ -179,7 +187,7 @@ const Garden = ({ onExit }: GardenProps) => {
                 }, 100);
               }}
             >
-              {t('common.exit')}
+              Salir
             </button>
           </div>
         </div>
@@ -199,7 +207,7 @@ const Garden = ({ onExit }: GardenProps) => {
                 : "bg-amber-400 text-amber-800 hover:bg-amber-300"}`}
               onClick={() => setActiveTab("garden")}
             >
-              {t('garden.tab.garden')}
+              Huerto
             </button>
             <button
               className={`px-5 py-3 font-semibold transition-colors ${activeTab === "seeds" 
@@ -207,340 +215,193 @@ const Garden = ({ onExit }: GardenProps) => {
                 : "bg-amber-400 text-amber-800 hover:bg-amber-300"}`}
               onClick={() => setActiveTab("seeds")}
             >
-              {t('garden.tab.seeds')}
+              Semillas
             </button>
           </div>
         </div>
-        
 
-        
-        {activeTab === "garden" ? (
-          <div className="garden-plots grid grid-cols-3 gap-4">
-            {playerData?.garden?.map((plot, index) => (
-              <div 
-                key={plot.id} 
-                className={`garden-plot border-2 ${
-                  plot.state === "empty" ? "border-gray-300 bg-gray-100" : 
-                  plot.state === "seedling" ? "border-green-300 bg-green-50" :
-                  plot.state === "growing" ? "border-green-500 bg-green-100" :
-                  plot.state === "mature" ? "border-green-700 bg-green-200" :
-                  "border-yellow-500 bg-yellow-100"
-                } p-4 rounded-lg cursor-pointer`}
-                onClick={() => setSelectedPlot(plot)}
-              >
-                <div className="plot-content min-h-48 flex flex-col items-center justify-center">
-                  {/* Representación visual de la planta */}
-                  <div className="plant-visual mb-2">
-                    {plot.state !== "empty" && (
-                      <div className={`plant-icon h-24 w-24 flex items-center justify-center rounded-full 
-                        ${plot.state === "seedling" ? "bg-green-100 text-green-800" : 
-                          plot.state === "growing" ? "bg-green-200 text-green-800" : 
-                          plot.state === "mature" ? "bg-green-300 text-green-800" : 
-                          "bg-yellow-200 text-yellow-800"}`}
-                      >
-                        <span className="text-4xl">
-                          {plot.state === "seedling" ? "🌱" : 
-                           plot.state === "growing" ? "🌿" :
-                           plot.state === "mature" ? "🌻" : "🌽"}
-                        </span>
-                      </div>
-                    )}
+        {/* Contenido principal */}
+        <div className="bg-amber-200 p-4">
+          {activeTab === "garden" ? (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {playerData?.garden.map((plot, index) => (
+                <div 
+                  key={plot.id} 
+                  className={`bg-amber-100 rounded-md border ${
+                    selectedPlot?.id === plot.id ? 'border-amber-600 shadow-lg' : 'border-amber-300'
+                  } transition-all hover:shadow-md cursor-pointer overflow-hidden`}
+                  onClick={() => setSelectedPlot(plot)}
+                >
+                  {/* Encabezado de la parcela */}
+                  <div className={`py-2 px-3 ${plot.plant ? 'bg-amber-500 text-white' : 'bg-amber-300'}`}>
+                    <h3 className="font-bold">
+                      {plot.plant ? plot.plant.name : 'Parcela vacía'}
+                    </h3>
                   </div>
                   
-                  {plot.state === "empty" ? (
-                    <div className="empty-plot text-center">
-                      <p className="text-gray-500">Parcela vacía</p>
-                      {selectedSeed && (
-                        <button 
-                          className="mt-2 bg-green-500 text-white px-3 py-1 rounded text-sm"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handlePlantSeed(index);
-                          }}
-                        >
-                          Plantar {selectedSeed.name}
-                        </button>
-                      )}
-                    </div>
-                  ) : (
-                    <div className="plant-info text-center">
-                      <h3 className="font-semibold">{plot.plant?.name}</h3>
-                      <div className="progress mt-2 bg-gray-200 rounded-full h-2.5 w-full">
-                        <div 
-                          className="bg-green-600 h-2.5 rounded-full" 
-                          style={{ width: `${plot.growthPercentage}%` }}
-                        ></div>
-                      </div>
-                      <p className="text-sm mt-1">
-                        {plot.state === "seedling" ? "Germinando" :
-                         plot.state === "growing" ? "Creciendo" :
-                         plot.state === "mature" ? "Madurando" :
-                         "Listo para cosechar"}
-                      </p>
-                      <div className="mt-2 flex justify-center gap-2">
-                        {plot.state !== "harvestable" && (
-                          <button 
-                            className={`bg-blue-500 text-white px-3 py-1 rounded text-sm ${
-                              plot.waterLevel >= 90 ? "opacity-50 cursor-not-allowed" : ""
-                            }`}
+                  <div className="p-3">
+                    {plot.plant ? (
+                      <>
+                        {/* Barra de progreso de crecimiento */}
+                        <div className="my-2">
+                          <div className="bg-gray-200 h-4 rounded-full overflow-hidden">
+                            <div 
+                              className="bg-green-500 h-4" 
+                              style={{ width: `${calculateGrowthProgress(plot)}%` }}
+                            ></div>
+                          </div>
+                          <div className="text-sm text-amber-800 mt-1 flex justify-between">
+                            <span>Estado: {plot.state}</span>
+                            <span>{calculateGrowthProgress(plot).toFixed(0)}%</span>
+                          </div>
+                        </div>
+                        
+                        {/* Información nutricional */}
+                        <div className="grid grid-cols-2 gap-2 text-xs text-amber-800 my-2">
+                          <div>Calorías: <span className="font-semibold">{plot.plant.nutritionalValue.calories} kcal</span></div>
+                          <div>Proteínas: <span className="font-semibold">{plot.plant.nutritionalValue.protein}g</span></div>
+                          <div>Sostenibilidad: <span className="font-semibold">{plot.plant.sustainabilityScore}/5</span></div>
+                          <div>Dificultad: <span className="font-semibold">{plot.plant.difficulty}</span></div>
+                        </div>
+                        
+                        {/* Botones de acción */}
+                        <div className="flex gap-2 mt-3">
+                          <button
+                            className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm flex-1"
                             onClick={(e) => {
                               e.stopPropagation();
                               handleWaterPlant(index);
+                              toast.success("Planta regada correctamente");
                             }}
-                            disabled={plot.waterLevel >= 90}
                           >
-                            Regar
+                            💧 Regar
                           </button>
-                        )}
-                        {plot.state === "harvestable" && (
-                          <button 
-                            className="bg-yellow-500 text-white px-3 py-1 rounded text-sm"
+                          {plot.state === "harvestable" && (
+                            <button
+                              className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded text-sm flex-1"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleHarvestPlant(index);
+                              }}
+                            >
+                              🌾 Cosechar
+                            </button>
+                          )}
+                        </div>
+                      </>
+                    ) : (
+                      <div className="flex flex-col items-center justify-center py-6">
+                        <p className="text-amber-700 mb-3">Parcela disponible para plantar</p>
+                        {playerData?.seeds.filter(seed => seed.quantity && seed.quantity > 0).length > 0 && (
+                          <button
+                            className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded font-semibold"
                             onClick={(e) => {
                               e.stopPropagation();
-                              handleHarvestPlant(index);
+                              setActiveTab("seeds");
+                              setSelectedPlot(plot);
+                              toast.info("Selecciona una semilla para plantar");
                             }}
                           >
-                            Cosechar
+                            🌱 Plantar
+                          </button>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="p-2">
+              {/* Subtítulo de la sección */}
+              <h2 className="text-xl font-semibold mb-4 text-amber-900">Tus semillas disponibles</h2>
+              
+              {/* Filtros de semillas (opcional, similar al mercado) */}
+              <div className="bg-amber-300 rounded-md mb-4 p-2 flex space-x-2">
+                <button className="bg-amber-50 text-amber-800 px-3 py-1 rounded-md hover:bg-amber-100">
+                  Todas
+                </button>
+                <button className="bg-amber-400 text-amber-900 px-3 py-1 rounded-md hover:bg-amber-100">
+                  Verduras
+                </button>
+                <button className="bg-amber-400 text-amber-900 px-3 py-1 rounded-md hover:bg-amber-100">
+                  Frutas
+                </button>
+                <button className="bg-amber-400 text-amber-900 px-3 py-1 rounded-md hover:bg-amber-100">
+                  Hierbas
+                </button>
+              </div>
+              
+              {/* Grid de semillas */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {playerData?.seeds
+                  .filter(seed => seed.quantity && seed.quantity > 0)
+                  .map(seed => (
+                    <div 
+                      key={seed.id}
+                      className={`bg-amber-50 rounded-md border ${
+                        selectedSeed?.id === seed.id ? 'border-amber-600 shadow-lg' : 'border-amber-200'
+                      } overflow-hidden transition-all hover:shadow-md cursor-pointer`}
+                      onClick={() => {
+                        if (selectedPlot && !selectedPlot.plant) {
+                          handlePlantSeed(seed);
+                        } else {
+                          setSelectedSeed(seed);
+                        }
+                      }}
+                    >
+                      {/* Cabecera con nombre y precio */}
+                      <div className="bg-amber-500 p-2 flex justify-between items-center">
+                        <h3 className="font-bold text-white">{seed.name}</h3>
+                        <span className="bg-amber-700 text-amber-100 px-2 py-1 rounded-md text-xs font-bold">
+                          {seed.quantity} uds
+                        </span>
+                      </div>
+                      
+                      {/* Detalles de la semilla */}
+                      <div className="p-3">
+                        <div className="grid grid-cols-2 text-xs gap-y-1 text-amber-800">
+                          <div>Tiempo: <span className="font-semibold">{seed.growthTime} min</span></div>
+                          <div>Dificultad: <span className="font-semibold">{seed.difficulty}</span></div>
+                          <div>Temporada: <span className="font-semibold">{seed.season}</span></div>
+                          <div>Producción: <span className="font-semibold">{seed.harvestYield} uds</span></div>
+                        </div>
+                        
+                        {/* Botón para plantar si hay parcela seleccionada */}
+                        {selectedPlot && !selectedPlot.plant && (
+                          <button
+                            className="mt-3 w-full bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded font-semibold"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handlePlantSeed(seed);
+                            }}
+                          >
+                            Plantar
                           </button>
                         )}
                       </div>
                     </div>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="seeds-market">
-            <h2 className="text-xl font-semibold mb-4">Mercado de Semillas</h2>
-            <p className="mb-4">Monedas disponibles: {playerData?.coins}</p>
-            
-            <div className="seed-inventory mb-6">
-              <h3 className="text-lg font-medium mb-2">Tu inventario de semillas:</h3>
-              {playerData?.seeds.length === 0 ? (
-                <p className="text-gray-500">No tienes semillas en tu inventario</p>
-              ) : (
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  {playerData?.seeds.map((seed) => (
-                    <div 
-                      key={seed.id}
-                      className={`seed-item border rounded-lg p-3 ${
-                        selectedSeed?.id === seed.id ? "border-green-500 bg-green-50" : "border-gray-200"
-                      }`}
-                      onClick={() => setSelectedSeed(seed.quantity && seed.quantity > 0 ? seed : null)}
-                    >
-                      <h4 className="font-medium">{seed.name}</h4>
-                      <p className="text-sm text-gray-600">Cantidad: {seed.quantity}</p>
-                      <p className="text-xs mt-1">Dificultad: {
-                        seed.difficulty === "beginner" ? "Principiante" :
-                        seed.difficulty === "intermediate" ? "Intermedio" : "Avanzado"
-                      }</p>
-                    </div>
                   ))}
+              </div>
+              
+              {/* Mensaje si no hay semillas */}
+              {(!playerData?.seeds || playerData.seeds.filter(seed => seed.quantity && seed.quantity > 0).length === 0) && (
+                <div className="text-center p-8 bg-amber-100 rounded-lg">
+                  <p className="text-amber-800">No tienes semillas disponibles.</p>
+                  <p className="mt-2">Visita el mercado para comprar algunas.</p>
+                  <button
+                    className="mt-4 bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded font-semibold"
+                    onClick={() => {
+                      onExit();
+                    }}
+                  >
+                    Ir al mercado
+                  </button>
                 </div>
               )}
             </div>
-            
-            <h3 className="text-lg font-medium mb-2">Semillas disponibles para comprar:</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {["Tomate", "Lechuga", "Zanahoria", "Patata", "Pepino"].map((plantName, index) => {
-                const plant = {
-                  id: `plant_${index + 1}`,
-                  name: plantName,
-                  description: `Semillas de ${plantName.toLowerCase()}`,
-                  growthTime: 120 + index * 30,
-                  waterNeeded: 3 + index % 3,
-                  sustainabilityScore: 3 + index % 3,
-                  nutritionalValue: {
-                    calories: 50 + index * 10,
-                    protein: 2 + index,
-                    carbs: 10 + index * 2,
-                    fat: 1 + index % 2,
-                    vitamins: ["A", "C"]
-                  },
-                  harvestYield: 3 + index % 3,
-                  price: 20 + index * 10,
-                  difficulty: index < 2 ? "beginner" as const : index < 4 ? "intermediate" as const : "advanced" as const,
-                  season: index % 4 === 0 ? "spring" as const : index % 4 === 1 ? "summer" as const : 
-                           index % 4 === 2 ? "autumn" as const : "winter" as const,
-                  image: ""
-                };
-                
-                return (
-                  <div key={plant.id} className="seed-shop-item border rounded-lg p-4">
-                    <h4 className="font-medium">{plant.name}</h4>
-                    <div className="seed-details text-sm mt-2">
-                      <p>Precio: {plant.price} monedas</p>
-                      <p>Tiempo de crecimiento: {plant.growthTime / 60} minutos</p>
-                      <p>Dificultad: {
-                        plant.difficulty === "beginner" ? "Principiante" :
-                        plant.difficulty === "intermediate" ? "Intermedio" : "Avanzado"
-                      }</p>
-                      <p>Temporada: {
-                        plant.season === "spring" ? "Primavera" :
-                        plant.season === "summer" ? "Verano" :
-                        plant.season === "autumn" ? "Otoño" :
-                        plant.season === "winter" ? "Invierno" : "Todas"
-                      }</p>
-                    </div>
-                    <button 
-                      className={`mt-3 px-3 py-1 rounded text-white ${
-                        playerData?.coins >= plant.price 
-                          ? "bg-green-500 hover:bg-green-600" 
-                          : "bg-gray-400 cursor-not-allowed"
-                      }`}
-                      onClick={() => buySeed(plant)}
-                      disabled={!playerData || playerData.coins < plant.price}
-                    >
-                      Comprar
-                    </button>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
-        
-        {selectedPlot && selectedPlot.plant && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-10">
-            <div className="bg-white rounded-lg p-6 max-w-md w-full max-h-[90vh] overflow-y-auto">
-              <h2 className="text-xl font-bold mb-3">{selectedPlot.plant.name}</h2>
-              
-              <p className="mb-4">{selectedPlot.plant.description}</p>
-              
-              <div className="plant-stats mb-6">
-                <p><span className="font-medium">Estado:</span> {
-                  selectedPlot.state === "seedling" ? "Germinando" :
-                  selectedPlot.state === "growing" ? "Creciendo" :
-                  selectedPlot.state === "mature" ? "Madurando" :
-                  "Listo para cosechar"
-                }</p>
-                <div className="flex items-center mt-1">
-                  <span className="font-medium mr-2">Crecimiento:</span>
-                  <div className="progress bg-gray-200 rounded-full h-2.5 flex-grow">
-                    <div 
-                      className="bg-green-600 h-2.5 rounded-full" 
-                      style={{ width: `${selectedPlot.growthPercentage}%` }}
-                    ></div>
-                  </div>
-                  <span className="ml-2">{Math.round(selectedPlot.growthPercentage)}%</span>
-                </div>
-                <div className="flex items-center mt-1">
-                  <span className="font-medium mr-2">Agua:</span>
-                  <div className="progress bg-gray-200 rounded-full h-2.5 flex-grow">
-                    <div 
-                      className="bg-blue-500 h-2.5 rounded-full" 
-                      style={{ width: `${selectedPlot.waterLevel}%` }}
-                    ></div>
-                  </div>
-                  <span className="ml-2">{Math.round(selectedPlot.waterLevel)}%</span>
-                </div>
-                
-                {/* Información nutricional */}
-                <div className="mt-4 p-3 bg-green-50 rounded-lg">
-                  <h3 className="font-medium text-lg mb-2">Información Nutricional</h3>
-                  <div className="grid grid-cols-2 gap-2">
-                    <div>
-                      <p className="font-medium">Calorías:</p>
-                      <p>{selectedPlot.plant.nutritionalValue.calories} kcal</p>
-                    </div>
-                    <div>
-                      <p className="font-medium">Proteínas:</p>
-                      <p>{selectedPlot.plant.nutritionalValue.protein}g</p>
-                    </div>
-                    <div>
-                      <p className="font-medium">Carbohidratos:</p>
-                      <p>{selectedPlot.plant.nutritionalValue.carbs}g</p>
-                    </div>
-                    <div>
-                      <p className="font-medium">Grasas:</p>
-                      <p>{selectedPlot.plant.nutritionalValue.fat}g</p>
-                    </div>
-                  </div>
-                  
-                  {selectedPlot.plant.nutritionalValue.vitamins && (
-                    <div className="mt-2">
-                      <p className="font-medium">Vitaminas y minerales:</p>
-                      <p>{selectedPlot.plant.nutritionalValue.vitamins.join(", ")}</p>
-                    </div>
-                  )}
-                </div>
-                
-                {/* Información de sostenibilidad */}
-                <div className="mt-3 p-3 bg-blue-50 rounded-lg">
-                  <h3 className="font-medium text-lg mb-2">Sostenibilidad</h3>
-                  <div className="flex items-center">
-                    <span className="mr-2">Puntuación:</span>
-                    <div className="flex">
-                      {Array(5).fill(0).map((_, i) => (
-                        <span key={i} className={`text-xl ${i < selectedPlot.plant.sustainabilityScore ? "text-green-600" : "text-gray-300"}`}>
-                          ★
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                  <p className="mt-2 text-sm">
-                    {selectedPlot.plant.sustainabilityScore >= 4 
-                      ? "Alto impacto positivo en el medio ambiente. Requiere pocos recursos y genera mínimos residuos."
-                      : selectedPlot.plant.sustainabilityScore >= 3
-                      ? "Buen equilibrio entre beneficios nutricionales e impacto ambiental."
-                      : "Impacto moderado. Considera complementar con alimentos de mayor sostenibilidad."}
-                  </p>
-                </div>
-                
-                {/* Estado de salud de la planta */}
-                <div className="flex items-center mt-4">
-                  <span className="font-medium mr-2">Salud de la planta:</span>
-                  <div className="progress bg-gray-200 rounded-full h-2.5 flex-grow">
-                    <div 
-                      className="bg-green-500 h-2.5 rounded-full" 
-                      style={{ width: `${selectedPlot.healthLevel}%` }}
-                    ></div>
-                  </div>
-                  <span className="ml-2">{Math.round(selectedPlot.healthLevel)}%</span>
-                </div>
-              </div>
-              
-              <div className="buttons-container flex justify-between mt-4">
-                <button
-                  className={`bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded ${
-                    selectedPlot.waterLevel >= 90 || selectedPlot.state === "harvestable" 
-                      ? "opacity-50 cursor-not-allowed" : ""
-                  }`}
-                  onClick={() => {
-                    const plotIndex = playerData?.garden.findIndex(p => p.id === selectedPlot.id) || 0;
-                    handleWaterPlant(plotIndex);
-                  }}
-                  disabled={selectedPlot.waterLevel >= 90 || selectedPlot.state === "harvestable"}
-                >
-                  Regar planta
-                </button>
-                
-                {selectedPlot.state === "harvestable" && (
-                  <button
-                    className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded"
-                    onClick={() => {
-                      const plotIndex = playerData?.garden.findIndex(p => p.id === selectedPlot.id) || 0;
-                      handleHarvestPlant(plotIndex);
-                      setSelectedPlot(null);
-                    }}
-                  >
-                    Cosechar
-                  </button>
-                )}
-              </div>
-              
-              <div className="flex justify-end mt-4">
-                <button 
-                  className="bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded"
-                  onClick={() => setSelectedPlot(null)}
-                >
-                  Cerrar
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );
