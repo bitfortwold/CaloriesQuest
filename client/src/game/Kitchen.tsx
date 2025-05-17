@@ -331,6 +331,12 @@ const Kitchen = ({ onExit }: KitchenProps) => {
     </div>
   );
   
+  // Añadir un efecto para ver los valores de refrigeratorFood y pantryFood
+  useEffect(() => {
+    console.log("Nevera:", refrigeratorFood);
+    console.log("Despensa:", pantryFood);
+  }, [refrigeratorFood, pantryFood]);
+
   return (
     <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 overflow-auto">
       <div className="w-full max-w-5xl max-h-[90vh] overflow-auto bg-[#FFF8E9] rounded-3xl shadow-2xl border-8 border-[#CD8E3E]">
@@ -550,7 +556,25 @@ const Kitchen = ({ onExit }: KitchenProps) => {
             </div>
           ) : (
             // Modo de Recetas Guiadas
-            renderGuidedRecipes()
+            <div>
+              {/* Mostrar Botón para cambiar a Cocina Libre */}
+              <div className="mb-4 text-center">
+                <Button 
+                  onClick={() => setCookingMode("free")}
+                  className="bg-gradient-to-r from-[#F48E11] to-[#F9A826] text-white hover:brightness-110 font-bold py-3 px-6 rounded-xl transition-all shadow-md border-2 border-[#E47F0E]"
+                >
+                  {language === 'en' ? 'Switch to Free Cooking Mode' : language === 'ca' ? 'Canviar a Mode Cuina Lliure' : 'Cambiar a Modo Cocina Libre'}
+                </Button>
+                <p className="mt-2 text-[#8B5E34] italic">
+                  {language === 'en' 
+                    ? "Free cooking mode allows you to see your refrigerator and pantry items" 
+                    : language === 'ca'
+                    ? "El mode cuina lliure et permet veure els productes de la nevera i el rebost" 
+                    : "El modo cocina libre te permite ver los productos de la nevera y la despensa"}
+                </p>
+              </div>
+              {renderGuidedRecipes()}
+            </div>
           )}
         </div>
       </div>
