@@ -268,5 +268,96 @@ export const en: Translation = {
   language: "Language",
   spanish: "Spanish",
   english: "English",
+  catalan: "Catalan",
   changeLanguage: "Change language"
+};
+
+// Traducciones en catalán
+export const ca: Translation = {
+  // Interfaz general
+  playerStats: "ESTADÍSTIQUES DEL JUGADOR",
+  health: "Salut",
+  calories: "Calories",
+  coins: "iHumanCoins",
+  inventory: "Inventari",
+  items: "ítems",
+  
+  // Navegación
+  profile: "Perfil",
+  help: "Ajuda",
+  exit: "Sortir",
+  
+  // Edificios
+  market: "Mercat",
+  kitchen: "Cuina",
+  
+  // Cocina
+  guidedRecipes: "Receptes Guiades",
+  freeCooking: "Cuina Lliure",
+  cookMeal: "Cuinar Àpat",
+  refrigerator: "Nevera",
+  pantry: "Rebost",
+  refrigeratedItems: "Aliments Refrigerats",
+  pantryItems: "Aliments del Rebost",
+  
+  // Actividades
+  activities: "Activitats",
+  performActivities: "Realitza activitats per cremar calories i guanyar iHumanCoins. Mantén-te actiu per a una millor salut!",
+  burns: "Crema",
+  earns: "Guanya",
+  doIt: "Fer-ho",
+  
+  // Controles
+  controls: "CONTROLS DEL JOC",
+  moveKeys: "• WASD o Fletxes: Moure's",
+  clickToMove: "• Clic: Moure's/interactuar",
+  interactKey: "• E/Espai: Interactuar",
+  rotateCamera: "• Botó esquerre + arrossegar: Rotar",
+  zoomCamera: "• Roda: Apropar/allunyar",
+  
+  // Perfil del jugador
+  dailyRequirement: "Requeriment Diari",
+  basedOn: "Basat en la teva edat, gènere, alçada, pes i nivell d'activitat",
+  caloriesConsumed: "Calories Consumides",
+  caloriesBurned: "Calories Cremades",
+  remaining: "Restant",
+  healthStatus: "Estat Nutricional",
+  estimatedLifespan: "Esperança de Vida Estimada",
+  years: "anys",
+  
+  // Estados de salud
+  balanced: "Equilibrat",
+  undernourished: "Desnodriment",
+  overeating: "Sobrealimentació",
+  
+  // Consejos de salud
+  healthTips: "Consells de Salut",
+  tipBalance: "Equilibra el consum de calories amb les teves necessitats diàries",
+  tipActivity: "Realitza activitats físiques regularment per cremar calories",
+  tipSustainable: "Tria opcions d'aliments sostenibles per a un millor impacte ambiental",
+  tipDiet: "Mantén una dieta diversa amb tots els nutrients essencials",
+  
+  // Carrito y compras
+  cart: "CISTELL",
+  buy: "Comprar",
+  add: "Afegir",
+  remove: "Treure",
+  
+  // Audio
+  backgroundMusic: "Música de fons",
+  voiceStayActive: "Els sons de veu romandran actius",
+  increaseVolume: "Augmentar volum de música",
+  decreaseVolume: "Disminuir volum de música",
+  
+  // Mensajes de sistema
+  loading: "Carregant...",
+  welcome: "Benvingut",
+  error: "Error",
+  
+  // Idiomas
+  language: "Idioma",
+  spanish: "Espanyol",
+  english: "Anglès",
+  catalan: "Català",
+  changeLanguage: "Canviar idioma"
 };
