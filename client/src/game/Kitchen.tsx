@@ -101,16 +101,16 @@ const Kitchen = ({ onExit }: KitchenProps) => {
   };
   
   // Función para traducir texto según el idioma actual
-  const translateText = (text: string, category: string): string => {
-    if (language === 'es') return text; // Mantener el texto original en español
-    
-    const translations = language === 'ca' ? kitchenTranslationsCA : kitchenTranslationsEN;
-    return translations[category]?.[text] || text;
+  const translateFoodName = (foodName: string): string => {
+    if (language === 'es') return foodName; // Mantener el texto original en español
+    if (language === 'ca') return kitchenTranslationsCA.ingredients[foodName] || foodName;
+    if (language === 'en') return kitchenTranslationsEN.ingredients[foodName] || foodName;
+    return foodName;
   };
   
   // Función para traducir los nombres de los ingredientes (alias de la función principal)
   const translateIngredient = (ingredient: string): string => {
-    return getKitchenTranslation('ingredients', ingredient);
+    return translateFoodName(ingredient);
   };
   
   // Calculate nutritional totals for the selected items
