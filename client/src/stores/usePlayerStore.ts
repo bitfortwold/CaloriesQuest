@@ -85,6 +85,169 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   playerPosition: { x: 0, y: 0, z: 0 },
   playerData: null,
   
+  // Funciones para el huerto virtual
+  initializeGarden: () => {
+    if (!get().playerData) return;
+    
+    set(state => ({
+      playerData: {
+        ...state.playerData!,
+        garden: createNewGarden(9) // Crear un huerto con 9 parcelas
+      }
+    }));
+  },
+  
+  plantSeed: (plotId: string, plantId: string) => {
+    if (!get().playerData) return;
+    
+    // Buscar la parcela y la semilla
+    const plotIndex = get().playerData!.garden.findIndex(plot => plot.id === plotId);
+    const seedIndex = get().playerData!.seeds.findIndex(seed => seed.id === plantId);
+    
+    if (plotIndex === -1 || seedIndex === -1) return;
+    
+    // Comprobar si la parcela está vacía
+    const plot = get().playerData!.garden[plotIndex];
+    const seed = get().playerData!.seeds[seedIndex];
+    
+    if (plot.plant !== null) return; // La parcela ya tiene una planta
+    
+    // Eliminar la semilla del inventario
+    const updatedSeeds = [...get().playerData!.seeds];
+    updatedSeeds.splice(seedIndex, 1);
+    
+    // Plantar la semilla
+    const updatedGarden = [...get().playerData!.garden];
+    updatedGarden[plotIndex] = plantSeed(plot, seed);
+    
+    set(state => ({
+      playerData: {
+        ...state.playerData!,
+        garden: updatedGarden,
+        seeds: updatedSeeds
+      }
+    }));
+  },
+  
+  waterPlot: (plotId: string) => {
+    if (!get().playerData) return;
+    
+    // Buscar la parcela
+    const plotIndex = get().playerData!.garden.findIndex(plot => plot.id === plotId);
+    if (plotIndex === -1) return;
+    
+    const plot = get().playerData!.garden[plotIndex];
+    if (!plot.plant) return; // No hay planta para regar
+    
+    // Regar la planta
+    const updatedGarden = [...get().playerData!.garden];
+    updatedGarden[plotIndex] = waterPlant(plot);
+    
+    set(state => ({
+      playerData: {
+        ...state.playerData!,
+        garden: updatedGarden
+      }
+    }));
+  },
+  
+  harvestPlot: (plotId: string) => {
+    if (!get().playerData) return;
+    
+    // Buscar la parcela
+    const plotIndex = get().playerData!.garden.findIndex(plot => plot.id === plotId);
+    if (plotIndex === -1) return;
+    
+    const plot = get().playerData!.garden[plotIndex];
+    if (!plot.plant || plot.state !== 'harvestable') return; // No hay nada para cosechar
+    
+    // Cosechar la planta
+    const harvestResult = harvestPlant(plot);
+    const updatedGarden = [...get().playerData!.garden];
+    updatedGarden[plotIndex] = harvestResult.plot;
+    
+    // Añadir alimentos al inventario basados en la planta cosechada
+    if (plot.plant && harvestResult.yield > 0) {
+      const foodFromPlant = {
+        id: `harvested-${plot.plant.id}-${Date.now()}`,
+        name: plot.plant.name,
+        category: "Cultivado",
+        calories: plot.plant.nutritionalValue.calories,
+        nutritionalValue: {
+          protein: plot.plant.nutritionalValue.protein,
+          carbs: plot.plant.nutritionalValue.carbs,
+          fat: plot.plant.nutritionalValue.fat
+        },
+        sustainabilityScore: plot.plant.sustainabilityScore,
+        price: Math.round(plot.plant.price / 2), // Menor precio que comprar
+        description: `${plot.plant.name} cultivado en tu huerto. Fresco y nutritivo.`
+      };
+      
+      // Actualizar inventario y cosecha
+      set(state => ({
+        playerData: {
+          ...state.playerData!,
+          garden: updatedGarden,
+          inventory: [...state.playerData!.inventory, foodFromPlant]
+        }
+      }));
+    } else {
+      set(state => ({
+        playerData: {
+          ...state.playerData!,
+          garden: updatedGarden
+        }
+      }));
+    }
+  },
+  
+  updateGarden: () => {
+    if (!get().playerData) return;
+    
+    // Actualizar el estado de todas las parcelas
+    const updatedGarden = get().playerData!.garden.map(plot => {
+      if (plot.plant) {
+        return updatePlantState(plot);
+      }
+      return plot;
+    });
+    
+    set(state => ({
+      playerData: {
+        ...state.playerData!,
+        garden: updatedGarden
+      }
+    }));
+  },
+  
+  addSeed: (plant: Plant) => {
+    if (!get().playerData) return;
+    
+    set(state => ({
+      playerData: {
+        ...state.playerData!,
+        seeds: [...state.playerData!.seeds, plant]
+      }
+    }));
+  },
+  
+  removeSeed: (plantId: string) => {
+    if (!get().playerData) return;
+    
+    const seedIndex = get().playerData!.seeds.findIndex(seed => seed.id === plantId);
+    if (seedIndex === -1) return;
+    
+    const updatedSeeds = [...get().playerData!.seeds];
+    updatedSeeds.splice(seedIndex, 1);
+    
+    set(state => ({
+      playerData: {
+        ...state.playerData!,
+        seeds: updatedSeeds
+      }
+    }));
+  },
+  
   // Funciones para desafíos diarios
   updateChallenges: () => {
     if (!get().playerData) return;

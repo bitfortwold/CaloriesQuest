@@ -16,7 +16,7 @@ const GameUI = () => {
   // Access game state and translations
   const { gameState, exitBuilding } = useGameStateStore();
   const { playerData } = usePlayerStore();
-  const { t } = useLanguage(); // Hook para acceder a las traducciones
+  const { t, language } = useLanguage(); // Hook para acceder a las traducciones y el idioma actual
   
   // Track whether DOM is ready for portals
   const [domReady, setDomReady] = useState(false);
@@ -100,6 +100,32 @@ const GameUI = () => {
             <div className="fixed inset-0 z-50 flex items-center justify-center">
               <Kitchen onExit={() => {
                 console.log("GameUI attempting to exit kitchen");
+                setActiveTab(null);
+                exitBuilding();
+              }} />
+            </div>
+          </>
+        );
+        
+      case "garden":
+        return (
+          <>
+            {/* Botón flotante para salir del huerto */}
+            <div className="fixed top-4 right-4 z-[1000]">
+              <button
+                onClick={() => {
+                  console.log("Force exiting garden via floating button");
+                  exitBuilding();
+                }}
+                className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg border-2 border-red-500 shadow-lg text-xl transition-all hover:scale-105"
+              >
+                {t.exit}
+              </button>
+            </div>
+            
+            <div className="fixed inset-0 z-50 flex items-center justify-center">
+              <Garden onExit={() => {
+                console.log("GameUI attempting to exit garden");
                 setActiveTab(null);
                 exitBuilding();
               }} />
@@ -275,6 +301,15 @@ const GameUI = () => {
                     onClick={() => setActiveTab('challenges')}
                   >
                     Desafíos
+                  </button>
+                  <button 
+                    className="px-3 py-1 text-sm rounded bg-green-600 text-white hover:bg-green-700"
+                    onClick={() => {
+                      console.log("Entering garden");
+                      useGameStateStore.getState().setGameState('garden');
+                    }}
+                  >
+                    {language === 'es' ? 'Huerto' : language === 'ca' ? 'Hort' : 'Garden'}
                   </button>
                 </div>
                 
