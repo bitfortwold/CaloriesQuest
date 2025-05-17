@@ -134,12 +134,7 @@ const Game = () => {
         </>
       )}
       
-      {/* Mostrar el huerto cuando el jugador interactúa con él */}
-      {gameState === "garden" && (
-        <Html fullscreen>
-          <Garden onExit={exitBuilding} />
-        </Html>
-      )}
+      {/* El Huerto ya se muestra a través de GameUI para evitar duplicación */}
       
       {/* GameUI removed from 3D context - it's rendered through a portal */}
     </>
