@@ -99,22 +99,22 @@ const Kitchen = ({ onExit }: KitchenProps) => {
   const getGuidedRecipes = () => {
     const recipes = [
       {
-        name: "Balanced Breakfast",
-        description: "A nutritious breakfast with eggs, bread, and fruit",
+        name: "Desayuno Equilibrado",
+        description: "Un desayuno nutritivo con huevos, pan y fruta",
         ingredients: ["eggs", "bread", "apple"],
-        benefits: "High in protein and complex carbs for sustained energy"
+        benefits: "Alto en proteínas y carbohidratos complejos para energía sostenida"
       },
       {
-        name: "Vegetarian Lunch",
-        description: "A plant-based lunch with beans, rice, and vegetables",
+        name: "Almuerzo Vegetariano",
+        description: "Un almuerzo a base de plantas con frijoles, arroz y verduras",
         ingredients: ["beans", "rice", "broccoli", "carrot"],
-        benefits: "Fiber-rich and provides essential vitamins and minerals"
+        benefits: "Rico en fibra y proporciona vitaminas y minerales esenciales"
       },
       {
-        name: "Protein Dinner",
-        description: "A protein-packed dinner with chicken, potatoes, and greens",
+        name: "Cena Proteica",
+        description: "Una cena rica en proteínas con pollo, patatas y verduras",
         ingredients: ["chicken", "potato", "spinach"],
-        benefits: "Supports muscle recovery and overall health"
+        benefits: "Apoya la recuperación muscular y la salud en general"
       }
     ];
     
@@ -194,7 +194,7 @@ const Kitchen = ({ onExit }: KitchenProps) => {
                     <div className="grid grid-cols-2 gap-2 max-h-[400px] overflow-y-auto">
                       {refrigeratorFood.length === 0 ? (
                         <p className="text-amber-500 py-6 text-center col-span-2 bg-amber-50 rounded-md border border-amber-200">
-                          Your refrigerator is empty. Visit the market to buy fresh food!
+                          Tu refrigerador está vacío. ¡Visita el mercado para comprar alimentos frescos!
                         </p>
                       ) : (
                         refrigeratorFood.map((food) => (
@@ -241,7 +241,7 @@ const Kitchen = ({ onExit }: KitchenProps) => {
                     <div className="grid grid-cols-2 gap-2 max-h-[400px] overflow-y-auto">
                       {pantryFood.length === 0 ? (
                         <p className="text-amber-500 py-6 text-center col-span-2 bg-amber-50 rounded-md border border-amber-200">
-                          Your pantry is empty. Visit the market to buy non-perishable foods!
+                          Tu despensa está vacía. ¡Visita el mercado para comprar alimentos no perecederos!
                         </p>
                       ) : (
                         pantryFood.map((food) => (
@@ -413,7 +413,7 @@ const Kitchen = ({ onExit }: KitchenProps) => {
                         setCookingMode("free");
                       }}
                     >
-                      Follow Recipe
+                      Seguir Receta
                     </Button>
                   </div>
                 </div>
