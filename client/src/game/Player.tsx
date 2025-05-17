@@ -300,6 +300,13 @@ const Player = () => {
       playerPosition.z - kitchenPosition.z
     ).length();
     
+    // Calculate distance to garden
+    const distToGarden = new THREE.Vector3(
+      playerPosition.x - gardenPosition.x,
+      0,
+      playerPosition.z - gardenPosition.z
+    ).length();
+    
     // Enter market if close enough
     if (distToMarket < INTERACTION_DISTANCE) {
       console.log("Entering market");
@@ -311,6 +318,13 @@ const Player = () => {
     if (distToKitchen < INTERACTION_DISTANCE) {
       console.log("Entering kitchen");
       enterBuilding("kitchen");
+      return;
+    }
+    
+    // Enter garden if close enough
+    if (distToGarden < INTERACTION_DISTANCE) {
+      console.log("Entering garden via E key");
+      enterBuilding("garden");
       return;
     }
   };
