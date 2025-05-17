@@ -1,7 +1,7 @@
 // Sistema de traducción para el juego
 // Contiene traducciones para todos los textos del juego
 
-export type Language = 'es' | 'en';
+export type Language = 'es' | 'en' | 'ca';
 
 export interface Translation {
   // Interfaz general
@@ -88,6 +88,7 @@ export interface Translation {
   language: string;
   spanish: string;
   english: string;
+  catalan: string;
   changeLanguage: string;
 }
 
@@ -177,6 +178,7 @@ export const es: Translation = {
   language: "Idioma",
   spanish: "Español",
   english: "Inglés",
+  catalan: "Catalán",
   changeLanguage: "Cambiar idioma"
 };
 
