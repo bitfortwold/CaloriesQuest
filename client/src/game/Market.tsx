@@ -6,6 +6,7 @@ import { usePlayerStore } from "../stores/usePlayerStore";
 import { useFoodStore } from "../stores/useFoodStore";
 import { useGameStateStore } from "../stores/useGameStateStore";
 import { useLanguage } from "../i18n/LanguageContext";
+import { plants, Plant } from "../data/gardenItems";
 import { toast } from "sonner";
 
 interface MarketProps {
@@ -254,7 +255,7 @@ const Market = ({ onExit }: MarketProps) => {
   const allCategories = ["all", ...Array.from(new Set(foodItems.map(item => item.category)))];
   const categories = allCategories;
   
-  // Add item to cart
+  // Add food item to cart
   const addToCart = (foodItem: typeof foodItems[0]) => {
     // Check if item already exists in cart
     const existingItem = cart.find(item => item.item.id === foodItem.id);
@@ -295,6 +296,70 @@ const Market = ({ onExit }: MarketProps) => {
     }
   };
   
+  // Convertir una planta a formato de item para el carrito
+  const plantToCartItem = (plant: Plant) => {
+    return {
+      id: `seed-${plant.id}`,
+      name: `${language === 'en' ? 'Seed: ' : language === 'ca' ? 'Llavor: ' : 'Semilla: '}${plant.name}`,
+      category: 'seeds',
+      calories: 0,
+      nutritionalValue: {
+        protein: 0,
+        carbs: 0,
+        fat: 0
+      },
+      sustainabilityScore: plant.sustainabilityScore,
+      price: plant.price,
+      description: plant.description,
+      // Añadimos información extra para identificar que es una semilla
+      meta: {
+        isSeed: true,
+        plantId: plant.id
+      }
+    };
+  };
+  
+  // Añadir semilla al carrito
+  const addSeedToCart = (plant: Plant) => {
+    const seedItem = plantToCartItem(plant);
+    
+    // Check if seed already exists in cart
+    const existingItem = cart.find(item => item.item.id === seedItem.id);
+    
+    if (existingItem) {
+      // Update quantity if it exists
+      setCart(prevCart => prevCart.map(item => 
+        item.item.id === seedItem.id 
+          ? { ...item, quantity: item.quantity + 1 } 
+          : item
+      ));
+    } else {
+      // Add new seed to cart
+      setCart(prevCart => [...prevCart, { item: seedItem, quantity: 1 }]);
+    }
+    
+    // Show notification
+    toast.success(`${seedItem.name} ${language === 'en' ? 'added to cart' : language === 'ca' ? 'afegit al cistell' : 'añadido al carrito'}`);
+    
+    // Log para depuración
+    console.log("Seed added to cart:", seedItem.name);
+    
+    // Actualizar el contador del carrito
+    const updatedCart = existingItem 
+      ? [...cart.filter(item => item.item.id !== seedItem.id), { ...existingItem, quantity: existingItem.quantity + 1 }]
+      : [...cart, { item: seedItem, quantity: 1 }];
+      
+    const totalItems = updatedCart.reduce((total, item) => total + item.quantity, 0);
+    const cartCounter = document.getElementById('cart-counter');
+    if (cartCounter) {
+      cartCounter.textContent = totalItems.toString();
+      
+      // Efecto visual de "bounce" para el contador
+      cartCounter.classList.add('scale-125');
+      setTimeout(() => cartCounter.classList.remove('scale-125'), 300);
+    }
+  };
+  
   // Remove item from cart
   const removeFromCart = (foodId: string) => {
     setCart(prevCart => prevCart.filter(item => item.item.id !== foodId));
@@ -317,29 +382,52 @@ const Market = ({ onExit }: MarketProps) => {
     
     // Array para guardar los IDs de los alimentos que se transferirán a la cocina
     const foodIdsToTransfer: string[] = [];
+    // Contador de semillas compradas
+    let seedsPurchased = false;
     
     // Purchase all items
     cart.forEach(cartItem => {
+      // Verificar si es una semilla o un alimento
+      const isSeed = cartItem.item.id.startsWith('seed-');
+      
       // Repetir según la cantidad
       for (let i = 0; i < cartItem.quantity; i++) {
-        // Crear un ID único para cada elemento (incluso si son del mismo tipo)
-        const uniqueId = `${cartItem.item.id}-${Date.now()}-${i}`;
-        const itemWithUniqueId = {
-          ...cartItem.item,
-          id: uniqueId
-        };
-        
-        // Añadir a la compra y al inventario del jugador
-        addPurchasedFood(itemWithUniqueId);
-        addFood(itemWithUniqueId);
-        
-        // Añadir a la lista para transferir a la cocina
-        foodIdsToTransfer.push(uniqueId);
+        if (isSeed) {
+          // Es una semilla, extraer el ID de la planta
+          const plantId = (cartItem.item as any).meta?.plantId;
+          if (plantId) {
+            // Buscar la planta correspondiente
+            const plant = plants.find(p => p.id === plantId);
+            if (plant) {
+              // Añadir semilla al inventario del jugador
+              const { addSeed } = usePlayerStore.getState();
+              addSeed(plant);
+              seedsPurchased = true;
+            }
+          }
+        } else {
+          // Es un alimento normal
+          // Crear un ID único para cada elemento (incluso si son del mismo tipo)
+          const uniqueId = `${cartItem.item.id}-${Date.now()}-${i}`;
+          const itemWithUniqueId = {
+            ...cartItem.item,
+            id: uniqueId
+          };
+          
+          // Añadir a la compra y al inventario del jugador
+          addPurchasedFood(itemWithUniqueId);
+          addFood(itemWithUniqueId);
+          
+          // Añadir a la lista para transferir a la cocina
+          foodIdsToTransfer.push(uniqueId);
+        }
       }
     });
     
-    // Transferir alimentos a la cocina (refrigerador o despensa)
-    transferToKitchen(foodIdsToTransfer);
+    // Transferir alimentos a la cocina (refrigerador o despensa) si hay alguno
+    if (foodIdsToTransfer.length > 0) {
+      transferToKitchen(foodIdsToTransfer);
+    }
     
     // Update player coins
     updateCoins(-totalPrice);
@@ -348,7 +436,13 @@ const Market = ({ onExit }: MarketProps) => {
     setCart([]);
     
     // Show success message
-    toast.success(uiTexts.compraExitosa);
+    if (seedsPurchased && foodIdsToTransfer.length === 0) {
+      toast.success(uiTexts.seedsPurchased);
+    } else if (seedsPurchased && foodIdsToTransfer.length > 0) {
+      toast.success(`${uiTexts.compraExitosa} ${uiTexts.seedsPurchased}`);
+    } else {
+      toast.success(uiTexts.compraExitosa);
+    }
     
     // Ocultar el panel del carrito
     const cartPanel = document.getElementById('cart-panel');
@@ -411,22 +505,51 @@ const Market = ({ onExit }: MarketProps) => {
           </div>
         </div>
         
-        {/* Tabs de categoría con estilo de pestañas */}
-        <div className="bg-amber-200 px-2 pt-2 flex space-x-1 overflow-x-auto border-b-2 border-amber-700">
-          {categories.map(category => (
-            <button 
-              key={category}
-              onClick={() => setSelectedCategory(category)}
-              className={`capitalize font-bold py-2 px-4 rounded-t-lg transition-all hover:brightness-110 ${
-                selectedCategory === category 
-                  ? 'bg-amber-50 text-amber-900 border-2 border-b-0 border-amber-700 shadow-inner-top' 
-                  : 'bg-amber-300 text-amber-700 border border-amber-400 opacity-80 hover:opacity-100'
-              }`}
-            >
-              {translateCategory(category)}
-            </button>
-          ))}
+        {/* Pestañas principales: Alimentos y Semillas */}
+        <div className="bg-amber-300 px-4 pt-2 flex space-x-4 border-b-2 border-amber-700">
+          <button 
+            onClick={() => setActiveTab('food')}
+            className={`font-bold py-3 px-6 rounded-t-lg transition-all text-lg ${
+              activeTab === 'food' 
+                ? 'bg-amber-50 text-amber-900 border-2 border-b-0 border-amber-700' 
+                : 'bg-amber-400 text-amber-800 hover:bg-amber-300'
+            }`}
+          >
+            {uiTexts.foodTab}
+          </button>
+          <button 
+            onClick={() => {
+              setActiveTab('seeds');
+              setSelectedCategory('all'); // Reset category filter when switching tabs
+            }}
+            className={`font-bold py-3 px-6 rounded-t-lg transition-all text-lg ${
+              activeTab === 'seeds' 
+                ? 'bg-amber-50 text-amber-900 border-2 border-b-0 border-amber-700' 
+                : 'bg-amber-400 text-amber-800 hover:bg-amber-300'
+            }`}
+          >
+            {uiTexts.seedsTab}
+          </button>
         </div>
+        
+        {/* Tabs de categoría con estilo de pestañas - Solo visible cuando activeTab es 'food' */}
+        {activeTab === 'food' && (
+          <div className="bg-amber-200 px-2 pt-2 flex space-x-1 overflow-x-auto border-b-2 border-amber-700">
+            {categories.map(category => (
+              <button 
+                key={category}
+                onClick={() => setSelectedCategory(category)}
+                className={`capitalize font-bold py-2 px-4 rounded-t-lg transition-all hover:brightness-110 ${
+                  selectedCategory === category 
+                    ? 'bg-amber-50 text-amber-900 border-2 border-b-0 border-amber-700 shadow-inner-top' 
+                    : 'bg-amber-300 text-amber-700 border border-amber-400 opacity-80 hover:opacity-100'
+                }`}
+              >
+                {translateCategory(category)}
+              </button>
+            ))}
+          </div>
+        )}
         
         <div className="p-4">
           {/* Cuadrícula de comida con estilo de tarjetas de juego */}
