@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-export type GameState = "ready" | "playing" | "market" | "kitchen" | "activities";
+export type GameState = "ready" | "playing" | "market" | "kitchen" | "activities" | "garden";
 
 interface GameStateStore {
   gameState: GameState;
@@ -28,7 +28,7 @@ export const useGameStateStore = create<GameStateStore>((set) => ({
     set({ isRegistered: registered });
   },
   
-  enterBuilding: (building: "market" | "kitchen") => {
+  enterBuilding: (building: "market" | "kitchen" | "activities" | "garden") => {
     set({ gameState: building });
   },
   
