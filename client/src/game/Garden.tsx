@@ -163,56 +163,71 @@ const Garden = ({ onExit }: GardenProps) => {
 
   return (
     <div className="fixed inset-0 z-50 bg-black bg-opacity-75 flex items-center justify-center overflow-hidden">
-      <div className="relative bg-gradient-to-b from-amber-700 to-amber-600 rounded-lg shadow-lg w-full max-w-4xl max-h-screen overflow-y-auto">
-        {/* Header con título central y botones en los extremos */}
-        <div className="flex justify-between items-center p-4 bg-amber-800 text-white">
-          <div className="flex-1">
-            {/* Espacio para botón futuro */}
-          </div>
-          
-          {/* Título central */}
-          <h2 className="text-2xl font-bold text-center flex-1">Huerto Virtual</h2>
-          
-          {/* Botón de salir en esquina superior derecha */}
-          <div className="flex-1 flex justify-end">
-            <button 
-              className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-md font-semibold shadow-md"
-              onClick={() => {
-                console.log("SOLUCIÓN FINAL: Salida directa del huerto");
-                onExit();
-                
-                // Usando teleportación después para asegurar que la salida es limpia
-                setTimeout(() => {
-                  console.log("Teleportación ejecutada correctamente");
-                }, 100);
-              }}
-            >
-              Salir
-            </button>
-          </div>
+      <div className="relative rounded-lg shadow-lg w-full max-w-4xl max-h-screen overflow-y-auto">
+        {/* Botón de salir flotante en la esquina superior derecha (fuera del panel) */}
+        <div className="absolute top-0 right-0">
+          <button 
+            className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-md font-semibold shadow-md"
+            onClick={() => {
+              console.log("SOLUCIÓN FINAL: Salida directa del huerto");
+              onExit();
+              
+              // Usando teleportación después para asegurar que la salida es limpia
+              setTimeout(() => {
+                console.log("Teleportación ejecutada correctamente");
+              }, 100);
+            }}
+          >
+            Salir
+          </button>
         </div>
-        
-        {/* Saldo de monedas */}
-        <div className="text-center p-2 bg-amber-700 text-white">
-          <span className="font-semibold">iHumanCoins: </span>
-          <span className="text-yellow-300 font-bold">{playerData?.coins || 0}</span>
+
+        {/* Panel principal */}
+        <div className="bg-amber-800 rounded-t-lg">
+          {/* Header con título y botón de salir secundario */}
+          <div className="flex justify-between items-center p-4">
+            <div className="flex-1"></div>
+            <h2 className="text-2xl font-bold text-center text-white flex-1">Huerto Virtual</h2>
+            <div className="flex-1 flex justify-end">
+              <button 
+                className="bg-red-600 hover:bg-red-700 text-white px-4 py-1 rounded-md font-semibold shadow-md"
+                onClick={() => {
+                  console.log("SOLUCIÓN FINAL: Salida directa del huerto");
+                  onExit();
+                  
+                  // Usando teleportación después para asegurar que la salida es limpia
+                  setTimeout(() => {
+                    console.log("Teleportación ejecutada correctamente");
+                  }, 100);
+                }}
+              >
+                Salir
+              </button>
+            </div>
+          </div>
+          
+          {/* Saldo de monedas */}
+          <div className="text-center p-2 bg-amber-700 text-white">
+            <span className="font-semibold">iHumanCoins: </span>
+            <span className="text-yellow-300 font-bold">{playerData?.coins || 0}</span>
+          </div>
         </div>
         
         {/* Pestañas */}
-        <div className="bg-amber-400 mb-0">
+        <div className="bg-amber-200">
           <div className="flex">
             <button
-              className={`px-5 py-3 font-semibold transition-colors ${activeTab === "garden" 
-                ? "bg-amber-300 text-amber-900 border-b-4 border-amber-500" 
-                : "bg-amber-400 text-amber-800 hover:bg-amber-300"}`}
+              className={`px-5 py-3 font-semibold ${activeTab === "garden" 
+                ? "bg-amber-100 text-amber-900 border-b-0" 
+                : "bg-amber-300 text-amber-800 hover:bg-amber-200"}`}
               onClick={() => setActiveTab("garden")}
             >
               Huerto
             </button>
             <button
-              className={`px-5 py-3 font-semibold transition-colors ${activeTab === "seeds" 
-                ? "bg-amber-300 text-amber-900 border-b-4 border-amber-500" 
-                : "bg-amber-400 text-amber-800 hover:bg-amber-300"}`}
+              className={`px-5 py-3 font-semibold ${activeTab === "seeds" 
+                ? "bg-amber-100 text-amber-900 border-b-0" 
+                : "bg-amber-300 text-amber-800 hover:bg-amber-200"}`}
               onClick={() => setActiveTab("seeds")}
             >
               Semillas
@@ -221,13 +236,13 @@ const Garden = ({ onExit }: GardenProps) => {
         </div>
 
         {/* Contenido principal */}
-        <div className="bg-amber-200 p-4">
+        <div className="bg-amber-100 p-4">
           {activeTab === "garden" ? (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {playerData?.garden.map((plot, index) => (
                 <div 
                   key={plot.id} 
-                  className={`bg-amber-100 rounded-md border ${
+                  className={`bg-amber-50 rounded-md border ${
                     selectedPlot?.id === plot.id ? 'border-amber-600 shadow-lg' : 'border-amber-300'
                   } transition-all hover:shadow-md cursor-pointer overflow-hidden`}
                   onClick={() => setSelectedPlot(plot)}
@@ -316,7 +331,7 @@ const Garden = ({ onExit }: GardenProps) => {
               {/* Subtítulo de la sección */}
               <h2 className="text-xl font-semibold mb-4 text-amber-900">Tus semillas disponibles</h2>
               
-              {/* Filtros de semillas (opcional, similar al mercado) */}
+              {/* Filtros de semillas (similar al mercado) */}
               <div className="bg-amber-300 rounded-md mb-4 p-2 flex space-x-2">
                 <button className="bg-amber-50 text-amber-800 px-3 py-1 rounded-md hover:bg-amber-100">
                   Todas
@@ -384,13 +399,13 @@ const Garden = ({ onExit }: GardenProps) => {
                   ))}
               </div>
               
-              {/* Mensaje si no hay semillas */}
+              {/* Mensaje si no hay semillas - Igual que en la captura de pantalla */}
               {(!playerData?.seeds || playerData.seeds.filter(seed => seed.quantity && seed.quantity > 0).length === 0) && (
-                <div className="text-center p-8 bg-amber-100 rounded-lg">
-                  <p className="text-amber-800">No tienes semillas disponibles.</p>
-                  <p className="mt-2">Visita el mercado para comprar algunas.</p>
+                <div className="text-center p-8 bg-amber-50 rounded-lg">
+                  <p className="text-amber-800 font-medium">No tienes semillas disponibles.</p>
+                  <p className="mt-2 text-amber-700">Visita el mercado para comprar algunas.</p>
                   <button
-                    className="mt-4 bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded font-semibold"
+                    className="mt-4 bg-amber-500 hover:bg-amber-600 text-white px-6 py-2 rounded font-semibold"
                     onClick={() => {
                       onExit();
                     }}
