@@ -216,9 +216,10 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   },
   
   updateGarden: () => {
-    if (!get().playerData || !get().playerData.garden) return;
+    if (!get().playerData) return;
+    if (!get().playerData.garden) return;
     
-    const updatedGarden = get().playerData!.garden.map(plot => updatePlantState(plot));
+    const updatedGarden = get().playerData.garden.map(plot => updatePlantState(plot));
     
     set(state => ({
       playerData: {
@@ -341,7 +342,10 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       
       // Actualizar desafíos relacionados con alimentación
       const updatedChallenges = state.playerData.dailyChallenges.map(challenge => {
-        return updateChallengeProgress(challenge, 0, food);
+        return updateChallengeProgress(challenge, {
+          type: "food_consumed",
+          food: food
+        });
       });
       
       return {
@@ -364,7 +368,10 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       
       // Actualizar desafíos relacionados con actividad física
       const updatedChallenges = state.playerData.dailyChallenges.map(challenge => {
-        return updateChallengeProgress(challenge, calories);
+        return updateChallengeProgress(challenge, {
+          type: "activity_performed",
+          caloriesBurned: calories
+        });
       });
       
       return {
