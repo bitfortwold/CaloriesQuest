@@ -4,6 +4,7 @@ import { plants, Plant } from "../data/gardenItems";
 import { usePlayerStore } from "../stores/usePlayerStore";
 import { useFoodStore } from "../stores/useFoodStore";
 import { useGameStateStore } from "../stores/useGameStateStore";
+import { useCartStore } from "../stores/useCartStore";
 import { useLanguage } from "../i18n/LanguageContext";
 import { toast } from "sonner";
 
@@ -19,8 +20,16 @@ const Market = ({ onExit }: MarketProps) => {
   
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [activeTab, setActiveTab] = useState<"food" | "seeds">("food");
-  const [cart, setCart] = useState<{item: any, quantity: number, type: "food" | "seed"}[]>([]);
-  const [showCart, setShowCart] = useState(false);
+  
+  // Uso del store persistente para el carrito
+  const { 
+    items: cart, 
+    showCart, 
+    addItem, 
+    updateQuantity, 
+    clearCart, 
+    toggleCartVisibility 
+  } = useCartStore();
   
   // Log state for debugging purposes
   console.log("Market component rendering, showCart =", showCart);
@@ -29,7 +38,7 @@ const Market = ({ onExit }: MarketProps) => {
   useEffect(() => {
     const handleToggleCart = () => {
       console.log("Market recibió evento toggleMarketCart");
-      setShowCart(!showCart);
+      toggleCartVisibility();
       
       // Actualizar el contador en el botón flotante
       const cartCounter = document.getElementById('cart-counter');
@@ -43,7 +52,7 @@ const Market = ({ onExit }: MarketProps) => {
     return () => {
       document.removeEventListener('toggleMarketCart', handleToggleCart);
     };
-  }, [showCart, cart]);
+  }, [toggleCartVisibility, cart]);
   
   // Actualizar el contador del carrito cuando cambia
   useEffect(() => {
@@ -229,57 +238,26 @@ const Market = ({ onExit }: MarketProps) => {
     return translations[season] || season;
   };
   
-  // Añadir alimento al carrito
+  // Añadir alimento al carrito utilizando el store persistente
   const addFoodToCart = (food: typeof foodItems[0]) => {
-    const existingItemIndex = cart.findIndex(
-      item => item.item.id === food.id && item.type === "food"
-    );
-    
-    if (existingItemIndex >= 0) {
-      // Actualizar cantidad si ya existe
-      const updatedCart = [...cart];
-      updatedCart[existingItemIndex].quantity += 1;
-      setCart(updatedCart);
-    } else {
-      // Añadir nuevo item
-      setCart(prev => [...prev, { item: food, quantity: 1, type: "food" }]);
-    }
+    // Usar la función addItem del store
+    addItem(food, "food");
     
     toast.success(`${translateFoodName(food.name)} ${language === 'en' ? 'added to cart' : language === 'ca' ? 'afegit al cistell' : 'añadido al carrito'}`);
   };
   
-  // Añadir semilla al carrito
+  // Añadir semilla al carrito utilizando el store persistente
   const addSeedToCart = (seed: Plant) => {
-    const existingItemIndex = cart.findIndex(
-      item => item.item.id === seed.id && item.type === "seed"
-    );
-    
-    if (existingItemIndex >= 0) {
-      // Actualizar cantidad si ya existe
-      const updatedCart = [...cart];
-      updatedCart[existingItemIndex].quantity += 1;
-      setCart(updatedCart);
-    } else {
-      // Añadir nueva semilla
-      setCart(prev => [...prev, { item: seed, quantity: 1, type: "seed" }]);
-    }
+    // Usar la función addItem del store
+    addItem(seed, "seed");
     
     toast.success(`${translateFoodName(seed.name)} ${language === 'en' ? 'seed added to cart' : language === 'ca' ? 'llavor afegida al cistell' : 'semilla añadida al carrito'}`);
   };
   
-  // Actualizar cantidad en el carrito
+  // Actualizar cantidad en el carrito utilizando el store persistente
   const updateCartQuantity = (index: number, newQuantity: number) => {
-    if (newQuantity <= 0) {
-      // Eliminar el item si la cantidad es 0 o menor
-      const updatedCart = [...cart];
-      updatedCart.splice(index, 1);
-      setCart(updatedCart);
-    } else {
-      // Actualizar cantidad
-      const updatedCart = [...cart];
-      updatedCart[index].quantity = newQuantity;
-      setCart(updatedCart);
-    }
+    // Usar la función updateQuantity del store
+    updateQuantity(index, newQuantity);
   };
   
   // Calcular total del carrito
@@ -337,7 +315,7 @@ const Market = ({ onExit }: MarketProps) => {
     updateCoins(-total);
     
     // Vaciar carrito
-    setCart([]);
+    clearCart();
     
     // Mostrar mensaje de éxito
     if (hasFoodItems && hasSeedItems) {
