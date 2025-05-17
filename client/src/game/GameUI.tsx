@@ -231,13 +231,13 @@ const GameUI = () => {
                     className={`px-3 py-1 text-sm rounded ${activeTab === 'profile' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
                     onClick={() => setActiveTab('profile')}
                   >
-                    Profile
+                    {t.profile}
                   </button>
                   <button 
                     className={`px-3 py-1 text-sm rounded ${activeTab === 'activities' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
                     onClick={() => setActiveTab('activities')}
                   >
-                    Activities
+                    {t.activities}
                   </button>
                 </div>
                 

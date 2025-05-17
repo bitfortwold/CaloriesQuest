@@ -50,8 +50,8 @@ const Activities = () => {
                 <div>
                   <h3 className="font-medium">{activity.name}</h3>
                   <div className="text-sm text-gray-600 mt-1">
-                    <div>Burns: {activity.caloriesBurned} calories</div>
-                    <div>Earns: {activity.caloriesBurned * 2} iHumancoins</div>
+                    <div>{t.burns}: {activity.caloriesBurned} {t.calories}</div>
+                    <div>{t.earns}: {activity.caloriesBurned * 2} iHumancoins</div>
                   </div>
                 </div>
                 <Button 
