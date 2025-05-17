@@ -192,10 +192,26 @@ const GameUI = () => {
                       <div>
                         <div className="flex justify-between items-center mb-1">
                           <span className="text-yellow-400 font-semibold">{t.health}:</span>
-                          <span className="text-yellow-400 font-bold">50%</span>
+                          <span className="text-yellow-400 font-bold">
+                            {playerData ? Math.min(100, Math.max(0, 100 - Math.abs((playerData.caloriesConsumed / playerData.dailyCalories - 1) * 100))).toFixed(0) : 0}%
+                          </span>
                         </div>
                         <div className="w-full bg-gray-800 rounded-full h-3 overflow-hidden">
-                          <div className="bg-gradient-to-r from-yellow-500 to-yellow-300 h-3 rounded-full" style={{ width: "50%" }}></div>
+                          <div 
+                            className={`h-3 rounded-full ${
+                              !playerData ? 'bg-gradient-to-r from-yellow-500 to-yellow-300' :
+                              playerData.caloriesConsumed / playerData.dailyCalories > 1.5 || playerData.caloriesConsumed / playerData.dailyCalories < 0.5
+                                ? 'bg-gradient-to-r from-red-600 to-red-400' 
+                                : playerData.caloriesConsumed / playerData.dailyCalories > 1.2 || playerData.caloriesConsumed / playerData.dailyCalories < 0.8
+                                ? 'bg-gradient-to-r from-yellow-500 to-yellow-300'
+                                : 'bg-gradient-to-r from-green-500 to-green-300'
+                            }`} 
+                            style={{ 
+                              width: playerData
+                                ? `${Math.min(100, Math.max(0, 100 - Math.abs((playerData.caloriesConsumed / playerData.dailyCalories - 1) * 100)))}%` 
+                                : "50%" 
+                            }}
+                          ></div>
                         </div>
                       </div>
                       
@@ -211,14 +227,22 @@ const GameUI = () => {
                         </div>
                       </div>
                       
-                      <div className="flex justify-between items-center bg-gray-800 p-2 rounded">
-                        <span className="text-yellow-400 font-semibold flex items-center">
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                          </svg>
-                          {t.coins}:
-                        </span>
-                        <span className="text-yellow-400 font-bold">{playerData?.coins?.toFixed(0) || 0}</span>
+                      <div>
+                        <div className="flex justify-between items-center mb-1">
+                          <span className="text-yellow-400 font-semibold flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            {t.coins}:
+                          </span>
+                          <span className="text-yellow-400 font-bold">{playerData?.coins?.toFixed(0) || 0}/{playerData?.dailyCalories?.toFixed(0) || 0} IHC</span>
+                        </div>
+                        <div className="w-full bg-gray-800 rounded-full h-3 overflow-hidden">
+                          <div className="bg-gradient-to-r from-yellow-500 to-amber-300 h-3 rounded-full" style={{ 
+                            width: `${Math.min((playerData?.coins || 0) / (playerData?.dailyCalories || 2000) * 100, 100)}%` 
+                          }}></div>
+                        </div>
+                        <div className="text-xs text-gray-400 text-center mt-1">1 Kcal = 1 IHC</div>
                       </div>
                       
 

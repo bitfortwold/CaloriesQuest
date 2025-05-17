@@ -74,7 +74,8 @@ const RegistrationForm = () => {
           height: Number(userData.height),
           weight: Number(userData.weight),
           activityLevel: userData.activityLevel,
-          coins: 100,
+          // Sistema Económico Virtual: 1 Kcal = 1 IHC
+          coins: dailyCalories, // Asignar monedas equivalentes a las calorías
           caloriesConsumed: 0,
           caloriesBurned: 0,
           dailyCalories,
@@ -157,7 +158,8 @@ const RegistrationForm = () => {
         activityLevel: formData.activityLevel,
         
         // Initialize player stats
-        coins: 500, // Starting coins
+        // Sistema Económico Virtual: 1 Kcal = 1 IHC (las monedas se calcularán con las calorías)
+        coins: 0, // Se actualizará con el valor calculado de dailyCalories
         caloriesConsumed: 0,
         caloriesBurned: 0,
         dailyCalories: 0, // Will be calculated next
@@ -175,9 +177,11 @@ const RegistrationForm = () => {
       );
       
       // Update player data with calculated calories
+      // Actualizar player data con calorías calculadas y monedas (1 Kcal = 1 IHC)
       setPlayerData({
         ...playerData,
-        dailyCalories
+        dailyCalories,
+        coins: dailyCalories // Sistema Económico Virtual: 1 Kcal = 1 IHC
       });
       
       // Guardar datos en localStorage para futuras sesiones

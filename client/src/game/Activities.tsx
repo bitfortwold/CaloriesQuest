@@ -28,7 +28,7 @@ const Activities = () => {
     calculateEstimatedLifespan();
     
     // Show success message
-    toast.success(`¡Has realizado ${activity.name}! Quemaste ${activity.caloriesBurned} calorías y ganaste ${coinsEarned} iHumancoins.`);
+    toast.success(`¡Has realizado ${activity.name}! Quemaste ${activity.caloriesBurned} calorías y ganaste ${coinsEarned} iHumanCoins (IHC).`);
     
     // Show educational tip if available
     if (activity.educationalTip) {
