@@ -105,9 +105,12 @@ export const useFoodStore = create<FoodState>((set) => ({
   },
   
   // Quitar un alimento de la cocina (al consumirlo)
-  removeFromKitchen: (foodId: string, storageType: StorageType) => {
+  removeFromKitchen: (foodId: string) => {
     set((state) => {
-      if (storageType === "refrigerator") {
+      // Comprobar si está en la nevera
+      const inRefrigerator = state.refrigeratorFood.some(food => food.id === foodId);
+      
+      if (inRefrigerator) {
         return {
           refrigeratorFood: state.refrigeratorFood.filter(food => food.id !== foodId)
         };
