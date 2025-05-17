@@ -50,8 +50,36 @@ const GameUI = () => {
               </button>
             </div>
             
-            {/* El botón flotante para el carrito en la esquina izquierda se ha eliminado 
-                para evitar duplicación con el carrito dentro del componente Market */}
+            {/* Botón flotante para el carrito en la esquina izquierda */}
+            <div className="fixed top-4 left-4 z-[1000]">
+              <button
+                id="floating-cart-button"
+                onClick={() => {
+                  console.log("Toggle cart from floating button");
+                  // En el mercado, activar el showCart del componente Market
+                  if (gameState === "market") {
+                    // Comunicamos con el componente Market a través de un evento personalizado
+                    const marketCartEvent = new CustomEvent('toggleMarketCart');
+                    document.dispatchEvent(marketCartEvent);
+                  } else {
+                    // Comportamiento normal para otros casos
+                    const cartPanel = document.getElementById('cart-panel');
+                    if (cartPanel) {
+                      cartPanel.style.display = cartPanel.style.display === 'none' ? 'block' : 'none';
+                    }
+                  }
+                }}
+                className="bg-amber-600 hover:bg-amber-700 text-white font-bold py-3 px-8 rounded-lg border-2 border-amber-500 shadow-lg text-xl transition-all hover:scale-105 flex items-center justify-center relative"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+                {t.cart}
+                <span id="cart-counter" className="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold rounded-full h-6 w-6 flex items-center justify-center border-2 border-amber-500">
+                  0
+                </span>
+              </button>
+            </div>
             
             <div className="fixed inset-0 z-50 flex items-center justify-center">
               <Market onExit={() => {
