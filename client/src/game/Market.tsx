@@ -5,6 +5,7 @@ import { foodItems } from "../data/foodItems";
 import { usePlayerStore } from "../stores/usePlayerStore";
 import { useFoodStore } from "../stores/useFoodStore";
 import { useGameStateStore } from "../stores/useGameStateStore";
+import { useLanguage } from "../i18n/LanguageContext";
 import { toast } from "sonner";
 
 interface MarketProps {
@@ -15,6 +16,7 @@ const Market = ({ onExit }: MarketProps) => {
   const { playerData, addFood, updateCoins } = usePlayerStore();
   const { purchasedFood, addPurchasedFood, transferToKitchen } = useFoodStore();
   const { exitBuilding, setGameState } = useGameStateStore();
+  const { t } = useLanguage(); // Hook para acceder a las traducciones
   
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [cart, setCart] = useState<{item: typeof foodItems[0], quantity: number}[]>([]);
@@ -166,7 +168,7 @@ const Market = ({ onExit }: MarketProps) => {
         <div className="bg-amber-800 text-amber-50 p-3 rounded-t-lg relative overflow-hidden">
           <div className="absolute inset-0 opacity-30 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMCIgaGVpZ2h0PSIzMCI+CjxyZWN0IHdpZHRoPSIzMCIgaGVpZ2h0PSIzMCIgZmlsbD0iI2ZmZiI+PC9yZWN0Pgo8cmVjdCB4PSIxNSIgeT0iMCIgd2lkdGg9IjE1IiBoZWlnaHQ9IjE1IiBmaWxsPSIjZjNmNGY2Ij48L3JlY3Q+CjxyZWN0IHg9IjAiIHk9IjE1IiB3aWR0aD0iMTUiIGhlaWdodD0iMTUiIGZpbGw9IiNmM2Y0ZjYiPjwvcmVjdD4KPC9zdmc+')]"></div>
           <div className="mb-2">
-            <h1 className="text-4xl font-bold text-amber-50 drop-shadow-md tracking-wide text-center">MARKET</h1>
+            <h1 className="text-4xl font-bold text-amber-50 drop-shadow-md tracking-wide text-center">{t.market}</h1>
           </div>
           
           <div className="flex justify-center items-center">

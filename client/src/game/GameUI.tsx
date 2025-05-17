@@ -211,7 +211,7 @@ const GameUI = () => {
                           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                           </svg>
-                          iHumanCoins:
+                          {t.coins}:
                         </span>
                         <span className="text-yellow-400 font-bold">{playerData?.coins?.toFixed(0) || 0}</span>
                       </div>
@@ -281,13 +281,13 @@ const GameUI = () => {
                 className="absolute bottom-14 right-0 bg-black/90 text-white p-3 rounded-lg shadow-lg w-64"
                 style={{ display: 'none' }}
               >
-                <h3 className="text-center font-bold mb-2 text-blue-300">CONTROLES DEL JUEGO</h3>
+                <h3 className="text-center font-bold mb-2 text-blue-300">{t.controls}</h3>
                 <div className="space-y-1 text-sm">
-                  <p>• WASD o Flechas: Moverse</p>
-                  <p>• Click del ratón: Moverse o interactuar</p>
-                  <p>• E o Espacio: Interactuar</p>
-                  <p>• Botón izquierdo + arrastrar: Rotar cámara</p>
-                  <p>• Rueda del ratón: Acercar/alejar</p>
+                  <p>{t.moveKeys}</p>
+                  <p>{t.clickToMove}</p>
+                  <p>{t.interactKey}</p>
+                  <p>{t.rotateCamera}</p>
+                  <p>{t.zoomCamera}</p>
                 </div>
               </div>
             </div>
