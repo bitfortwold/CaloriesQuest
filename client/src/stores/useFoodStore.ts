@@ -22,7 +22,7 @@ interface FoodState {
   addPurchasedFood: (food: FoodItem) => void;
   removePurchasedFood: (foodId: string) => void;
   transferToKitchen: (foodIds: string[]) => void; // Trasladar del mercado a la cocina
-  removeFromKitchen: (foodId: string, storageType: StorageType) => void; // Quitar de la cocina (al consumir)
+  removeFromKitchen: (foodId: string) => void; // Quitar de la cocina (al consumir)
 }
 
 // Determinar el tipo de almacenamiento basado en la categoría
@@ -31,7 +31,7 @@ const determineStorageType = (food: FoodItem): StorageType => {
   const refrigeratedCategories = ['fruits', 'vegetables', 'dairy', 'meat', 'fish'];
   
   // Convertir a minúsculas para comparación
-  const category = food.category.toLowerCase();
+  const category = food.category ? food.category.toLowerCase() : '';
   
   // Comprobar si pertenece a categorías que van a la nevera
   if (refrigeratedCategories.some(c => category.includes(c))) {

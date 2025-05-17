@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useFoodStore } from "../stores/useFoodStore";
-import { usePlayerStore } from "../stores/usePlayerStore";
+import { useFoodStore, StoredFoodItem } from "../stores/useFoodStore";
+import { usePlayerStore, FoodItem } from "../stores/usePlayerStore";
 import { useLanguage } from "../i18n/LanguageContext";
 import { toast } from "sonner";
 
@@ -48,11 +48,22 @@ const Kitchen = ({ onExit }: KitchenProps) => {
     const itemsToConsume = [...refrigeratorFood, ...pantryFood]
       .filter(item => selectedItems.includes(item.id));
     
-    // Consumir alimentos
+    // Calcular nutrientes y calorías totales
+    let totalCalories = 0;
+    let totalProtein = 0;
+    
     itemsToConsume.forEach(food => {
-      consumeFood(food);
+      totalCalories += food.calories;
+      totalProtein += food.nutritionalValue.protein;
+      
+      // Eliminar el alimento de la cocina
       removeFromKitchen(food.id);
     });
+    
+    // Actualizar calorías del jugador (simulado)
+    if (playerData) {
+      console.log(`Comida consumida: ${totalCalories} calorías, ${totalProtein}g proteína`);
+    }
     
     // Notificar al usuario
     toast.success(language === 'en' ? "Meal prepared successfully!" : 
