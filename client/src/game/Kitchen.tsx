@@ -488,12 +488,12 @@ const Kitchen = ({ onExit }: KitchenProps) => {
                         : 'Incluye abundantes frutas y verduras para obtener vitaminas y minerales esenciales.'}
                     </li>
                     <li className="bg-amber-50 p-3 rounded-md border border-amber-200 text-amber-700">
-                      {t.language === 'en'
+                      {language === 'en'
                         ? 'Choose foods with higher sustainability scores to support environmental health.'
                         : 'Elige alimentos con mayor puntuación de sostenibilidad para apoyar la salud ambiental.'}
                     </li>
                     <li className="bg-amber-50 p-3 rounded-md border border-amber-200 text-amber-700">
-                      {t.language === 'en'
+                      {language === 'en'
                         ? 'Pay attention to your daily caloric needs based on your age, weight, and activity level.'
                         : 'Presta atención a tus necesidades calóricas diarias según tu edad, peso y nivel de actividad.'}
                     </li>
