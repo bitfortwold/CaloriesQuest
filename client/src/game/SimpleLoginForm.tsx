@@ -147,6 +147,9 @@ const SimpleLoginForm = () => {
           );
           
           // Crear datos del jugador con valores iniciales
+          // Crear huerto inicial con 9 parcelas vacías
+          const initialGarden = createNewGarden(9);
+          
           const playerData = {
             name: userData.name,
             age: Number(userData.age),
@@ -163,7 +166,10 @@ const SimpleLoginForm = () => {
             // Inicializar nuevas funcionalidades
             dailyChallenges: generateRandomChallenges(),
             lastChallengeReset: Date.now(),
-            achievements: []
+            achievements: [],
+            // Inicializar huerto virtual
+            garden: initialGarden,
+            seeds: []
           };
           
           // Actualizar estado global

@@ -18,6 +18,7 @@ export interface Plant {
   difficulty: 'beginner' | 'intermediate' | 'advanced';
   season: 'spring' | 'summer' | 'autumn' | 'winter' | 'all';
   image: string; // Ruta a la imagen de la planta
+  quantity?: number; // Cantidad de esta semilla que tiene el jugador
 }
 
 export interface GardenPlot {

@@ -68,6 +68,11 @@ const RegistrationForm = () => {
           userData.activityLevel
         );
         
+        // Crear huerto inicial con 9 parcelas vacías
+        const initialGarden = createNewGarden(9);
+        // Generar desafíos diarios aleatorios
+        const dailyChallenges = generateRandomChallenges();
+        
         // Crear datos del jugador con valores iniciales
         const playerData = {
           name: userData.name,
@@ -82,7 +87,12 @@ const RegistrationForm = () => {
           caloriesBurned: 0,
           dailyCalories,
           estimatedLifespan: 80,
-          inventory: []
+          inventory: [],
+          dailyChallenges: dailyChallenges,
+          lastChallengeReset: Date.now(),
+          achievements: [],
+          garden: initialGarden,
+          seeds: []
         };
         
         // Actualizar estado global
