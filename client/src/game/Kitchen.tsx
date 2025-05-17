@@ -19,29 +19,58 @@ const Kitchen = ({ onExit }: KitchenProps) => {
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
   const [cookingMode, setCookingMode] = useState<"guided" | "free">("guided");
   
-  // Función para traducir los nombres de los ingredientes
-  const translateIngredient = (ingredient: string): string => {
-    const translations: Record<string, string> = {
-      // Español -> Inglés
-      'huevos': 'Eggs',
-      'pan': 'Bread',
-      'manzana': 'Apple',
-      'frijoles': 'Beans',
-      'arroz': 'Rice',
-      'brócoli': 'Broccoli',
-      'zanahoria': 'Carrot',
-      'pollo': 'Chicken',
-      'patata': 'Potato',
-      'espinaca': 'Spinach',
-      'lechuga': 'Lettuce',
-      'tomate': 'Tomato',
-      'cebolla': 'Onion',
-      'ajo': 'Garlic',
-      'carne': 'Meat',
-      'pescado': 'Fish'
+  // Función para manejar traducciones en la cocina
+  const getKitchenTranslation = (key: string, text: string): string => {
+    if (language !== 'en') return text; // Mantener el español si ese es el idioma seleccionado
+    
+    // Diccionario de traducciones para la cocina
+    const kitchenTranslations: Record<string, Record<string, string>> = {
+      // Ingredientes
+      'ingredients': {
+        'huevos': 'Eggs',
+        'pan': 'Bread',
+        'manzana': 'Apple',
+        'frijoles': 'Beans',
+        'arroz': 'Rice',
+        'brócoli': 'Broccoli',
+        'zanahoria': 'Carrot',
+        'pollo': 'Chicken',
+        'patata': 'Potato',
+        'espinaca': 'Spinach',
+        'lechuga': 'Lettuce',
+        'tomate': 'Tomato',
+        'cebolla': 'Onion',
+        'ajo': 'Garlic',
+        'carne': 'Meat',
+        'pescado': 'Fish'
+      },
+      // Etiquetas nutricionales
+      'labels': {
+        'Proteínas': 'Proteins',
+        'Carbos': 'Carbs',
+        'Grasas': 'Fats',
+        'Tu Comida': 'Your Meal',
+        'Ingredientes Seleccionados': 'Selected Ingredients',
+        'kcal': 'kcal',
+        'g': 'g'
+      },
+      // Mensajes
+      'messages': {
+        '¡Selecciona ingredientes del refrigerador o la despensa para comenzar a cocinar!': 'Select ingredients from the refrigerator or pantry to start cooking!',
+        'Tu despensa está vacía. ¡Visita el mercado para comprar alimentos no perecederos!': 'Your pantry is empty. Visit the market to buy non-perishable food!',
+        'Tu refrigerador está vacío. ¡Visita el mercado para comprar alimentos frescos!': 'Your refrigerator is empty. Visit the market to buy fresh food!',
+        '¡Comida cocinada y consumida!': 'Food cooked and consumed!',
+        '¡Selecciona al menos un ingrediente!': 'Select at least one ingredient!'
+      }
     };
     
-    return translations[ingredient.toLowerCase()] || ingredient;
+    // Buscar la traducción en la categoría correspondiente
+    return kitchenTranslations[key]?.[text] || text;
+  };
+  
+  // Función para traducir los nombres de los ingredientes (alias de la función principal)
+  const translateIngredient = (ingredient: string): string => {
+    return getKitchenTranslation('ingredients', ingredient);
   };
   
   // Calculate nutritional totals for the selected items
@@ -79,7 +108,7 @@ const Kitchen = ({ onExit }: KitchenProps) => {
   // Cook and consume the meal
   const cookMeal = () => {
     if (selectedItems.length === 0) {
-      toast.error("¡Selecciona al menos un ingrediente!");
+      toast.error(language === 'en' ? "Select at least one ingredient!" : "¡Selecciona al menos un ingrediente!");
       return;
     }
     
@@ -89,7 +118,7 @@ const Kitchen = ({ onExit }: KitchenProps) => {
     // Consume the food (adds to calories consumed)
     consumeFood(totals.calories);
     
-    // Identificar de dónde viene cada alimento (nevera o despensa)
+    // Identify where each food item comes from (refrigerator or pantry)
     selectedItems.forEach(itemId => {
       // Buscar en refrigerador
       const refrigeratorItem = refrigeratorFood.find(food => food.id === itemId);
@@ -293,7 +322,7 @@ const Kitchen = ({ onExit }: KitchenProps) => {
                     <div className="grid grid-cols-2 gap-2 max-h-[400px] overflow-y-auto">
                       {pantryFood.length === 0 ? (
                         <p className="text-amber-500 py-6 text-center col-span-2 bg-amber-50 rounded-md border border-amber-200">
-                          Tu despensa está vacía. ¡Visita el mercado para comprar alimentos no perecederos!
+                          {getKitchenTranslation('messages', 'Tu despensa está vacía. ¡Visita el mercado para comprar alimentos no perecederos!')}
                         </p>
                       ) : (
                         pantryFood.map((food) => (
