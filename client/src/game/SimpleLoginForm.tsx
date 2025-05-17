@@ -134,6 +134,8 @@ const SimpleLoginForm = () => {
           <CardDescription>
             {language === 'es' 
               ? 'Ingresa tu nombre para continuar con tu aventura nutricional' 
+              : language === 'ca'
+              ? 'Introdueix el teu nom per continuar amb la teva aventura nutricional'
               : 'Enter your name to continue your nutritional adventure'}
           </CardDescription>
         </CardHeader>
@@ -142,7 +144,7 @@ const SimpleLoginForm = () => {
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
               <label className="block text-sm font-medium mb-1">
-                {language === 'es' ? 'Nombre' : 'Name'}
+                {language === 'es' ? 'Nombre' : language === 'ca' ? 'Nom' : 'Name'}
               </label>
               <div className="relative">
                 <input
@@ -157,8 +159,12 @@ const SimpleLoginForm = () => {
                   }}
                   className={`w-full p-2 border rounded-md ${error ? 'border-red-500' : 'border-gray-300'}`}
                   placeholder={savedUsers.length > 0 
-                    ? (language === 'es' ? `Sugerencia: ${savedUsers[0]}` : `Suggestion: ${savedUsers[0]}`) 
-                    : (language === 'es' ? "Introduce tu nombre" : "Enter your name")}
+                    ? (language === 'es' ? `Sugerencia: ${savedUsers[0]}` : 
+                       language === 'ca' ? `Suggeriment: ${savedUsers[0]}` : 
+                       `Suggestion: ${savedUsers[0]}`) 
+                    : (language === 'es' ? "Introduce tu nombre" : 
+                       language === 'ca' ? "Introdueix el teu nom" : 
+                       "Enter your name")}
                 />
                 
                 {savedUsers.length > 0 && !username && (
@@ -168,7 +174,7 @@ const SimpleLoginForm = () => {
                       onClick={() => setUsername(savedUsers[0])}
                       className="text-blue-600 text-sm font-medium hover:text-blue-800 hover:underline"
                     >
-                      {language === 'es' ? 'Usar' : 'Use'}
+                      {language === 'es' ? 'Usar' : language === 'ca' ? 'Usar' : 'Use'}
                     </button>
                   </div>
                 )}
@@ -186,13 +192,15 @@ const SimpleLoginForm = () => {
             
             <div className="pt-2">
               <Button type="submit" className="w-full bg-green-600 hover:bg-green-700">
-                {language === 'es' ? 'Entrar' : 'Enter'}
+                {language === 'es' ? 'Entrar' : language === 'ca' ? 'Entrar' : 'Enter'}
               </Button>
             </div>
             
             <div className="pt-2">
               <Button type="button" onClick={handleGoToRegistration} variant="outline" className="w-full">
-                {language === 'es' ? 'Registrarse como nuevo usuario' : 'Register as a new user'}
+                {language === 'es' ? 'Registrarse como nuevo usuario' : 
+                 language === 'ca' ? 'Registrar-se com a nou usuari' : 
+                 'Register as a new user'}
               </Button>
             </div>
 
