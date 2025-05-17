@@ -2,7 +2,7 @@ export const foodItems = [
   {
     id: "manzana",
     name: "Manzana",
-    category: "fruits",
+    category: "frutas",
     calories: 52,
     nutritionalValue: {
       protein: 0.3,
@@ -16,7 +16,7 @@ export const foodItems = [
   {
     id: "banana",
     name: "Plátano",
-    category: "fruits",
+    category: "frutas",
     calories: 89,
     nutritionalValue: {
       protein: 1.1,
@@ -30,7 +30,7 @@ export const foodItems = [
   {
     id: "brócoli",
     name: "Brócoli",
-    category: "vegetables",
+    category: "verduras",
     calories: 34,
     nutritionalValue: {
       protein: 2.8,
@@ -44,7 +44,7 @@ export const foodItems = [
   {
     id: "zanahoria",
     name: "Zanahoria",
-    category: "vegetables",
+    category: "verduras",
     calories: 41,
     nutritionalValue: {
       protein: 0.9,
@@ -141,7 +141,7 @@ export const foodItems = [
   },
   {
     id: "milk",
-    name: "Milk",
+    name: "Leche",
     category: "dairy",
     calories: 122,
     nutritionalValue: {
@@ -151,11 +151,11 @@ export const foodItems = [
     },
     sustainabilityScore: 4,
     price: 25,
-    description: "Good source of calcium. Moderate environmental impact from dairy production."
+    description: "Buena fuente de calcio. Impacto ambiental moderado por la producción láctea."
   },
   {
     id: "cheese",
-    name: "Cheese",
+    name: "Queso",
     category: "dairy",
     calories: 113,
     nutritionalValue: {
@@ -165,11 +165,11 @@ export const foodItems = [
     },
     sustainabilityScore: 3,
     price: 35,
-    description: "High in calcium and protein. Higher environmental impact due to dairy processing."
+    description: "Alto en calcio y proteínas. Mayor impacto ambiental debido al procesamiento lácteo."
   },
   {
     id: "huevos",
-    name: "Eggs",
+    name: "Huevos",
     category: "protein",
     calories: 155,
     nutritionalValue: {
@@ -179,11 +179,11 @@ export const foodItems = [
     },
     sustainabilityScore: 6,
     price: 30,
-    description: "Nutrient-dense protein source. Moderate environmental impact compared to meat."
+    description: "Fuente de proteínas rica en nutrientes. Impacto ambiental moderado comparado con la carne."
   },
   {
     id: "frijoles",
-    name: "Beans",
+    name: "Frijoles",
     category: "protein",
     calories: 127,
     nutritionalValue: {
@@ -193,11 +193,11 @@ export const foodItems = [
     },
     sustainabilityScore: 9,
     price: 15,
-    description: "Excellent plant protein source. Low environmental impact and nitrogen-fixing for soil."
+    description: "Excelente fuente de proteína vegetal. Bajo impacto ambiental y fijación de nitrógeno para el suelo."
   },
   {
     id: "espinaca",
-    name: "Spinach",
+    name: "Espinaca",
     category: "vegetables",
     calories: 23,
     nutritionalValue: {
@@ -207,6 +207,6 @@ export const foodItems = [
     },
     sustainabilityScore: 8,
     price: 18,
-    description: "Packed with iron and vitamins. Low environmental footprint to grow."
+    description: "Rica en hierro y vitaminas. Baja huella ambiental en su cultivo."
   }
 ];
