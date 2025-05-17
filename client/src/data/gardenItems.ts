@@ -50,7 +50,7 @@ export const plants: Plant[] = [
     price: 10,
     difficulty: 'beginner',
     season: 'summer',
-    image: '/textures/plants/tomato.png'
+    image: '/textures/ground.jpg' // Usar una textura existente temporalmente
   },
   {
     id: "lettuce",
@@ -70,7 +70,7 @@ export const plants: Plant[] = [
     price: 8,
     difficulty: 'beginner',
     season: 'spring',
-    image: '/textures/plants/lettuce.png'
+    image: '/textures/ground.jpg' // Usar una textura existente temporalmente
   },
   {
     id: "carrot",
@@ -90,7 +90,7 @@ export const plants: Plant[] = [
     price: 12,
     difficulty: 'beginner',
     season: 'autumn',
-    image: '/textures/plants/carrot.png'
+    image: "/textures/ground.jpg" // Textura temporal
   },
   {
     id: "cucumber",
@@ -110,7 +110,7 @@ export const plants: Plant[] = [
     price: 15,
     difficulty: 'intermediate',
     season: 'summer',
-    image: '/textures/plants/cucumber.png'
+    image: "/textures/ground.jpg" // Textura temporal
   },
   {
     id: "spinach",
@@ -130,7 +130,7 @@ export const plants: Plant[] = [
     price: 14,
     difficulty: 'beginner',
     season: 'spring',
-    image: '/textures/plants/spinach.png'
+    image: "/textures/ground.jpg" // Textura temporal
   },
   {
     id: "bellpepper",
@@ -150,7 +150,7 @@ export const plants: Plant[] = [
     price: 18,
     difficulty: 'intermediate',
     season: 'summer',
-    image: '/textures/plants/bellpepper.png'
+    image: "/textures/ground.jpg" // Textura temporal
   },
   {
     id: "beans",
@@ -170,7 +170,7 @@ export const plants: Plant[] = [
     price: 15,
     difficulty: 'intermediate',
     season: 'autumn',
-    image: '/textures/plants/beans.png'
+    image: "/textures/ground.jpg" // Textura temporal
   },
   {
     id: "strawberry",
@@ -190,7 +190,7 @@ export const plants: Plant[] = [
     price: 20,
     difficulty: 'advanced',
     season: 'spring',
-    image: '/textures/plants/strawberry.png'
+    image: "/textures/ground.jpg" // Textura temporal
   }
 ];
 

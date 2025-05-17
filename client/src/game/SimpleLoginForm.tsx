@@ -6,6 +6,7 @@ import { usePlayerStore } from "../stores/usePlayerStore";
 import { useLanguage } from "../i18n/LanguageContext";
 import { Language } from "../i18n/translations";
 import { generateRandomChallenges } from "../data/dailyChallenges";
+import { createNewGarden } from "../data/gardenItems";
 
 // Claves para almacenar datos de usuario en localStorage
 const USER_DATA_KEY = "caloric_consumption_user_data"; // Usuario actual/último

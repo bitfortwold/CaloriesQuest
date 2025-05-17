@@ -6,6 +6,7 @@ import { usePlayerStore } from "../stores/usePlayerStore";
 import { useLanguage } from "../i18n/LanguageContext";
 import { Language } from "../i18n/translations";
 import { generateRandomChallenges } from "../data/dailyChallenges";
+import { createNewGarden } from "../data/gardenItems";
 
 // Clave para almacenar datos de usuario en localStorage
 const USER_DATA_KEY = "caloric_consumption_user_data";
@@ -169,7 +170,10 @@ const RegistrationForm = () => {
         // Inicializar nuevas funcionalidades
         dailyChallenges: generateRandomChallenges(),
         lastChallengeReset: Date.now(),
-        achievements: []
+        achievements: [],
+        // Inicializar huerto virtual
+        garden: createNewGarden(9),
+        seeds: []
       };
       
       // Calculate daily calorie needs based on profile
@@ -190,7 +194,9 @@ const RegistrationForm = () => {
         coins: dailyCalories, // Sistema Económico Virtual: 1 Kcal = 1 IHC
         dailyChallenges: playerData.dailyChallenges,
         lastChallengeReset: playerData.lastChallengeReset,
-        achievements: playerData.achievements
+        achievements: playerData.achievements,
+        garden: playerData.garden,
+        seeds: playerData.seeds
       });
       
       // Guardar datos en localStorage para futuras sesiones
