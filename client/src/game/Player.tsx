@@ -133,35 +133,40 @@ const Player = () => {
         return;
       }
       
-      // Comprobar si el clic fue sobre el círculo amarillo del huerto
-      const gardenCircle = getGardenCirclePosition();
-      const distToGardenCircle = new THREE.Vector3(
-        playerPosition.x - gardenCircle.x,
+      // Comprobar la distancia al huerto en sí (entrada original)
+      const gardenPos = getGardenPosition();
+      const distToGarden = new THREE.Vector3(
+        playerPosition.x - gardenPos.x,
         0,
-        playerPosition.z - gardenCircle.z
+        playerPosition.z - gardenPos.z
       ).length();
       
-      // Calcular si el punto donde se hizo clic está en el círculo
-      const clickToCircle = new THREE.Vector3(
-        targetPoint.x - gardenCircle.x,
-        0,
-        targetPoint.z - gardenCircle.z
-      ).length();
-      
-      console.log(`Distancia al círculo: ${distToGardenCircle.toFixed(2)}, Clic a círculo: ${clickToCircle.toFixed(2)}, Radio: ${GARDEN_CIRCLE_RADIUS}`);
-      
-      // Si el jugador está cerca del círculo Y el clic fue dentro del círculo
-      if (distToGardenCircle < GARDEN_CIRCLE_RADIUS * 1.5 && clickToCircle < GARDEN_CIRCLE_RADIUS) {
-        console.log("Player clicked on garden circle, entering garden");
+      if (distToGarden < INTERACTION_DISTANCE) {
+        console.log("Player is near garden entrance");
         
-        // Primero moverse al centro del círculo
-        setTargetPosition(new THREE.Vector3(gardenCircle.x, playerPosition.y, gardenCircle.z));
+        // Movemos al jugador justo frente a la entrada del huerto
+        const entrancePoint = new THREE.Vector3(
+          gardenPos.x,
+          playerPosition.y,
+          gardenPos.z + 4 // Posición frente a la entrada
+        );
+        
+        setTargetPosition(entrancePoint);
         setIsMovingToTarget(true);
         
-        // Entrar al huerto con un pequeño retraso para que se vea el movimiento
+        // Calculamos la dirección para mirar hacia el huerto
+        const direction = new THREE.Vector3().subVectors(
+          new THREE.Vector3(gardenPos.x, playerPosition.y, gardenPos.z),
+          entrancePoint
+        );
+        const targetRotation = Math.atan2(direction.x, direction.z);
+        setRotationY(targetRotation);
+        
+        // Entrar después de un breve retraso
         setTimeout(() => {
+          console.log("Now entering garden");
           enterBuilding("garden");
-        }, 300);
+        }, 500);
         
         return;
       }
