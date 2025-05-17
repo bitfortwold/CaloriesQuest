@@ -19,6 +19,7 @@ const Market = ({ onExit }: MarketProps) => {
   const { t } = useLanguage(); // Hook para acceder a las traducciones
   
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [activeTab, setActiveTab] = useState<"food" | "seeds">("food");
   const [cart, setCart] = useState<{item: typeof foodItems[0], quantity: number}[]>([]);
   const [showCart, setShowCart] = useState(false);
   
@@ -52,7 +53,14 @@ const Market = ({ onExit }: MarketProps) => {
         carbs: "Carbs:",
         proteins: "Proteins:",
         fats: "Fats:",
-        sustainability: "Sustainability:"
+        sustainability: "Sustainability:",
+        foodTab: "Food",
+        seedsTab: "Seeds",
+        seedsPurchased: "Seeds purchased successfully! You can use them in your garden.",
+        growthTime: "Growth time:",
+        difficulty: "Difficulty:",
+        season: "Season:",
+        minutes: "minutes"
       };
     } else if (language === 'ca') {
       return {
@@ -76,7 +84,14 @@ const Market = ({ onExit }: MarketProps) => {
         carbs: "Carbohidrats:",
         proteins: "Proteïnes:",
         fats: "Greixos:",
-        sustainability: "Sostenibilitat:"
+        sustainability: "Sostenibilitat:",
+        foodTab: "Aliments",
+        seedsTab: "Llavors",
+        seedsPurchased: "Llavors comprades amb èxit! Pots utilitzar-les al teu hort.",
+        growthTime: "Temps de creixement:",
+        difficulty: "Dificultat:",
+        season: "Temporada:",
+        minutes: "minuts"
       };
     } else {
       return {
@@ -100,7 +115,14 @@ const Market = ({ onExit }: MarketProps) => {
         carbs: "Carbos:",
         proteins: "Proteínas:",
         fats: "Grasas:",
-        sustainability: "Sostenibilidad:"
+        sustainability: "Sostenibilidad:",
+        foodTab: "Alimentos",
+        seedsTab: "Semillas",
+        seedsPurchased: "¡Semillas compradas con éxito! Puedes utilizarlas en tu huerto.",
+        growthTime: "Tiempo de crecimiento:",
+        difficulty: "Dificultad:",
+        season: "Temporada:",
+        minutes: "minutos"
       };
     }
   })();
