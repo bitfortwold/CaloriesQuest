@@ -127,7 +127,7 @@ const Market = ({ onExit }: MarketProps) => {
     setCart([]);
     
     // Show success message
-    toast.success(`Purchase completed successfully! Your items have been delivered to your kitchen.`);
+    toast.success(`¡Compra completada con éxito! Tus artículos han sido entregados en tu cocina.`);
     
     // Ocultar el panel del carrito
     const cartPanel = document.getElementById('cart-panel');
@@ -158,7 +158,7 @@ const Market = ({ onExit }: MarketProps) => {
     addFood(foodItem);
     
     // Show success message
-    toast.success(`Purchased ${foodItem.name}`);
+    toast.success(`${foodItem.name} comprado correctamente`);
   };
   
   return (
@@ -236,11 +236,11 @@ const Market = ({ onExit }: MarketProps) => {
                     {/* Columna derecha */}
                     <div className="flex flex-col gap-1">
                       <div className="flex items-center">
-                        <span className="w-24 text-xs text-amber-800">Protein:</span>
+                        <span className="w-24 text-xs text-amber-800">Proteínas:</span>
                         <span className="font-bold text-amber-900">{food.nutritionalValue.protein}g</span>
                       </div>
                       <div className="flex items-center">
-                        <span className="w-24 text-xs text-amber-800">Fat:</span>
+                        <span className="w-24 text-xs text-amber-800">Grasas:</span>
                         <span className="font-bold text-amber-900">{food.nutritionalValue.fat}g</span>
                       </div>
                     </div>
@@ -248,7 +248,7 @@ const Market = ({ onExit }: MarketProps) => {
                   
                   {/* Barra de sostenibilidad */}
                   <div className="mb-3">
-                    <div className="text-xs text-amber-800 mb-1">Sustainability:</div>
+                    <div className="text-xs text-amber-800 mb-1">Sostenibilidad:</div>
                     <div className="flex items-center gap-2">
                       <div className="h-4 flex-1 bg-amber-200 rounded-full border border-amber-300 overflow-hidden">
                         <div 
