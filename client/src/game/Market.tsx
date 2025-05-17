@@ -253,7 +253,26 @@ const Market = ({ onExit }: MarketProps) => {
               >
                 {/* Cabecera del item */}
                 <div className="bg-gradient-to-r from-amber-500 to-amber-600 p-3 flex justify-between items-center border-b-2 border-amber-400">
-                  <h3 className="text-lg font-bold text-white truncate">{food.name}</h3>
+                  <h3 className="text-lg font-bold text-white truncate">
+                    {language === 'en' ? 
+                      (food.name === 'Manzana' ? 'Apple' :
+                      food.name === 'Plátano' ? 'Banana' :
+                      food.name === 'Brócoli' ? 'Broccoli' :
+                      food.name === 'Zanahoria' ? 'Carrot' :
+                      food.name === 'Pechuga de Pollo' ? 'Chicken Breast' :
+                      food.name === 'Bistec de Ternera' ? 'Beef Steak' :
+                      food.name === 'Pescado Sostenible' ? 'Sustainable Fish' :
+                      food.name === 'Arroz Integral' ? 'Brown Rice' :
+                      food.name === 'Pan Integral' ? 'Whole Wheat Bread' :
+                      food.name === 'Patata' ? 'Potato' :
+                      food.name === 'Leche' ? 'Milk' :
+                      food.name === 'Queso' ? 'Cheese' :
+                      food.name === 'Huevos' ? 'Eggs' :
+                      food.name === 'Frijoles' ? 'Beans' :
+                      food.name === 'Espinaca' ? 'Spinach' :
+                      food.name) : 
+                      food.name}
+                  </h3>
                   <span className="font-bold text-yellow-100 bg-amber-700 px-2 py-1 rounded-full text-sm border border-amber-800">
                     {food.price} IHC
                   </span>
@@ -308,7 +327,41 @@ const Market = ({ onExit }: MarketProps) => {
                   </div>
                   
                   {/* Descripción */}
-                  <p className="text-xs text-amber-700 mb-3 h-12 overflow-hidden">{food.description}</p>
+                  <p className="text-xs text-amber-700 mb-3 h-12 overflow-hidden">
+                    {language === 'en' ? 
+                      (food.description === "Una manzana crujiente, rica en fibra y vitaminas. Bajo impacto ambiental." ? 
+                        "A crisp apple, rich in fiber and vitamins. Low environmental impact." :
+                      food.description === "Plátano rico en potasio, excelente para la energía. Impacto moderado en transporte." ? 
+                        "Banana rich in potassium, excellent for energy. Moderate impact on transportation." :
+                      food.description === "Brócoli denso en nutrientes, alto en fibra y vitaminas C y K. Bajo consumo de agua." ? 
+                        "Broccoli dense in nutrients, high in fiber and vitamins C and K. Low water consumption." :
+                      food.description === "Zanahorias ricas en beta-caroteno. Bajo impacto ambiental en su cultivo." ? 
+                        "Carrots rich in beta-carotene. Low environmental impact in cultivation." :
+                      food.description === "Fuente de proteína magra. Impacto ambiental moderado comparado con la carne roja." ? 
+                        "Source of lean protein. Moderate environmental impact compared to red meat." :
+                      food.description === "Alto en hierro y proteínas. Alto impacto ambiental con uso significativo de agua." ? 
+                        "High in iron and protein. High environmental impact with significant water usage." :
+                      food.description === "Rico en ácidos grasos omega-3. Capturado de forma sostenible con mínimo impacto en el ecosistema." ? 
+                        "Rich in omega-3 fatty acids. Sustainably caught with minimal impact on the ecosystem." :
+                      food.description === "Arroz integral con fibra. Uso moderado de agua para su cultivo." ? 
+                        "Brown rice with fiber. Moderate water usage for cultivation." :
+                      food.description === "Carbohidratos complejos y fibra. Menor impacto ambiental que el pan refinado." ? 
+                        "Complex carbohydrates and fiber. Lower environmental impact than refined bread." :
+                      food.description === "Hortaliza de raíz versátil. Requisitos relativamente bajos de agua y tierra para su cultivo." ? 
+                        "Versatile root vegetable. Relatively low water and land requirements for cultivation." :
+                      food.description === "Buena fuente de calcio. Impacto ambiental moderado por la producción láctea." ? 
+                        "Good source of calcium. Moderate environmental impact from dairy production." :
+                      food.description === "Alto en calcio y proteínas. Mayor impacto ambiental debido al procesamiento lácteo." ? 
+                        "High in calcium and protein. Higher environmental impact due to dairy processing." :
+                      food.description === "Fuente de proteínas rica en nutrientes. Impacto ambiental moderado comparado con la carne." ? 
+                        "Nutrient-rich protein source. Moderate environmental impact compared to meat." :
+                      food.description === "Excelente fuente de proteína vegetal. Bajo impacto ambiental y fijación de nitrógeno para el suelo." ? 
+                        "Excellent source of plant protein. Low environmental impact and nitrogen fixation for soil." :
+                      food.description === "Rica en hierro y vitaminas. Baja huella ambiental en su cultivo." ? 
+                        "Rich in iron and vitamins. Low environmental footprint in cultivation." :
+                      food.description) : 
+                      food.description}
+                  </p>
                   
                   {/* Botones de compra y añadir al carrito */}
                   <div className="flex gap-2">
