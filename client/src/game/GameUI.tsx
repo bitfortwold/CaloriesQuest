@@ -119,18 +119,28 @@ const GameUI = () => {
       case "garden":
         return (
           <>
-            {/* Botón flotante para salir del huerto */}
+            {/* Botón flotante para salir del huerto con teleportación */}
             <div className="fixed top-4 right-4 z-[1000]">
               <button
                 onClick={() => {
                   console.log("Force exiting garden via floating button");
                   // Primero cambiar el estado local
                   setActiveTab(null);
-                  // Luego cambiar el estado global del juego - con un pequeño retraso
+                  
+                  // Modificar la posición del jugador ANTES de cambiar el estado
+                  // Esto es clave para evitar el bucle - movemos al jugador lejos del huerto
+                  const { setPlayerPosition } = usePlayerStore.getState();
+                  setPlayerPosition({
+                    x: -5, // Lejos del huerto (que está en x=0, z=-8)
+                    y: 0,  // Mantener en el suelo
+                    z: 5   // Lejos del huerto y en dirección opuesta
+                  });
+                  
+                  // Luego cambiar el estado global del juego con un retraso
                   setTimeout(() => {
                     console.log("Executing exitBuilding after delay");
                     exitBuilding();
-                  }, 50);
+                  }, 100); // Retraso mayor para asegurar que la posición se actualice primero
                 }}
                 className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg border-2 border-red-500 shadow-lg text-xl transition-all hover:scale-105"
               >
