@@ -1,8 +1,10 @@
 import { usePlayerStore } from "../stores/usePlayerStore";
 import { Card, CardContent } from "@/components/ui/card";
+import { useLanguage } from "../i18n/LanguageContext";
 
 const ProfilePanel = () => {
   const { playerData } = usePlayerStore();
+  const { t } = useLanguage(); // Hook para acceder a las traducciones
   
   if (!playerData) {
     return <div className="p-4">Player data not available</div>;
@@ -17,46 +19,46 @@ const ProfilePanel = () => {
   const calculateHealthStatus = () => {
     const calorieRatio = playerData.caloriesConsumed / playerData.dailyCalories;
     
-    if (calorieRatio < 0.5) return "Undernourished";
-    if (calorieRatio > 1.5) return "Overeating";
-    return "Balanced";
+    if (calorieRatio < 0.5) return t.undernourished;
+    if (calorieRatio > 1.5) return t.overeating;
+    return t.balanced;
   };
   
   const healthStatus = calculateHealthStatus();
   
   return (
     <div className="p-4 max-w-sm max-h-[500px] overflow-y-auto">
-      <h2 className="text-lg font-bold mb-3">Health Profile</h2>
+      <h2 className="text-lg font-bold mb-3">Perfil de Salud</h2>
       
       <div className="space-y-4">
         <div>
-          <h3 className="text-sm font-medium text-gray-600">Calorie Certificate (CCC)</h3>
+          <h3 className="text-sm font-medium text-gray-600">Certificado de Calorías (CCC)</h3>
           <div className="mt-1 p-3 bg-white rounded-md shadow-sm border border-gray-200">
-            <div className="font-medium">Daily Requirement: {playerData.dailyCalories.toFixed(0)} kcal</div>
-            <div className="text-sm mt-1">Based on your age, gender, height, weight, and activity level</div>
+            <div className="font-medium">{t.dailyRequirement}: {playerData.dailyCalories.toFixed(0)} kcal</div>
+            <div className="text-sm mt-1">{t.basedOn}</div>
           </div>
         </div>
         
         <div>
-          <h3 className="text-sm font-medium text-gray-600">Today's Consumption</h3>
+          <h3 className="text-sm font-medium text-gray-600">Consumo de Hoy</h3>
           <div className="mt-1 grid grid-cols-2 gap-2">
             <Card>
               <CardContent className="p-3">
                 <div className="text-xl font-bold">{playerData.caloriesConsumed.toFixed(0)}</div>
-                <div className="text-xs">Calories Consumed</div>
+                <div className="text-xs">{t.caloriesConsumed}</div>
               </CardContent>
             </Card>
             <Card>
               <CardContent className="p-3">
                 <div className="text-xl font-bold">{playerData.caloriesBurned.toFixed(0)}</div>
-                <div className="text-xs">Calories Burned</div>
+                <div className="text-xs">{t.caloriesBurned}</div>
               </CardContent>
             </Card>
           </div>
           
           <div className="mt-2">
             <div className="flex justify-between text-sm">
-              <span>Remaining:</span>
+              <span>{t.remaining}:</span>
               <span className="font-medium">{remainingCalories.toFixed(0)} kcal</span>
             </div>
             <div className="mt-1 h-2 bg-gray-200 rounded-full">
