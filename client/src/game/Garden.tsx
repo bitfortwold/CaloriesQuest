@@ -83,7 +83,7 @@ const Garden = ({ onExit }: GardenProps) => {
       item.id === `harvested_${plot.plant?.id}`
     );
     
-    if (itemIndex >= 0) {
+    if (itemIndex >= 0 && updatedInventory[itemIndex].quantity) {
       updatedInventory[itemIndex].quantity += plot.plant.harvestYield;
     } else {
       updatedInventory.push({
@@ -92,6 +92,7 @@ const Garden = ({ onExit }: GardenProps) => {
         description: plot.plant.description,
         quantity: plot.plant.harvestYield,
         type: "food",
+        calories: plot.plant.nutritionalValue.calories, // Añadimos las calorías que son requeridas
         nutritionalValue: plot.plant.nutritionalValue,
         sustainabilityScore: plot.plant.sustainabilityScore
       });

@@ -13,16 +13,19 @@ export interface Position {
 export interface FoodItem {
   id: string;
   name: string;
-  category: string;
+  category?: string;
+  type?: string;
   calories: number;
   nutritionalValue: {
     protein: number;
     carbs: number;
     fat: number;
+    vitamins?: string[];
   };
   sustainabilityScore: number;
-  price: number;
+  price?: number;
   description: string;
+  quantity?: number; // Cantidad del item que tiene el jugador
 }
 
 import { DailyChallenge } from "../data/dailyChallenges";
@@ -56,6 +59,7 @@ interface PlayerState {
   // Actions
   setPlayerPosition: (position: Position) => void;
   setPlayerData: (data: PlayerData) => void;
+  updatePlayer: (data: PlayerData) => void; // Actualiza datos del jugador
   updateCoins: (amount: number) => void;
   addFood: (food: FoodItem) => void;
   removeFood: (foodId: string) => void;
@@ -358,6 +362,10 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   },
   
   setPlayerData: (data: PlayerData) => {
+    set({ playerData: data });
+  },
+  
+  updatePlayer: (data: PlayerData) => {
     set({ playerData: data });
   },
   
