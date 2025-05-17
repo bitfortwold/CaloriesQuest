@@ -162,43 +162,53 @@ const Garden = ({ onExit }: GardenProps) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black bg-opacity-75 flex items-center justify-center overflow-hidden">
-      <div className="relative rounded-lg shadow-lg w-full max-w-4xl max-h-screen overflow-y-auto">
+    <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center overflow-hidden p-4">
+      <div className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-[#FFF8E9] rounded-3xl shadow-2xl border-8 border-[#CD8E3E]">
 
-        {/* Panel principal */}
-        <div className="bg-amber-800 rounded-t-lg">
-          {/* Header con título central */}
-          <div className="p-4">
-            <h2 className="text-2xl font-bold text-center text-white">Huerto Virtual</h2>
+        {/* Header de madera estilizado */}
+        <div className="bg-gradient-to-r from-[#C68642] to-[#A05F2C] p-4 rounded-t-2xl relative overflow-hidden">
+          {/* Textura de madera */}
+          <div className="absolute inset-0 opacity-30 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMCIgaGVpZ2h0PSIzMCI+CjxyZWN0IHdpZHRoPSIzMCIgaGVpZ2h0PSIzMCIgZmlsbD0iI2ZmZiI+PC9yZWN0Pgo8cmVjdCB4PSIxNSIgeT0iMCIgd2lkdGg9IjE1IiBoZWlnaHQ9IjE1IiBmaWxsPSIjZjNmNGY2Ij48L3JlY3Q+CjxyZWN0IHg9IjAiIHk9IjE1IiB3aWR0aD0iMTUiIGhlaWdodD0iMTUiIGZpbGw9IiNmM2Y0ZjYiPjwvcmVjdD4KPC9zdmc+')]"></div>
+          
+          {/* Título con aspecto de cartel de madera */}
+          <div className="flex justify-center mb-4">
+            <div className="bg-[#BA7D45] px-12 py-3 rounded-2xl shadow-lg border-4 border-[#8B5E34] transform rotate-0 relative">
+              <div className="absolute inset-0 rounded-xl opacity-20 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMCIgaGVpZ2h0PSIzMCI+CjxyZWN0IHdpZHRoPSIzMCIgaGVpZ2h0PSIzMCIgZmlsbD0iI2ZmZiI+PC9yZWN0Pgo8cmVjdCB4PSIxNSIgeT0iMCIgd2lkdGg9IjE1IiBoZWlnaHQ9IjE1IiBmaWxsPSIjZjNmNGY2Ij48L3JlY3Q+CjxyZWN0IHg9IjAiIHk9IjE1IiB3aWR0aD0iMTUiIGhlaWdodD0iMTUiIGZpbGw9IiNmM2Y0ZjYiPjwvcmVjdD4KPC9zdmc+')]"></div>
+              <h2 className="text-3xl font-bold text-white drop-shadow-lg tracking-wide uppercase">Huerto Virtual</h2>
+            </div>
           </div>
           
-          {/* Saldo de monedas */}
-          <div className="text-center p-2 bg-amber-700 text-white">
-            <span className="font-semibold">iHumanCoins: </span>
-            <span className="text-yellow-300 font-bold">{playerData?.coins || 0}</span>
+          {/* Contador de monedas estilizado */}
+          <div className="flex justify-center items-center">
+            <div className="bg-gradient-to-r from-[#F9D423] to-[#F5AB1B] px-6 py-3 rounded-xl text-[#7E4E1B] border-2 border-[#EDA617] shadow-lg">
+              <span className="font-bold">iHumanCoins: </span>
+              <span className="text-[#7E4E1B] font-bold text-xl ml-1">{playerData?.coins || 0}</span>
+            </div>
           </div>
         </div>
         
-        {/* Pestañas */}
-        <div className="bg-amber-200">
-          <div className="flex">
-            <button
-              className={`px-5 py-3 font-semibold ${activeTab === "garden" 
-                ? "bg-amber-100 text-amber-900 border-b-0" 
-                : "bg-amber-300 text-amber-800 hover:bg-amber-200"}`}
-              onClick={() => setActiveTab("garden")}
-            >
-              Huerto
-            </button>
-            <button
-              className={`px-5 py-3 font-semibold ${activeTab === "seeds" 
-                ? "bg-amber-100 text-amber-900 border-b-0" 
-                : "bg-amber-300 text-amber-800 hover:bg-amber-200"}`}
-              onClick={() => setActiveTab("seeds")}
-            >
-              Semillas
-            </button>
-          </div>
+        {/* Pestañas principales */}
+        <div className="bg-[#FFD166] px-6 pt-3 flex space-x-6 border-b-4 border-[#CD8E3E]">
+          <button 
+            onClick={() => setActiveTab("garden")}
+            className={`font-bold py-3 px-8 rounded-t-xl transition-all text-lg transform ${
+              activeTab === "garden" 
+                ? 'bg-[#FFF8E9] text-[#8B5E34] border-4 border-b-0 border-[#CD8E3E] shadow-md scale-105' 
+                : 'bg-[#FFBD3E] text-[#7E4E1B] hover:bg-[#FFC154] shadow-inner'
+            }`}
+          >
+            Huerto
+          </button>
+          <button 
+            onClick={() => setActiveTab("seeds")}
+            className={`font-bold py-3 px-8 rounded-t-xl transition-all text-lg transform ${
+              activeTab === "seeds" 
+                ? 'bg-[#FFF8E9] text-[#8B5E34] border-4 border-b-0 border-[#CD8E3E] shadow-md scale-105' 
+                : 'bg-[#FFBD3E] text-[#7E4E1B] hover:bg-[#FFC154] shadow-inner'
+            }`}
+          >
+            Semillas
+          </button>
         </div>
 
         {/* Contenido principal */}

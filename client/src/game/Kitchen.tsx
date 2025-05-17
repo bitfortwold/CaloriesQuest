@@ -284,39 +284,45 @@ const Kitchen = ({ onExit }: KitchenProps) => {
   
   return (
     <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 overflow-auto">
-      <div className="w-full max-w-5xl max-h-[90vh] overflow-auto bg-gradient-to-b from-amber-50 to-amber-100 rounded-lg shadow-xl border-4 border-amber-800">
-        {/* Header con estilo de madera - similar al del mercado */}
-        <div className="bg-amber-800 text-amber-50 p-3 rounded-t-lg relative overflow-hidden">
+      <div className="w-full max-w-5xl max-h-[90vh] overflow-auto bg-[#FFF8E9] rounded-3xl shadow-2xl border-8 border-[#CD8E3E]">
+        {/* Header de madera estilizado */}
+        <div className="bg-gradient-to-r from-[#C68642] to-[#A05F2C] p-4 rounded-t-2xl relative overflow-hidden">
+          {/* Textura de madera */}
           <div className="absolute inset-0 opacity-30 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMCIgaGVpZ2h0PSIzMCI+CjxyZWN0IHdpZHRoPSIzMCIgaGVpZ2h0PSIzMCIgZmlsbD0iI2ZmZiI+PC9yZWN0Pgo8cmVjdCB4PSIxNSIgeT0iMCIgd2lkdGg9IjE1IiBoZWlnaHQ9IjE1IiBmaWxsPSIjZjNmNGY2Ij48L3JlY3Q+CjxyZWN0IHg9IjAiIHk9IjE1IiB3aWR0aD0iMTUiIGhlaWdodD0iMTUiIGZpbGw9IiNmM2Y0ZjYiPjwvcmVjdD4KPC9zdmc+')]"></div>
-          <div className="mb-2">
-            <h1 className="text-4xl font-bold text-amber-50 drop-shadow-md tracking-wide text-center">{t.kitchen}</h1>
+          
+          {/* Título con aspecto de cartel de madera */}
+          <div className="mb-4 flex justify-center">
+            <div className="bg-[#BA7D45] px-12 py-3 rounded-2xl shadow-lg border-4 border-[#8B5E34] transform rotate-0 relative">
+              <div className="absolute inset-0 rounded-xl opacity-20 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMCIgaGVpZ2h0PSIzMCI+CjxyZWN0IHdpZHRoPSIzMCIgaGVpZ2h0PSIzMCIgZmlsbD0iI2ZmZiI+PC9yZWN0Pgo8cmVjdCB4PSIxNSIgeT0iMCIgd2lkdGg9IjE1IiBoZWlnaHQ9IjE1IiBmaWxsPSIjZjNmNGY2Ij48L3JlY3Q+CjxyZWN0IHg9IjAiIHk9IjE1IiB3aWR0aD0iMTUiIGhlaWdodD0iMTUiIGZpbGw9IiNmM2Y0ZjYiPjwvcmVjdD4KPC9zdmc+')]"></div>
+              <h1 className="text-4xl font-bold text-white drop-shadow-lg tracking-wide uppercase">{t.kitchen}</h1>
+            </div>
           </div>
           
           <div className="flex justify-between items-center">
-            <div className="bg-amber-700 px-4 py-2 rounded-lg text-amber-50 border-2 border-amber-600 shadow-inner">
-              <span className="font-semibold">{t.calories}: </span>
-              <span className="text-yellow-300 font-bold text-xl ml-1">
+            <div className="bg-gradient-to-r from-[#F9D423] to-[#F5AB1B] px-6 py-3 rounded-xl text-[#7E4E1B] border-2 border-[#EDA617] shadow-lg">
+              <span className="font-bold">{t.calories}: </span>
+              <span className="text-[#7E4E1B] font-bold text-xl ml-1">
                 {playerData?.caloriesConsumed?.toFixed(0) || 0} / {playerData?.dailyCalories?.toFixed(0) || 0}
               </span>
             </div>
             
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
               <Button 
                 onClick={() => setCookingMode("guided")}
-                className={`px-4 py-2 rounded-lg font-bold transition-all ${
+                className={`px-5 py-2 rounded-xl font-bold transition-all shadow-md ${
                   cookingMode === "guided" 
-                    ? 'bg-amber-600 hover:bg-amber-700 text-white border-2 border-amber-500' 
-                    : 'bg-amber-300 hover:bg-amber-400 text-amber-800 border border-amber-400'
+                    ? 'bg-gradient-to-r from-[#F48E11] to-[#F9A826] text-white border-3 border-[#E47F0E]' 
+                    : 'bg-gradient-to-r from-[#FFD166] to-[#FFBD3E] text-[#7E4E1B] border-2 border-[#FFBD3E] hover:brightness-105'
                 }`}
               >
                 {t.guidedRecipes}
               </Button>
               <Button 
                 onClick={() => setCookingMode("free")}
-                className={`px-4 py-2 rounded-lg font-bold transition-all ${
+                className={`px-5 py-2 rounded-xl font-bold transition-all shadow-md ${
                   cookingMode === "free" 
-                    ? 'bg-amber-600 hover:bg-amber-700 text-white border-2 border-amber-500' 
-                    : 'bg-amber-300 hover:bg-amber-400 text-amber-800 border border-amber-400'
+                    ? 'bg-gradient-to-r from-[#F48E11] to-[#F9A826] text-white border-3 border-[#E47F0E]' 
+                    : 'bg-gradient-to-r from-[#FFD166] to-[#FFBD3E] text-[#7E4E1B] border-2 border-[#FFBD3E] hover:brightness-105'
                 }`}
               >
                 {t.freeCooking}
