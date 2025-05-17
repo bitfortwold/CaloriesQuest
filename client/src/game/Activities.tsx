@@ -19,8 +19,9 @@ const Activities = () => {
     // Burn calories
     increaseCaloriesBurned(activity.caloriesBurned);
     
-    // Earn coins (double the calories as per the spec)
-    const coinsEarned = activity.caloriesBurned * 2;
+    // Earn coins - Sistema Económico Virtual: 1 Kcal = 1 IHC
+    // Las calorías quemadas se convierten en monedas en relación 1:1
+    const coinsEarned = activity.caloriesBurned;
     updateCoins(coinsEarned);
     
     // Update estimated lifespan
@@ -51,7 +52,7 @@ const Activities = () => {
                   <h3 className="font-medium">{activity.name}</h3>
                   <div className="text-sm text-gray-600 mt-1">
                     <div>{t.burns}: {activity.caloriesBurned} {t.calories}</div>
-                    <div>{t.earns}: {activity.caloriesBurned * 2} iHumancoins</div>
+                    <div>{t.earns}: {activity.caloriesBurned} iHumancoins</div>
                   </div>
                 </div>
                 <Button 

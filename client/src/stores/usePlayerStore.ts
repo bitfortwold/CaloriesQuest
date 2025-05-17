@@ -125,7 +125,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   
   // Harris-Benedict equation to estimate daily calorie needs
   calculateDailyCalories: (gender, age, weight, height, activityLevel) => {
-    // Base Metabolic Rate calculation
+    // Base Metabolic Rate calculation (Harris-Benedict equation)
     let bmr = 0;
     
     if (gender === 'male') {
@@ -156,7 +156,11 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
     }
     
     // Calculate total daily calories
-    const dailyCalories = bmr * activityMultiplier;
+    const dailyCalories = Math.round(bmr * activityMultiplier);
+    
+    // Sistema Económico Virtual: 1 Kcal = 1 IHC
+    // Actualmente, el valor calculado es exactamente las calorías diarias recomendadas
+    // basadas en criterios médicos (Harris-Benedict)
     return dailyCalories;
   },
   

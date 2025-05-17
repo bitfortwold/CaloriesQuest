@@ -101,7 +101,9 @@ const SimpleLoginForm = () => {
         height: Number(userData.height),
         weight: Number(userData.weight),
         activityLevel: userData.activityLevel,
-        coins: 100,
+        // Sistema Económico Virtual: 1 Kcal = 1 IHC
+        // Asignar monedas equivalentes a las calorías diarias recomendadas
+        coins: dailyCalories,
         caloriesConsumed: 0,
         caloriesBurned: 0,
         dailyCalories,
