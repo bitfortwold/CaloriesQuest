@@ -212,23 +212,23 @@ const Garden = ({ onExit }: GardenProps) => {
         </div>
 
         {/* Contenido principal */}
-        <div className="bg-amber-100 p-4">
+        <div className="bg-[#FFF8E9] p-6">
           {activeTab === "garden" ? (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {playerData?.garden.map((plot, index) => (
                 <div 
                   key={plot.id} 
-                  className="overflow-hidden"
+                  className="overflow-hidden rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:scale-[1.02] cursor-pointer"
                   onClick={() => setSelectedPlot(plot)}
                 >
-                  {/* Encabezado de la parcela - amarillo como en la captura */}
-                  <div className="bg-amber-300 py-2 px-3 rounded-t-md">
-                    <h3 className="font-bold text-amber-900">
-                      Parcela vacía
+                  {/* Encabezado de la parcela con estilo mejorado */}
+                  <div className="bg-gradient-to-r from-[#F9A826] to-[#FFB938] py-3 px-4 rounded-t-xl border-b-4 border-[#F48E11]">
+                    <h3 className="font-bold text-[#7E4E1B] text-lg">
+                      Parcela {plot.plant ? plot.plant.name : "vacía"}
                     </h3>
                   </div>
                   
-                  <div className="p-4 bg-white border border-amber-300 border-t-0 rounded-b-md">
+                  <div className="p-5 bg-[#FFFAF0] border-4 border-t-0 border-[#F5D6A4] rounded-b-xl">
                     {plot.plant ? (
                       <>
                         {/* Barra de progreso de crecimiento */}
