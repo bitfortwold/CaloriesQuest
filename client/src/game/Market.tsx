@@ -40,11 +40,18 @@ const Market = ({ onExit }: MarketProps) => {
     
     document.addEventListener('toggleMarketCart', handleToggleCart);
     
-    // Cleanup
     return () => {
       document.removeEventListener('toggleMarketCart', handleToggleCart);
     };
   }, [showCart, cart]);
+  
+  // Actualizar el contador del carrito cuando cambia
+  useEffect(() => {
+    const cartCounter = document.getElementById('cart-counter');
+    if (cartCounter) {
+      cartCounter.textContent = cart.reduce((total, item) => total + item.quantity, 0).toString();
+    }
+  }, [cart]);
   
   // Get all categories and translate them if needed
   const { language } = useLanguage();
