@@ -6,8 +6,9 @@ import { usePlayerStore } from "../stores/usePlayerStore";
 import { useLanguage } from "../i18n/LanguageContext";
 import { Language } from "../i18n/translations";
 
-// Clave para almacenar datos de usuario en localStorage
-const USER_DATA_KEY = "caloric_consumption_user_data";
+// Claves para almacenar datos de usuario en localStorage
+const USER_DATA_KEY = "caloric_consumption_user_data"; // Usuario actual/último
+const ALL_USERS_KEY = "caloric_consumption_all_users"; // Todos los usuarios registrados
 
 const SimpleLoginForm = () => {
   const { setIsRegistered } = useGameStateStore();
@@ -22,13 +23,18 @@ const SimpleLoginForm = () => {
   // Cargar usuarios guardados
   useEffect(() => {
     try {
-      const savedData = localStorage.getItem(USER_DATA_KEY);
-      if (savedData) {
-        const userData = JSON.parse(savedData);
+      // Intentar cargar el último usuario que cerró sesión (para sugerencia)
+      const lastUserData = localStorage.getItem(USER_DATA_KEY);
+      if (lastUserData) {
+        const userData = JSON.parse(lastUserData);
         if (userData.name) {
           setSavedUsers([userData.name]);
         }
       }
+      
+      // En una implementación real, aquí podrías cargar todos los usuarios
+      // guardados a través de una API o servicio de backend
+      // Por ahora solo mostramos el último usuario para mantener consistencia
     } catch (error) {
       console.error("Error loading saved user data:", error);
     }
@@ -48,43 +54,72 @@ const SimpleLoginForm = () => {
     
     // Comprobar si los datos del usuario están guardados
     try {
-      const savedData = localStorage.getItem(USER_DATA_KEY);
-      if (savedData) {
-        const userData = JSON.parse(savedData);
-        
-        // Si el nombre coincide (ignorando mayúsculas/minúsculas), cargar los datos guardados
-        if (userData.name.toLowerCase() === username.toLowerCase()) {
-          // Calcular calorías diarias
-          const dailyCalories = calculateDailyCalories(
-            userData.gender,
-            Number(userData.age),
-            Number(userData.weight),
-            Number(userData.height),
-            userData.activityLevel
+      // Buscar en todos los usuarios registrados
+      let foundUser = null;
+      
+      // Primero buscar en el registro de todos los usuarios
+      try {
+        const allUsersData = localStorage.getItem(ALL_USERS_KEY);
+        if (allUsersData) {
+          const allUsers = JSON.parse(allUsersData);
+          
+          // Buscar un usuario que coincida con el nombre proporcionado (ignorando mayúsculas/minúsculas)
+          foundUser = allUsers.find(
+            (user: any) => user.name && user.name.toLowerCase() === username.toLowerCase()
           );
-          
-          // Crear datos del jugador con valores iniciales
-          const playerData = {
-            name: userData.name,
-            age: Number(userData.age),
-            gender: userData.gender,
-            height: Number(userData.height),
-            weight: Number(userData.weight),
-            activityLevel: userData.activityLevel,
-            coins: 100,
-            caloriesConsumed: 0,
-            caloriesBurned: 0,
-            dailyCalories,
-            estimatedLifespan: 80,
-            inventory: []
-          };
-          
-          // Actualizar estado global
-          setPlayerData(playerData);
-          setIsRegistered(true);
-          setError("");
-          return;
         }
+      } catch (parseError) {
+        console.error("Error parsing all users data:", parseError);
+      }
+      
+      // Si no se encontró en la lista de todos los usuarios, intentar con el usuario actual
+      if (!foundUser) {
+        const currentUserData = localStorage.getItem(USER_DATA_KEY);
+        if (currentUserData) {
+          const userData = JSON.parse(currentUserData);
+          if (userData.name && userData.name.toLowerCase() === username.toLowerCase()) {
+            foundUser = userData;
+          }
+        }
+      }
+      
+      // Si se encontró un usuario, iniciar sesión
+      if (foundUser) {
+        console.log("Usuario encontrado:", foundUser.name);
+        
+        // Guardar como usuario actual para mantenerlo como sugerencia en próximos inicios
+        localStorage.setItem(USER_DATA_KEY, JSON.stringify(foundUser));
+        
+        // Calcular calorías diarias
+        const dailyCalories = calculateDailyCalories(
+          foundUser.gender,
+          Number(foundUser.age),
+          Number(foundUser.weight),
+          Number(foundUser.height),
+          foundUser.activityLevel
+        );
+        
+        // Crear datos del jugador con valores iniciales
+        const playerData = {
+          name: foundUser.name,
+          age: Number(foundUser.age),
+          gender: foundUser.gender,
+          height: Number(foundUser.height),
+          weight: Number(foundUser.weight),
+          activityLevel: foundUser.activityLevel,
+          coins: 100,
+          caloriesConsumed: 0,
+          caloriesBurned: 0,
+          dailyCalories,
+          estimatedLifespan: 80,
+          inventory: []
+        };
+        
+        // Actualizar estado global
+        setPlayerData(playerData);
+        setIsRegistered(true);
+        setError("");
+        return;
       }
       
       // Si no se encuentra el usuario, mostrar error

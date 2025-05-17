@@ -182,14 +182,48 @@ const RegistrationForm = () => {
       
       // Guardar datos en localStorage para futuras sesiones
       try {
-        localStorage.setItem(USER_DATA_KEY, JSON.stringify({
+        // Datos del usuario actual
+        const userData = {
           name: formData.name,
           age: formData.age,
           gender: formData.gender,
           height: formData.height,
           weight: formData.weight,
           activityLevel: formData.activityLevel
-        }));
+        };
+        
+        // Guardar como usuario actual
+        localStorage.setItem(USER_DATA_KEY, JSON.stringify(userData));
+        
+        // Guardar en el registro de todos los usuarios
+        const ALL_USERS_KEY = "caloric_consumption_all_users";
+        
+        // Obtener lista actual de usuarios
+        let allUsers = [];
+        try {
+          const existingUsers = localStorage.getItem(ALL_USERS_KEY);
+          if (existingUsers) {
+            allUsers = JSON.parse(existingUsers);
+          }
+        } catch (err) {
+          console.error("Error reading user registry:", err);
+        }
+        
+        // Verificar si el usuario ya existe
+        const existingIndex = allUsers.findIndex(
+          (user: any) => user.name.toLowerCase() === formData.name.toLowerCase()
+        );
+        
+        if (existingIndex >= 0) {
+          // Actualizar usuario existente
+          allUsers[existingIndex] = userData;
+        } else {
+          // Añadir nuevo usuario
+          allUsers.push(userData);
+        }
+        
+        // Guardar la lista actualizada
+        localStorage.setItem(ALL_USERS_KEY, JSON.stringify(allUsers));
       } catch (error) {
         console.error("Error saving user data to localStorage:", error);
       }
