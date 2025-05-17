@@ -47,6 +47,12 @@ const Player = () => {
     // Cancelar si se está usando el botón derecho para mover la cámara
     if (event.button !== 0) return;
     
+    // Si acabamos de salir del huerto, ignorar el primer clic para evitar bucles
+    if (justExitedGarden) {
+      console.log("Click ignored - just exited garden");
+      return;
+    }
+    
     // Prevent default behavior
     event.preventDefault();
     
@@ -209,6 +215,29 @@ const Player = () => {
     };
   }, [gameState, gl.domElement]);
   
+  // Variable para rastrear si acabamos de salir del huerto
+  const [justExitedGarden, setJustExitedGarden] = useState(false);
+  
+  // Detectar cuando volvemos al estado "playing" desde el estado "garden"
+  useEffect(() => {
+    if (gameState === "playing") {
+      // Si acabamos de volver de otro estado, marcamos un tiempo de espera para evitar interacciones inmediatas
+      setJustExitedGarden(true);
+      setTimeout(() => {
+        setJustExitedGarden(false);
+      }, 500); // Esperar 500ms antes de permitir nuevas interacciones
+      
+      // Mover al jugador un poco alejado del huerto para evitar reactivar la interacción
+      if (playerPosition.x === gardenPosition.x && playerPosition.z === gardenPosition.z) {
+        setPlayerPosition({
+          x: playerPosition.x + 4, // Mover significativamente hacia la derecha
+          y: playerPosition.y,
+          z: playerPosition.z + 4  // Mover significativamente hacia atrás
+        });
+      }
+    }
+  }, [gameState]);
+
   // Handle movement and interactions in each frame
   useFrame(() => {
     if (gameState !== "playing" || !playerRef.current) return;
