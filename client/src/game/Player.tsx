@@ -134,10 +134,11 @@ const Player = () => {
       }
       
       // Comprobar la distancia al huerto
-      const distToGarden = Math.sqrt(
-        Math.pow(playerPosition.x - gardenPosition.x, 2) +
-        Math.pow(playerPosition.z - gardenPosition.z, 2)
-      );
+      const distToGarden = new THREE.Vector3(
+        playerPosition.x - gardenPosition.x,
+        0,
+        playerPosition.z - gardenPosition.z
+      ).length();
       
       if (distToGarden < INTERACTION_DISTANCE) {
         // Primero mover al jugador cerca del huerto
@@ -323,7 +324,7 @@ const Player = () => {
     }
   });
   
-  // Handle interactions with buildings
+  // Handle interactions with buildings when pressing E key
   const handleInteraction = () => {
     // Calculate distance to market
     const distToMarket = new THREE.Vector3(
@@ -348,14 +349,14 @@ const Player = () => {
     
     // Enter market if close enough
     if (distToMarket < INTERACTION_DISTANCE) {
-      console.log("Entering market");
+      console.log("Entering market via E key");
       enterBuilding("market");
       return;
     }
     
     // Enter kitchen if close enough
     if (distToKitchen < INTERACTION_DISTANCE) {
-      console.log("Entering kitchen");
+      console.log("Entering kitchen via E key");
       enterBuilding("kitchen");
       return;
     }
