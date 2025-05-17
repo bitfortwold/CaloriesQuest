@@ -368,12 +368,12 @@ const Kitchen = ({ onExit }: KitchenProps) => {
               {/* Right side - Meal preview */}
               <div>
                 <div className="bg-amber-50 border-2 border-amber-300 rounded-lg p-4 shadow-md">
-                  <h3 className="text-xl font-bold text-amber-800 mb-4 pb-2 border-b border-amber-200">Tu Comida</h3>
+                  <h3 className="text-xl font-bold text-amber-800 mb-4 pb-2 border-b border-amber-200">{language === 'en' ? 'Your Meal' : 'Tu Comida'}</h3>
                   
-                  <h4 className="font-semibold text-amber-700">Ingredientes Seleccionados:</h4>
+                  <h4 className="font-semibold text-amber-700">{language === 'en' ? 'Selected Ingredients:' : 'Ingredientes Seleccionados:'}</h4>
                   {selectedItems.length === 0 ? (
                     <p className="text-amber-500 my-3 p-3 bg-amber-50 border border-amber-200 rounded-md text-center">
-                      ¡Selecciona ingredientes del refrigerador o la despensa para comenzar a cocinar!
+                      {language === 'en' ? 'Select ingredients from the refrigerator or pantry to start cooking!' : '¡Selecciona ingredientes del refrigerador o la despensa para comenzar a cocinar!'}
                     </p>
                   ) : (
                     <div className="my-3 grid grid-cols-3 gap-2">
