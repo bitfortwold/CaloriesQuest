@@ -12,20 +12,25 @@ interface Position {
   z: number;
 }
 
-// Variables globales para acceso a posiciones
-let gardenPosition: Position = { x: 0, y: 0, z: -15 };
-let marketPosition: Position = { x: -8, y: 0, z: 0 };
-let kitchenPosition: Position = { x: 8, y: 0, z: 0 };
+// Posiciones de los edificios (fijas e inmutables)
+const GARDEN_POSITION: Position = { x: 0, y: 0, z: -15 };
+const MARKET_POSITION: Position = { x: -8, y: 0, z: 0 };
+const KITCHEN_POSITION: Position = { x: 8, y: 0, z: 0 };
 
-// Funciones de acceso consistentes para todas las posiciones
-export const getGardenPosition = () => gardenPosition;
-export const getMarketPosition = () => marketPosition;
-export const getKitchenPosition = () => kitchenPosition;
+// Posiciones de entrada/salida (fijas e inmutables)
+const GARDEN_EXIT_POSITION: Position = { x: 0, y: 0, z: -10 };  // Frente al huerto
+const MARKET_EXIT_POSITION: Position = { x: -8, y: 0, z: 3 };   // Frente al mercado
+const KITCHEN_EXIT_POSITION: Position = { x: 8, y: 0, z: 3 };   // Frente a la cocina
 
-// POSICIONES FIJAS PARA SALIDA DE EDIFICIOS
-export const getGardenExitPosition = () => ({ x: 0, y: 0, z: -10 }); // Posición consistente
-export const getMarketExitPosition = () => ({ x: -8, y: 0, z: 3 });    // Frente al mercado
-export const getKitchenExitPosition = () => ({ x: 8, y: 0, z: 3 });    // Frente a la cocina
+// Funciones de acceso consistentes para todos los edificios
+export const getGardenPosition = () => GARDEN_POSITION;
+export const getMarketPosition = () => MARKET_POSITION;
+export const getKitchenPosition = () => KITCHEN_POSITION;
+
+// Funciones de acceso para posiciones de salida
+export const getGardenExitPosition = () => GARDEN_EXIT_POSITION;
+export const getMarketExitPosition = () => MARKET_EXIT_POSITION;
+export const getKitchenExitPosition = () => KITCHEN_EXIT_POSITION;
 
 // Componente principal de edificios
 const Buildings = () => {
@@ -102,7 +107,7 @@ const Buildings = () => {
   useEffect(() => {
     setMarketPosition({ x: marketPos[0], y: marketPos[1], z: marketPos[2] });
     setKitchenPosition({ x: kitchenPos[0], y: kitchenPos[1], z: kitchenPos[2] });
-    gardenPosition = { x: gardenPos[0], y: gardenPos[1], z: gardenPos[2] };
+    // Ya no necesitamos actualizar gardenPosition porque ahora es constante
   }, [setMarketPosition, setKitchenPosition]);
   
   return (

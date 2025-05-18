@@ -311,97 +311,91 @@ const Player = () => {
   // Referencia para almacenar el último estado conocido
   const lastGameStateRef = useRef<string | null>(null);
   
-  // Sistema unificado para todos los edificios
+  // Sistema unificado para detectar salida de cualquier edificio
   useEffect(() => {
     const buildingStates = ["garden", "market", "kitchen"];
     
     // Verificar si acabamos de salir de un edificio
-    if (buildingStates.includes(lastGameStateRef.current || "") && gameState === "playing") {
-      const exitedBuilding = lastGameStateRef.current;
+    const wasInBuilding = buildingStates.includes(lastGameStateRef.current || "");
+    const isNowPlaying = gameState === "playing";
+    
+    if (wasInBuilding && isNowPlaying) {
+      const exitedBuilding = lastGameStateRef.current || "";
       console.log(`Saliendo de ${exitedBuilding} con sistema unificado`);
       
       // Marcar que acabamos de salir para evitar interacciones inmediatas
       setJustExitedBuilding(true);
       
-      // Resetear cámara para todos los edificios
-      const { requestReset } = useCameraStore.getState();
-      console.log("🎯 CÁMARA: Solicitado reseteo forzado");
-      requestReset();
-      
-      // Determinar posición de salida según el edificio
+      // 1. Obtener posición de salida apropiada según el edificio
+      let targetRotation = 0;
       let exitPosition = { x: 0, y: 0, z: 0 };
-      let lookDirection = 0;
       
-      switch (exitedBuilding) {
-        case "garden":
-          exitPosition = getGardenExitPosition();
-          lookDirection = Math.PI; // Mirando hacia el norte (huerto)
-          break;
-        case "market":
-          exitPosition = getMarketExitPosition();
-          lookDirection = Math.PI / 2; // Mirando hacia el este
-          break;
-        case "kitchen":
-          exitPosition = getKitchenExitPosition();
-          lookDirection = -Math.PI / 2; // Mirando hacia el oeste
-          break;
+      if (exitedBuilding === "garden") {
+        exitPosition = getGardenExitPosition();
+        targetRotation = Math.PI; // Mirando hacia el norte (huerto)
+      } 
+      else if (exitedBuilding === "market") {
+        exitPosition = getMarketExitPosition();
+        targetRotation = Math.PI / 2; // Mirando hacia el este
+      }
+      else if (exitedBuilding === "kitchen") {
+        exitPosition = getKitchenExitPosition();
+        targetRotation = -Math.PI / 2; // Mirando hacia el oeste
       }
       
-      // Aplicar posición y rotación
-      setPlayerPosition(exitPosition);
-      setRotationY(lookDirection);
+      // 2. Aplicar posición y rotación básica
+      if (exitPosition) {
+        setPlayerPosition(exitPosition);
+        setRotationY(targetRotation);
+      }
       
-      // Configuración estándar de cámara para TODOS los edificios
+      // 3. Resetear cámara para evitar problemas acumulativos
+      const { requestReset } = useCameraStore.getState();
+      requestReset();
+      
+      // 4. Configurar la cámara para que mire hacia el edificio correcto
       if (camera) {
-        // Altura y distancia estandarizada
         const cameraHeight = 8;
-        const cameraDistance = 5;
+        const lookDistance = 10;
         
-        switch (exitedBuilding) {
-          case "garden":
-            // Cámara mirando al norte
-            camera.position.set(0, cameraHeight, exitPosition.z + cameraDistance);
-            camera.lookAt(0, 0, -15); // Mirar hacia el huerto
-            break;
-          case "market":
-            // Cámara mirando al este
-            camera.position.set(exitPosition.x - cameraDistance, cameraHeight, exitPosition.z);
-            camera.lookAt(-8, 0, 0); // Mirar hacia el mercado
-            break;
-          case "kitchen":
-            // Cámara mirando al oeste
-            camera.position.set(exitPosition.x + cameraDistance, cameraHeight, exitPosition.z);
-            camera.lookAt(8, 0, 0); // Mirar hacia la cocina
-            break;
+        // Configurar posición de la cámara según el edificio
+        if (exitedBuilding === "garden" && exitPosition) {
+          camera.position.set(0, cameraHeight, exitPosition.z + 5);
+          camera.lookAt(0, 0, -15);
+        }
+        else if (exitedBuilding === "market" && exitPosition) {
+          camera.position.set(-13, cameraHeight, exitPosition.z);
+          camera.lookAt(-8, 0, 0);
+        }
+        else if (exitedBuilding === "kitchen" && exitPosition) {
+          camera.position.set(13, cameraHeight, exitPosition.z);
+          camera.lookAt(8, 0, 0);
         }
         
-        // Configuración común para todos los edificios
+        // Configurar parámetros comunes
         camera.rotation.order = 'YXZ';
         camera.updateProjectionMatrix();
       }
       
-      // Desactivar movimiento para todos los edificios
-      const storeRef = usePlayerStore.getState();
-      if (storeRef) {
-        storeRef.setIsMovingToTarget(false);
-      }
+      // 5. Cancelar cualquier movimiento automático
+      const playerStore = usePlayerStore.getState();
+      playerStore.setIsMovingToTarget(false);
       
-      // Limpiar estado para todos los edificios de la misma manera
+      // 6. Actualizar estado del jugador con una propiedad común
       if (playerData) {
         updatePlayer({
           ...playerData,
-          lastBuildingExit: exitedBuilding // Usar la misma propiedad para todos
+          lastGardenAction: undefined // Limpiar estado anterior
         });
       }
       
-      // Permitir interacciones después de un breve periodo
+      // 7. Permitir nuevas interacciones después de un tiempo seguro
       setTimeout(() => {
-        console.log("Sistema unificado: listo para nuevas interacciones");
         setJustExitedBuilding(false);
-      }, 1000);
+      }, 500);
     }
     
-    // Actualizar la referencia del estado anterior
+    // Guardar estado actual para comparar en la próxima actualización
     lastGameStateRef.current = gameState;
   }, [gameState, camera, setPlayerPosition, setRotationY, updatePlayer]);
 
