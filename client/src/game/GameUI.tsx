@@ -115,7 +115,7 @@ const GameUI = () => {
               <Market onExit={() => {
                 console.log("GameUI attempting to exit market");
                 setActiveTab(null);
-                exitBuilding();
+                handleBuildingExit("market");
               }} />
             </div>
           </>
@@ -137,7 +137,7 @@ const GameUI = () => {
               <Kitchen onExit={() => {
                 console.log("GameUI attempting to exit kitchen");
                 setActiveTab(null);
-                exitBuilding();
+                handleBuildingExit("kitchen");
               }} />
             </div>
           </>
@@ -158,17 +158,8 @@ const GameUI = () => {
             
             <div className="fixed inset-0 z-50 flex items-center justify-center">
               <Garden onExit={() => {
-                console.log("Saliendo del huerto mediante función onExit");
-                // Resetear cualquier estado específico del huerto antes de salir
-                const { updatePlayer, playerData } = usePlayerStore.getState();
-                if (playerData) {
-                  // Aseguramos que tenga una salida limpia
-                  updatePlayer({
-                    ...playerData,
-                    lastGardenAction: "exit"
-                  });
-                }
-                exitBuilding();
+                console.log("GameUI attempting to exit garden");
+                handleBuildingExit("garden");
               }} />
             </div>
           </>
