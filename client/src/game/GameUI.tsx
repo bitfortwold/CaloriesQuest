@@ -31,6 +31,39 @@ const GameUI = () => {
   // Don't render anything if DOM is not ready
   if (!domReady) return null;
   
+  // Función unificada para manejar la salida de cualquier edificio
+  const handleBuildingExit = (buildingType: string) => {
+    console.log(`Saliendo de ${buildingType} mediante sistema unificado`);
+    
+    // Obtener el store del jugador para actualizaciones
+    const { updatePlayer, playerData } = usePlayerStore.getState();
+    
+    if (playerData) {
+      // Actualizar el estado del jugador según el edificio
+      switch (buildingType) {
+        case "garden":
+          // Resetear la acción del huerto al salir
+          updatePlayer({
+            ...playerData,
+            lastGardenAction: "exit"
+          });
+          break;
+          
+        case "market":
+          // El carrito ya es persistente con useCartStore
+          // No necesitamos lógica adicional aquí
+          break;
+          
+        case "kitchen":
+          // Por si necesitamos añadir lógica de salida específica para la cocina
+          break;
+      }
+    }
+    
+    // Proceso común de salida para todos los edificios
+    exitBuilding();
+  };
+  
   // Render UI based on game state
   const renderGameUI = () => {
     switch (gameState) {
@@ -40,10 +73,7 @@ const GameUI = () => {
             {/* Botones flotantes para controlar el mercado - independientes de la interfaz */}
             <div className="fixed top-4 right-4 z-[1000]">
               <button
-                onClick={() => {
-                  console.log("Force exiting market via floating button");
-                  exitBuilding();
-                }}
+                onClick={() => handleBuildingExit("market")}
                 className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg border-2 border-red-500 shadow-lg text-xl transition-all hover:scale-105"
               >
                 {t.exit}
@@ -96,10 +126,7 @@ const GameUI = () => {
             {/* Botón flotante para salir de la cocina - independiente de la interfaz */}
             <div className="fixed top-4 right-4 z-[1000]">
               <button
-                onClick={() => {
-                  console.log("Force exiting kitchen via floating button");
-                  exitBuilding();
-                }}
+                onClick={() => handleBuildingExit("kitchen")}
                 className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg border-2 border-red-500 shadow-lg text-xl transition-all hover:scale-105"
               >
                 {t.exit}
@@ -122,23 +149,7 @@ const GameUI = () => {
             {/* Botón flotante para salir del huerto - IMPLEMENTACIÓN FINAL */}
             <div className="fixed top-4 right-4 z-[1000]">
               <button
-                onClick={() => {
-                  console.log("SOLUCIÓN FINAL: Salida directa del huerto");
-                  
-                  // Resetear cualquier estado específico del huerto antes de salir
-                  const { updatePlayer, playerData } = usePlayerStore.getState();
-                  if (playerData) {
-                    // Aseguramos que tenga una salida limpia
-                    updatePlayer({
-                      ...playerData,
-                      lastGardenAction: "exit"
-                    });
-                  }
-                  
-                  // Solo necesitamos salir del edificio
-                  // La lógica de reposicionamiento está ahora en Player.tsx
-                  exitBuilding();
-                }}
+                onClick={() => handleBuildingExit("garden")}
                 className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg border-2 border-red-500 shadow-lg text-xl transition-all hover:scale-105"
               >
                 {t.exit}
