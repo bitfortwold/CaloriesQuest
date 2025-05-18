@@ -388,6 +388,7 @@ const Garden = ({ onExit }: GardenProps) => {
                   <button
                     className="mt-4 bg-amber-500 hover:bg-amber-600 text-white px-6 py-2 rounded font-semibold"
                     onClick={() => {
+                      // Usar la función unificada a través de onExit
                       onExit();
                     }}
                   >
