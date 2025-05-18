@@ -183,8 +183,11 @@ const GameUI = () => {
                     <div className="flex justify-between items-center border-b border-gray-700 pb-2 mb-3">
                       <div className="flex gap-2 w-full">
                         <button 
-                          className="bg-blue-600 hover:bg-blue-700 text-white text-sm px-3 py-1 rounded flex-1 transition-colors"
-                          onClick={() => setActiveTab('profile')}
+                          className={`bg-blue-600 hover:bg-blue-700 text-white text-sm px-3 py-1 rounded flex-1 transition-colors ${activeTab === 'profile' ? 'ring-2 ring-white' : ''}`}
+                          onClick={() => {
+                            setActiveTab('profile');
+                            // Ahora ya no hay un segundo panel, todo está en este panel
+                          }}
                         >
                           {t.profile}
                         </button>
@@ -300,9 +303,9 @@ const GameUI = () => {
               </div>
             </div>
             
-            {/* Profile panel that appears only when user clicks on "Perfil" - DISABLED this second panel */}
-            {false && showProfilePanel && (
-              <div className="fixed top-24 left-2 bg-white/90 p-2 rounded-lg shadow-md" style={{ maxWidth: "300px", maxHeight: "80vh", overflow: "auto" }}>
+            {/* Panel principal con las pestañas y componentes */}
+            {showProfilePanel && (
+              <div className="fixed left-2 top-24 bg-white/95 p-3 rounded-lg shadow-lg border-2 border-blue-300" style={{ maxWidth: "350px", maxHeight: "70vh", overflow: "auto", zIndex: 9999 }}>
                 <div className="flex space-x-2 mb-2">
                   <button 
                     className={`px-3 py-1 text-sm rounded ${activeTab === 'profile' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
