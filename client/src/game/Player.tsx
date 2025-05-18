@@ -5,7 +5,12 @@ import { useKeyboardControls } from "@react-three/drei";
 import { useGameStateStore } from "../stores/useGameStateStore";
 import { usePlayerStore } from "../stores/usePlayerStore";
 import { useFoodStore } from "../stores/useFoodStore";
-import { getGardenPosition, getGardenExitPosition } from "./Buildings";
+import { 
+  getGardenPosition, 
+  getGardenExitPosition,
+  getMarketExitPosition,
+  getKitchenExitPosition
+} from "./Buildings";
 
 const PLAYER_SPEED = 0.1;
 const INTERACTION_DISTANCE = 3;
@@ -296,10 +301,22 @@ const Player = () => {
         });
       } else if (lastGameStateRef.current === "market") {
         console.log("Saliendo del mercado");
-        // El jugador se queda donde está
+        // Colocar al jugador en el camino ocre frente al mercado
+        const exitPos = getMarketExitPosition();
+        setPlayerPosition({
+          x: exitPos.x,
+          y: playerPosition.y, // Mantenemos la altura actual
+          z: exitPos.z
+        });
       } else if (lastGameStateRef.current === "kitchen") {
         console.log("Saliendo de la cocina");
-        // El jugador se queda donde está
+        // Colocar al jugador en el camino ocre frente a la cocina
+        const exitPos = getKitchenExitPosition();
+        setPlayerPosition({
+          x: exitPos.x,
+          y: playerPosition.y, // Mantenemos la altura actual
+          z: exitPos.z
+        });
       }
       
       // Restaurar la capacidad de interactuar después de un periodo más largo
