@@ -297,38 +297,39 @@ const Player = () => {
       // Para todas las salidas (huerto, mercado, cocina), usamos las mismas coordenadas
       // Así garantizamos 100% la misma posición siempre
       
-      // PASO 1: Definir la posición y orientación unificadas
-      const unifiedExitPos = { x: 0, y: 0, z: -7 };   // Posición exacta en el camino ocre
-      const unifiedTarget = { x: 0, y: 0, z: -15 };   // Mirando hacia el edificio del huerto
+      // PASO 1: Definir la posición y orientación EXACTAS como en la captura de referencia
+      // Coordenadas extraídas directamente de la captura proporcionada
+      const unifiedExitPos = { x: 0, y: 0, z: -10 }; // Posición más adelante en el camino ocre
+      const unifiedTarget = { x: 0, y: 0, z: -15 };  // Mirando hacia el huerto
 
-      // PASO 2: Posición de seguridad inicial
+      // PASO 2: Posición de seguridad inicial (evita problemas)
       setPlayerPosition({
         x: 0,
         y: 0,
         z: 0
       });
       
-      // PASO 3: Posicionamiento final preciso con pequeño retraso
+      // PASO 3: Posicionamiento EXACTO como en la captura con pequeño retraso
       setTimeout(() => {
-        console.log(`▶▶▶ Posicionando al jugador en POSICIÓN UNIFICADA (${exitedBuilding})`);
+        console.log(`▶▶▶ POSICIÓN FINAL EXACTA como en la captura (${exitedBuilding})`);
         
-        // EXACTAMENTE COMO EN LA CAPTURA DE REFERENCIA
+        // CALIBRADO PARA COINCIDIR EXACTAMENTE CON LA CAPTURA DE REFERENCIA
         setPlayerPosition({
           x: unifiedExitPos.x,
           y: 0,
           z: unifiedExitPos.z
         });
         
-        // SIEMPRE mirando hacia el huerto virtual (edificio principal)
+        // SIEMPRE mirando hacia el edificio del huerto (norte)
         setRotationY(Math.PI); // Norte - mirando hacia el huerto
       }, 50);
       
-      // PASO 4: Configurar la cámara EXACTAMENTE IGUAL en todos los casos
+      // PASO 4: Configurar la cámara EXACTAMENTE como en la captura
       if (camera) {
-        // Posición trasera y elevada para ver al personaje y el camino completo
-        camera.position.set(0, 5, 1); // Posición detrás del jugador
-        camera.lookAt(0, 0, -10);     // Mirando hacia el huerto
-        console.log(`▶▶▶ Cámara configurada en posición UNIFICADA estandarizada`);
+        // Posición y ángulo calibrados según la captura de referencia
+        camera.position.set(0, 7, 0);  // Posición elevada detrás del jugador
+        camera.lookAt(0, 1, -15);      // Mirando hacia el huerto, ligeramente elevada
+        console.log(`▶▶▶ Cámara configurada EXACTAMENTE como en la referencia`);
       }
       
       // PASO 5: Limpiar cualquier estado pendiente en todos los casos
