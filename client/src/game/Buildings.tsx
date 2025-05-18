@@ -112,16 +112,52 @@ const Buildings = () => {
   
   return (
     <group>
-      {/* Market Building - Ahora clickeable */}
+      {/* Market Building con doble puerta */}
       <group position={marketPos}>
-        {/* Área clickeable invisible */}
-        <mesh 
-          onClick={handleMarketClick}
-          visible={false}
-        >
-          <boxGeometry args={[6, 6, 5]} />
-          <meshStandardMaterial transparent opacity={0} />
-        </mesh>
+        {/* Doble puerta del mercado */}
+        <group position={[0, 0, 2]}>
+          <mesh 
+            castShadow
+            receiveShadow
+            position={[-0.6, 1, 0]}
+            name="market_door_left"
+          >
+            <boxGeometry args={[0.8, 2, 0.1]} />
+            <meshStandardMaterial color="#8B4513" />
+          </mesh>
+          
+          <mesh 
+            castShadow
+            receiveShadow
+            position={[0.6, 1, 0]} 
+            name="market_door_right"
+          >
+            <boxGeometry args={[0.8, 2, 0.1]} />
+            <meshStandardMaterial color="#8B4513" />
+          </mesh>
+          
+          {/* Letrero encima de la puerta */}
+          <Text
+            position={[0, 2.3, 0]}
+            rotation={[0, 0, 0]}
+            fontSize={0.4}
+            color="#FFD700"
+            anchorX="center"
+            anchorY="middle"
+          >
+            ENTER
+          </Text>
+          
+          {/* Zona invisible para la detección de entrada */}
+          <mesh 
+            position={[0, 1, 0]}
+            name="market_door_trigger"
+            visible={false}
+          >
+            <boxGeometry args={[2, 2, 2]} />
+            <meshBasicMaterial transparent opacity={0} />
+          </mesh>
+        </group>
         
         {/* Market base/stall */}
         <mesh castShadow receiveShadow position={[0, 1.5, 0]}>
@@ -195,16 +231,52 @@ const Buildings = () => {
         </group>
       </group>
       
-      {/* Kitchen Building - Ahora clickeable */}
+      {/* Kitchen Building con doble puerta */}
       <group position={kitchenPos}>
-        {/* Área clickeable invisible */}
-        <mesh 
-          onClick={handleKitchenClick}
-          visible={false}
-        >
-          <boxGeometry args={[6, 6, 5]} />
-          <meshStandardMaterial transparent opacity={0} />
-        </mesh>
+        {/* Doble puerta de la cocina */}
+        <group position={[0, 0, 2]}>
+          <mesh 
+            castShadow
+            receiveShadow
+            position={[-0.6, 1, 0]}
+            name="kitchen_door_left"
+          >
+            <boxGeometry args={[0.8, 2, 0.1]} />
+            <meshStandardMaterial color="#8B4513" />
+          </mesh>
+          
+          <mesh 
+            castShadow
+            receiveShadow
+            position={[0.6, 1, 0]} 
+            name="kitchen_door_right"
+          >
+            <boxGeometry args={[0.8, 2, 0.1]} />
+            <meshStandardMaterial color="#8B4513" />
+          </mesh>
+          
+          {/* Letrero encima de la puerta */}
+          <Text
+            position={[0, 2.3, 0]}
+            rotation={[0, 0, 0]}
+            fontSize={0.4}
+            color="#FFD700"
+            anchorX="center"
+            anchorY="middle"
+          >
+            ENTER
+          </Text>
+          
+          {/* Zona invisible para la detección de entrada */}
+          <mesh 
+            position={[0, 1, 0]}
+            name="kitchen_door_trigger"
+            visible={false}
+          >
+            <boxGeometry args={[2, 2, 2]} />
+            <meshBasicMaterial transparent opacity={0} />
+          </mesh>
+        </group>
         
         {/* Kitchen base */}
         <mesh castShadow receiveShadow position={[0, 2, 0]}>

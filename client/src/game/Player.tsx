@@ -15,11 +15,12 @@ import {
   getKitchenPosition
 } from "./Buildings";
 
+// Constantes
 const PLAYER_SPEED = 0.1;
-const INTERACTION_DISTANCE = 3;
-const MOUSE_SPEED = 0.05; // Velocidad para movimiento con mouse
+const DOOR_DETECTION_DISTANCE = 1.5; // Distancia para detectar puertas
 
 const Player = () => {
+  // Referencias y estados
   const playerRef = useRef<THREE.Group>(null);
   const { gameState, enterBuilding } = useGameStateStore();
   const { 
@@ -27,26 +28,21 @@ const Player = () => {
     setPlayerPosition, 
     playerData,
     increaseCaloriesBurned,
-    updatePlayer,
-    destinationBuilding,
-    setDestinationBuilding
+    updatePlayer
   } = usePlayerStore();
-  const { marketPosition, kitchenPosition } = useFoodStore();
-  // Obtener la posición del huerto
-  const gardenPosition = getGardenPosition();
   
-  // Subscribe to keyboard controls
+  // Posiciones de edificios
+  const marketPos = getMarketPosition();
+  const kitchenPos = getKitchenPosition();
+  const gardenPos = getGardenPosition();
+  
+  // Controles de teclado y movimiento
   const [, getKeys] = useKeyboardControls();
-  
-  // Reference direction for smooth movement
   const [moveDir] = useState(new THREE.Vector3());
-  
-  // Character's facing direction
   const [rotationY, setRotationY] = useState(0);
   
-  // Mouse movement variables
-  const [targetPosition, setTargetPosition] = useState<THREE.Vector3 | null>(null);
-  const [isMovingToTarget, setIsMovingToTarget] = useState(false);
+  // Get Three.js camera and scene
+  const { camera } = useThree();
   
   // Escuchar eventos emitidos por el store
   useEffect(() => {
@@ -80,230 +76,59 @@ const Player = () => {
   // Get Three.js scene and camera
   const { camera, gl, scene } = useThree();
 
-  // Handle click on ground for movement con cámara fluida
-  const handleGroundClick = (event: MouseEvent) => {
-    if (gameState !== "playing") return;
+  // Función para comprobar si el jugador está cerca de alguna puerta
+  const checkBuildingProximity = () => {
+    if (gameState !== "playing" || !playerRef.current) return;
     
-    // Cancelar si se está usando el botón derecho para mover la cámara
-    if (event.button !== 0) return;
+    const marketPos = getMarketPosition();
+    const kitchenPos = getKitchenPosition();
+    const gardenPos = getGardenPosition();
     
-    // Si acabamos de salir de un edificio, ignorar el primer clic para evitar bucles
-    if (justExitedBuilding) {
-      console.log("Click ignored - just exited a building");
-      return;
+    // Obtener posición actual del jugador
+    const playerPos = new THREE.Vector3(playerPosition.x, playerPosition.y, playerPosition.z);
+    
+    // Definir posiciones de las puertas
+    const marketDoorPosition = new THREE.Vector3(marketPos.x, playerPosition.y, marketPos.z + 2);
+    const kitchenDoorPosition = new THREE.Vector3(kitchenPos.x, playerPosition.y, kitchenPos.z + 2);
+    const gardenDoorPosition = new THREE.Vector3(gardenPos.x, playerPosition.y, gardenPos.z + 2);
+    
+    // Distancia de detección para entrar por puerta (más pequeña para precisión)
+    const DOOR_INTERACTION_DISTANCE = 1.5;
+    
+    // Calcular distancias
+    const distToMarketDoor = playerPos.distanceTo(marketDoorPosition);
+    const distToKitchenDoor = playerPos.distanceTo(kitchenDoorPosition);
+    const distToGardenDoor = playerPos.distanceTo(gardenDoorPosition);
+    
+    // Verificar si estamos cerca de alguna puerta
+    if (distToMarketDoor < DOOR_INTERACTION_DISTANCE) {
+      console.log("Llegando al mercado por las puertas...");
+      enterBuilding("market");
+      return true;
     }
     
-    // Prevent default behavior
-    event.preventDefault();
-    
-    // Calculate mouse position in normalized device coordinates (-1 to +1)
-    const mouse = new THREE.Vector2();
-    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-    
-    // Create raycaster usando la posición y rotación exactas de la cámara
-    const raycaster = new THREE.Raycaster();
-    raycaster.setFromCamera(mouse, camera);
-    
-    // Comprobar si el clic fue directamente sobre algún objeto en la escena
-    const intersects = raycaster.intersectObjects(scene.children, true);
-    
-    // Primero revisar si el clic fue sobre la superficie del huerto
-    let clickedOnGarden = false;
-    for (let i = 0; i < intersects.length; i++) {
-      if (intersects[i].object.name === 'gardenSurface') {
-        clickedOnGarden = true;
-        console.log("¡Clic detectado sobre la superficie del huerto! Moviendo al personaje hacia allí...");
-        
-        // Obtener la posición donde se hizo clic
-        const clickPosition = intersects[i].point;
-        
-        // Calcular una posición válida donde mover al jugador (sobre el huerto)
-        const gardenPos = getGardenPosition();
-        const playerDestination = new THREE.Vector3(
-          gardenPos.x, 
-          playerPosition.y, 
-          gardenPos.z
-        );
-        
-        // Mover al jugador hacia el huerto
-        setTargetPosition(playerDestination);
-        setIsMovingToTarget(true);
-        
-        // Calcular dirección para mirar hacia el huerto
-        const direction = new THREE.Vector3().subVectors(
-          new THREE.Vector3(gardenPos.x, playerPosition.y, gardenPos.z),
-          new THREE.Vector3(playerPosition.x, playerPosition.y, playerPosition.z)
-        );
-        const targetRotation = Math.atan2(direction.x, direction.z);
-        setRotationY(targetRotation);
-        
-        // Entrar al huerto solo cuando el jugador llegue a su destino
-        setTimeout(() => {
-          console.log("Llegando al huerto, abriendo ventana...");
-          enterBuilding("garden");
-        }, 1000);
-        
-        return;
-      }
+    if (distToKitchenDoor < DOOR_INTERACTION_DISTANCE) {
+      console.log("Llegando a la cocina por las puertas...");
+      enterBuilding("kitchen");
+      return true;
     }
     
-    // Si no se hizo clic en el huerto, continuar con la detección normal
-    // Find intersections con el suelo desde la perspectiva actual de la cámara
-    const groundPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0); // Y-up plane at y=0
-    const targetPoint = new THREE.Vector3();
-    raycaster.ray.intersectPlane(groundPlane, targetPoint);
-    
-    if (targetPoint) {
-      // Comprobar si el clic está cerca del mercado o la cocina
-      const distToMarket = new THREE.Vector3(
-        targetPoint.x - marketPosition.x,
-        0,
-        targetPoint.z - marketPosition.z
-      ).length();
-      
-      const distToKitchen = new THREE.Vector3(
-        targetPoint.x - kitchenPosition.x,
-        0, 
-        targetPoint.z - kitchenPosition.z
-      ).length();
-      
-      // Si el clic está cerca de un edificio, interactuar con él
-      if (distToMarket < INTERACTION_DISTANCE) {
-        // Primero mover al jugador cerca del edificio
-        targetPoint.copy(new THREE.Vector3(marketPosition.x, playerPosition.y, marketPosition.z));
-        targetPoint.addScaledVector(new THREE.Vector3(1, 0, 1).normalize(), 1.5); // Posición ligeramente alejada
-        setTargetPosition(targetPoint);
-        setIsMovingToTarget(true);
-        
-        // Calcular dirección para mirar hacia el edificio
-        const direction = new THREE.Vector3().subVectors(
-          new THREE.Vector3(marketPosition.x, playerPosition.y, marketPosition.z),
-          new THREE.Vector3(targetPoint.x, playerPosition.y, targetPoint.z)
-        );
-        const targetRotation = Math.atan2(direction.x, direction.z);
-        setRotationY(targetRotation);
-        
-        // Entrar al mercado después de un breve retraso
-        setTimeout(() => {
-          console.log("Entering market");
-          enterBuilding("market");
-        }, 500);
-        
-        return;
-      }
-      
-      if (distToKitchen < INTERACTION_DISTANCE) {
-        // Primero mover al jugador cerca del edificio
-        targetPoint.copy(new THREE.Vector3(kitchenPosition.x, playerPosition.y, kitchenPosition.z));
-        targetPoint.addScaledVector(new THREE.Vector3(1, 0, 1).normalize(), 1.5); // Posición ligeramente alejada
-        setTargetPosition(targetPoint);
-        setIsMovingToTarget(true);
-        
-        // Calcular dirección para mirar hacia el edificio
-        const direction = new THREE.Vector3().subVectors(
-          new THREE.Vector3(kitchenPosition.x, playerPosition.y, kitchenPosition.z),
-          new THREE.Vector3(targetPoint.x, playerPosition.y, targetPoint.z)
-        );
-        const targetRotation = Math.atan2(direction.x, direction.z);
-        setRotationY(targetRotation);
-        
-        // Entrar a la cocina después de un breve retraso
-        setTimeout(() => {
-          console.log("Entering kitchen");
-          enterBuilding("kitchen");
-        }, 500);
-        
-        return;
-      }
-      
-      // Comprobar la distancia al huerto en sí (entrada original)
-      const gardenPos = getGardenPosition();
-      const distToGarden = new THREE.Vector3(
-        playerPosition.x - gardenPos.x,
-        0,
-        playerPosition.z - gardenPos.z
-      ).length();
-      
-      if (distToGarden < INTERACTION_DISTANCE) {
-        console.log("Player is near garden entrance");
-        
-        // Movemos al jugador justo frente a la entrada del huerto
-        const entrancePoint = new THREE.Vector3(
-          gardenPos.x,
-          playerPosition.y,
-          gardenPos.z + 4 // Posición frente a la entrada
-        );
-        
-        setTargetPosition(entrancePoint);
-        setIsMovingToTarget(true);
-        
-        // Calculamos la dirección para mirar hacia el huerto
-        const direction = new THREE.Vector3().subVectors(
-          new THREE.Vector3(gardenPos.x, playerPosition.y, gardenPos.z),
-          entrancePoint
-        );
-        const targetRotation = Math.atan2(direction.x, direction.z);
-        setRotationY(targetRotation);
-        
-        // Entrar después de un breve retraso
-        setTimeout(() => {
-          console.log("Now entering garden");
-          enterBuilding("garden");
-        }, 500);
-        
-        return;
-      }
-      
-      // Si no está cerca de un edificio, simplemente moverse allí
-      targetPoint.y = playerPosition.y;
-      setTargetPosition(targetPoint);
-      setIsMovingToTarget(true);
-      
-      // Calcular dirección para mirar
-      const direction = new THREE.Vector3().subVectors(targetPoint, new THREE.Vector3(playerPosition.x, playerPosition.y, playerPosition.z));
-      const targetRotation = Math.atan2(direction.x, direction.z);
-      setRotationY(targetRotation);
+    if (distToGardenDoor < DOOR_INTERACTION_DISTANCE) {
+      console.log("Llegando al huerto por las puertas...");
+      enterBuilding("garden");
+      return true;
     }
+    
+    return false;
   };
   
-  // Set up mouse click event listener
+  // Ya no usamos eventos de clic para movimiento - Solo verificamos proximidad a puertas
   useEffect(() => {
-    // Obtener el canvas para eventos de clic
-    const canvas = gl.domElement;
-    
-    // Handler para detectar si es un clic puro o parte de una acción de zoom/rotación
-    const handleCanvasClick = (event: MouseEvent) => {
-      console.log("Canvas click detected, game state:", gameState);
-      
-      // Solo procesar clics si estamos en estado "playing"
-      if (gameState !== "playing") {
-        console.log("Click ignored - game not in playing state");
-        return;
-      }
-      
-      // Si se está presionando algún botón del teclado o la rueda del ratón, no considerar como clic para movimiento
-      if (event.altKey || event.ctrlKey || event.shiftKey || event.metaKey) {
-        console.log("Click ignored - modifier key pressed");
-        return; // No manejar este clic como orden de movimiento
-      }
-      
-      // Verificar si es un clic rápido y no parte de un arrastre o zoom
-      if (event.detail === 1) { // Es un clic simple
-        console.log("Processing ground click for movement");
-        handleGroundClick(event);
-      }
-    };
-    
-    // Añadir y eliminar el listener explícitamente cuando cambia el estado del juego
-    if (gameState === "playing") {
-      console.log("Adding click event listener to canvas");
-      canvas.addEventListener('click', handleCanvasClick);
-    }
+    // Ningún evento de clic para movimiento - Usando solo teclado y arrastre
+    console.log("Nuevo sistema de movimiento: solo teclado y arrastre de ratón");
     
     return () => {
-      console.log("Removing click event listener from canvas");
-      canvas.removeEventListener('click', handleCanvasClick);
+      // Nada que limpiar
     };
   }, [gameState, gl.domElement]);
   
@@ -411,13 +236,12 @@ const Player = () => {
   useFrame(() => {
     if (gameState !== "playing" || !playerRef.current) return;
     
-    // Keyboard movement
-    const { forward, backward, leftward, rightward, interact } = getKeys();
+    // Comprobar primero si estamos cerca de alguna puerta
+    const enteringBuilding = checkBuildingProximity();
+    if (enteringBuilding) return; // Si estamos entrando a un edificio, no procesar más movimiento
     
-    // If any keyboard movement, cancel mouse movement
-    if (forward || backward || leftward || rightward) {
-      setIsMovingToTarget(false);
-    }
+    // Solo movimiento por teclado (sin clic ni target)
+    const { forward, backward, leftward, rightward } = getKeys();
     
     // Calculate keyboard movement direction
     moveDir.set(0, 0, 0);
@@ -447,28 +271,6 @@ const Player = () => {
       // Burn a small amount of calories when moving
       increaseCaloriesBurned(0.01);
     }
-    // Move toward mouse target if active
-    else if (isMovingToTarget && targetPosition) {
-      // Calculate direction to target
-      const currentPos = new THREE.Vector3(playerPosition.x, playerPosition.y, playerPosition.z);
-      const targetPos = targetPosition.clone();
-      const direction = targetPos.sub(currentPos);
-      
-      // Check if we're close enough to target
-      if (direction.length() < MOUSE_SPEED) {
-        setIsMovingToTarget(false);
-        
-        // Si hay un edificio de destino, entrar a él
-        if (destinationBuilding) {
-          console.log(`Llegando al destino, entrando a ${destinationBuilding}...`);
-          // Pequeño retraso para que sea más natural
-          setTimeout(() => {
-            // Validamos que el edificio sea uno de los permitidos
-            if (destinationBuilding === "market" || destinationBuilding === "kitchen" || destinationBuilding === "garden") {
-              enterBuilding(destinationBuilding);
-            } else {
-              console.error(`Tipo de edificio no válido: ${destinationBuilding}`);
-            }
             setDestinationBuilding(null); // Limpiar el destino
           }, 200);
         }
