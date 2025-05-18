@@ -70,9 +70,9 @@ export const useExitHelper = () => {
       if (camera) {
         const gardenPos = getGardenPosition();
         
-        // Posicionamos la cámara más atrás y más alta para ver mejor al personaje
-        camera.position.set(0, 12, 4); // Más atrás y más alta para ver la cabeza
-        camera.lookAt(new THREE.Vector3(0, 1, -10)); // Mirar un poco más alto para incluir la cabeza
+        // Posicionamos la cámara en una posición isométrica (más alejada y más alta)
+        camera.position.set(0, 15, 15); // Mucho más atrás y más alta para ver todo el personaje
+        camera.lookAt(new THREE.Vector3(0, 0, -5)); // Mirar hacia el personaje
         camera.updateProjectionMatrix();
       }
     }
