@@ -15,7 +15,6 @@ interface MarketProps {
 const Market = ({ onExit }: MarketProps) => {
   const { playerData, addFood, updateCoins, addSeed } = usePlayerStore();
   const { purchasedFood, addPurchasedFood, transferToKitchen } = useFoodStore();
-  const { exitBuilding } = useGameStateStore();
   const { t } = useLanguage();
   
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
