@@ -34,6 +34,7 @@ export const getKitchenExitPosition = () => KITCHEN_EXIT_POSITION;
 // Componente principal de edificios
 const Buildings = () => {
   const { setMarketPosition, setKitchenPosition } = useFoodStore();
+  const { enterBuilding } = useGameStateStore();
   
   // Posiciones predefinidas para edificios - Usar constantes globales
   const marketPos: [number, number, number] = [MARKET_POSITION.x, MARKET_POSITION.y, MARKET_POSITION.z];
@@ -412,29 +413,6 @@ const Buildings = () => {
           </mesh>
         </group>
       </group>
-      
-      {/* Instrucciones */}
-      <Text
-        position={[0, 6, 0]}
-        rotation={[0, 0, 0]}
-        fontSize={0.5}
-        color="black"
-        anchorX="center"
-        anchorY="middle"
-      >
-        Usa las teclas WASD para moverte
-      </Text>
-      
-      <Text
-        position={[0, 5.5, 0]}
-        rotation={[0, 0, 0]}
-        fontSize={0.5}
-        color="black"
-        anchorX="center"
-        anchorY="middle"
-      >
-        Acércate a las puertas para entrar
-      </Text>
     </group>
   );
 };
