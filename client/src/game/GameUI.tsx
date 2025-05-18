@@ -302,7 +302,7 @@ const GameUI = () => {
             
             {/* Profile panel that appears only when user clicks on "Perfil" */}
             {showProfilePanel && (
-              <div className="fixed top-2 right-2 bg-white/90 p-2 rounded-lg shadow-md" style={{ maxWidth: "300px", maxHeight: "80vh", overflow: "auto" }}>
+              <div className="fixed top-24 left-2 bg-white/90 p-2 rounded-lg shadow-md" style={{ maxWidth: "300px", maxHeight: "80vh", overflow: "auto" }}>
                 <div className="flex space-x-2 mb-2">
                   <button 
                     className={`px-3 py-1 text-sm rounded ${activeTab === 'profile' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
