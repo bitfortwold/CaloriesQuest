@@ -137,7 +137,8 @@ const GameUI = () => {
             
             <div className="fixed inset-0 z-50 flex items-center justify-center">
               <Garden onExit={() => {
-                console.log("NO SE EJECUTA - Anulado por el botón principal");
+                console.log("Saliendo del huerto mediante función onExit");
+                exitBuilding();
               }} />
             </div>
           </>
