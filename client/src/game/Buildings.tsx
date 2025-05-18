@@ -18,16 +18,16 @@ export const getGardenPosition = () => gardenPosition;
 
 // Posiciones específicas para la salida de cada edificio - Ajustadas para perfecta visualización
 // Posición para la salida del huerto (en el camino ocre frente al huerto)
-let gardenExitPosition: Position = { x: 0, y: 0, z: -10 }; // Posición optimizada en el camino ocre frente al huerto
-export const getGardenExitPosition = () => gardenExitPosition;
+// Usamos una función que devuelve siempre el mismo objeto para garantizar consistencia
+export const getGardenExitPosition = () => ({ x: 0, y: 0, z: -10 }); // Posición fija y optimizada
 
 // Posición para la salida del mercado (en el camino ocre frente al mercado)
-let marketExitPosition: Position = { x: 20, y: 0, z: -10 }; // Posición optimizada en el camino frente al mercado
-export const getMarketExitPosition = () => marketExitPosition;
+// Usamos una función que devuelve siempre el mismo objeto para garantizar consistencia
+export const getMarketExitPosition = () => ({ x: 20, y: 0, z: -10 }); // Posición fija y optimizada
 
 // Posición para la salida de la cocina (en el camino ocre frente a la cocina)
-let kitchenExitPosition: Position = { x: -20, y: 0, z: -10 }; // Posición optimizada en el camino frente a la cocina
-export const getKitchenExitPosition = () => kitchenExitPosition;
+// Usamos una función que devuelve siempre el mismo objeto para garantizar consistencia
+export const getKitchenExitPosition = () => ({ x: -20, y: 0, z: -10 }); // Posición fija y optimizada
 
 // Ya no usamos el círculo amarillo, ya que implementamos detección de proximidad
 
