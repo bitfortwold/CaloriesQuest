@@ -300,7 +300,7 @@ const Player = () => {
         setPlayerPosition({
           x: 0,
           y: 0,
-          z: -9 // Posición fija en el camino ocre (según la captura de pantalla)
+          z: -6 // Posición ajustada según la nueva captura de pantalla
         });
         
         // Orientar al jugador hacia el huerto (al norte)
