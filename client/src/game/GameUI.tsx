@@ -5,7 +5,6 @@ import { usePlayerStore } from "../stores/usePlayerStore";
 import { SoundButton } from "../components/ui/SoundButton";
 import { LanguageSelector } from "../components/ui/LanguageSelector";
 import { useLanguage } from "../i18n/LanguageContext";
-import { useCameraStore } from "../lib/stores/useCameraStore";
 import Market from "./Market";
 import Kitchen from "./Kitchen";
 import Garden from "./Garden";
@@ -29,15 +28,12 @@ const GameUI = () => {
   // Don't render anything if DOM is not ready
   if (!domReady) return null;
   
-  // SISTEMA UNIFICADO PARA LA SALIDA DE EDIFICIOS - VERSIÓN MEJORADA Y ROBUSTA
+  // SISTEMA UNIFICADO PARA LA SALIDA DE EDIFICIOS
   const handleBuildingExit = (buildingType: string) => {
     console.log(`Saliendo de ${buildingType} mediante sistema unificado - VERSIÓN FINAL`);
     
     // Obtener el store del jugador para actualizaciones y posicionamiento
     const { updatePlayer, playerData } = usePlayerStore.getState();
-    
-    // IMPORTANTE: Forzar el reseteo de posiciones al salir para eliminar problemas
-    // Especialmente crítico para el huerto que tiene más inconsistencias
     
     // Guardar qué edificio estamos abandonando para coordinar la posición
     if (playerData) {
@@ -50,13 +46,9 @@ const GameUI = () => {
       });
     }
     
-    // Añadir un pequeño retardo para asegurar que todas las actualizaciones
-    // de estado se completen correctamente antes de cambiar el game state
-    setTimeout(() => {
-      // PASO FINAL: Devolver el control al juego (cambia el estado a "playing")
-      // Esto activará el useEffect en Player.tsx que detecta el cambio de estado
-      exitBuilding();
-    }, 100);
+    // PASO FINAL: Devolver el control al juego (cambia el estado a "playing")
+    // Esto activará el useEffect en Player.tsx que detecta el cambio de estado
+    exitBuilding();
   };
   
   // Render UI based on game state
@@ -151,8 +143,38 @@ const GameUI = () => {
             
             <div className="fixed inset-0 z-50 flex items-center justify-center">
               <Garden onExit={() => {
-                console.log("GameUI attempting to exit garden");
-                handleBuildingExit("garden");
+                console.log("GameUI attempting to exit garden - VERSIÓN ESPECIAL HUERTO");
+                
+                // Esta solución específica para el huerto mantiene coherente el sistema de salida
+                const { updatePlayer, playerData } = usePlayerStore.getState();
+                
+                if (playerData) {
+                  // Garantizar que estados de huerto quedan limpios
+                  const gardenData = playerData.garden?.map(plot => {
+                    // Prevenir actualizaciones mientras salimos
+                    if (plot.plant && plot.state === "growing") {
+                      return {
+                        ...plot,
+                        // Congelar el progreso para evitar conflictos
+                        lastWatered: new Date().toISOString()
+                      };
+                    }
+                    return plot;
+                  });
+                  
+                  // Actualizar con datos estables
+                  if (gardenData) {
+                    updatePlayer({
+                      ...playerData,
+                      garden: gardenData,
+                      // Usar el mismo marcador que para la salida de otros edificios
+                      lastGardenAction: "unified_exit"
+                    });
+                  }
+                }
+                
+                // Usar el sistema unificado después de la limpieza
+                exitBuilding();
               }} />
             </div>
           </>
