@@ -365,13 +365,25 @@ const Player = () => {
           const pos = gardenExitCameraPosition;
           const target = gardenExitCameraTarget;
           
-          // IMPORTANTE: Reseteo completo de propiedades de cámara
-          camera.position.set(pos.x, pos.y, pos.z);
-          camera.lookAt(target.x, target.y, target.z);
+          // SOLUCIÓN FINAL - Mantener ángulo de cámara consistente
+          if (exitedBuilding === "garden") {
+            // Coordenadas absolutas garantizadas para el huerto
+            // No utilizar valores relativos para evitar cambios en el ángulo
+            const FIXED_POSITION = {x: 0, y: 8, z: 5};
+            const FIXED_TARGET = {x: 0, y: 1, z: -10};
+            
+            camera.position.set(FIXED_POSITION.x, FIXED_POSITION.y, FIXED_POSITION.z);
+            camera.lookAt(FIXED_TARGET.x, FIXED_TARGET.y, FIXED_TARGET.z);
+            
+            console.log("🔒 ÁNGULO FIJO: Aplicado posicionamiento absoluto para huerto");
+          } else {
+            // Para mercado y cocina mantener el sistema existente
+            camera.position.set(pos.x, pos.y, pos.z);
+            camera.lookAt(target.x, target.y, target.z);
+          }
           
           // Verificar posicionamiento final
           console.log(`🎯 POSICIÓN FINAL - JUGADOR: (${POSICION_FINAL.x}, 0, ${POSICION_FINAL.z})`);
-          console.log(`🎯 POSICIÓN FINAL - CÁMARA: (${pos.x}, ${pos.y}, ${pos.z})`);
         }
       }, 100);
       
