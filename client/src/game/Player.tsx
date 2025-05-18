@@ -381,6 +381,11 @@ const Player = () => {
       if (direction.length() < MOUSE_SPEED) {
         setIsMovingToTarget(false);
       } else {
+        // Actualizar la rotación para mirar hacia el objetivo
+        // Calculamos el ángulo en el plano X-Z (horizontal)
+        const targetRotation = Math.atan2(direction.x, direction.z);
+        setRotationY(targetRotation);
+        
         // Normalize and scale by speed
         direction.normalize().multiplyScalar(MOUSE_SPEED);
         
