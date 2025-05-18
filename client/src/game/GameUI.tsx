@@ -28,12 +28,16 @@ const GameUI = () => {
   // Don't render anything if DOM is not ready
   if (!domReady) return null;
   
-  // SISTEMA UNIFICADO PARA LA SALIDA DE EDIFICIOS
+  // SISTEMA UNIFICADO PARA LA SALIDA DE EDIFICIOS - VERSIÓN MEJORADA
   const handleBuildingExit = (buildingType: string) => {
     console.log(`Saliendo de ${buildingType} mediante sistema unificado - VERSIÓN FINAL`);
     
     // Obtener el store del jugador para actualizaciones y posicionamiento
     const { updatePlayer, playerData } = usePlayerStore.getState();
+    
+    // IMPORTANTE: Avisar a la cámara para resetear posición
+    const { requestReset } = useCameraStore.getState();
+    requestReset();
     
     // Guardar qué edificio estamos abandonando para coordinar la posición
     if (playerData) {
@@ -46,9 +50,13 @@ const GameUI = () => {
       });
     }
     
-    // PASO FINAL: Devolver el control al juego (cambia el estado a "playing")
-    // Esto activará el useEffect en Player.tsx que detecta el cambio de estado
-    exitBuilding();
+    // Añadir un pequeño retardo para asegurar que todas las actualizaciones
+    // de estado se completen correctamente antes de cambiar el game state
+    setTimeout(() => {
+      // PASO FINAL: Devolver el control al juego (cambia el estado a "playing")
+      // Esto activará el useEffect en Player.tsx que detecta el cambio de estado
+      exitBuilding();
+    }, 50);
   };
   
   // Render UI based on game state

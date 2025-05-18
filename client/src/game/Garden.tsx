@@ -44,8 +44,7 @@ const Garden = ({ onExit }: GardenProps) => {
     updatePlayer({
       ...playerData,
       garden: updatedGarden,
-      // Marcar que se realizó una acción, pero será ignorada en la salida unificada
-      lastGardenAction: "water"
+      // No definimos lastGardenAction aquí para evitar interferencias con el sistema unificado
     });
     
     console.log("Planta regada exitosamente");
