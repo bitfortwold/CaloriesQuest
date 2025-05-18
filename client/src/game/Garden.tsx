@@ -43,10 +43,12 @@ const Garden = ({ onExit }: GardenProps) => {
     
     updatePlayer({
       ...playerData,
-      garden: updatedGarden
+      garden: updatedGarden,
+      // Marcar que se realizó una acción en el huerto para gestionar correctamente la salida
+      lastGardenAction: "water"
     });
     
-    console.log("Planta regada exitosamente");
+    console.log("Planta regada, registrando acción para salida correcta");
   };
 
   // Manejar la cosecha de una planta
@@ -88,12 +90,14 @@ const Garden = ({ onExit }: GardenProps) => {
       ...playerData,
       garden: updatedGarden,
       inventory: updatedInventory,
-      coins: playerData.coins + harvestReward
+      coins: playerData.coins + harvestReward,
+      // Marcar que se cosechó para gestionar correctamente la salida
+      lastGardenAction: "harvest"
     });
     
     // Notificar al usuario
     toast.success(`Has cosechado ${plot.plant.name} y ganado ${harvestReward} IHC`);
-    console.log("Planta cosechada exitosamente");
+    console.log("Planta cosechada, registrando acción para salida correcta");
   };
 
   // Plantar una semilla

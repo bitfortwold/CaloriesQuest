@@ -290,7 +290,7 @@ const Player = () => {
       // Marcar que acabamos de salir de un edificio para evitar interacciones inmediatas
       setJustExitedBuilding(true);
       
-      // Comportamiento personalizado según el edificio 
+      // Comportamiento personalizado según el edificio
       if (lastGameStateRef.current === "garden") {
         console.log("Saliendo del huerto");
         
@@ -301,6 +301,19 @@ const Player = () => {
           y: playerPosition.y, // Mantenemos la altura actual
           z: exitPos.z
         });
+        
+        // Verificar si hubo acción de riego o cosecha
+        const { playerData } = usePlayerStore.getState();
+        if (playerData?.lastGardenAction === "harvest" || playerData?.lastGardenAction === "water") {
+          console.log(`Detectada acción previa en el huerto: ${playerData.lastGardenAction}`);
+          // Resetear la acción después de procesarla
+          if (playerData) {
+            updatePlayer({
+              ...playerData,
+              lastGardenAction: undefined // Limpiar la acción
+            });
+          }
+        }
         
         // Configuración precisa de la cámara según la captura de pantalla
         if (camera) {
