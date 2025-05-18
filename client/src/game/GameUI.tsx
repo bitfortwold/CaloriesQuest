@@ -131,10 +131,44 @@ const GameUI = () => {
       case "garden":
         return (
           <>
-            {/* Botón flotante para salir del huerto - IMPLEMENTACIÓN FINAL */}
+            {/* Botón flotante para salir del huerto - IMPLEMENTACIÓN HARDCODED */}
             <div className="fixed top-4 right-4 z-[1000]">
               <button
-                onClick={() => handleBuildingExit("garden")}
+                onClick={() => {
+                  console.log("SALIDA FORZADA DEL HUERTO - BYPASS TOTAL DEL SISTEMA");
+                  
+                  // Acceder al store del juego
+                  const { updatePlayer, playerData } = usePlayerStore.getState();
+                  const { setGameState } = useGameStateStore.getState();
+                  
+                  // PASO 1: Limpiar todos los estados de manera forzada
+                  if (playerData) {
+                    updatePlayer({
+                      ...playerData,
+                      // Eliminar cualquier información de acción previa
+                      lastGardenAction: undefined
+                    });
+                  }
+                  
+                  // PASO 2: Forzar directamente al estado de juego sin usar el sistema unificado
+                  setGameState("playing");
+                  
+                  // PASO 3: Resetear posición y cámara con script directo
+                  // Este código se ejecutará después de cambiar el estado
+                  setTimeout(() => {
+                    // Acceder al DOM directamente para forzar ubicación
+                    const player = document.querySelector('[data-player]');
+                    const camera = document.querySelector('canvas');
+                    
+                    if (player) {
+                      // Forzar estilos CSS para posicionar de manera absoluta
+                      player.setAttribute('style', 'transform: translateX(0) translateY(0) translateZ(-10) !important');
+                    }
+                    
+                    // Notificar al juego que debe reiniciar la cámara
+                    console.log("🔄 FORZANDO REINICIO DE POSICIÓN");
+                  }, 50);
+                }}
                 className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg border-2 border-red-500 shadow-lg text-xl transition-all hover:scale-105"
               >
                 {t.exit}
@@ -143,38 +177,22 @@ const GameUI = () => {
             
             <div className="fixed inset-0 z-50 flex items-center justify-center">
               <Garden onExit={() => {
-                console.log("GameUI attempting to exit garden - VERSIÓN ESPECIAL HUERTO");
+                console.log("SALIDA ALTERNATIVA DEL HUERTO - VERSIÓN HARDCODED");
                 
-                // Esta solución específica para el huerto mantiene coherente el sistema de salida
-                const { updatePlayer, playerData } = usePlayerStore.getState();
-                
-                if (playerData) {
-                  // Garantizar que estados de huerto quedan limpios
-                  const gardenData = playerData.garden?.map(plot => {
-                    // Prevenir actualizaciones mientras salimos
-                    if (plot.plant && plot.state === "growing") {
-                      return {
-                        ...plot,
-                        // Congelar el progreso para evitar conflictos
-                        lastWatered: new Date().toISOString()
-                      };
-                    }
-                    return plot;
-                  });
-                  
-                  // Actualizar con datos estables
-                  if (gardenData) {
-                    updatePlayer({
-                      ...playerData,
-                      garden: gardenData,
-                      // Usar el mismo marcador que para la salida de otros edificios
-                      lastGardenAction: "unified_exit"
-                    });
-                  }
-                }
-                
-                // Usar el sistema unificado después de la limpieza
+                // Simplificar al máximo la salida
                 exitBuilding();
+                
+                // Forzar posición conocida-funcional para jugador
+                setTimeout(() => {
+                  // Obtener el player para forzar directamente su posición
+                  const { setPlayerPosition, setRotationY } = usePlayerStore.getState();
+                  
+                  // POSICIÓN ABSOLUTA FIJA
+                  setPlayerPosition({ x: 0, y: 0, z: -10 });
+                  setRotationY(Math.PI); // Orientación hacia el Norte (huerto)
+                  
+                  console.log("POSICIÓN FORZADA A VALORES ABSOLUTOS");
+                }, 100);
               }} />
             </div>
           </>
