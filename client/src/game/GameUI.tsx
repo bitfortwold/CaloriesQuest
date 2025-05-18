@@ -125,19 +125,9 @@ const GameUI = () => {
                 onClick={() => {
                   console.log("SOLUCIÓN FINAL: Salida directa del huerto");
                   
-                  // Primero salir del edificio (cambiar el estado)
+                  // Solo necesitamos salir del edificio
+                  // La lógica de reposicionamiento está ahora en Player.tsx
                   exitBuilding();
-                  
-                  // Teleportar al jugador a una posición absolutamente segura
-                  setTimeout(() => {
-                    const { setPlayerPosition } = usePlayerStore.getState();
-                    setPlayerPosition({
-                      x: 20, 
-                      y: 0, 
-                      z: 20
-                    });
-                    console.log("Teleportación ejecutada correctamente");
-                  }, 100);
                 }}
                 className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg border-2 border-red-500 shadow-lg text-xl transition-all hover:scale-105"
               >
