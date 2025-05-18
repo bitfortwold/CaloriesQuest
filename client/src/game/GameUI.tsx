@@ -29,44 +29,23 @@ const GameUI = () => {
   // Don't render anything if DOM is not ready
   if (!domReady) return null;
   
-  // SISTEMA UNIFICADO PARA LA SALIDA DE EDIFICIOS CON TRATAMIENTO ESPECIAL PARA HUERTO
+  // SISTEMA UNIFICADO PARA LA SALIDA DE EDIFICIOS
   const handleBuildingExit = (buildingType: string) => {
-    console.log(`Saliendo de ${buildingType} mediante sistema unificado - VERSIÓN FINAL`);
+    console.log(`Saliendo de ${buildingType} con sistema unificado`);
     
-    // Obtener el store del jugador para actualizaciones y posicionamiento
-    const { updatePlayer, playerData, setPlayerPosition } = usePlayerStore.getState();
-    const { requestReset } = useCameraStore.getState();
+    // Obtener el estado actual del jugador
+    const { updatePlayer, playerData } = usePlayerStore.getState();
     
-    // TRATAMIENTO ESPECIAL PARA EL HUERTO - FIJA VALORES ABSOLUTOS
-    if (buildingType === "garden") {
-      // Resetear cámara completamente
-      requestReset();
-      
-      // Forzar posición jugador explícitamente - VALORES FIJOS NO NEGOCIABLES
-      setTimeout(() => {
-        setPlayerPosition({ x: 0, y: 0, z: -8 });
-        
-        // Aplicar valores fijos directamente a la cámara
-        const scene = document.querySelector("canvas")?.parentElement;
-        if (scene) {
-          const cameraEvent = new CustomEvent('resetCamera', {
-            detail: { x: 0, y: 10, z: 10, lookAt: { x: 0, y: 0, z: -15 } }
-          });
-          scene.dispatchEvent(cameraEvent);
-        }
-      }, 10);
-    }
-    
-    // Actualizar estado para todos los edificios
+    // Guardar información de salida para todos los edificios de la misma manera
     if (playerData) {
       updatePlayer({
         ...playerData,
-        // Indicar salida unificada
-        lastGardenAction: "unified_exit"
+        // Información unificada para todos los edificios
+        lastBuildingExit: buildingType
       });
     }
     
-    // Devolver control al juego
+    // Devolver control al juego - mismo comportamiento para los tres edificios
     exitBuilding();
   };
   

@@ -14,13 +14,18 @@ interface Position {
 
 // Variables globales para acceso a posiciones
 let gardenPosition: Position = { x: 0, y: 0, z: -15 };
+let marketPosition: Position = { x: -8, y: 0, z: 0 };
+let kitchenPosition: Position = { x: 8, y: 0, z: 0 };
+
+// Funciones de acceso consistentes para todas las posiciones
 export const getGardenPosition = () => gardenPosition;
+export const getMarketPosition = () => marketPosition;
+export const getKitchenPosition = () => kitchenPosition;
 
 // POSICIONES FIJAS PARA SALIDA DE EDIFICIOS
-// Estas posiciones son absolutas y no cambian bajo ninguna circunstancia
-export const getGardenExitPosition = () => ({ x: 0, y: 0, z: -7 }); // Movido hacia el sur para alejarlo del huerto
-export const getMarketExitPosition = () => ({ x: 20, y: 0, z: -10 });
-export const getKitchenExitPosition = () => ({ x: -20, y: 0, z: -10 });
+export const getGardenExitPosition = () => ({ x: 0, y: 0, z: -10 }); // Posición consistente
+export const getMarketExitPosition = () => ({ x: -8, y: 0, z: 3 });    // Frente al mercado
+export const getKitchenExitPosition = () => ({ x: 8, y: 0, z: 3 });    // Frente a la cocina
 
 // Componente principal de edificios
 const Buildings = () => {
