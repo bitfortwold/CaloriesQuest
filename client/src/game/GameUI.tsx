@@ -152,15 +152,15 @@ const GameUI = () => {
           <div className="z-10">
             {/* Panel de Estadísticas del Jugador */}
             <div className="fixed top-2 left-2 z-[1000]">
-              {/* Botón para mostrar/ocultar estadísticas */}
+              {/* Botón reducido para mostrar/ocultar estadísticas */}
               <button
                 onClick={() => setShowStatsPanel(!showStatsPanel)}
-                className="bg-gradient-to-r from-blue-700 to-indigo-900 text-white font-bold py-2 px-4 rounded-lg shadow-lg border-2 border-blue-600 transition-all duration-300 hover:scale-105 flex items-center"
+                className="bg-gradient-to-r from-blue-700 to-indigo-900 text-white font-bold p-2 rounded-lg shadow-lg border-2 border-blue-600 transition-all duration-300 hover:scale-105 flex items-center justify-center"
+                title={t.playerStats}
               >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
-                <span>{t.playerStats}</span>
               </button>
               
               {/* Panel desplegable de estadísticas */}
