@@ -131,46 +131,14 @@ const GameUI = () => {
       case "garden":
         return (
           <>
-            {/* Botón flotante para salir del huerto - VERSIÓN FORZADA 100% */}
+            {/* Botón flotante para salir del huerto - VERSIÓN SIMPLE */}
             <div className="fixed top-4 right-4 z-[1000]">
               <button
                 onClick={() => {
-                  console.log("MÉTODO DE EMERGENCIA PARA SALIR DEL HUERTO");
+                  console.log("VOLVIENDO AL SISTEMA BÁSICO PARA SALIR DEL HUERTO");
                   
-                  // 1. Forzar salida inmediata
-                  const { setGameState } = useGameStateStore.getState();
-                  const { updatePlayer, playerData } = usePlayerStore.getState();
-                  
-                  // 2. Limpiar estados 
-                  if (playerData) {
-                    // Anular cualquier acción pendiente
-                    updatePlayer({
-                      ...playerData,
-                      lastGardenAction: undefined
-                    });
-                  }
-                  
-                  // 3. Salir del huerto - forzando el estado de juego
-                  setGameState("playing");
-                  
-                  // 4. En una secuencia de timeouts, forzar posición de cámara y jugador
-                  setTimeout(() => {
-                    // Reposicionar jugador
-                    const { setPlayerPosition } = usePlayerStore.getState();
-                    setPlayerPosition({ x: 0, y: 0, z: -10 });
-                    
-                    // Tiempo para que se actualice la posición
-                    setTimeout(() => {
-                      // Forzar un reposicionamiento de cámara a través de eventos
-                      window.dispatchEvent(new Event('resize'));
-                      
-                      // Aplicar un posicionamiento forzado para la cámara
-                      const camera = document.querySelector('canvas')?.getContext('webgl')?.canvas;
-                      if (camera) {
-                        console.log("Aplicando posicionamiento forzado para mantener vista estable");
-                      }
-                    }, 100);
-                  }, 100);
+                  // Simplemente usar el sistema unificado que funciona para los otros edificios
+                  handleBuildingExit("garden");
                 }}
                 className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg border-2 border-red-500 shadow-lg text-xl transition-all hover:scale-105"
               >
