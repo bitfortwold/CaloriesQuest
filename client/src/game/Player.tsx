@@ -5,6 +5,7 @@ import { useKeyboardControls } from "@react-three/drei";
 import { useGameStateStore } from "../stores/useGameStateStore";
 import { usePlayerStore } from "../stores/usePlayerStore";
 import { useFoodStore } from "../stores/useFoodStore";
+import { useCameraStore } from "../lib/stores/useCameraStore";
 import { 
   getGardenPosition, 
   getGardenExitPosition,
@@ -279,58 +280,79 @@ const Player = () => {
   // Referencia para almacenar el último estado conocido
   const lastGameStateRef = useRef<string | null>(null);
   
-  // SISTEMA TOTALMENTE UNIFICADO para salir de edificios (SOLUCIÓN FINAL)
+  // SOLUCIÓN DEFINITIVA v2.0 - Sistema totalmente unificado para salir de edificios
   useEffect(() => {
     const buildingStates = ["garden", "market", "kitchen"];
     
     // Si venimos de cualquier edificio y ahora estamos jugando
     if (buildingStates.includes(lastGameStateRef.current || "") && gameState === "playing") {
       const exitedBuilding = lastGameStateRef.current;
-      console.log(`▶▶▶ SISTEMA FINAL UNIFICADO: Saliendo de ${exitedBuilding}`);
+      console.log(`🔄 SISTEMA DEFINITIVO: Saliendo de ${exitedBuilding}`);
       
       // Marcar que acabamos de salir para evitar interacciones inmediatas
       setJustExitedBuilding(true);
 
-      // ----- POSICIÓN UNIFICADA PARA TODOS LOS EDIFICIOS SEGÚN CAPTURA DE REFERENCIA -----
+      // --- USAMOS EL NUEVO SISTEMA DE POSICIONAMIENTO FIJO PARA TOTAL COHERENCIA ---
       
-      // Independientemente del edificio, usamos POSICIÓN EXACTA definida aquí
-      // Para todas las salidas (huerto, mercado, cocina), usamos las mismas coordenadas
-      // Así garantizamos 100% la misma posición siempre
+      // Acceder al controlador de cámara para tener referencias absolutas
+      const { 
+        gardenExitCameraPosition, 
+        gardenExitCameraTarget,
+        requestReset 
+      } = useCameraStore.getState();
       
-      // PASO 1: Definir la posición y orientación EXACTAS como en la captura de referencia
-      // Coordenadas extraídas directamente de la captura proporcionada
-      const unifiedExitPos = { x: 0, y: 0, z: -10 }; // Posición más adelante en el camino ocre
-      const unifiedTarget = { x: 0, y: 0, z: -15 };  // Mirando hacia el huerto
-
-      // PASO 2: Posición de seguridad inicial (evita problemas)
+      // Notificar que estamos forzando un reseteo
+      requestReset();
+      console.log(`📸 SOLICITUD DE RESETEO DE CÁMARA (saliendo de ${exitedBuilding})`);
+      
+      // PASO 1: RESETEO RADICAL - Forzar posición en origen antes de cualquier cálculo
       setPlayerPosition({
         x: 0,
         y: 0,
         z: 0
       });
       
-      // PASO 3: Posicionamiento EXACTO como en la captura con pequeño retraso
+      // PASO 2: POSICIÓN GLOBAL UNIFICADA - Siempre la misma independientemente del edificio
+      const POSICION_FINAL = { x: 0, y: 0, z: -10 }; // Calibrada según captura de referencia
+      
+      // PASO 3: RESETEO COMPLETO EN DOS FASES para garantizar coherencia total
+      // Primer movimiento inmediato
       setTimeout(() => {
-        console.log(`▶▶▶ POSICIÓN FINAL EXACTA como en la captura (${exitedBuilding})`);
-        
-        // CALIBRADO PARA COINCIDIR EXACTAMENTE CON LA CAPTURA DE REFERENCIA
+        console.log(`📍 POSICIONAMIENTO FASE 1: Origen (${exitedBuilding})`);
         setPlayerPosition({
-          x: unifiedExitPos.x,
+          x: 0,
           y: 0,
-          z: unifiedExitPos.z
+          z: 0
         });
         
-        // SIEMPRE mirando hacia el edificio del huerto (norte)
-        setRotationY(Math.PI); // Norte - mirando hacia el huerto
+        // Segunda fase - posición final exacta
+        setTimeout(() => {
+          console.log(`📍 POSICIONAMIENTO FASE 2: Final (${exitedBuilding})`);
+          setPlayerPosition({
+            x: POSICION_FINAL.x,
+            y: 0,
+            z: POSICION_FINAL.z
+          });
+          
+          // ORIENTACIÓN FIJA - siempre mirando hacia el norte (huerto)
+          setRotationY(Math.PI);
+          
+          // RESETEO FINAL DE CÁMARA con posición absoluta
+          if (camera) {
+            // Usar valores del store para garantizar coherencia
+            const camPos = gardenExitCameraPosition;
+            const camTarget = gardenExitCameraTarget;
+            
+            // Aplicar posición exacta
+            camera.position.set(camPos.x, camPos.y, camPos.z);
+            camera.lookAt(camTarget.x, camTarget.y, camTarget.z);
+            
+            console.log(`📸 CÁMARA REPOSICIONADA A VALORES ABSOLUTOS`);
+            console.log(`   Posición: (${camPos.x}, ${camPos.y}, ${camPos.z})`);
+            console.log(`   Mirando hacia: (${camTarget.x}, ${camTarget.y}, ${camTarget.z})`);
+          }
+        }, 50);
       }, 50);
-      
-      // PASO 4: Configurar la cámara EXACTAMENTE como en la captura
-      if (camera) {
-        // Posición y ángulo calibrados según la captura de referencia
-        camera.position.set(0, 7, 0);  // Posición elevada detrás del jugador
-        camera.lookAt(0, 1, -15);      // Mirando hacia el huerto, ligeramente elevada
-        console.log(`▶▶▶ Cámara configurada EXACTAMENTE como en la referencia`);
-      }
       
       // PASO 5: Limpiar cualquier estado pendiente en todos los casos
       const { playerData } = usePlayerStore.getState();
