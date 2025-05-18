@@ -24,8 +24,8 @@ export const getGardenExitPosition = () => gardenExitPosition;
 let marketExitPosition: Position = { x: -8, y: 0, z: 3 }; // Posición en el camino frente al mercado
 export const getMarketExitPosition = () => marketExitPosition;
 
-// Posición para la salida de la cocina (en el camino ocre frente a la cocina)
-let kitchenExitPosition: Position = { x: 8, y: 0, z: 3.5 }; // Ajustada para que coincida con el camino ocre frente a la cocina
+// Posición para la salida de la cocina (en el camino ocre central)
+let kitchenExitPosition: Position = { x: 0, y: 0, z: 0 }; // Posición en el camino ocre central
 export const getKitchenExitPosition = () => kitchenExitPosition;
 
 // Ya no usamos el círculo amarillo, ya que implementamos detección de proximidad
