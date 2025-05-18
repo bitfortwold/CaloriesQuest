@@ -373,29 +373,14 @@ const Kitchen = ({ onExit }: KitchenProps) => {
               <h1 className="text-4xl font-bold text-white drop-shadow-lg tracking-wide uppercase">{language === 'en' ? 'Kitchen' : language === 'ca' ? 'Cuina' : 'Cocina'}</h1>
             </div>
 
-            {/* Botón Salir a la derecha */}
+            {/* Botón Salir a la derecha - Simplificado */}
             <button
               onClick={() => {
-                console.log("Saliendo de cocina con botón superior - DESTACADO");
-                // Usar directamente useGameStateStore para salir
-                const { exitBuilding } = useGameStateStore.getState();
+                // Simplificamos el código al máximo
+                console.log("*** SALIENDO DE COCINA - CÓDIGO SIMPLIFICADO ***");
                 
-                // Obtener estado actual del jugador
-                const { updatePlayer, playerData } = usePlayerStore.getState();
-                
-                // Guardar información de salida
-                if (playerData) {
-                  updatePlayer({
-                    ...playerData,
-                    lastGardenAction: undefined
-                  });
-                }
-                
-                // Primero llamar a onExit para cualquier limpieza específica del componente
-                onExit();
-                
-                // Luego llamar directamente a exitBuilding para asegurar que volvemos al juego
-                exitBuilding();
+                // Llamada directa a la función de salida
+                useGameStateStore.getState().exitBuilding();
               }}
               className="bg-gradient-to-r from-[#E74C3C] to-[#C0392B] text-white px-6 py-2 rounded-lg font-bold shadow-md border-2 border-[#A93226] hover:from-[#C0392B] hover:to-[#E74C3C] transition duration-300"
             >
