@@ -33,19 +33,21 @@ const GameUI = () => {
     console.log(`Saliendo de ${buildingType} mediante sistema unificado - VERSIÓN FINAL`);
     
     // Obtener el store del jugador para actualizaciones y posicionamiento
-    const { updatePlayer, playerData, setPlayerPosition } = usePlayerStore.getState();
+    const { updatePlayer, playerData } = usePlayerStore.getState();
     
     // Guardar qué edificio estamos abandonando para coordinar la posición
     if (playerData) {
-      // Guardar info de salida para TODOS los edificios igual
+      // PASO CLAVE: Guardar info de salida para TODOS los edificios igual
+      // Esto es crucial para que el jugador se posicione correctamente
       updatePlayer({
         ...playerData,
-        // Mismo valor de salida para todos los edificios
+        // IMPORTANTE: este valor "unified_exit" es detectado por el sistema unificado
         lastGardenAction: "unified_exit"
       });
     }
     
-    // Devolver el control al juego (cambia el estado a "playing")
+    // PASO FINAL: Devolver el control al juego (cambia el estado a "playing")
+    // Esto activará el useEffect en Player.tsx que detecta el cambio de estado
     exitBuilding();
   };
   
