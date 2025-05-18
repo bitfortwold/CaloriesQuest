@@ -296,24 +296,31 @@ const Player = () => {
         console.log("Saliendo del huerto");
         
         // POSICIÓN EXACTA como en la captura
-        // El jugador siempre sale al mismo punto exacto en el camino ocre
-        const fixedPosition = { x: 0, y: 0, z: -9 }; // Posición fija garantizada
+        // El jugador siempre aparece en esta posición exacta del camino ocre
+        const fixedPosition = { x: 0, y: 0, z: -9 }; // Posición fija en el camino ocre
         
         // Siempre configurar la posición exacta como en la captura
         setPlayerPosition({
-          x: fixedPosition.x,
-          y: 0, // Altura fija para evitar variaciones
-          z: fixedPosition.z
+          x: fixedPosition.x, 
+          y: 0, // Altura fija en el suelo
+          z: fixedPosition.z 
         });
         
-        // Siempre orientar al jugador mirando hacia el huerto
-        setRotationY(Math.PI); // Dirección fija mirando hacia el huerto (Norte)
+        // Orientar al jugador mirando hacia el huerto
+        setRotationY(Math.PI); // El jugador mira hacia el norte (hacia el huerto)
         
-        // Posición de cámara exacta como en la captura
+        // Configuración de cámara exacta según la captura
         if (camera) {
-          camera.position.set(0, 12, 0); // Posición más elevada para vista amplia
-          camera.lookAt(0, 0, -15); // Mirando directamente hacia el huerto
-          console.log("Cámara posicionada para vista correcta del huerto");
+          // Posicionamos la cámara DETRÁS del jugador mirando hacia el huerto
+          camera.position.set(
+            0,     // Alineado con el jugador en X
+            10,    // Altura para ver sobre el jugador
+            2      // Detrás del jugador
+          );
+          
+          // La cámara debe mirar por encima del jugador hacia el huerto
+          camera.lookAt(0, 0, -15); // Mirando hacia el huerto
+          console.log("Cámara posicionada exactamente como en la captura");
         }
         
         // Limpiar acciones del huerto para evitar inconsistencias
