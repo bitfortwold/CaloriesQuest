@@ -364,19 +364,26 @@ const Market = ({ onExit }: MarketProps) => {
             {/* Botón Salir a la derecha */}
             <button
               onClick={() => {
-                console.log("Saliendo de market con botón superior");
-                // Obtener estado actual
+                console.log("Saliendo de market con botón superior - DESTACADO");
+                // Usar directamente useGameStateStore para salir
+                const { exitBuilding } = useGameStateStore.getState();
+                
+                // Obtener estado actual del jugador
                 const { updatePlayer, playerData } = usePlayerStore.getState();
                 
-                // Guardar información de salida (igual que en el sistema unificado)
+                // Guardar información de salida
                 if (playerData) {
                   updatePlayer({
                     ...playerData,
-                    // Limpiar cualquier estado anterior específico de edificios
                     lastGardenAction: undefined
                   });
                 }
+                
+                // Primero llamar a onExit para cualquier limpieza específica del componente
                 onExit();
+                
+                // Luego llamar directamente a exitBuilding para asegurar que volvemos al juego
+                exitBuilding();
               }}
               className="bg-gradient-to-r from-[#E74C3C] to-[#C0392B] text-white px-6 py-2 rounded-lg font-bold shadow-md border-2 border-[#A93226] hover:from-[#C0392B] hover:to-[#E74C3C] transition duration-300"
             >
