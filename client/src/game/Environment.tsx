@@ -55,14 +55,25 @@ const Environment = () => {
         ))}
       </group>
       
-      {/* CAMINO RADICALMENTE ACORTADO - SIN EXTENSIÓN NORTE */}
+      {/* CAMBIO TOTAL DE CAMINO - SEPARADO EN DOS TRAMOS AISLADOS */}
+      {/* Tramo sur - Bien alejado del huerto */}
       <mesh 
         rotation={[-Math.PI / 2, 0, 0]} 
-        position={[0, 0.01, 2]} 
+        position={[0, 0.01, 5]} 
         receiveShadow
       >
-        <planeGeometry args={[5, 10]} />
+        <planeGeometry args={[5, 6]} />
         <meshStandardMaterial color="#D2B48C" roughness={1} />
+      </mesh>
+      
+      {/* BARRERA VISUAL DE SEGURIDAD - Césped entre camino y huerto */}
+      <mesh 
+        rotation={[-Math.PI / 2, 0, 0]} 
+        position={[0, 0.015, -5]} 
+        receiveShadow
+      >
+        <planeGeometry args={[8, 8]} />
+        <meshStandardMaterial color="#228B22" roughness={0.8} />
       </mesh>
     </group>
   );
