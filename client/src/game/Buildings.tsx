@@ -3,6 +3,7 @@ import { useEffect, useRef } from "react";
 import { Text } from "@react-three/drei"; 
 import { useFoodStore } from "../stores/useFoodStore";
 import { useGameStateStore } from "../stores/useGameStateStore";
+import { usePlayerStore } from "../stores/usePlayerStore";
 
 // Definición de posiciones
 interface Position {
@@ -28,23 +29,44 @@ const Buildings = () => {
   const kitchenPos: [number, number, number] = [8, 0, 0];
   const gardenPos: [number, number, number] = [0, 0, -15];
   
-  // Manejadores de clics para cada edificio
+  // Importamos la función del Player para mover el personaje hacia un punto
+  const { movePlayerTo } = usePlayerStore.getState();
+  
+  // Manejadores de clics para cada edificio - Ahora con desplazamiento
   const handleMarketClick = (e: any) => {
-    console.log("🏢 Mercado clickeado: entrando directamente");
+    console.log("🏢 Mercado clickeado: moviéndose hacia él...");
     if (e && e.stopPropagation) e.stopPropagation();
-    enterBuilding("market");
+    
+    // Moverse hacia el mercado en lugar de entrar directamente
+    movePlayerTo({
+      x: marketPos[0],
+      y: 0,
+      z: marketPos[2] + 3 // Posición frente a la entrada
+    }, true, "market"); // El tercer parámetro indica que se entre al edificio al llegar
   };
   
   const handleKitchenClick = (e: any) => {
-    console.log("🏢 Cocina clickeada: entrando directamente");
+    console.log("🏢 Cocina clickeada: moviéndose hacia ella...");
     if (e && e.stopPropagation) e.stopPropagation();
-    enterBuilding("kitchen");
+    
+    // Moverse hacia la cocina en lugar de entrar directamente
+    movePlayerTo({
+      x: kitchenPos[0],
+      y: 0,
+      z: kitchenPos[2] + 3 // Posición frente a la entrada
+    }, true, "kitchen"); // El tercer parámetro indica que se entre al edificio al llegar
   };
   
   const handleGardenClick = (e: any) => {
-    console.log("🏢 Huerto clickeado: entrando directamente");
+    console.log("🏢 Huerto clickeado: moviéndose hacia él...");
     if (e && e.stopPropagation) e.stopPropagation();
-    enterBuilding("garden");
+    
+    // Moverse hacia el huerto en lugar de entrar directamente
+    movePlayerTo({
+      x: gardenPos[0],
+      y: 0,
+      z: gardenPos[2] + 3 // Posición frente a la entrada
+    }, true, "garden"); // El tercer parámetro indica que se entre al edificio al llegar
   };
   
   // Registrar posiciones en el store
