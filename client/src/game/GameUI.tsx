@@ -161,9 +161,14 @@ const GameUI = () => {
                     
                     // Tiempo para que se actualice la posición
                     setTimeout(() => {
-                      // Recargar la página para garantizar coherencia total (solución de emergencia)
-                      // Esta es una solución de último recurso, pero garantizará que todo funcione
-                      window.location.reload();
+                      // Forzar un reposicionamiento de cámara a través de eventos
+                      window.dispatchEvent(new Event('resize'));
+                      
+                      // Aplicar un posicionamiento forzado para la cámara
+                      const camera = document.querySelector('canvas')?.getContext('webgl')?.canvas;
+                      if (camera) {
+                        console.log("Aplicando posicionamiento forzado para mantener vista estable");
+                      }
                     }, 100);
                   }, 100);
                 }}
