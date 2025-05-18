@@ -73,10 +73,37 @@ const Player = () => {
     for (let i = 0; i < intersects.length; i++) {
       if (intersects[i].object.name === 'gardenSurface') {
         clickedOnGarden = true;
-        console.log("¡Clic detectado sobre la superficie del huerto!");
+        console.log("¡Clic detectado sobre la superficie del huerto! Moviendo al personaje hacia allí...");
         
-        // Entrar directamente al huerto si hicimos clic sobre él
-        enterBuilding("garden");
+        // Obtener la posición donde se hizo clic
+        const clickPosition = intersects[i].point;
+        
+        // Calcular una posición válida donde mover al jugador (sobre el huerto)
+        const gardenPos = getGardenPosition();
+        const playerDestination = new THREE.Vector3(
+          gardenPos.x, 
+          playerPosition.y, 
+          gardenPos.z
+        );
+        
+        // Mover al jugador hacia el huerto
+        setTargetPosition(playerDestination);
+        setIsMovingToTarget(true);
+        
+        // Calcular dirección para mirar hacia el huerto
+        const direction = new THREE.Vector3().subVectors(
+          new THREE.Vector3(gardenPos.x, playerPosition.y, gardenPos.z),
+          new THREE.Vector3(playerPosition.x, playerPosition.y, playerPosition.z)
+        );
+        const targetRotation = Math.atan2(direction.x, direction.z);
+        setRotationY(targetRotation);
+        
+        // Entrar al huerto solo cuando el jugador llegue a su destino
+        setTimeout(() => {
+          console.log("Llegando al huerto, abriendo ventana...");
+          enterBuilding("garden");
+        }, 1000);
+        
         return;
       }
     }
@@ -252,18 +279,26 @@ const Player = () => {
     
     // Si venimos de cualquier edificio y ahora estamos jugando
     if (buildingStates.includes(lastGameStateRef.current || "") && gameState === "playing") {
-      console.log(`Detected exit from ${lastGameStateRef.current} - applying cooldown and teleporting`);
+      console.log(`Detected exit from ${lastGameStateRef.current}`);
       
       // Marcar que acabamos de salir de un edificio para evitar interacciones inmediatas
       setJustExitedBuilding(true);
       
-      // SOLUCIÓN DEFINITIVA: Colocar al jugador en el centro del juego 3D
-      console.log("Teleporting player to center of the 3D game");
-      setPlayerPosition({
-        x: 0, // Posición central del mapa
-        y: 0, // Altura base
-        z: 0  // Posición central del mapa
-      });
+      // Comportamiento específico según el edificio
+      if (lastGameStateRef.current === "garden") {
+        // Al salir del huerto, el jugador permanece en su posición actual
+        console.log("SOLUCIÓN FINAL: Salida directa del huerto");
+        console.log("Permaneciendo en la misma posición");
+        // No cambiamos la posición, el jugador se queda donde está
+      } else {
+        // Para otros edificios, teleportar al centro como antes
+        console.log("Teleportación ejecutada correctamente");
+        setPlayerPosition({
+          x: 0, // Posición central del mapa
+          y: 0, // Altura base
+          z: 0  // Posición central del mapa
+        });
+      }
       
       // Restaurar la capacidad de interactuar después de un periodo más largo
       setTimeout(() => {
