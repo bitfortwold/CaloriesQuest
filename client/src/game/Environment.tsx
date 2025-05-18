@@ -55,23 +55,13 @@ const Environment = () => {
         ))}
       </group>
       
-      {/* Path between buildings - AJUSTADO PARA EVITAR INTERFERENCIA CON HUERTO */}
+      {/* CAMINO RADICALMENTE ACORTADO - SIN EXTENSIÓN NORTE */}
       <mesh 
         rotation={[-Math.PI / 2, 0, 0]} 
-        position={[0, 0.01, 0]} 
+        position={[0, 0.01, 2]} 
         receiveShadow
       >
-        <planeGeometry args={[5, 18]} />
-        <meshStandardMaterial color="#D2B48C" roughness={1} />
-      </mesh>
-      
-      {/* Extensión norte del camino (no llega hasta el huerto) */}
-      <mesh 
-        rotation={[-Math.PI / 2, 0, 0]} 
-        position={[0, 0.01, -10]} 
-        receiveShadow
-      >
-        <planeGeometry args={[3, 2]} />
+        <planeGeometry args={[5, 10]} />
         <meshStandardMaterial color="#D2B48C" roughness={1} />
       </mesh>
     </group>
