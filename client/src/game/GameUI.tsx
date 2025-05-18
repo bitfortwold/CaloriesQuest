@@ -31,38 +31,24 @@ const GameUI = () => {
   // Don't render anything if DOM is not ready
   if (!domReady) return null;
   
-  // Función unificada para manejar la salida de cualquier edificio
+  // SISTEMA UNIFICADO PARA LA SALIDA DE EDIFICIOS
   const handleBuildingExit = (buildingType: string) => {
-    console.log(`Saliendo de ${buildingType} mediante sistema unificado`);
+    console.log(`Saliendo de ${buildingType} mediante sistema unificado - VERSIÓN FINAL`);
     
-    // Obtener el store del jugador para actualizaciones
-    const { updatePlayer, playerData } = usePlayerStore.getState();
+    // Obtener el store del jugador para actualizaciones y posicionamiento
+    const { updatePlayer, playerData, setPlayerPosition } = usePlayerStore.getState();
     
+    // Guardar qué edificio estamos abandonando para coordinar la posición
     if (playerData) {
-      // Actualizar el estado del jugador según el edificio
-      switch (buildingType) {
-        case "garden":
-          // Forzar siempre un valor específico al salir para garantizar posicionamiento correcto
-          // independientemente del estado de las semillas o acciones en el huerto
-          console.log("Forzando posición de salida estándar para el huerto");
-          updatePlayer({
-            ...playerData,
-            lastGardenAction: "exit" // Este valor es leído por Player.tsx para posicionar al jugador
-          });
-          break;
-          
-        case "market":
-          // El carrito ya es persistente con useCartStore
-          // No necesitamos lógica adicional aquí
-          break;
-          
-        case "kitchen":
-          // Por si necesitamos añadir lógica de salida específica para la cocina
-          break;
-      }
+      // Guardar info de salida para TODOS los edificios igual
+      updatePlayer({
+        ...playerData,
+        // Mismo valor de salida para todos los edificios
+        lastGardenAction: "unified_exit"
+      });
     }
     
-    // Proceso común de salida para todos los edificios
+    // Devolver el control al juego (cambia el estado a "playing")
     exitBuilding();
   };
   
