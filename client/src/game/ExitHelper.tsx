@@ -35,12 +35,11 @@ export const useExitHelper = () => {
       };
     }
     else if (building === "garden") {
-      const basePosition = getGardenExitPosition();
-      // Para el huerto, usamos una posición más retrasada para que se vea el personaje completo
+      // Para el huerto, lo movemos al frente del huerto para que se vea bien
       exitPosition = {
-        x: basePosition.x,
-        y: basePosition.y,
-        z: -5 // Posición fija que mejora la vista de la cámara
+        x: 0,
+        y: 0,
+        z: -8 // Mucho más lejos del huerto que antes
       };
     }
     
@@ -66,13 +65,13 @@ export const useExitHelper = () => {
     
     // Solo para el huerto, aplicamos un ajuste más dramático para ver mejor al personaje
     if (building === "garden") {
-      const camera = useCameraStore.getState().camera;
-      if (camera) {
-        const gardenPos = getGardenPosition();
+      const state = useCameraStore.getState();
+      if (state && state.camera) {
+        const camera = state.camera;
         
-        // Posicionamos la cámara en una posición isométrica (más alejada y más alta)
-        camera.position.set(0, 15, 15); // Mucho más atrás y más alta para ver todo el personaje
-        camera.lookAt(new THREE.Vector3(0, 0, -5)); // Mirar hacia el personaje
+        // Configuración frontal para ver completamente el personaje desde el frente
+        camera.position.set(0, 6, 0); // Posición más baja y frontal
+        camera.lookAt(new THREE.Vector3(0, 1, -8)); // Mirar directamente al personaje en su posición de salida
         camera.updateProjectionMatrix();
       }
     }
