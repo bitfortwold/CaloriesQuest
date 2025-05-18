@@ -144,6 +144,18 @@ const Buildings = () => {
             <boxGeometry args={[0.8, 2, 0.1]} />
             <meshStandardMaterial color="#8B4513" />
           </mesh>
+          
+          {/* Letrero encima de la puerta */}
+          <Text
+            position={[0, 2.3, 0]}
+            rotation={[0, 0, 0]}
+            fontSize={0.4}
+            color="#FFD700"
+            anchorX="center"
+            anchorY="middle"
+          >
+            ENTER
+          </Text>
         </group>
         
         {/* Market base/stall */}
@@ -250,6 +262,18 @@ const Buildings = () => {
             <boxGeometry args={[0.8, 2, 0.1]} />
             <meshStandardMaterial color="#8B4513" />
           </mesh>
+          
+          {/* Letrero encima de la puerta */}
+          <Text
+            position={[0, 2.3, 0]}
+            rotation={[0, 0, 0]}
+            fontSize={0.4}
+            color="#FFD700"
+            anchorX="center"
+            anchorY="middle"
+          >
+            ENTER
+          </Text>
         </group>
         
         {/* Kitchen base */}
@@ -326,6 +350,18 @@ const Buildings = () => {
             <boxGeometry args={[0.8, 2, 0.1]} />
             <meshStandardMaterial color="#8B4513" />
           </mesh>
+          
+          {/* Letrero encima de la puerta */}
+          <Text
+            position={[0, 2.3, 0]}
+            rotation={[0, 0, 0]}
+            fontSize={0.4}
+            color="#FFD700"
+            anchorX="center"
+            anchorY="middle"
+          >
+            ENTER
+          </Text>
         </group>
         
         {/* Garden surface */}
@@ -429,7 +465,30 @@ const Buildings = () => {
         </group>
       </group>
       
-      {/* Interaction hints - Ahora indicamos que también se puede hacer clic */}
+      {/* Instrucciones en pantalla para navegación */}
+      <Text
+        position={[0, 7, 0]}
+        rotation={[0, 0, 0]}
+        fontSize={0.5}
+        color="black"
+        anchorX="center"
+        anchorY="middle"
+      >
+        Usa las teclas WASD para moverte
+      </Text>
+      
+      <Text
+        position={[0, 6.4, 0]}
+        rotation={[0, 0, 0]}
+        fontSize={0.5}
+        color="black"
+        anchorX="center"
+        anchorY="middle"
+      >
+        Acércate a las puertas o haz clic en los edificios para entrar
+      </Text>
+      
+      {/* Indicadores sobre cada edificio */}
       <Text
         position={[-8, 5, 0]}
         rotation={[0, 0, 0]}
@@ -438,7 +497,7 @@ const Buildings = () => {
         anchorX="center"
         anchorY="middle"
       >
-        Haz clic para entrar
+        Mercado
       </Text>
       
       <Text
@@ -449,18 +508,18 @@ const Buildings = () => {
         anchorX="center"
         anchorY="middle"
       >
-        Haz clic para entrar
+        Cocina
       </Text>
       
       <Text
-        position={[0, 2, -8]}
+        position={[0, 2, -12]}
         rotation={[0, 0, 0]}
         fontSize={0.4}
         color="black"
         anchorX="center"
         anchorY="middle"
       >
-        Haz clic para entrar
+        Huerto
       </Text>
     </group>
   );

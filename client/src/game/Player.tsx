@@ -17,6 +17,7 @@ import {
 // Constantes
 const PLAYER_SPEED = 0.1;
 const DOOR_DETECTION_DISTANCE = 1.5; // Distancia para detectar puertas
+const AUTO_ENTER_DISTANCE = 1.5; // Distancia para entrada automática
 
 const Player = () => {
   // Referencias y estados
