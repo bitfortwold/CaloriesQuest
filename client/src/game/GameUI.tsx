@@ -40,8 +40,8 @@ const GameUI = () => {
     if (playerData) {
       updatePlayer({
         ...playerData,
-        // Información unificada para todos los edificios
-        lastBuildingExit: buildingType
+        // Limpiar cualquier estado anterior específico de edificios
+        lastGardenAction: undefined
       });
     }
     

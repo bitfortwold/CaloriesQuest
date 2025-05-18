@@ -10,7 +10,9 @@ import {
   getGardenPosition, 
   getGardenExitPosition,
   getMarketExitPosition,
-  getKitchenExitPosition
+  getKitchenExitPosition,
+  getMarketPosition,
+  getKitchenPosition
 } from "./Buildings";
 
 const PLAYER_SPEED = 0.1;
@@ -353,23 +355,29 @@ const Player = () => {
       const { requestReset } = useCameraStore.getState();
       requestReset();
       
-      // 4. Configurar la cámara para que mire hacia el edificio correcto
+      // 4. Configuración unificada de cámara para los tres edificios
       if (camera) {
         const cameraHeight = 8;
-        const lookDistance = 10;
+        const cameraDistance = 5;
         
-        // Configurar posición de la cámara según el edificio
-        if (exitedBuilding === "garden" && exitPosition) {
-          camera.position.set(0, cameraHeight, exitPosition.z + 5);
-          camera.lookAt(0, 0, -15);
+        const gardenPos = getGardenPosition();
+        const marketPos = getMarketPosition();
+        const kitchenPos = getKitchenPosition();
+        
+        if (exitedBuilding === "garden") {
+          // Cámara mirando al norte (huerto)
+          camera.position.set(0, cameraHeight, exitPosition.z + cameraDistance);
+          camera.lookAt(gardenPos.x, 0, gardenPos.z);
         }
-        else if (exitedBuilding === "market" && exitPosition) {
-          camera.position.set(-13, cameraHeight, exitPosition.z);
-          camera.lookAt(-8, 0, 0);
+        else if (exitedBuilding === "market") {
+          // Cámara mirando al este (mercado)
+          camera.position.set(exitPosition.x - cameraDistance, cameraHeight, exitPosition.z);
+          camera.lookAt(marketPos.x, 0, marketPos.z);
         }
-        else if (exitedBuilding === "kitchen" && exitPosition) {
-          camera.position.set(13, cameraHeight, exitPosition.z);
-          camera.lookAt(8, 0, 0);
+        else if (exitedBuilding === "kitchen") {
+          // Cámara mirando al oeste (cocina)
+          camera.position.set(exitPosition.x + cameraDistance, cameraHeight, exitPosition.z);
+          camera.lookAt(kitchenPos.x, 0, kitchenPos.z);
         }
         
         // Configurar parámetros comunes

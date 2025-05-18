@@ -37,10 +37,10 @@ const Buildings = () => {
   const { setMarketPosition, setKitchenPosition } = useFoodStore();
   const { enterBuilding } = useGameStateStore();
   
-  // Posiciones predefinidas para edificios
-  const marketPos: [number, number, number] = [-8, 0, 0];
-  const kitchenPos: [number, number, number] = [8, 0, 0];
-  const gardenPos: [number, number, number] = [0, 0, -15];
+  // Posiciones predefinidas para edificios - Usar constantes globales
+  const marketPos: [number, number, number] = [MARKET_POSITION.x, MARKET_POSITION.y, MARKET_POSITION.z];
+  const kitchenPos: [number, number, number] = [KITCHEN_POSITION.x, KITCHEN_POSITION.y, KITCHEN_POSITION.z];
+  const gardenPos: [number, number, number] = [GARDEN_POSITION.x, GARDEN_POSITION.y, GARDEN_POSITION.z];
   
   // Manejadores de clics para cada edificio
   const handleMarketClick = (e: any) => {
@@ -87,7 +87,7 @@ const Buildings = () => {
     console.log("🏢 Huerto clickeado: moviéndose hacia él...");
     if (e && e.stopPropagation) e.stopPropagation();
     
-    // Crear punto de destino frente al huerto
+    // Crear punto de destino frente al huerto (misma lógica que mercado y cocina)
     const targetPoint = new THREE.Vector3(
       gardenPos[0],
       0,
