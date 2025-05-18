@@ -29,44 +29,65 @@ const Buildings = () => {
   const kitchenPos: [number, number, number] = [8, 0, 0];
   const gardenPos: [number, number, number] = [0, 0, -15];
   
-  // Importamos la función del Player para mover el personaje hacia un punto
-  const { movePlayerTo } = usePlayerStore.getState();
-  
-  // Manejadores de clics para cada edificio - Ahora con desplazamiento
+  // Manejadores de clics para cada edificio
   const handleMarketClick = (e: any) => {
     console.log("🏢 Mercado clickeado: moviéndose hacia él...");
     if (e && e.stopPropagation) e.stopPropagation();
     
-    // Moverse hacia el mercado en lugar de entrar directamente
-    movePlayerTo({
-      x: marketPos[0],
-      y: 0,
-      z: marketPos[2] + 3 // Posición frente a la entrada
-    }, true, "market"); // El tercer parámetro indica que se entre al edificio al llegar
+    // Crear punto de destino frente al mercado
+    const targetPoint = new THREE.Vector3(
+      marketPos[0],
+      0,
+      marketPos[2] + 3 // Posición frente a la entrada
+    );
+    
+    // Obtener referencias al player para mover
+    const { setTargetPosition, setIsMovingToTarget, setDestinationBuilding } = usePlayerStore.getState();
+    
+    // Configurar el movimiento hacia el mercado
+    setTargetPosition(targetPoint);
+    setIsMovingToTarget(true);
+    setDestinationBuilding("market"); // Indica que debe entrar al mercado al llegar
   };
   
   const handleKitchenClick = (e: any) => {
     console.log("🏢 Cocina clickeada: moviéndose hacia ella...");
     if (e && e.stopPropagation) e.stopPropagation();
     
-    // Moverse hacia la cocina en lugar de entrar directamente
-    movePlayerTo({
-      x: kitchenPos[0],
-      y: 0,
-      z: kitchenPos[2] + 3 // Posición frente a la entrada
-    }, true, "kitchen"); // El tercer parámetro indica que se entre al edificio al llegar
+    // Crear punto de destino frente a la cocina
+    const targetPoint = new THREE.Vector3(
+      kitchenPos[0],
+      0,
+      kitchenPos[2] + 3 // Posición frente a la entrada
+    );
+    
+    // Obtener referencias al player para mover
+    const { setTargetPosition, setIsMovingToTarget, setDestinationBuilding } = usePlayerStore.getState();
+    
+    // Configurar el movimiento hacia la cocina
+    setTargetPosition(targetPoint);
+    setIsMovingToTarget(true);
+    setDestinationBuilding("kitchen"); // Indica que debe entrar a la cocina al llegar
   };
   
   const handleGardenClick = (e: any) => {
     console.log("🏢 Huerto clickeado: moviéndose hacia él...");
     if (e && e.stopPropagation) e.stopPropagation();
     
-    // Moverse hacia el huerto en lugar de entrar directamente
-    movePlayerTo({
-      x: gardenPos[0],
-      y: 0,
-      z: gardenPos[2] + 3 // Posición frente a la entrada
-    }, true, "garden"); // El tercer parámetro indica que se entre al edificio al llegar
+    // Crear punto de destino frente al huerto
+    const targetPoint = new THREE.Vector3(
+      gardenPos[0],
+      0,
+      gardenPos[2] + 3 // Posición frente a la entrada
+    );
+    
+    // Obtener referencias al player para mover
+    const { setTargetPosition, setIsMovingToTarget, setDestinationBuilding } = usePlayerStore.getState();
+    
+    // Configurar el movimiento hacia el huerto
+    setTargetPosition(targetPoint);
+    setIsMovingToTarget(true);
+    setDestinationBuilding("garden"); // Indica que debe entrar al huerto al llegar
   };
   
   // Registrar posiciones en el store

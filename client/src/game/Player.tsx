@@ -25,7 +25,9 @@ const Player = () => {
     setPlayerPosition, 
     playerData,
     increaseCaloriesBurned,
-    updatePlayer
+    updatePlayer,
+    destinationBuilding,
+    setDestinationBuilding
   } = usePlayerStore();
   const { marketPosition, kitchenPosition } = useFoodStore();
   // Obtener la posición del huerto
@@ -425,6 +427,16 @@ const Player = () => {
       // Check if we're close enough to target
       if (direction.length() < MOUSE_SPEED) {
         setIsMovingToTarget(false);
+        
+        // Si hay un edificio de destino, entrar a él
+        if (destinationBuilding) {
+          console.log(`Llegando al destino, entrando a ${destinationBuilding}...`);
+          // Pequeño retraso para que sea más natural
+          setTimeout(() => {
+            enterBuilding(destinationBuilding);
+            setDestinationBuilding(null); // Limpiar el destino
+          }, 200);
+        }
       } else {
         // Actualizar la rotación para mirar hacia el objetivo
         // Calculamos el ángulo en el plano X-Z (horizontal)

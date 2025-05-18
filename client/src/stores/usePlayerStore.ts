@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import * as THREE from "three";
 import { generateRandomChallenges, updateChallengeProgress, DailyChallenge } from "../data/dailyChallenges";
 import { toast } from "sonner";
 import { createNewGarden, waterPlant, plantSeed, harvestPlant, updatePlantState, GardenPlot, Plant } from "../data/gardenItems";
@@ -54,6 +55,12 @@ interface PlayerState {
   playerPosition: Position;
   playerData: PlayerData | null;
   
+  // Sistema de movimiento hacia edificios
+  destinationBuilding: string | null; // Edificio al que se dirige el jugador
+  setDestinationBuilding: (building: string | null) => void; // Establece el edificio de destino
+  setTargetPosition: (target: THREE.Vector3 | null) => void; // Establece la posición objetivo
+  setIsMovingToTarget: (isMoving: boolean) => void; // Indica si se está moviendo hacia un objetivo
+  
   // Actions
   setPlayerPosition: (position: Position) => void;
   setPlayerData: (data: PlayerData) => void;
@@ -86,6 +93,20 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   // Estado inicial
   playerPosition: { x: 0, y: 0, z: 0 },
   playerData: null,
+  
+  // Estado para el sistema de movimiento hacia edificios
+  destinationBuilding: null,
+  setDestinationBuilding: (building) => set({ destinationBuilding: building }),
+  setTargetPosition: (target) => {
+    // La función usará cualquier implementación existente en Player.tsx
+    // Este es solo un placeholder para la interfaz
+    console.log("Target position to be set in Player component", target);
+  },
+  setIsMovingToTarget: (isMoving) => {
+    // La función usará cualquier implementación existente en Player.tsx
+    // Este es solo un placeholder para la interfaz
+    console.log("isMovingToTarget to be set in Player component", isMoving);
+  },
   
   // Funciones para el huerto virtual
   initializeGarden: () => {
