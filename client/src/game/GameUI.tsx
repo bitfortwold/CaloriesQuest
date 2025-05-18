@@ -198,7 +198,7 @@ const GameUI = () => {
                           className={`bg-green-600 hover:bg-green-700 text-white text-sm px-3 py-1 rounded flex-1 transition-colors ${activeTab === 'challenges' ? 'ring-2 ring-white' : ''}`}
                           onClick={() => setActiveTab('challenges')}
                         >
-                          {t.challenges}
+                          Desafíos
                         </button>
                       </div>
                     </div>
@@ -212,20 +212,8 @@ const GameUI = () => {
                             {playerData?.name || "Player"}
                           </div>
                           
-                          {/* Contenido específico del perfil */}
-                          <div className="space-y-3">
-                            <div>
-                              <div className="flex justify-between items-center mb-1">
-                                <span className="text-yellow-400 font-semibold">{t.health}:</span>
-                                <span className="text-yellow-400 font-bold">
-                                  {playerData ? Math.min(100, Math.max(0, 100 - Math.abs((playerData.caloriesConsumed / playerData.dailyCalories - 1) * 100))).toFixed(0) : 0}%
-                                </span>
-                              </div>
-                              <div className="w-full bg-gray-800 rounded-full h-3 overflow-hidden">
-                                {/* Barra de salud */}
-                              </div>
-                            </div>
-                          </div>
+                          {/* Contenido completo del componente ProfilePanel integrado aquí */}
+                          <ProfilePanel />
                         </div>
                       )}
                       
