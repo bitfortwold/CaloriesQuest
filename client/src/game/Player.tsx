@@ -340,18 +340,18 @@ const Player = () => {
         
         // RESETEO DOBLE DE CÁMARA - Primera pasada inmediata
         if (camera) {
-          // Valores iniciales para eliminar cualquier estado anterior
-          camera.position.set(0, 10, 10);
-          camera.lookAt(0, 0, -15);
+          // Valores más parecidos a la posición original
+          camera.position.set(0, 8, 5);
+          camera.lookAt(0, 0, -12);
           camera.rotation.order = 'YXZ';
         }
         
         // Segunda pasada con delay para asegurar la aplicación
         setTimeout(() => {
           if (camera) {
-            // Reconfirmar posición y orientación
-            camera.position.set(0, 10, 10);
-            camera.lookAt(0, 0, -15);
+            // Reconfirmar misma posición y orientación
+            camera.position.set(0, 8, 5);
+            camera.lookAt(0, 0, -12);
             camera.rotation.order = 'YXZ';
             console.log("🎯 POSICIÓN DE CÁMARA HUERTO GARANTIZADA");
           }
