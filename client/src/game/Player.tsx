@@ -293,23 +293,24 @@ const Player = () => {
       
       // Manejar la salida específica del huerto
       if (exitedBuilding === "garden") {
-        console.log("Saliendo del huerto");
+        console.log("Saliendo del huerto y posicionando al jugador en el camino ocre");
         
-        // Ubicar al jugador en el camino ocre frente al huerto (posición exacta de la captura)
+        // POSICIÓN EXACTA: Siempre colocar al jugador en el camino ocre 
+        // independientemente de si hay semillas o no
         setPlayerPosition({
           x: 0,
           y: 0,
-          z: -9
+          z: -9 // Posición fija en el camino ocre (según la captura de pantalla)
         });
         
-        // Orientar al jugador hacia el huerto
-        setRotationY(Math.PI); // Girar hacia el norte (hacia el huerto)
+        // Orientar al jugador hacia el huerto (al norte)
+        setRotationY(Math.PI); // Dirección exacta mirando hacia el huerto
         
-        // Configurar la cámara detrás del jugador
+        // Configurar la cámara detrás del jugador con vista perfecta
         if (camera) {
           camera.position.set(0, 8, 5); // Vista trasera elevada
-          camera.lookAt(0, 0, -15); // Mirando hacia el huerto
-          console.log("Cámara posicionada correctamente");
+          camera.lookAt(0, 0, -15); // Mirando directamente hacia el huerto
+          console.log("Cámara posicionada con vista perfecta del huerto");
         }
         
         // Limpiar cualquier acción pendiente del huerto

@@ -42,10 +42,12 @@ const GameUI = () => {
       // Actualizar el estado del jugador según el edificio
       switch (buildingType) {
         case "garden":
-          // Resetear la acción del huerto al salir
+          // Forzar siempre un valor específico al salir para garantizar posicionamiento correcto
+          // independientemente del estado de las semillas o acciones en el huerto
+          console.log("Forzando posición de salida estándar para el huerto");
           updatePlayer({
             ...playerData,
-            lastGardenAction: "exit"
+            lastGardenAction: "exit" // Este valor es leído por Player.tsx para posicionar al jugador
           });
           break;
           
