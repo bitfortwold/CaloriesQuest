@@ -279,73 +279,56 @@ const Player = () => {
   // Referencia para almacenar el último estado conocido
   const lastGameStateRef = useRef<string | null>(null);
   
-  // SISTEMA UNIFICADO COMPLETO para detectar cuando volvemos al estado "playing" desde cualquier edificio
+  // SISTEMA TOTALMENTE UNIFICADO para salir de edificios (SOLUCIÓN FINAL)
   useEffect(() => {
     const buildingStates = ["garden", "market", "kitchen"];
     
     // Si venimos de cualquier edificio y ahora estamos jugando
     if (buildingStates.includes(lastGameStateRef.current || "") && gameState === "playing") {
       const exitedBuilding = lastGameStateRef.current;
-      console.log(`▶▶▶ SISTEMA UNIFICADO: Saliendo de ${exitedBuilding}`);
+      console.log(`▶▶▶ SISTEMA FINAL UNIFICADO: Saliendo de ${exitedBuilding}`);
       
       // Marcar que acabamos de salir para evitar interacciones inmediatas
       setJustExitedBuilding(true);
+
+      // ----- POSICIÓN UNIFICADA PARA TODOS LOS EDIFICIOS SEGÚN CAPTURA DE REFERENCIA -----
       
-      // PASO 1: Obtener las coordenadas correctas según el edificio
-      let exitPos;
-      let cameraTarget;
+      // Independientemente del edificio, usamos POSICIÓN EXACTA definida aquí
+      // Para todas las salidas (huerto, mercado, cocina), usamos las mismas coordenadas
+      // Así garantizamos 100% la misma posición siempre
       
-      if (exitedBuilding === "garden") {
-        exitPos = { x: 0, y: 0, z: -6 };        // Posición exacta en el camino ocre frente al huerto
-        cameraTarget = { x: 0, y: 0, z: -15 };  // Punto que mirará la cámara (el huerto)
-      } 
-      else if (exitedBuilding === "market") {
-        exitPos = getMarketExitPosition();      // Posición del mercado
-        cameraTarget = { x: exitPos.x, y: 0, z: -15 };
-      } 
-      else if (exitedBuilding === "kitchen") {
-        exitPos = getKitchenExitPosition();     // Posición de la cocina
-        cameraTarget = { x: exitPos.x, y: 0, z: -15 };
-      }
-      
-      // PASO 2: Posición temporal de seguridad (mismo punto central para todos los edificios)
+      // PASO 1: Definir la posición y orientación unificadas
+      const unifiedExitPos = { x: 0, y: 0, z: -7 };   // Posición exacta en el camino ocre
+      const unifiedTarget = { x: 0, y: 0, z: -15 };   // Mirando hacia el edificio del huerto
+
+      // PASO 2: Posición de seguridad inicial
       setPlayerPosition({
         x: 0,
         y: 0,
         z: 0
       });
       
-      // PASO 3: Posicionamiento preciso con un pequeño retraso (garantiza que funcione)
+      // PASO 3: Posicionamiento final preciso con pequeño retraso
       setTimeout(() => {
-        console.log(`▶▶▶ Posicionando al jugador frente a ${exitedBuilding}`);
+        console.log(`▶▶▶ Posicionando al jugador en POSICIÓN UNIFICADA (${exitedBuilding})`);
         
-        // Posicionar exactamente según el edificio
+        // EXACTAMENTE COMO EN LA CAPTURA DE REFERENCIA
         setPlayerPosition({
-          x: exitPos.x,
+          x: unifiedExitPos.x,
           y: 0,
-          z: exitPos.z
+          z: unifiedExitPos.z
         });
         
-        // Orientar al jugador correctamente
-        if (exitedBuilding === "garden") {
-          setRotationY(Math.PI); // Norte - mirando hacia el huerto
-        } else {
-          const direction = new THREE.Vector3(
-            cameraTarget.x - exitPos.x,
-            0,
-            cameraTarget.z - exitPos.z
-          ).normalize();
-          const targetRotation = Math.atan2(direction.x, direction.z);
-          setRotationY(targetRotation);
-        }
-      }, 100);
+        // SIEMPRE mirando hacia el huerto virtual (edificio principal)
+        setRotationY(Math.PI); // Norte - mirando hacia el huerto
+      }, 50);
       
-      // PASO 4: Configurar la cámara igual para todos los edificios
+      // PASO 4: Configurar la cámara EXACTAMENTE IGUAL en todos los casos
       if (camera) {
-        // Posición de cámara ajustada para ver mejor frente al edificio
-        camera.position.set(exitPos.x, 8, exitPos.z + 5); // Vista elevada detrás del jugador
-        camera.lookAt(cameraTarget.x, 0, cameraTarget.z);  // Mirando hacia el edificio
-        console.log(`▶▶▶ Cámara configurada para vista de ${exitedBuilding}`);
+        // Posición trasera y elevada para ver al personaje y el camino completo
+        camera.position.set(0, 5, 1); // Posición detrás del jugador
+        camera.lookAt(0, 0, -10);     // Mirando hacia el huerto
+        console.log(`▶▶▶ Cámara configurada en posición UNIFICADA estandarizada`);
       }
       
       // PASO 5: Limpiar cualquier estado pendiente en todos los casos
