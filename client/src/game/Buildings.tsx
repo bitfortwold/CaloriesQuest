@@ -12,7 +12,8 @@ interface Position {
 }
 
 // Función global para acceder a la posición del huerto desde otros componentes
-let gardenPosition: Position = { x: 0, y: 0, z: -8 };
+// Movemos el huerto más lejos al fondo
+let gardenPosition: Position = { x: 0, y: 0, z: -15 };
 export const getGardenPosition = () => gardenPosition;
 
 // Ya no usamos el círculo amarillo, ya que implementamos detección de proximidad
@@ -26,7 +27,7 @@ const Buildings = () => {
   // Set predefined positions for buildings
   const marketPos = new THREE.Vector3(-8, 0, 0);
   const kitchenPos = new THREE.Vector3(8, 0, 0);
-  const gardenPos = new THREE.Vector3(0, 0, -8); // Posición del huerto detrás del punto de inicio
+  const gardenPos = new THREE.Vector3(0, 0, -15); // Posición del huerto más lejos al fondo
   
   useEffect(() => {
     // Register building positions in the store
@@ -155,65 +156,47 @@ const Buildings = () => {
         </Text>
       </group>
       
-      {/* Garden Building - Version Mejorada */}
+      {/* Huerto rediseñado - Simple superficie plana */}
       <group position={gardenPos}>
-        {/* Suelo/Base del Huerto - Aumentado el tamaño */}
-        <mesh receiveShadow position={[0, 0.05, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-          <planeGeometry args={[8, 8]} />
+        {/* Superficie plana principal del huerto */}
+        <mesh receiveShadow position={[0, 0.01, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+          <planeGeometry args={[12, 12]} />
           <meshStandardMaterial color="#7D5A38" />
         </mesh>
         
-        {/* Suelo Cultivable Interior - Color diferente */}
-        <mesh receiveShadow position={[0, 0.06, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-          <planeGeometry args={[7, 7]} />
+        {/* Superficie cultivable central */}
+        <mesh receiveShadow position={[0, 0.02, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+          <planeGeometry args={[10, 10]} />
           <meshStandardMaterial color="#553311" />
         </mesh>
         
-        {/* Estructura de valla del Huerto - Aumentada */}
-        <mesh castShadow receiveShadow position={[0, 0.6, -4]}>
-          <boxGeometry args={[8, 1.2, 0.3]} />
-          <meshStandardMaterial color="#8B4513" />
+        {/* Cuadrícula de plantación visible */}
+        <mesh receiveShadow position={[0, 0.03, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+          <planeGeometry args={[10, 10]} />
+          <meshStandardMaterial color="#6B4423" wireframe={true} />
         </mesh>
         
-        <mesh castShadow receiveShadow position={[0, 0.6, 4]}>
-          <boxGeometry args={[8, 1.2, 0.3]} />
-          <meshStandardMaterial color="#8B4513" />
-        </mesh>
-        
-        <mesh castShadow receiveShadow position={[-4, 0.6, 0]}>
-          <boxGeometry args={[0.3, 1.2, 8]} />
-          <meshStandardMaterial color="#8B4513" />
-        </mesh>
-        
-        <mesh castShadow receiveShadow position={[4, 0.6, 0]}>
-          <boxGeometry args={[0.3, 1.2, 8]} />
-          <meshStandardMaterial color="#8B4513" />
-        </mesh>
-        
-        {/* El círculo amarillo ha sido eliminado ya que ahora usamos detección de proximidad */}
-        
-        {/* La puerta del huerto ha sido eliminada */}
-        
-        {/* Garden Sign - Mejorado */}
-        <mesh castShadow position={[0, 2, -4.2]}>
-          <boxGeometry args={[3, 1.2, 0.2]} />
+        {/* Letrero flotante más visible */}
+        <mesh castShadow receiveShadow position={[0, 1.5, 0]}>
+          <boxGeometry args={[4, 1, 0.15]} />
           <meshStandardMaterial color="#A0522D" />
         </mesh>
         
         <Text
-          position={[0, 2, -4.3]}
+          position={[0, 1.5, 0.1]}
           rotation={[0, 0, 0]}
-          fontSize={0.7}
-          color="#F5DEB3"
+          fontSize={0.8}
+          color="#FFDD33"
           anchorX="center"
           anchorY="middle"
+          fontWeight="bold"
         >
-          HUERTO
+          HUERTO VIRTUAL
         </Text>
         
-        {/* Plantas decorativas más grandes y variadas */}
-        {/* Planta 1 */}
-        <group position={[-2.5, 0, -2.5]}>
+        {/* Algunas plantas decorativas en las esquinas */}
+        {/* Planta esquina 1 */}
+        <group position={[-4, 0, -4]}>
           <mesh castShadow position={[0, 0.3, 0]}>
             <boxGeometry args={[0.8, 0.6, 0.8]} />
             <meshStandardMaterial color="#5D4037" />
@@ -224,8 +207,8 @@ const Buildings = () => {
           </mesh>
         </group>
         
-        {/* Planta 2 */}
-        <group position={[2, 0, 2]}>
+        {/* Planta esquina 2 */}
+        <group position={[4, 0, -4]}>
           <mesh castShadow position={[0, 0.3, 0]}>
             <boxGeometry args={[0.8, 0.6, 0.8]} />
             <meshStandardMaterial color="#5D4037" />
@@ -236,8 +219,8 @@ const Buildings = () => {
           </mesh>
         </group>
         
-        {/* Planta 3 */}
-        <group position={[-1.5, 0, 1.5]}>
+        {/* Planta esquina 3 */}
+        <group position={[-4, 0, 4]}>
           <mesh castShadow position={[0, 0.2, 0]}>
             <boxGeometry args={[0.7, 0.4, 0.7]} />
             <meshStandardMaterial color="#5D4037" />
@@ -248,8 +231,8 @@ const Buildings = () => {
           </mesh>
         </group>
         
-        {/* Planta 4 - Nueva */}
-        <group position={[1.8, 0, -2.2]}>
+        {/* Planta esquina 4 */}
+        <group position={[4, 0, 4]}>
           <mesh castShadow position={[0, 0.25, 0]}>
             <boxGeometry args={[0.7, 0.5, 0.7]} />
             <meshStandardMaterial color="#5D4037" />
