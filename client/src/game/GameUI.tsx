@@ -5,6 +5,7 @@ import { usePlayerStore } from "../stores/usePlayerStore";
 import { SoundButton } from "../components/ui/SoundButton";
 import { LanguageSelector } from "../components/ui/LanguageSelector";
 import { useLanguage } from "../i18n/LanguageContext";
+import { useCameraStore } from "../lib/stores/useCameraStore";
 import Market from "./Market";
 import Kitchen from "./Kitchen";
 import Garden from "./Garden";
@@ -28,16 +29,15 @@ const GameUI = () => {
   // Don't render anything if DOM is not ready
   if (!domReady) return null;
   
-  // SISTEMA UNIFICADO PARA LA SALIDA DE EDIFICIOS - VERSIÓN MEJORADA
+  // SISTEMA UNIFICADO PARA LA SALIDA DE EDIFICIOS - VERSIÓN MEJORADA Y ROBUSTA
   const handleBuildingExit = (buildingType: string) => {
     console.log(`Saliendo de ${buildingType} mediante sistema unificado - VERSIÓN FINAL`);
     
     // Obtener el store del jugador para actualizaciones y posicionamiento
     const { updatePlayer, playerData } = usePlayerStore.getState();
     
-    // IMPORTANTE: Avisar a la cámara para resetear posición
-    const { requestReset } = useCameraStore.getState();
-    requestReset();
+    // IMPORTANTE: Forzar el reseteo de posiciones al salir para eliminar problemas
+    // Especialmente crítico para el huerto que tiene más inconsistencias
     
     // Guardar qué edificio estamos abandonando para coordinar la posición
     if (playerData) {
@@ -56,7 +56,7 @@ const GameUI = () => {
       // PASO FINAL: Devolver el control al juego (cambia el estado a "playing")
       // Esto activará el useEffect en Player.tsx que detecta el cambio de estado
       exitBuilding();
-    }, 50);
+    }, 100);
   };
   
   // Render UI based on game state
