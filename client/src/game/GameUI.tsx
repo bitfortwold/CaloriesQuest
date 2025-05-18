@@ -131,15 +131,10 @@ const GameUI = () => {
       case "garden":
         return (
           <>
-            {/* Botón flotante para salir del huerto - VERSIÓN SIMPLE */}
+            {/* Botón flotante para salir del huerto - SISTEMA ESTÁNDAR */}
             <div className="fixed top-4 right-4 z-[1000]">
               <button
-                onClick={() => {
-                  console.log("VOLVIENDO AL SISTEMA BÁSICO PARA SALIR DEL HUERTO");
-                  
-                  // Simplemente usar el sistema unificado que funciona para los otros edificios
-                  handleBuildingExit("garden");
-                }}
+                onClick={() => handleBuildingExit("garden")}
                 className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg border-2 border-red-500 shadow-lg text-xl transition-all hover:scale-105"
               >
                 {t.exit}
@@ -147,24 +142,7 @@ const GameUI = () => {
             </div>
             
             <div className="fixed inset-0 z-50 flex items-center justify-center">
-              <Garden onExit={() => {
-                console.log("SALIDA ALTERNATIVA DEL HUERTO - VERSIÓN SIMPLIFICADA");
-                
-                // Simplificar al máximo la salida
-                exitBuilding();
-                
-                // Forzar posición conocida-funcional para jugador
-                setTimeout(() => {
-                  // Obtener el player para forzar directamente su posición
-                  const { setPlayerPosition } = usePlayerStore.getState();
-                  
-                  // POSICIÓN ABSOLUTA FIJA
-                  setPlayerPosition({ x: 0, y: 0, z: -10 });
-                  // La rotación se manejará automáticamente en el componente Player
-                  
-                  console.log("POSICIÓN FORZADA A VALORES ABSOLUTOS");
-                }, 100);
-              }} />
+              <Garden onExit={() => handleBuildingExit("garden")} />
             </div>
           </>
         );

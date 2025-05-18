@@ -336,58 +336,18 @@ const Player = () => {
       requestReset();
       console.log(`📸 SOLICITUD DE RESETEO TOTAL (saliendo de ${exitedBuilding})`);
       
-      // POSICIONAMIENTO DE JUGADOR EN TRES PASOS
+      // Posicionamiento simple y directo para jugador y cámara
+      const POSICION_CENTRAL = { x: 0, y: 0, z: -10 };
+      setPlayerPosition(POSICION_CENTRAL);
+      setRotationY(Math.PI);
       
-      // PASO 1: Reseteo a origen absoluto para eliminar cualquier acumulación de errores
-      console.log(`🏁 RESETEO ABSOLUTO - FASE 1`);
-      setPlayerPosition({ x: 0, y: 0, z: 0 });
-      
-      // PASO 2: Aplicación de posición fija final (exactamente igual para todos los edificios)
-      const POSICION_FINAL = { x: 0, y: 0, z: -10 }; // COORDENADAS FIJAS - Posición central del camino
-      
-      // Retardo para asegurar actualización completa
+      // Ajustar cámara con timeout para asegurar aplicación correcta
       setTimeout(() => {
-        console.log(`🏁 RESETEO ABSOLUTO - FASE 2 (${exitedBuilding})`);
-        
-        // Asegurar posicionamiento con precisión
-        setPlayerPosition({
-          x: POSICION_FINAL.x,
-          y: POSICION_FINAL.z > -10 ? 0 : 0, // Asegurar valor Y preciso
-          z: POSICION_FINAL.z
-        });
-        
-        // Orientación exacta - siempre mirando al huerto (norte)
-        setRotationY(Math.PI);
-        
-        // Aplicar posición de cámara absolutamente fija
         if (camera) {
-          // Usar valores absolutos para total coherencia
-          const pos = gardenExitCameraPosition;
-          const target = gardenExitCameraTarget;
-          
-          // SOLUCIÓN FINAL RADICAL - Coordenadas absolutamente fijas para el huerto
-          if (exitedBuilding === "garden") {
-            // CONSTANTES ABSOLUTAS - Mismos valores en todas las partes del código
-            // Estas coordenadas son INVARIABLES y no dependen de ningún estado
-            const FIXED_POSITION = {x: 0, y: 8, z: 5};
-            const FIXED_TARGET = {x: 0, y: 0, z: -12};
-            
-            // Aplicar valores directamente sin ninguna transformación
-            camera.position.set(FIXED_POSITION.x, FIXED_POSITION.y, FIXED_POSITION.z);
-            camera.lookAt(FIXED_TARGET.x, FIXED_TARGET.y, FIXED_TARGET.z);
-            
-            // Congelar la rotación de la cámara para prevenir cualquier cambio
-            camera.rotation.order = 'YXZ';
-            
-            console.log("🔒 ÁNGULO ABSOLUTAMENTE FIJO: Posicionamiento invariable para huerto");
-          } else {
-            // Para mercado y cocina mantener el sistema existente que funciona bien
-            camera.position.set(pos.x, pos.y, pos.z);
-            camera.lookAt(target.x, target.y, target.z);
-          }
-          
-          // Verificar posicionamiento final
-          console.log(`🎯 POSICIÓN FINAL - JUGADOR: (${POSICION_FINAL.x}, 0, ${POSICION_FINAL.z})`);
+          camera.position.set(0, 8, 5);
+          camera.lookAt(0, 0, -12);
+          camera.rotation.order = 'YXZ';
+          console.log("🎯 CÁMARA REPOSICIONADA AL SALIR");
         }
       }, 100);
       
