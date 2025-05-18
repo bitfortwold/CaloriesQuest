@@ -6,6 +6,7 @@ import { toast } from "sonner";
 
 interface GardenProps {
   onExit: () => void;
+  // Añadir cualquier propiedad adicional si es necesaria
 }
 
 const Garden = ({ onExit }: GardenProps) => {

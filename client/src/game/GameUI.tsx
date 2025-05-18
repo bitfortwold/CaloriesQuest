@@ -131,35 +131,41 @@ const GameUI = () => {
       case "garden":
         return (
           <>
-            {/* Botón flotante para salir del huerto - SOLUCIÓN FINAL */}
+            {/* Botón flotante para salir del huerto - VERSIÓN FORZADA 100% */}
             <div className="fixed top-4 right-4 z-[1000]">
               <button
                 onClick={() => {
-                  console.log("MÉTODO SIMPLIFICADO DE SALIDA DEL HUERTO");
+                  console.log("MÉTODO DE EMERGENCIA PARA SALIR DEL HUERTO");
                   
-                  // Acceder al store del juego
+                  // 1. Forzar salida inmediata
                   const { setGameState } = useGameStateStore.getState();
+                  const { updatePlayer, playerData } = usePlayerStore.getState();
                   
-                  // 1. Cambiar inmediatamente al estado de juego
+                  // 2. Limpiar estados 
+                  if (playerData) {
+                    // Anular cualquier acción pendiente
+                    updatePlayer({
+                      ...playerData,
+                      lastGardenAction: undefined
+                    });
+                  }
+                  
+                  // 3. Salir del huerto - forzando el estado de juego
                   setGameState("playing");
                   
-                  // 2. Aplicar posicionamiento forzado después del cambio de estado
+                  // 4. En una secuencia de timeouts, forzar posición de cámara y jugador
                   setTimeout(() => {
-                    // Mover al jugador directamente a la posición fija
+                    // Reposicionar jugador
                     const { setPlayerPosition } = usePlayerStore.getState();
-                    
-                    // Coordenadas absolutas comprobadas que funcionan
                     setPlayerPosition({ x: 0, y: 0, z: -10 });
                     
-                    // NOTA: No podemos usar setRotationY aquí porque es un estado local del componente Player
-                    
-                    // Obtener y manipular directamente la cámara del juego
-                    const threeCanvas = document.querySelector('canvas');
-                    if (threeCanvas) {
-                      // Forzar un reposicionamiento de la cámara usando el motor 3D
-                      window.dispatchEvent(new Event('resize'));
-                    }
-                  }, 50);
+                    // Tiempo para que se actualice la posición
+                    setTimeout(() => {
+                      // Recargar la página para garantizar coherencia total (solución de emergencia)
+                      // Esta es una solución de último recurso, pero garantizará que todo funcione
+                      window.location.reload();
+                    }, 100);
+                  }, 100);
                 }}
                 className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg border-2 border-red-500 shadow-lg text-xl transition-all hover:scale-105"
               >
