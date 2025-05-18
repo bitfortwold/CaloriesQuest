@@ -1,58 +1,72 @@
 import * as THREE from "three";
-import { useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
 import { Text } from "@react-three/drei"; 
 import { useFoodStore } from "../stores/useFoodStore";
 import { useGameStateStore } from "../stores/useGameStateStore";
 
-// Creamos una interfaz para las posiciones
+// Definición de posiciones
 interface Position {
   x: number;
   y: number;
   z: number;
 }
 
-// Función global para acceder a la posición del huerto desde otros componentes
-// Movemos el huerto más lejos al fondo
+// Variables globales para acceso a posiciones
 let gardenPosition: Position = { x: 0, y: 0, z: -15 };
 export const getGardenPosition = () => gardenPosition;
+export const getGardenExitPosition = () => ({ x: 0, y: 0, z: -9 });
+export const getMarketExitPosition = () => ({ x: 20, y: 0, z: -10 });
+export const getKitchenExitPosition = () => ({ x: -20, y: 0, z: -10 });
 
-// Posiciones específicas para la salida de cada edificio - Ajustadas para perfecta visualización
-// Posición para la salida del huerto (en el camino ocre frente al huerto)
-// Usamos una función que devuelve siempre el mismo objeto para garantizar consistencia
-export const getGardenExitPosition = () => ({ x: 0, y: 0, z: -9 }); // Posición fija según captura de pantalla
-
-// Posición para la salida del mercado (en el camino ocre frente al mercado)
-// Usamos una función que devuelve siempre el mismo objeto para garantizar consistencia
-export const getMarketExitPosition = () => ({ x: 20, y: 0, z: -10 }); // Posición fija y optimizada
-
-// Posición para la salida de la cocina (en el camino ocre frente a la cocina)
-// Usamos una función que devuelve siempre el mismo objeto para garantizar consistencia
-export const getKitchenExitPosition = () => ({ x: -20, y: 0, z: -10 }); // Posición fija y optimizada
-
-// Ya no usamos el círculo amarillo, ya que implementamos detección de proximidad
-
+// Componente principal de edificios
 const Buildings = () => {
   const { setMarketPosition, setKitchenPosition } = useFoodStore();
-  // Usar colores en lugar de texturas para simplificar
-  const woodColor = "#8B4513";  // Marrón para madera
-  const groundColor = "#654321"; // Marrón para tierra
+  const { enterBuilding } = useGameStateStore();
   
-  // Set predefined positions for buildings
-  const marketPos = new THREE.Vector3(-8, 0, 0);
-  const kitchenPos = new THREE.Vector3(8, 0, 0);
-  const gardenPos = new THREE.Vector3(0, 0, -15); // Posición del huerto más lejos al fondo
+  // Posiciones predefinidas para edificios
+  const marketPos: [number, number, number] = [-8, 0, 0];
+  const kitchenPos: [number, number, number] = [8, 0, 0];
+  const gardenPos: [number, number, number] = [0, 0, -15];
   
+  // Manejadores de clics para cada edificio
+  const handleMarketClick = (e: any) => {
+    console.log("🏢 Mercado clickeado: entrando directamente");
+    if (e && e.stopPropagation) e.stopPropagation();
+    enterBuilding("market");
+  };
+  
+  const handleKitchenClick = (e: any) => {
+    console.log("🏢 Cocina clickeada: entrando directamente");
+    if (e && e.stopPropagation) e.stopPropagation();
+    enterBuilding("kitchen");
+  };
+  
+  const handleGardenClick = (e: any) => {
+    console.log("🏢 Huerto clickeado: entrando directamente");
+    if (e && e.stopPropagation) e.stopPropagation();
+    enterBuilding("garden");
+  };
+  
+  // Registrar posiciones en el store
   useEffect(() => {
-    // Register building positions in the store
-    setMarketPosition({ x: marketPos.x, y: marketPos.y, z: marketPos.z });
-    setKitchenPosition({ x: kitchenPos.x, y: kitchenPos.y, z: kitchenPos.z });
-    gardenPosition = { x: gardenPos.x, y: gardenPos.y, z: gardenPos.z };
+    setMarketPosition({ x: marketPos[0], y: marketPos[1], z: marketPos[2] });
+    setKitchenPosition({ x: kitchenPos[0], y: kitchenPos[1], z: kitchenPos[2] });
+    gardenPosition = { x: gardenPos[0], y: gardenPos[1], z: gardenPos[2] };
   }, [setMarketPosition, setKitchenPosition]);
   
   return (
     <group>
-      {/* Market Building */}
+      {/* Market Building - Ahora clickeable */}
       <group position={marketPos}>
+        {/* Área clickeable invisible */}
+        <mesh 
+          onClick={handleMarketClick}
+          visible={false}
+        >
+          <boxGeometry args={[6, 6, 5]} />
+          <meshStandardMaterial transparent opacity={0} />
+        </mesh>
+        
         {/* Market base/stall */}
         <mesh castShadow receiveShadow position={[0, 1.5, 0]}>
           <boxGeometry args={[5, 3, 4]} />
@@ -125,8 +139,17 @@ const Buildings = () => {
         </group>
       </group>
       
-      {/* Kitchen Building */}
+      {/* Kitchen Building - Ahora clickeable */}
       <group position={kitchenPos}>
+        {/* Área clickeable invisible */}
+        <mesh 
+          onClick={handleKitchenClick}
+          visible={false}
+        >
+          <boxGeometry args={[6, 6, 5]} />
+          <meshStandardMaterial transparent opacity={0} />
+        </mesh>
+        
         {/* Kitchen base */}
         <mesh castShadow receiveShadow position={[0, 2, 0]}>
           <boxGeometry args={[6, 4, 5]} />
@@ -145,7 +168,7 @@ const Buildings = () => {
           <meshStandardMaterial color="#8B4513" />
         </mesh>
         
-        {/* Kitchen window */}
+        {/* Kitchen windows */}
         <mesh position={[2, 2.5, 2.51]}>
           <boxGeometry args={[1.2, 1.2, 0.1]} />
           <meshStandardMaterial color="#ADD8E6" opacity={0.7} transparent />
@@ -169,42 +192,51 @@ const Buildings = () => {
         </Text>
       </group>
       
-      {/* Huerto rediseñado - Simple superficie plana */}
+      {/* Garden - Ahora clickeable */}
       <group position={gardenPos}>
-        {/* Superficie plana principal del huerto - Con ID para detectar clics */}
+        {/* Área clickeable invisible */}
+        <mesh 
+          onClick={handleGardenClick}
+          visible={false}
+        >
+          <boxGeometry args={[12, 4, 12]} />
+          <meshStandardMaterial transparent opacity={0} />
+        </mesh>
+        
+        {/* Garden surface */}
         <mesh 
           receiveShadow 
           position={[0, 0.01, 0]} 
           rotation={[-Math.PI / 2, 0, 0]}
-          name="gardenSurface" // ID para detección de clics
+          name="gardenSurface"
         >
           <planeGeometry args={[12, 12]} />
           <meshStandardMaterial color="#7D5A38" />
         </mesh>
         
-        {/* Superficie cultivable central - Con ID para detectar clics */}
+        {/* Cultivable area */}
         <mesh 
           receiveShadow 
           position={[0, 0.02, 0]} 
           rotation={[-Math.PI / 2, 0, 0]}
-          name="gardenSurface" // ID para detección de clics 
+          name="gardenSurface"
         >
           <planeGeometry args={[10, 10]} />
           <meshStandardMaterial color="#553311" />
         </mesh>
         
-        {/* Cuadrícula de plantación visible - Con ID para detectar clics */}
+        {/* Grid */}
         <mesh 
           receiveShadow 
           position={[0, 0.03, 0]} 
           rotation={[-Math.PI / 2, 0, 0]}
-          name="gardenSurface" // ID para detección de clics
+          name="gardenSurface"
         >
           <planeGeometry args={[10, 10]} />
           <meshStandardMaterial color="#6B4423" wireframe={true} />
         </mesh>
         
-        {/* Letrero flotante más visible */}
+        {/* Sign */}
         <mesh castShadow receiveShadow position={[0, 1.5, 0]}>
           <boxGeometry args={[4, 1, 0.15]} />
           <meshStandardMaterial color="#A0522D" />
@@ -222,8 +254,7 @@ const Buildings = () => {
           HUERTO VIRTUAL
         </Text>
         
-        {/* Algunas plantas decorativas en las esquinas */}
-        {/* Planta esquina 1 */}
+        {/* Decorative plants */}
         <group position={[-4, 0, -4]}>
           <mesh castShadow position={[0, 0.3, 0]}>
             <boxGeometry args={[0.8, 0.6, 0.8]} />
@@ -235,7 +266,6 @@ const Buildings = () => {
           </mesh>
         </group>
         
-        {/* Planta esquina 2 */}
         <group position={[4, 0, -4]}>
           <mesh castShadow position={[0, 0.3, 0]}>
             <boxGeometry args={[0.8, 0.6, 0.8]} />
@@ -247,7 +277,6 @@ const Buildings = () => {
           </mesh>
         </group>
         
-        {/* Planta esquina 3 */}
         <group position={[-4, 0, 4]}>
           <mesh castShadow position={[0, 0.2, 0]}>
             <boxGeometry args={[0.7, 0.4, 0.7]} />
@@ -259,7 +288,6 @@ const Buildings = () => {
           </mesh>
         </group>
         
-        {/* Planta esquina 4 */}
         <group position={[4, 0, 4]}>
           <mesh castShadow position={[0, 0.25, 0]}>
             <boxGeometry args={[0.7, 0.5, 0.7]} />
@@ -276,7 +304,7 @@ const Buildings = () => {
         </group>
       </group>
       
-      {/* Interaction hints */}
+      {/* Interaction hints - Ahora indicamos que también se puede hacer clic */}
       <Text
         position={[-8, 5, 0]}
         rotation={[0, 0, 0]}
@@ -285,7 +313,7 @@ const Buildings = () => {
         anchorX="center"
         anchorY="middle"
       >
-        Press E to interact
+        Haz clic para entrar
       </Text>
       
       <Text
@@ -296,7 +324,7 @@ const Buildings = () => {
         anchorX="center"
         anchorY="middle"
       >
-        Press E to interact
+        Haz clic para entrar
       </Text>
       
       <Text
@@ -307,7 +335,7 @@ const Buildings = () => {
         anchorX="center"
         anchorY="middle"
       >
-        Press E to interact
+        Haz clic para entrar
       </Text>
     </group>
   );
