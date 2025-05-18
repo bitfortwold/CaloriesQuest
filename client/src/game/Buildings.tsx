@@ -192,40 +192,7 @@ const Buildings = () => {
         
         {/* El círculo amarillo ha sido eliminado ya que ahora usamos detección de proximidad */}
         
-        {/* Garden Door - Increased size */}
-        <group position={[0, 0.6, 4]} rotation={[0, Math.PI / 8, 0]}>
-          {/* Door Frame */}
-          <mesh 
-            castShadow 
-            receiveShadow 
-            position={[0, 0, 0]}
-          >
-            <boxGeometry args={[2, 1.2, 0.15]} />
-            <meshStandardMaterial color="#A52A2A" />
-          </mesh>
-          
-          {/* Door Handle */}
-          <mesh 
-            castShadow 
-            receiveShadow 
-            position={[0.6, 0, 0.08]}
-          >
-            <sphereGeometry args={[0.15, 16, 16]} />
-            <meshStandardMaterial color="#FFD700" emissive="#FFD700" emissiveIntensity={0.5} />
-          </mesh>
-          
-          {/* Door Exit Sign - Bigger and more visible */}
-          <Text
-            position={[0, 0.3, 0.08]}
-            rotation={[0, 0, 0]}
-            fontSize={0.3}
-            color="#FFFFFF"
-            anchorX="center"
-            anchorY="middle"
-          >
-            SALIR
-          </Text>
-        </group>
+        {/* La puerta del huerto ha sido eliminada */}
         
         {/* Garden Sign - Mejorado */}
         <mesh castShadow position={[0, 2, -4.2]}>
