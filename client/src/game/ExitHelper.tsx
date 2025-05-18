@@ -35,11 +35,11 @@ export const useExitHelper = () => {
       };
     }
     else if (building === "garden") {
-      // Para el huerto, lo movemos al frente del huerto para que se vea bien
+      // Posicionamos al jugador exactamente frente al letrero del huerto
       exitPosition = {
         x: 0,
         y: 0,
-        z: -8 // Mucho más lejos del huerto que antes
+        z: -10 // Posición frontal al huerto (directamente frente al letrero)
       };
     }
     
@@ -69,9 +69,9 @@ export const useExitHelper = () => {
       if (state && state.camera) {
         const camera = state.camera;
         
-        // Configuración frontal para ver completamente el personaje desde el frente
-        camera.position.set(0, 6, 0); // Posición más baja y frontal
-        camera.lookAt(new THREE.Vector3(0, 1, -8)); // Mirar directamente al personaje en su posición de salida
+        // Configuración frontal para ver al personaje frente al huerto
+        camera.position.set(0, 5, 0); // Posición similar a cuando se está moviendo por el mapa
+        camera.lookAt(new THREE.Vector3(0, 1, -15)); // Mirar hacia el huerto, para ver al personaje frente a él
         camera.updateProjectionMatrix();
       }
     }
