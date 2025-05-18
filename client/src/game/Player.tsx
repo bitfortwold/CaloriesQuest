@@ -285,101 +285,65 @@ const Player = () => {
     
     // Si venimos de cualquier edificio y ahora estamos jugando
     if (buildingStates.includes(lastGameStateRef.current || "") && gameState === "playing") {
-      console.log(`Detected exit from ${lastGameStateRef.current}`);
+      const exitedBuilding = lastGameStateRef.current;
+      console.log(`Detected exit from ${exitedBuilding}`);
       
       // Marcar que acabamos de salir de un edificio para evitar interacciones inmediatas
       setJustExitedBuilding(true);
       
-      // Comportamiento personalizado según el edificio
-      if (lastGameStateRef.current === "garden") {
-        console.log("Saliendo del huerto");
-        
-        // Colocar al jugador en el camino ocre frente al huerto
-        const exitPos = getGardenExitPosition();
-        setPlayerPosition({
-          x: exitPos.x,
-          y: playerPosition.y, // Mantenemos la altura actual
-          z: exitPos.z
-        });
-        
-        // Verificar si hubo acción de riego o cosecha
-        const { playerData } = usePlayerStore.getState();
-        if (playerData?.lastGardenAction === "harvest" || playerData?.lastGardenAction === "water") {
-          console.log(`Detectada acción previa en el huerto: ${playerData.lastGardenAction}`);
-          // Resetear la acción después de procesarla
-          if (playerData) {
-            updatePlayer({
-              ...playerData,
-              lastGardenAction: undefined // Limpiar la acción
-            });
+      // Obtener la posición de salida según el edificio
+      let exitPos;
+      switch (exitedBuilding) {
+        case "garden":
+          console.log("Saliendo del huerto");
+          exitPos = getGardenExitPosition();
+          
+          // Verificar si hubo acción de riego o cosecha (solo aplica al huerto)
+          const { playerData } = usePlayerStore.getState();
+          if (playerData?.lastGardenAction === "harvest" || playerData?.lastGardenAction === "water") {
+            console.log(`Detectada acción previa en el huerto: ${playerData.lastGardenAction}`);
+            // Resetear la acción después de procesarla
+            if (playerData) {
+              updatePlayer({
+                ...playerData,
+                lastGardenAction: undefined // Limpiar la acción
+              });
+            }
           }
-        }
+          break;
+        case "market":
+          console.log("Saliendo del mercado");
+          exitPos = getMarketExitPosition();
+          break;
+        case "kitchen":
+          console.log("Saliendo de la cocina");
+          exitPos = getKitchenExitPosition();
+          break;
+        default:
+          console.warn("Edificio no reconocido", exitedBuilding);
+          return; // Salir si no reconocemos el edificio
+      }
+      
+      // Posicionar al jugador frente al edificio correspondiente
+      setPlayerPosition({
+        x: exitPos.x,
+        y: playerPosition.y, // Mantenemos la altura actual
+        z: exitPos.z
+      });
+      
+      // Configuración unificada de cámara para todos los edificios
+      if (camera) {
+        // Posicionamos la cámara detrás del personaje con vista hacia el edificio
+        camera.position.set(
+          exitPos.x,     // Alineado con el jugador en X
+          8,             // Altura estándar para todos los edificios
+          5              // Posición Z estándar detrás del jugador
+        );
         
-        // Configuración precisa de la cámara según la captura de pantalla
-        if (camera) {
-          // Posicionamos la cámara detrás del personaje, con vista completa del huerto
-          camera.position.set(
-            exitPos.x,     // Centrado con el jugador
-            8,             // Altura suficiente para vista completa
-            5              // Detrás del jugador mirando hacia el huerto
-          );
-          
-          // Hacer que la cámara mire hacia el huerto
-          camera.lookAt(exitPos.x, 0, -15); // Mirando hacia el huerto
-          
-          console.log("Cámara reposicionada para vista perfecta del huerto");
-        }
+        // Hacer que la cámara mire hacia el edificio (misma configuración para todos)
+        camera.lookAt(exitPos.x, 0, -15);
         
-      } else if (lastGameStateRef.current === "market") {
-        console.log("Saliendo del mercado");
-        
-        // Colocar al jugador en el camino ocre frente al mercado
-        const exitPos = getMarketExitPosition();
-        setPlayerPosition({
-          x: exitPos.x,
-          y: playerPosition.y, // Mantenemos la altura actual
-          z: exitPos.z
-        });
-        
-        // Configuración precisa de la cámara según la captura de pantalla
-        if (camera) {
-          // Posicionamos la cámara detrás del personaje, con vista completa del mercado
-          camera.position.set(
-            exitPos.x,      // Alineado con el jugador en X
-            8,              // Altura suficiente para vista completa
-            5               // Detrás del jugador mirando hacia el mercado
-          );
-          
-          // Hacer que la cámara mire hacia el mercado
-          camera.lookAt(exitPos.x, 0, -15); // Mirando hacia el mercado
-          
-          console.log("Cámara reposicionada para vista perfecta del mercado");
-        }
-      } else if (lastGameStateRef.current === "kitchen") {
-        console.log("Saliendo de la cocina");
-        
-        // Colocar al jugador en el camino ocre frente a la cocina
-        const exitPos = getKitchenExitPosition();
-        setPlayerPosition({
-          x: exitPos.x,
-          y: playerPosition.y, // Mantenemos la altura actual
-          z: exitPos.z
-        });
-        
-        // Configuración precisa de la cámara según la captura de pantalla
-        if (camera) {
-          // Posicionamos la cámara detrás del personaje, con vista completa de la cocina
-          camera.position.set(
-            exitPos.x,      // Alineado con el jugador en X
-            8,              // Altura suficiente para vista completa
-            5               // Detrás del jugador mirando hacia la cocina
-          );
-          
-          // Hacer que la cámara mire hacia la cocina
-          camera.lookAt(exitPos.x, 0, -15); // Mirando hacia la cocina
-          
-          console.log("Cámara reposicionada para vista perfecta de la cocina");
-        }
+        console.log(`Cámara reposicionada para vista perfecta del ${exitedBuilding}`);
       }
       
       // Restaurar la capacidad de interactuar después de un periodo más largo
