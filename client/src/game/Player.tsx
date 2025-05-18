@@ -291,56 +291,67 @@ const Player = () => {
       // Marcar que acabamos de salir de un edificio para evitar interacciones inmediatas
       setJustExitedBuilding(true);
       
-      // Obtener la posición de salida según el edificio
-      let exitPos;
-      switch (exitedBuilding) {
-        case "garden":
-          console.log("Saliendo del huerto");
-          exitPos = getGardenExitPosition();
-          
-          // Limpiar cualquier acción del huerto sin procesar condicionalmente
-          const { playerData } = usePlayerStore.getState();
-          if (playerData && playerData.lastGardenAction !== undefined) {
-            console.log("Limpiando acciones del huerto para salida unificada");
-            updatePlayer({
-              ...playerData,
-              lastGardenAction: undefined // Siempre limpiar la acción
-            });
-          }
-          break;
-        case "market":
-          console.log("Saliendo del mercado");
-          exitPos = getMarketExitPosition();
-          break;
-        case "kitchen":
-          console.log("Saliendo de la cocina");
-          exitPos = getKitchenExitPosition();
-          break;
-        default:
-          console.warn("Edificio no reconocido", exitedBuilding);
-          return; // Salir si no reconocemos el edificio
-      }
-      
-      // Posicionar al jugador frente al edificio correspondiente
-      setPlayerPosition({
-        x: exitPos.x,
-        y: playerPosition.y, // Mantenemos la altura actual
-        z: exitPos.z
-      });
-      
-      // Configuración unificada de cámara para todos los edificios
-      if (camera) {
-        // Posicionamos la cámara detrás del personaje con vista hacia el edificio
-        camera.position.set(
-          exitPos.x,     // Alineado con el jugador en X
-          8,             // Altura estándar para todos los edificios
-          5              // Posición Z estándar detrás del jugador
-        );
+      // Comportamiento específico para cada edificio
+      if (exitedBuilding === "garden") {
+        console.log("Saliendo del huerto");
         
-        // Hacer que la cámara mire hacia el edificio (misma configuración para todos)
-        camera.lookAt(exitPos.x, 0, -15);
+        // POSICIÓN EXACTA como en la captura
+        // El jugador siempre sale al mismo punto exacto en el camino ocre
+        const fixedPosition = { x: 0, y: 0, z: -9 }; // Posición fija garantizada
         
-        console.log(`Cámara reposicionada para vista perfecta del ${exitedBuilding}`);
+        // Siempre configurar la posición exacta como en la captura
+        setPlayerPosition({
+          x: fixedPosition.x,
+          y: 0, // Altura fija para evitar variaciones
+          z: fixedPosition.z
+        });
+        
+        // Siempre orientar al jugador mirando hacia el huerto
+        setRotationY(Math.PI); // Dirección fija mirando hacia el huerto (Norte)
+        
+        // Posición de cámara exacta como en la captura
+        if (camera) {
+          camera.position.set(0, 12, 0); // Posición más elevada para vista amplia
+          camera.lookAt(0, 0, -15); // Mirando directamente hacia el huerto
+          console.log("Cámara posicionada para vista correcta del huerto");
+        }
+        
+        // Limpiar acciones del huerto para evitar inconsistencias
+        const { playerData } = usePlayerStore.getState();
+        if (playerData) {
+          updatePlayer({
+            ...playerData,
+            lastGardenAction: undefined // Siempre limpiar la acción
+          });
+        }
+      } else if (exitedBuilding === "market") {
+        console.log("Saliendo del mercado");
+        const exitPos = getMarketExitPosition();
+        
+        setPlayerPosition({
+          x: exitPos.x,
+          y: 0, // Altura fija
+          z: exitPos.z
+        });
+        
+        if (camera) {
+          camera.position.set(exitPos.x, 8, exitPos.z + 15);
+          camera.lookAt(exitPos.x, 0, exitPos.z - 10);
+        }
+      } else if (exitedBuilding === "kitchen") {
+        console.log("Saliendo de la cocina");
+        const exitPos = getKitchenExitPosition();
+        
+        setPlayerPosition({
+          x: exitPos.x,
+          y: 0, // Altura fija
+          z: exitPos.z
+        });
+        
+        if (camera) {
+          camera.position.set(exitPos.x, 8, exitPos.z + 15);
+          camera.lookAt(exitPos.x, 0, exitPos.z - 10);
+        }
       }
       
       // Restaurar la capacidad de interactuar después de un periodo más largo
