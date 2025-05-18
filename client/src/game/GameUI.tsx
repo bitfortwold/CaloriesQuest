@@ -146,11 +146,12 @@ const GameUI = () => {
                   // 2. Aplicar posicionamiento forzado después del cambio de estado
                   setTimeout(() => {
                     // Mover al jugador directamente a la posición fija
-                    const { setPlayerPosition, setRotationY } = usePlayerStore.getState();
+                    const { setPlayerPosition } = usePlayerStore.getState();
                     
                     // Coordenadas absolutas comprobadas que funcionan
                     setPlayerPosition({ x: 0, y: 0, z: -10 });
-                    setRotationY(Math.PI); // Mirando hacia el norte (huerto)
+                    
+                    // NOTA: No podemos usar setRotationY aquí porque es un estado local del componente Player
                     
                     // Obtener y manipular directamente la cámara del juego
                     const threeCanvas = document.querySelector('canvas');
@@ -168,7 +169,7 @@ const GameUI = () => {
             
             <div className="fixed inset-0 z-50 flex items-center justify-center">
               <Garden onExit={() => {
-                console.log("SALIDA ALTERNATIVA DEL HUERTO - VERSIÓN HARDCODED");
+                console.log("SALIDA ALTERNATIVA DEL HUERTO - VERSIÓN SIMPLIFICADA");
                 
                 // Simplificar al máximo la salida
                 exitBuilding();
@@ -176,11 +177,11 @@ const GameUI = () => {
                 // Forzar posición conocida-funcional para jugador
                 setTimeout(() => {
                   // Obtener el player para forzar directamente su posición
-                  const { setPlayerPosition, setRotationY } = usePlayerStore.getState();
+                  const { setPlayerPosition } = usePlayerStore.getState();
                   
                   // POSICIÓN ABSOLUTA FIJA
                   setPlayerPosition({ x: 0, y: 0, z: -10 });
-                  setRotationY(Math.PI); // Orientación hacia el Norte (huerto)
+                  // La rotación se manejará automáticamente en el componente Player
                   
                   console.log("POSICIÓN FORZADA A VALORES ABSOLUTOS");
                 }, 100);
