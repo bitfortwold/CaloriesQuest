@@ -286,96 +286,90 @@ const Player = () => {
     // Si venimos de cualquier edificio y ahora estamos jugando
     if (buildingStates.includes(lastGameStateRef.current || "") && gameState === "playing") {
       const exitedBuilding = lastGameStateRef.current;
-      console.log(`Detected exit from ${exitedBuilding}`);
+      console.log(`Detectada salida desde ${exitedBuilding}`);
       
-      // Marcar que acabamos de salir de un edificio para evitar interacciones inmediatas
+      // Marcar que acabamos de salir para evitar interacciones inmediatas
       setJustExitedBuilding(true);
       
-      // Comportamiento específico para cada edificio
+      // Manejar la salida específica del huerto
       if (exitedBuilding === "garden") {
         console.log("Saliendo del huerto");
         
-        // Obtener la función de cambio de estado para acceder a ella directamente
-        const { setGameState } = useGameStateStore.getState();
-        console.log("Reposicionando jugador y cámara para salida del huerto");
-        
-        // POSICIÓN EXACTA como en la captura - valores ajustados mediante prueba y error
-        const fixedPosition = { x: 0, y: 0, z: -9 }; // Posición fija en el camino ocre
-        
-        // Forzar posición y rotación específicas para coincidir con la captura
+        // Ubicar al jugador en el camino ocre frente al huerto (posición exacta de la captura)
         setPlayerPosition({
-          x: fixedPosition.x,  // Centrado en el camino
-          y: 0.01,             // Ligeramente elevado para evitar colisiones con el terreno
-          z: fixedPosition.z   // Distancia específica desde el huerto
+          x: 0,
+          y: 0,
+          z: -9
         });
         
-        // El jugador debe mirar hacia el huerto (norte)
-        setRotationY(Math.PI);
+        // Orientar al jugador hacia el huerto
+        setRotationY(Math.PI); // Girar hacia el norte (hacia el huerto)
         
-        // Ajuste preciso de la cámara - valores ajustados para coincidencia exacta
+        // Configurar la cámara detrás del jugador
         if (camera) {
-          // Posición específica de la cámara para coincidir con la captura
-          camera.position.set(
-            0,    // Centrado con el jugador
-            5,    // Altura fija para ver por encima del jugador
-            5     // Distancia detrás del jugador para ver su espalda
-          );
-          
-          // La cámara mira al huerto por encima del jugador
-          camera.lookAt(0, 1, -20);
-          
-          // Actualizar los controles de la cámara si existen
-          console.log("Posición exacta aplicada - debería coincidir con la captura");
+          camera.position.set(0, 8, 5); // Vista trasera elevada
+          camera.lookAt(0, 0, -15); // Mirando hacia el huerto
+          console.log("Cámara posicionada correctamente");
         }
         
-        // Limpiar acciones del huerto para evitar inconsistencias
+        // Limpiar cualquier acción pendiente del huerto
         const { playerData } = usePlayerStore.getState();
         if (playerData) {
           updatePlayer({
             ...playerData,
-            lastGardenAction: undefined // Siempre limpiar la acción
+            lastGardenAction: undefined
           });
         }
-      } else if (exitedBuilding === "market") {
+      } 
+      // Manejar la salida del mercado
+      else if (exitedBuilding === "market") {
         console.log("Saliendo del mercado");
-        const exitPos = getMarketExitPosition();
+        const marketExit = getMarketExitPosition();
         
+        // Posicionar al jugador en el camino frente al mercado
         setPlayerPosition({
-          x: exitPos.x,
-          y: 0, // Altura fija
-          z: exitPos.z
+          x: marketExit.x,
+          y: 0,
+          z: marketExit.z
         });
         
+        // Configurar la cámara con vista perfecta
         if (camera) {
-          camera.position.set(exitPos.x, 8, exitPos.z + 15);
-          camera.lookAt(exitPos.x, 0, exitPos.z - 10);
+          camera.position.set(marketExit.x, 8, 5);
+          camera.lookAt(marketExit.x, 0, -15);
+          console.log("Cámara posicionada para vista del mercado");
         }
-      } else if (exitedBuilding === "kitchen") {
+      } 
+      // Manejar la salida de la cocina
+      else if (exitedBuilding === "kitchen") {
         console.log("Saliendo de la cocina");
-        const exitPos = getKitchenExitPosition();
+        const kitchenExit = getKitchenExitPosition();
         
+        // Posicionar al jugador en el camino frente a la cocina
         setPlayerPosition({
-          x: exitPos.x,
-          y: 0, // Altura fija
-          z: exitPos.z
+          x: kitchenExit.x,
+          y: 0,
+          z: kitchenExit.z
         });
         
+        // Configurar la cámara con vista perfecta
         if (camera) {
-          camera.position.set(exitPos.x, 8, exitPos.z + 15);
-          camera.lookAt(exitPos.x, 0, exitPos.z - 10);
+          camera.position.set(kitchenExit.x, 8, 5);
+          camera.lookAt(kitchenExit.x, 0, -15);
+          console.log("Cámara posicionada para vista de la cocina");
         }
       }
       
-      // Restaurar la capacidad de interactuar después de un periodo más largo
+      // Restaurar la capacidad de interactuar después de un periodo
       setTimeout(() => {
-        console.log("Building exit cooldown finished");
+        console.log("Finalizado el tiempo de espera tras salir del edificio");
         setJustExitedBuilding(false);
-      }, 1000); // Un segundo completo para evitar reentradas accidentales
+      }, 1000);
     }
     
     // Actualizar la referencia del estado anterior
     lastGameStateRef.current = gameState;
-  }, [gameState, playerPosition, marketPosition, kitchenPosition, gardenPosition]);
+  }, [gameState, camera, setPlayerPosition, setRotationY, updatePlayer]);
 
   // Handle movement and interactions in each frame
   useFrame(() => {

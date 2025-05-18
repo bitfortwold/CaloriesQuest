@@ -19,7 +19,7 @@ export const getGardenPosition = () => gardenPosition;
 // Posiciones específicas para la salida de cada edificio - Ajustadas para perfecta visualización
 // Posición para la salida del huerto (en el camino ocre frente al huerto)
 // Usamos una función que devuelve siempre el mismo objeto para garantizar consistencia
-export const getGardenExitPosition = () => ({ x: 0, y: 0, z: -10 }); // Posición fija y optimizada
+export const getGardenExitPosition = () => ({ x: 0, y: 0, z: -9 }); // Posición fija según captura de pantalla
 
 // Posición para la salida del mercado (en el camino ocre frente al mercado)
 // Usamos una función que devuelve siempre el mismo objeto para garantizar consistencia
