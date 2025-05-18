@@ -7,7 +7,7 @@ import { useGameStateStore } from "../stores/useGameStateStore";
 import { useCartStore } from "../stores/useCartStore";
 import { useLanguage } from "../i18n/LanguageContext";
 import { toast } from "sonner";
-import { ExitButton } from "./ExitButton";
+import { useExitHelper } from "./ExitHelper";
 
 interface MarketProps {
   onExit: () => void;
@@ -362,19 +362,25 @@ const Market = ({ onExit }: MarketProps) => {
               <h1 className="text-4xl font-bold text-white drop-shadow-lg tracking-wide uppercase">{t.market}</h1>
             </div>
 
-            {/* Botón Salir a la derecha - Simplificado */}
-            <button
-              onClick={() => {
-                // Simplificamos el código al máximo
-                console.log("*** SALIENDO DE MERCADO - CÓDIGO SIMPLIFICADO ***");
-                
-                // Llamada directa a la función de salida
-                useGameStateStore.getState().exitBuilding();
-              }}
-              className="bg-gradient-to-r from-[#E74C3C] to-[#C0392B] text-white px-6 py-2 rounded-lg font-bold shadow-md border-2 border-[#A93226] hover:from-[#C0392B] hover:to-[#E74C3C] transition duration-300"
-            >
-              {t.exit || "Salir"}
-            </button>
+            {/* Botón Salir estilo sencillo con ExitHelper */}
+            <div className="relative">
+              <button
+                onClick={() => {
+                  console.log("Saliendo del mercado con posición segura");
+                  // Usamos helper para salir correctamente
+                  const { exitBuilding } = useExitHelper();
+                  exitBuilding("market");
+                  
+                  // Llamamos a onExit para limpieza de componente
+                  onExit();
+                }}
+                className="bg-[#E57373] hover:bg-[#EF5350] py-3 px-12 rounded-full shadow-md border-2 border-[#C62828] transition duration-300"
+              >
+                <span className="text-white font-bold text-xl">
+                  {t.exit || "Salir"}
+                </span>
+              </button>
+            </div>
           </div>
           
           {/* Contador de monedas estilizado */}
