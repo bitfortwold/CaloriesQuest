@@ -1,14 +1,23 @@
 import { useState } from "react";
 import { usePlayerStore } from "../stores/usePlayerStore";
+import { useGameStateStore } from "../stores/useGameStateStore";
 import { useLanguage } from "../i18n/LanguageContext";
 import ProfilePanel from "./ProfilePanel";
 import Activities from "./Activities";
 import DailyChallenges from "./DailyChallenges";
 
 const StatsPanel = () => {
-  const { playerData } = usePlayerStore();
+  const playerStore = usePlayerStore();
+  const { playerData } = playerStore;
+  const gameStore = useGameStateStore();
   const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState<string | null>(null);
+
+  // Función para cerrar sesión y volver a la pantalla de inicio
+  const handleLogout = () => {
+    // Utilizamos la función predefinida de logout del store
+    gameStore.logout();
+  };
 
   return (
     <div className="bg-blue-950/95 p-3 rounded-lg shadow-lg border-2 border-blue-700 w-[300px] text-white max-h-[80vh] overflow-y-auto">
@@ -36,6 +45,19 @@ const StatsPanel = () => {
           onClick={() => setActiveTab(activeTab === 'challenges' ? null : 'challenges')}
         >
           Desafíos
+        </button>
+      </div>
+      
+      {/* Botón de cerrar sesión */}
+      <div className="mb-3">
+        <button
+          onClick={handleLogout}
+          className="bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-md w-full transition-colors text-sm font-medium flex items-center justify-center"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+          </svg>
+          Cerrar Sesión
         </button>
       </div>
       
@@ -86,21 +108,30 @@ const StatsPanel = () => {
         </div>
       )}
       
-      {/* Contenido de las pestañas */}
-      <div className="mt-2 max-h-[400px] overflow-y-auto">
+      {/* Contenido de las pestañas - Estilo corregido */}
+      <div className="mt-2">
         {activeTab === 'profile' && (
-          <div className="bg-slate-800/70 rounded-md p-3">
-            <ProfilePanel />
+          <div className="bg-slate-800/70 rounded-md">
+            {/* Forzamos estilos para evitar problemas con el componente hijo */}
+            <div className="text-white">
+              <ProfilePanel />
+            </div>
           </div>
         )}
         {activeTab === 'activities' && (
-          <div className="bg-slate-800/70 rounded-md p-3">
-            <Activities />
+          <div className="bg-slate-800/70 rounded-md">
+            {/* Forzamos estilos para evitar problemas con el componente hijo */}
+            <div className="text-white p-2">
+              <Activities />
+            </div>
           </div>
         )}
         {activeTab === 'challenges' && (
-          <div className="bg-slate-800/70 rounded-md p-3">
-            <DailyChallenges />
+          <div className="bg-slate-800/70 rounded-md">
+            {/* Forzamos estilos para evitar problemas con el componente hijo */}
+            <div className="text-white p-2">
+              <DailyChallenges />
+            </div>
           </div>
         )}
       </div>
