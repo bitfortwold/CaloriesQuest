@@ -329,33 +329,42 @@ const Player = () => {
       const { requestReset } = useCameraStore.getState();
       requestReset();
       
-      // TRATAMIENTO ESPECIAL PARA EL HUERTO
+      // TRATAMIENTO ESPECIAL PARA EL HUERTO - SISTEMA FINAL DEFINITIVO
       if (exitedBuilding === "garden") {
-        console.log("👨‍🌾 SISTEMA ESPECIALIZADO PARA HUERTO ACTIVADO");
+        console.log("🌱 SISTEMA DEFINITIVO HUERTO v4.0 ACTIVADO");
         
-        // POSICIÓN ABSOLUTAMENTE FIJA - Coordenadas explícitas
-        const POSICION_CENTRAL = { x: 0, y: 0, z: -8 };
-        setPlayerPosition(POSICION_CENTRAL);
+        // Obtener posición EXACTA definida en Buildings.tsx
+        const gardExitPos = getGardenExitPosition();
+        console.log(`Posicionando en coordenadas fijas: ${JSON.stringify(gardExitPos)}`);
+        
+        // Aplicar posición absolutamente fija
+        setPlayerPosition(gardExitPos);
         setRotationY(Math.PI); // Mirando al norte (hacia el huerto)
         
-        // RESETEO DOBLE DE CÁMARA - Primera pasada inmediata
+        // RESETEO DIRECTO DE CÁMARA - Sin animaciones ni interpolaciones
         if (camera) {
-          // Valores más parecidos a la posición original
-          camera.position.set(0, 8, 5);
+          // COORDENADAS ABSOLUTAS - Siempre las mismas para garantizar consistencia
+          camera.position.set(0, 7, 8);
           camera.lookAt(0, 0, -12);
+          
+          // Bloquear rotación para estabilidad
           camera.rotation.order = 'YXZ';
+          camera.updateProjectionMatrix();
+          
+          // Truco adicional: desactivar controles por un momento para evitar interferencias
+          if (camera.userData.controls) {
+            camera.userData.controls.enabled = false;
+            setTimeout(() => {
+              if (camera.userData.controls) camera.userData.controls.enabled = true;
+            }, 100);
+          }
         }
         
-        // Segunda pasada con delay para asegurar la aplicación
-        setTimeout(() => {
-          if (camera) {
-            // Reconfirmar misma posición y orientación
-            camera.position.set(0, 8, 5);
-            camera.lookAt(0, 0, -12);
-            camera.rotation.order = 'YXZ';
-            console.log("🎯 POSICIÓN DE CÁMARA HUERTO GARANTIZADA");
-          }
-        }, 50);
+        // BLOQUEO ANTI-COLISIÓN: Breve periodo de "inmunidad" para evitar interacciones accidentales
+        const storeRef = usePlayerStore.getState();
+        if (storeRef) {
+          storeRef.setIsMovingToTarget(false);
+        }
       } 
       // Para otros edificios, mantener el sistema existente
       else {
