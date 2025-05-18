@@ -184,60 +184,76 @@ const GameUI = () => {
                       <div className="flex gap-2 w-full">
                         <button 
                           className={`bg-blue-600 hover:bg-blue-700 text-white text-sm px-3 py-1 rounded flex-1 transition-colors ${activeTab === 'profile' ? 'ring-2 ring-white' : ''}`}
-                          onClick={() => {
-                            setActiveTab('profile');
-                            // Ahora ya no hay un segundo panel, todo está en este panel
-                          }}
+                          onClick={() => setActiveTab('profile')}
                         >
                           {t.profile}
                         </button>
                         <button 
-                          className="bg-yellow-600 hover:bg-yellow-700 text-white text-sm px-3 py-1 rounded flex-1 transition-colors"
-                          onClick={() => {
-                            // Mostrar/ocultar panel de instrucciones
-                            const statsInstructions = document.getElementById('stats-instructions');
-                            if (statsInstructions) {
-                              const isVisible = statsInstructions.style.display !== 'none';
-                              statsInstructions.style.display = isVisible ? 'none' : 'block';
-                            }
-                          }}
-                          title="Ver instrucciones"
+                          className={`bg-amber-600 hover:bg-amber-700 text-white text-sm px-3 py-1 rounded flex-1 transition-colors ${activeTab === 'activities' ? 'ring-2 ring-white' : ''}`}
+                          onClick={() => setActiveTab('activities')}
                         >
-                          {t.help}
+                          {t.activities}
                         </button>
                         <button 
-                          className="bg-red-600 hover:bg-red-700 text-white text-sm px-3 py-1 rounded flex-1 transition-colors"
-                          onClick={() => {
-                            // Usar la función de logout que existe en el store para cerrar sesión correctamente
-                            // Esta función ya establece gameState = "ready" e isRegistered = false
-                            useGameStateStore.getState().logout();
-                            setShowProfilePanel(false);
-                          }}
+                          className={`bg-green-600 hover:bg-green-700 text-white text-sm px-3 py-1 rounded flex-1 transition-colors ${activeTab === 'challenges' ? 'ring-2 ring-white' : ''}`}
+                          onClick={() => setActiveTab('challenges')}
                         >
-                          {t.exit}
+                          {t.challenges}
                         </button>
                       </div>
                     </div>
                     
-                    {/* Panel de instrucciones oculto por defecto dentro del panel de estadísticas */}
-                    <div 
-                      id="stats-instructions" 
-                      className="bg-black/95 text-white p-3 rounded-lg shadow-lg w-full mb-3"
-                      style={{ display: 'none' }}
-                    >
-                      <h3 className="text-center font-bold mb-2 text-blue-300 text-xs">{t.controls}</h3>
-                      <div className="space-y-1 text-xs">
-                        <p>{t.moveKeys}</p>
-                        <p>{t.clickToMove}</p>
-                        <p>{t.interactKey}</p>
-                        <p>{t.rotateCamera}</p>
-                        <p>{t.zoomCamera}</p>
-                      </div>
+                    {/* Contenedor para el panel seleccionado */}
+                    <div className="mt-2">
+                      {/* Perfil */}
+                      {activeTab === 'profile' && (
+                        <div>
+                          <div className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white text-center py-1 mb-3 rounded font-bold">
+                            {playerData?.name || "Player"}
+                          </div>
+                          
+                          {/* Contenido específico del perfil */}
+                          <div className="space-y-3">
+                            <div>
+                              <div className="flex justify-between items-center mb-1">
+                                <span className="text-yellow-400 font-semibold">{t.health}:</span>
+                                <span className="text-yellow-400 font-bold">
+                                  {playerData ? Math.min(100, Math.max(0, 100 - Math.abs((playerData.caloriesConsumed / playerData.dailyCalories - 1) * 100))).toFixed(0) : 0}%
+                                </span>
+                              </div>
+                              <div className="w-full bg-gray-800 rounded-full h-3 overflow-hidden">
+                                {/* Barra de salud */}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                      
+                      {/* Actividades */}
+                      {activeTab === 'activities' && (
+                        <div>
+                          <Activities />
+                        </div>
+                      )}
+                      
+                      {/* Desafíos */}
+                      {activeTab === 'challenges' && (
+                        <div>
+                          <DailyChallenges />
+                        </div>
+                      )}
                     </div>
                     
-                    <div className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white text-center py-1 mb-3 rounded font-bold">
-                      {playerData?.name || "Player"}
-                    </div>
+                    {/* Botón para cerrar */}
+                    <button 
+                      className="absolute top-2 right-2 text-gray-400 hover:text-white"
+                      onClick={() => {
+                        setShowProfilePanel(false);
+                        setActiveTab(null);
+                      }}
+                    >
+                      ✕
+                    </button>
                     
                     <div className="space-y-4">
                       <div>
