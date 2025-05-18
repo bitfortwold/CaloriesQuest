@@ -291,26 +291,36 @@ const Player = () => {
       // Marcar que acabamos de salir para evitar interacciones inmediatas
       setJustExitedBuilding(true);
       
-      // Manejar la salida específica del huerto
+      // SOLUCIÓN PARA TODAS LAS SITUACIONES AL SALIR DEL HUERTO
       if (exitedBuilding === "garden") {
-        console.log("Saliendo del huerto y posicionando al jugador en el camino ocre");
+        console.log("✓✓✓ Implementando SOLUCIÓN FINAL para la salida del huerto");
         
-        // POSICIÓN EXACTA: Siempre colocar al jugador en el camino ocre 
-        // independientemente de si hay semillas o no
+        // FUERZA la posición exacta independientemente del estado de semillas
+        // Usamos una posición FIJA en coordenadas absolutas
         setPlayerPosition({
-          x: 0,
-          y: 0,
-          z: -6 // Posición ajustada según la nueva captura de pantalla
+          x: 0,         // Centro exacto del camino
+          y: 0,         // A nivel del suelo
+          z: 0          // Centro del mapa (solución radical para resolver el bug)
         });
         
-        // Orientar al jugador hacia el huerto (al norte)
-        setRotationY(Math.PI); // Dirección exacta mirando hacia el huerto
+        // Forzar reposicionamiento después de un breve delay
+        setTimeout(() => {
+          console.log("Ajuste FINAL de posición");
+          setPlayerPosition({
+            x: 0,
+            y: 0,
+            z: -6       // Posición exacta en el camino ocre
+          });
+          
+          // Orientar al jugador hacia el huerto (al norte)
+          setRotationY(Math.PI);
+        }, 100);
         
         // Configurar la cámara detrás del jugador con vista perfecta
         if (camera) {
           camera.position.set(0, 8, 5); // Vista trasera elevada
           camera.lookAt(0, 0, -15); // Mirando directamente hacia el huerto
-          console.log("Cámara posicionada con vista perfecta del huerto");
+          console.log("Cámara posicionada para vista perfecta del huerto");
         }
         
         // Limpiar cualquier acción pendiente del huerto
