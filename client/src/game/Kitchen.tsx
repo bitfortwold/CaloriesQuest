@@ -7,6 +7,7 @@ import { usePlayerStore, FoodItem } from "../stores/usePlayerStore";
 import { useGameStateStore } from "../stores/useGameStateStore";
 import { useLanguage } from "../i18n/LanguageContext";
 import { toast } from "sonner";
+import { ForceExitButton } from "./ForceExitButton";
 
 interface KitchenProps {
   onExit: () => void;
@@ -373,19 +374,8 @@ const Kitchen = ({ onExit }: KitchenProps) => {
               <h1 className="text-4xl font-bold text-white drop-shadow-lg tracking-wide uppercase">{language === 'en' ? 'Kitchen' : language === 'ca' ? 'Cuina' : 'Cocina'}</h1>
             </div>
 
-            {/* Botón Salir a la derecha - Simplificado */}
-            <button
-              onClick={() => {
-                // Simplificamos el código al máximo
-                console.log("*** SALIENDO DE COCINA - CÓDIGO SIMPLIFICADO ***");
-                
-                // Llamada directa a la función de salida
-                useGameStateStore.getState().exitBuilding();
-              }}
-              className="bg-gradient-to-r from-[#E74C3C] to-[#C0392B] text-white px-6 py-2 rounded-lg font-bold shadow-md border-2 border-[#A93226] hover:from-[#C0392B] hover:to-[#E74C3C] transition duration-300"
-            >
-              {language === 'en' ? 'Exit' : language === 'ca' ? 'Sortir' : 'Salir'}
-            </button>
+            {/* Botón de salida con ForceExitButton */}
+            <ForceExitButton />
           </div>
           
           {/* Contador de calorías */}
