@@ -300,23 +300,20 @@ const Player = () => {
           z: exitPos.z
         });
         
-        // Restablecer la posición de la cámara para una vista consistente
-        // Ponemos la cámara mirando hacia el huerto desde el camino
+        // Restablecer la posición de la cámara para una vista frontal
+        // Configuración específica para ver al jugador de frente desde el camino
         if (camera) {
-          // Establecer una rotación consistente de la cámara
-          const cameraDirection = new THREE.Vector3();
-          cameraDirection.subVectors(
-            new THREE.Vector3(0, 0, -15), // Dirección al huerto
-            new THREE.Vector3(exitPos.x, playerPosition.y, exitPos.z)
-          ).normalize();
-          
-          // Aplicar la rotación a la cámara
+          // Posicionar la cámara frente al jugador, hacia el centro del mapa
           camera.position.set(
-            exitPos.x - cameraDirection.x * 15, // Posicionamos la cámara detrás del jugador
-            10, // Altura fija para una buena vista
-            exitPos.z - cameraDirection.z * 15 // Alejamos la cámara del jugador
+            0,           // Centro del mapa (X)
+            7,           // Altura adecuada para vista completa
+            12           // Frente al jugador para verle de frente
           );
-          camera.lookAt(exitPos.x, playerPosition.y, exitPos.z - 5); // Mirando ligeramente delante del jugador
+          
+          // Hacer que la cámara mire hacia el jugador/huerto
+          camera.lookAt(0, 0, -7); // Mirando hacia el camino delante del huerto
+          
+          console.log("Cámara reposicionada: vista frontal del personaje");
         }
         
       } else if (lastGameStateRef.current === "market") {
