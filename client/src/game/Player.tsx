@@ -341,17 +341,17 @@ const Player = () => {
         setPlayerPosition(gardExitPos);
         setRotationY(Math.PI); // Mirando al norte (hacia el huerto)
         
-        // RESETEO DIRECTO DE CÁMARA - Sin animaciones ni interpolaciones
+        // SOLUCIÓN DEFINITIVA: VISTA NORMAL (NO CENITAL)
         if (camera) {
-          // COORDENADAS ABSOLUTAS - Siempre las mismas para garantizar consistencia
-          camera.position.set(0, 7, 8);
-          camera.lookAt(0, 0, -12);
+          // COORDENADAS PARA VISTA NORMAL - Altura y distancia normales
+          camera.position.set(0, 8, 5); // Altura 8, distancia 5
+          camera.lookAt(0, 0, -12);     // Mirar hacia el huerto (norte)
           
-          // Bloquear rotación para estabilidad
+          // Asegurar rotación correcta
           camera.rotation.order = 'YXZ';
           camera.updateProjectionMatrix();
           
-          // Truco adicional: desactivar controles por un momento para evitar interferencias
+          // Forzar reinicio completo de controles para prevenir interferencias
           if (camera.userData.controls) {
             camera.userData.controls.enabled = false;
             setTimeout(() => {
