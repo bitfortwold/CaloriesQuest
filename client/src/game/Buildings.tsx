@@ -123,6 +123,29 @@ const Buildings = () => {
           <meshStandardMaterial transparent opacity={0} />
         </mesh>
         
+        {/* Puertas dobles */}
+        <group position={[0, 0, 2.5]}>
+          <mesh 
+            castShadow
+            receiveShadow
+            position={[-0.6, 1, 0]}
+            name="market_door_left"
+          >
+            <boxGeometry args={[0.8, 2, 0.1]} />
+            <meshStandardMaterial color="#8B4513" />
+          </mesh>
+          
+          <mesh 
+            castShadow
+            receiveShadow
+            position={[0.6, 1, 0]} 
+            name="market_door_right"
+          >
+            <boxGeometry args={[0.8, 2, 0.1]} />
+            <meshStandardMaterial color="#8B4513" />
+          </mesh>
+        </group>
+        
         {/* Market base/stall */}
         <mesh castShadow receiveShadow position={[0, 1.5, 0]}>
           <boxGeometry args={[5, 3, 4]} />
@@ -206,6 +229,29 @@ const Buildings = () => {
           <meshStandardMaterial transparent opacity={0} />
         </mesh>
         
+        {/* Puertas dobles */}
+        <group position={[0, 0, 2.5]}>
+          <mesh 
+            castShadow
+            receiveShadow
+            position={[-0.6, 1, 0]}
+            name="kitchen_door_left"
+          >
+            <boxGeometry args={[0.8, 2, 0.1]} />
+            <meshStandardMaterial color="#8B4513" />
+          </mesh>
+          
+          <mesh 
+            castShadow
+            receiveShadow
+            position={[0.6, 1, 0]} 
+            name="kitchen_door_right"
+          >
+            <boxGeometry args={[0.8, 2, 0.1]} />
+            <meshStandardMaterial color="#8B4513" />
+          </mesh>
+        </group>
+        
         {/* Kitchen base */}
         <mesh castShadow receiveShadow position={[0, 2, 0]}>
           <boxGeometry args={[6, 4, 5]} />
@@ -258,6 +304,29 @@ const Buildings = () => {
           <boxGeometry args={[12, 4, 12]} />
           <meshStandardMaterial transparent opacity={0} />
         </mesh>
+        
+        {/* Puertas dobles */}
+        <group position={[0, 0, 2.5]}>
+          <mesh 
+            castShadow
+            receiveShadow
+            position={[-0.6, 1, 0]}
+            name="garden_door_left"
+          >
+            <boxGeometry args={[0.8, 2, 0.1]} />
+            <meshStandardMaterial color="#8B4513" />
+          </mesh>
+          
+          <mesh 
+            castShadow
+            receiveShadow
+            position={[0.6, 1, 0]} 
+            name="garden_door_right"
+          >
+            <boxGeometry args={[0.8, 2, 0.1]} />
+            <meshStandardMaterial color="#8B4513" />
+          </mesh>
+        </group>
         
         {/* Garden surface */}
         <mesh 
