@@ -300,20 +300,19 @@ const Player = () => {
           z: exitPos.z
         });
         
-        // Restablecer la posición de la cámara para una vista frontal
-        // Configuración específica para ver al jugador de frente desde el camino
+        // Configuración mejorada de cámara para vista desde frente
         if (camera) {
-          // Posicionar la cámara frente al jugador, hacia el centro del mapa
+          // Posicionamos la cámara detrás del personaje, apuntando hacia el huerto
           camera.position.set(
-            0,           // Centro del mapa (X)
-            7,           // Altura adecuada para vista completa
-            12           // Frente al jugador para verle de frente
+            0,             // Centro del mapa en X
+            5,             // Altura adecuada para vista completa
+            2              // Ligeramente detrás del personaje mirando al huerto
           );
           
-          // Hacer que la cámara mire hacia el jugador/huerto
-          camera.lookAt(0, 0, -7); // Mirando hacia el camino delante del huerto
+          // Hacer que la cámara mire hacia el huerto
+          camera.lookAt(0, 0, -15); // Mirando directamente al huerto
           
-          console.log("Cámara reposicionada: vista frontal del personaje");
+          console.log("Cámara reposicionada: vista mejorada para mejor visualización");
         }
         
       } else if (lastGameStateRef.current === "market") {
