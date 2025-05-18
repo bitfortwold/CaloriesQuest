@@ -15,10 +15,7 @@ interface Position {
 let gardenPosition: Position = { x: 0, y: 0, z: -8 };
 export const getGardenPosition = () => gardenPosition;
 
-// Función global para acceder a la posición del círculo amarillo
-let gardenCirclePosition: Position = { x: 0, y: 0.07, z: 6.5 };
-export const getGardenCirclePosition = () => gardenCirclePosition;
-export const GARDEN_CIRCLE_RADIUS = 1.5; // Radio del círculo amarillo
+// Ya no usamos el círculo amarillo, ya que implementamos detección de proximidad
 
 const Buildings = () => {
   const { setMarketPosition, setKitchenPosition } = useFoodStore();
@@ -193,27 +190,7 @@ const Buildings = () => {
           <meshStandardMaterial color="#8B4513" />
         </mesh>
         
-        {/* Punto de entrada visible (círculo brillante) - Completamente separado de la puerta */}
-        <mesh 
-          receiveShadow 
-          position={[0, 0.07, 6.5]} 
-          rotation={[-Math.PI / 2, 0, 0]}
-        >
-          <circleGeometry args={[1.5, 32]} />
-          <meshStandardMaterial color="#FFDD55" emissive="#FFDD55" emissiveIntensity={0.6} />
-        </mesh>
-        
-        {/* Texto en el punto de entrada */}
-        <Text
-          position={[0, 0.3, 6.5]}
-          rotation={[-Math.PI / 2, 0, 0]}
-          fontSize={0.5}
-          color="#8B4513"
-          anchorX="center"
-          anchorY="middle"
-        >
-          ENTRAR
-        </Text>
+        {/* El círculo amarillo ha sido eliminado ya que ahora usamos detección de proximidad */}
         
         {/* Garden Door - Increased size */}
         <group position={[0, 0.6, 4]} rotation={[0, Math.PI / 8, 0]}>
