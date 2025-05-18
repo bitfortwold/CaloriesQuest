@@ -284,21 +284,9 @@ const Player = () => {
       // Marcar que acabamos de salir de un edificio para evitar interacciones inmediatas
       setJustExitedBuilding(true);
       
-      // Comportamiento específico según el edificio
-      if (lastGameStateRef.current === "garden") {
-        // Al salir del huerto, el jugador permanece en su posición actual
-        console.log("SOLUCIÓN FINAL: Salida directa del huerto");
-        console.log("Permaneciendo en la misma posición");
-        // No cambiamos la posición, el jugador se queda donde está
-      } else {
-        // Para otros edificios, teleportar al centro como antes
-        console.log("Teleportación ejecutada correctamente");
-        setPlayerPosition({
-          x: 0, // Posición central del mapa
-          y: 0, // Altura base
-          z: 0  // Posición central del mapa
-        });
-      }
+      // Al salir de cualquier edificio, el jugador permanece en la misma posición
+      console.log("Saliendo de edificio, manteniendo posición actual");
+      // No cambiamos la posición del jugador, se queda donde está
       
       // Restaurar la capacidad de interactuar después de un periodo más largo
       setTimeout(() => {
