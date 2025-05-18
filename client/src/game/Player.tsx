@@ -5,7 +5,7 @@ import { useKeyboardControls } from "@react-three/drei";
 import { useGameStateStore } from "../stores/useGameStateStore";
 import { usePlayerStore } from "../stores/usePlayerStore";
 import { useFoodStore } from "../stores/useFoodStore";
-import { getGardenPosition } from "./Buildings";
+import { getGardenPosition, getGardenExitPosition } from "./Buildings";
 
 const PLAYER_SPEED = 0.1;
 const INTERACTION_DISTANCE = 3;
@@ -284,15 +284,23 @@ const Player = () => {
       // Marcar que acabamos de salir de un edificio para evitar interacciones inmediatas
       setJustExitedBuilding(true);
       
-      // Al salir de cualquier edificio, el jugador permanece en la misma posición
+      // Comportamiento personalizado según el edificio
       if (lastGameStateRef.current === "garden") {
         console.log("Saliendo del huerto");
+        // Colocar al jugador en el camino ocre frente al huerto
+        const exitPos = getGardenExitPosition();
+        setPlayerPosition({
+          x: exitPos.x,
+          y: playerPosition.y, // Mantenemos la altura actual
+          z: exitPos.z
+        });
       } else if (lastGameStateRef.current === "market") {
         console.log("Saliendo del mercado");
+        // El jugador se queda donde está
       } else if (lastGameStateRef.current === "kitchen") {
         console.log("Saliendo de la cocina");
+        // El jugador se queda donde está
       }
-      // No cambiamos la posición del jugador, se queda donde está
       
       // Restaurar la capacidad de interactuar después de un periodo más largo
       setTimeout(() => {

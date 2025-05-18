@@ -16,6 +16,10 @@ interface Position {
 let gardenPosition: Position = { x: 0, y: 0, z: -15 };
 export const getGardenPosition = () => gardenPosition;
 
+// Posición para la salida del huerto (en el camino ocre frente al huerto)
+let gardenExitPosition: Position = { x: 0, y: 0, z: -7 }; // Posición en el camino ocre
+export const getGardenExitPosition = () => gardenExitPosition;
+
 // Ya no usamos el círculo amarillo, ya que implementamos detección de proximidad
 
 const Buildings = () => {
