@@ -330,7 +330,7 @@ const Kitchen = ({ onExit }: KitchenProps) => {
       </div>
     </div>
   );
-  
+
   // Añadir un efecto para ver los valores de refrigeratorFood y pantryFood y estado de botones
   useEffect(() => {
     console.log("Nevera:", refrigeratorFood);
@@ -346,76 +346,89 @@ const Kitchen = ({ onExit }: KitchenProps) => {
           {/* Textura de madera */}
           <div className="absolute inset-0 opacity-30 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMCIgaGVpZ2h0PSIzMCI+CjxyZWN0IHdpZHRoPSIzMCIgaGVpZ2h0PSIzMCIgZmlsbD0iI2ZmZiI+PC9yZWN0Pgo8cmVjdCB4PSIxNSIgeT0iMCIgd2lkdGg9IjE1IiBoZWlnaHQ9IjE1IiBmaWxsPSIjZjNmNGY2Ij48L3JlY3Q+CjxyZWN0IHg9IjAiIHk9IjE1IiB3aWR0aD0iMTUiIGhlaWdodD0iMTUiIGZpbGw9IiNmM2Y0ZjYiPjwvcmVjdD4KPC9zdmc+')]"></div>
           
-          {/* Título con aspecto de cartel de madera */}
-          <div className="mb-4 flex justify-center">
+          {/* Botones superiores */}
+          <div className="flex justify-between items-center mb-2">
+            {/* Botón de Funciones (a la izquierda) */}
+            <button
+              onClick={() => {
+                if (cookingMode === "guided") {
+                  setCookingMode("free");
+                  setShowGuide(false);
+                } else {
+                  setShowGuide(!showGuide);
+                }
+                console.log("Cambiando modo de cocina desde botón superior");
+              }}
+              className="bg-gradient-to-r from-[#E67E22] to-[#F39C12] text-white px-6 py-2 rounded-lg font-bold shadow-md border-2 border-[#D35400] hover:from-[#D35400] hover:to-[#E67E22] transition duration-300"
+            >
+              {cookingMode === "guided" ? 
+                (language === 'en' ? 'Free Cooking' : language === 'ca' ? 'Cuina Lliure' : 'Cocina Libre') : 
+                (language === 'en' ? 'Cooking Guide' : language === 'ca' ? 'Guia de Cuina' : 'Guía de Cocina')}
+            </button>
+
+            {/* Título con aspecto de cartel de madera (centrado) */}
             <div className="bg-[#BA7D45] px-12 py-3 rounded-2xl shadow-lg border-4 border-[#8B5E34] transform rotate-0 relative">
               <div className="absolute inset-0 rounded-xl opacity-20 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMCIgaGVpZ2h0PSIzMCI+CjxyZWN0IHdpZHRoPSIzMCIgaGVpZ2h0PSIzMCIgZmlsbD0iI2ZmZiI+PC9yZWN0Pgo8cmVjdCB4PSIxNSIgeT0iMCIgd2lkdGg9IjE1IiBoZWlnaHQ9IjE1IiBmaWxsPSIjZjNmNGY2Ij48L3JlY3Q+CjxyZWN0IHg9IjAiIHk9IjE1IiB3aWR0aD0iMTUiIGhlaWdodD0iMTUiIGZpbGw9IiNmM2Y0ZjYiPjwvcmVjdD4KPC9zdmc+')]"></div>
-              <h1 className="text-4xl font-bold text-white drop-shadow-lg tracking-wide uppercase">
-                {language === 'en' ? 'Kitchen' : language === 'ca' ? 'Cuina' : 'Cocina'}
-              </h1>
+              <h1 className="text-4xl font-bold text-white drop-shadow-lg tracking-wide uppercase">{language === 'en' ? 'Kitchen' : language === 'ca' ? 'Cuina' : 'Cocina'}</h1>
             </div>
+
+            {/* Botón Salir a la derecha */}
+            <button
+              onClick={() => {
+                console.log("Saliendo de cocina con botón superior");
+                onExit();
+              }}
+              className="bg-gradient-to-r from-[#E74C3C] to-[#C0392B] text-white px-6 py-2 rounded-lg font-bold shadow-md border-2 border-[#A93226] hover:from-[#C0392B] hover:to-[#E74C3C] transition duration-300"
+            >
+              {language === 'en' ? 'Exit' : language === 'ca' ? 'Sortir' : 'Salir'}
+            </button>
           </div>
           
-          <div className="flex justify-between items-center">
+          {/* Contador de calorías */}
+          <div className="flex justify-center mt-2">
             <div className="bg-gradient-to-r from-[#F9D423] to-[#F5AB1B] px-6 py-3 rounded-xl text-[#7E4E1B] border-2 border-[#EDA617] shadow-lg">
               <span className="font-bold">{language === 'en' ? 'Calories' : language === 'ca' ? 'Calories' : 'Calorías'}: </span>
               <span className="text-[#7E4E1B] font-bold text-xl ml-1">
                 {playerData?.caloriesConsumed?.toFixed(0) || 0} / {playerData?.dailyCalories?.toFixed(0) || 0}
               </span>
             </div>
-            
-            <div className="flex justify-end">
-              {/* Contador de calorías (Ya no mostramos botones duplicados aquí) */}
-            </div>
           </div>
         </div>
         
-        <div className="p-6">
-          {/* Franja de botones para selección de página */}
-          <div className="flex justify-center gap-4 mb-6">
-            <Button 
-              onClick={() => {
-                console.log("Seleccionando Recetas Guiadas desde botones centrales");
-                setCookingMode("guided");
-                setShowGuide(false);
-              }}
-              className={`py-3 px-8 rounded-xl font-bold transition-all shadow-md 
-                ${cookingMode === "guided" && !showGuide 
-                ? 'bg-gradient-to-r from-[#F48E11] to-[#F9A826] text-white border-3 border-[#E47F0E]' 
-                : 'bg-gradient-to-r from-[#FFD166] to-[#FFBD3E] text-[#7E4E1B] border-2 border-[#FFBD3E]'}
-              `}
-            >
-              {language === 'en' ? 'Guided Recipes' : language === 'ca' ? 'Receptes Guiades' : 'Recetas Guiadas'}
-            </Button>
-            
-            <Button 
-              onClick={() => {
-                console.log("Seleccionando Cocina Libre desde botones centrales");
-                setCookingMode("free");
-                setShowGuide(false);
-              }}
-              className={`py-3 px-8 rounded-xl font-bold transition-all shadow-md 
-                ${cookingMode === "free" && !showGuide 
-                ? 'bg-gradient-to-r from-[#F48E11] to-[#F9A826] text-white border-3 border-[#E47F0E]' 
-                : 'bg-gradient-to-r from-[#FFD166] to-[#FFBD3E] text-[#7E4E1B] border-2 border-[#FFBD3E]'}
-              `}
-            >
-              {language === 'en' ? 'Free Cooking' : language === 'ca' ? 'Cuina Lliure' : 'Cocina Libre'}
-            </Button>
-            
-            <Button 
-              onClick={() => {
-                console.log("Seleccionando Guía de Cocina desde botones centrales");
-                setShowGuide(true);
-              }}
-              className={`py-3 px-8 rounded-xl font-bold transition-all shadow-md 
-                ${showGuide 
-                ? 'bg-gradient-to-r from-[#F48E11] to-[#F9A826] text-white border-3 border-[#E47F0E]' 
-                : 'bg-gradient-to-r from-[#FFD166] to-[#FFBD3E] text-[#7E4E1B] border-2 border-[#FFBD3E]'}
-              `}
-            >
-              {language === 'en' ? 'Cooking Guide' : language === 'ca' ? 'Guia de Cuina' : 'Guía de Cocina'}
-            </Button>
+        {/* Contenido principal */}
+        <div className="p-4">
+          {/* Modo de cocina (guiada o libre) */}
+          <div className="mb-4 flex justify-center">
+            <div className="grid grid-cols-2 gap-4 w-full max-w-xl">
+              <Button 
+                onClick={() => {
+                  console.log("Seleccionando Cocina Libre desde botones centrales");
+                  setCookingMode("free");
+                  setShowGuide(false);
+                }}
+                className={`py-3 px-8 rounded-xl font-bold transition-all shadow-md 
+                  ${cookingMode === "free" 
+                  ? 'bg-gradient-to-r from-[#F48E11] to-[#F9A826] text-white border-3 border-[#E47F0E]' 
+                  : 'bg-gradient-to-r from-[#FFD166] to-[#FFBD3E] text-[#7E4E1B] border-2 border-[#FFBD3E]'}
+                `}
+              >
+                {language === 'en' ? 'Free Cooking' : language === 'ca' ? 'Cuina Lliure' : 'Cocina Libre'}
+              </Button>
+              
+              <Button 
+                onClick={() => {
+                  console.log("Seleccionando Guía de Cocina desde botones centrales");
+                  setShowGuide(true);
+                }}
+                className={`py-3 px-8 rounded-xl font-bold transition-all shadow-md 
+                  ${showGuide 
+                  ? 'bg-gradient-to-r from-[#F48E11] to-[#F9A826] text-white border-3 border-[#E47F0E]' 
+                  : 'bg-gradient-to-r from-[#FFD166] to-[#FFBD3E] text-[#7E4E1B] border-2 border-[#FFBD3E]'}
+                `}
+              >
+                {language === 'en' ? 'Cooking Guide' : language === 'ca' ? 'Guia de Cuina' : 'Guía de Cocina'}
+              </Button>
+            </div>
           </div>
           
           {showGuide ? (
@@ -427,16 +440,16 @@ const Kitchen = ({ onExit }: KitchenProps) => {
               {/* Panel izquierdo - Ingredientes disponibles */}
               <div>
                 <Tabs defaultValue="refrigerator" className="w-full">
-                  <TabsList className="grid grid-cols-2 mb-4 bg-[#FFD166] px-4 pt-3 flex space-x-2 overflow-x-auto border-b-4 border-[#CD8E3E]">
+                  <TabsList className="grid grid-cols-2 mb-4 bg-[#FFD166] px-4 pt-3 flex space-x-2 overflow-x-auto border-b-4 border-[#CD8E3E] rounded-t-lg">
                     <TabsTrigger 
                       value="refrigerator" 
-                      className="font-bold py-3 px-5 rounded-t-xl transition-all text-lg transform data-[state=active]:bg-[#FFF8E9] data-[state=active]:text-[#8B5E34] data-[state=active]:border-4 data-[state=active]:border-b-0 data-[state=active]:border-[#CD8E3E] data-[state=active]:shadow-md data-[state=active]:scale-105 data-[state=inactive]:bg-[#FFBD3E] data-[state=inactive]:text-[#7E4E1B] data-[state=inactive]:hover:bg-[#FFC154] data-[state=inactive]:shadow-inner"
+                      className="text-[#8B5E34] font-bold transition-all px-4 py-3 data-[state=active]:bg-white rounded-t-lg data-[state=active]:border-2 data-[state=active]:border-b-0 data-[state=active]:border-[#CD8E3E]"
                     >
                       {language === 'en' ? 'Refrigerator' : language === 'ca' ? 'Refrigerador' : 'Refrigerador'}
                     </TabsTrigger>
                     <TabsTrigger 
                       value="pantry" 
-                      className="font-bold py-3 px-5 rounded-t-xl transition-all text-lg transform data-[state=active]:bg-[#FFF8E9] data-[state=active]:text-[#8B5E34] data-[state=active]:border-4 data-[state=active]:border-b-0 data-[state=active]:border-[#CD8E3E] data-[state=active]:shadow-md data-[state=active]:scale-105 data-[state=inactive]:bg-[#FFBD3E] data-[state=inactive]:text-[#7E4E1B] data-[state=inactive]:hover:bg-[#FFC154] data-[state=inactive]:shadow-inner"
+                      className="text-[#8B5E34] font-bold transition-all px-4 py-3 data-[state=active]:bg-white rounded-t-lg data-[state=active]:border-2 data-[state=active]:border-b-0 data-[state=active]:border-[#CD8E3E]"
                     >
                       {language === 'en' ? 'Pantry' : language === 'ca' ? 'Rebost' : 'Despensa'}
                     </TabsTrigger>
@@ -453,138 +466,98 @@ const Kitchen = ({ onExit }: KitchenProps) => {
               </div>
               
               {/* Panel derecho - Elementos seleccionados y botón de cocinar */}
-              <div>
-                <div className="bg-[#FFF8E9] p-4 rounded-2xl border-4 border-[#F5D6A4] shadow-lg mb-4">
-                  <h3 className="text-xl font-bold text-[#8B5E34] mb-3 pb-2 border-b-2 border-[#F5D6A4]">
-                    {language === 'en' ? 'Selected Ingredients' : language === 'ca' ? 'Ingredients Seleccionats' : 'Ingredientes Seleccionados'}
-                  </h3>
-                  
-                  <div className="max-h-[220px] overflow-y-auto mb-4">
-                    {selectedItems.length === 0 ? (
-                      <p className="text-[#C68642] py-6 text-center bg-[#FFF8E9] rounded-xl border-2 border-[#F5D6A4] shadow-inner">
-                        {language === 'en' 
-                          ? "Select ingredients from your refrigerator or pantry to cook a meal." 
-                          : language === 'ca'
-                          ? "Selecciona ingredients del teu refrigerador o rebost per cuinar un àpat." 
-                          : "Selecciona ingredientes de tu refrigerador o despensa para cocinar una comida."}
-                      </p>
-                    ) : (
-                      <div className="space-y-2">
-                        {[...refrigeratorFood, ...pantryFood]
-                          .filter(item => selectedItems.includes(item.id))
-                          .map(item => (
-                            <div key={item.id} className="flex justify-between items-center bg-[#FFFAF0] p-2 rounded-lg border-2 border-[#F5D6A4]">
-                              <span className="font-medium text-[#8B5E34]">{getTranslation(item.name)}</span>
-                              <button 
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleSelectFoodItem(item.id);
-                                }}
-                                className="bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600"
-                              >
-                                ×
-                              </button>
-                            </div>
-                          ))
-                        }
-                      </div>
-                    )}
-                  </div>
-                  
-                  <div className="mt-4">
-                    <Button
-                      onClick={handleCook}
-                      disabled={selectedItems.length === 0}
-                      className="w-full bg-gradient-to-r from-[#4CAF50] to-[#2E7D32] hover:brightness-110 text-white font-bold py-3 px-4 rounded-xl transition-all shadow-md border-2 border-[#2E7D32] disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      {language === 'en' ? 'Cook Meal' : language === 'ca' ? 'Cuinar Àpat' : 'Cocinar Comida'}
-                    </Button>
-                  </div>
-                </div>
+              <div className="bg-[#FFF8E9] p-4 rounded-2xl border-4 border-[#F5D6A4] shadow-lg">
+                <h3 className="text-xl font-bold text-[#8B5E34] mb-3 pb-2 border-b-2 border-[#F5D6A4] flex items-center">
+                  <span className="mr-2 text-2xl">👨‍🍳</span> 
+                  {language === 'en' ? 'Selected Items' : language === 'ca' ? 'Elements Seleccionats' : 'Elementos Seleccionados'}
+                </h3>
                 
-                <div className="bg-[#FFF8E9] p-4 rounded-2xl border-4 border-[#F5D6A4] shadow-lg">
-                  <h3 className="text-xl font-bold text-[#8B5E34] mb-3 pb-2 border-b-2 border-[#F5D6A4]">
-                    {language === 'en' ? 'Nutrition Summary' : language === 'ca' ? 'Resum Nutricional' : 'Resumen Nutricional'}
-                  </h3>
-                  
+                <div className="max-h-[400px] overflow-y-auto pr-2 mb-4">
                   {selectedItems.length === 0 ? (
-                    <p className="text-[#C68642] py-4 text-center bg-[#FFF8E9] rounded-xl border-2 border-[#F5D6A4] shadow-inner">
+                    <p className="text-[#C68642] py-6 text-center bg-[#FFF8E9] rounded-xl border-2 border-[#F5D6A4] shadow-inner">
                       {language === 'en' 
-                        ? "Select ingredients to see nutritional information." 
+                        ? "Select ingredients from your refrigerator and pantry to start cooking!" 
                         : language === 'ca'
-                        ? "Selecciona ingredients per veure informació nutricional." 
-                        : "Selecciona ingredientes para ver información nutricional."}
+                        ? "Selecciona ingredients del teu refrigerador i rebost per començar a cuinar!" 
+                        : "¡Selecciona ingredientes de tu refrigerador y despensa para empezar a cocinar!"}
                     </p>
                   ) : (
-                    <div className="space-y-3">
-                      {/* Calorías totales */}
-                      <div className="flex justify-between items-center">
-                        <span className="text-[#8B5E34] font-medium">
-                          {language === 'en' ? 'Total Calories:' : language === 'ca' ? 'Calories Totals:' : 'Calorías Totales:'}
-                        </span>
-                        <span className="font-bold text-[#F48E11]">
-                          {[...refrigeratorFood, ...pantryFood]
-                            .filter(item => selectedItems.includes(item.id))
-                            .reduce((sum, item) => sum + item.calories, 0)
-                          } kcal
-                        </span>
-                      </div>
-                      
-                      {/* Proteínas totales */}
-                      <div className="flex justify-between items-center">
-                        <span className="text-[#8B5E34] font-medium">
-                          {language === 'en' ? 'Total Protein:' : language === 'ca' ? 'Proteïna Total:' : 'Proteína Total:'}
-                        </span>
-                        <span className="font-bold text-[#8B5E34]">
-                          {[...refrigeratorFood, ...pantryFood]
-                            .filter(item => selectedItems.includes(item.id))
-                            .reduce((sum, item) => sum + item.nutritionalValue.protein, 0)
-                          }g
-                        </span>
-                      </div>
-                      
-                      {/* Sostenibilidad promedio */}
-                      <div className="flex justify-between items-center">
-                        <span className="text-[#8B5E34] font-medium">
-                          {language === 'en' ? 'Avg. Sustainability:' : language === 'ca' ? 'Sostenibilitat Mitj.:' : 'Sostenibilidad Prom.:'}
-                        </span>
-                        <div className="flex items-center">
-                          <span className="text-green-700 mr-1">🌱</span>
-                          <span className="font-bold text-green-700">
-                            {Math.round(
-                              [...refrigeratorFood, ...pantryFood]
-                                .filter(item => selectedItems.includes(item.id))
-                                .reduce((sum, item, _, arr) => sum + item.sustainabilityScore / arr.length, 0)
-                              * 10
-                            ) / 10}/5
-                          </span>
+                    <div className="grid grid-cols-1 gap-3">
+                      {[...refrigeratorFood, ...pantryFood]
+                        .filter(item => selectedItems.includes(item.id))
+                        .map(food => (
+                          <div 
+                            key={food.id} 
+                            className="bg-[#FFFAF0] rounded-xl p-3 border-2 border-[#4CAF50] flex justify-between items-center"
+                          >
+                            <div>
+                              <span className="font-bold text-[#8B5E34]">{getTranslation(food.name)}</span>
+                              <div className="text-[#7E4E1B] text-xs">
+                                <span>{food.calories} kcal</span>
+                                <span className="mx-1">•</span>
+                                <span>{food.nutritionalValue.protein}g {language === 'en' ? 'protein' : language === 'ca' ? 'proteïna' : 'proteína'}</span>
+                              </div>
+                            </div>
+                            <button 
+                              onClick={(e) => {
+                                e.stopPropagation(); // Evitar que se propague al div padre
+                                handleSelectFoodItem(food.id);
+                              }}
+                              className="bg-[#E74C3C] text-white rounded-full p-1 hover:bg-[#C0392B] transition-colors"
+                            >
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                              </svg>
+                            </button>
+                          </div>
+                        ))
+                      }
+                    </div>
+                  )}
+                </div>
+                
+                <div className="flex flex-col space-y-4">
+                  {selectedItems.length > 0 && (
+                    <div>
+                      <h4 className="font-bold text-[#8B5E34] mb-2">
+                        {language === 'en' ? 'Nutritional Summary' : language === 'ca' ? 'Resum Nutricional' : 'Resumen Nutricional'}:
+                      </h4>
+                      <div className="grid grid-cols-2 gap-3">
+                        <div className="bg-[#E8F5E9] p-3 rounded-lg border border-[#4CAF50]">
+                          <p className="text-sm text-[#2E7D32] font-bold">{language === 'en' ? 'Total Calories' : language === 'ca' ? 'Calories Totals' : 'Calorías Totales'}</p>
+                          <p className="text-xl font-bold text-[#1B5E20]">
+                            {[...refrigeratorFood, ...pantryFood]
+                              .filter(item => selectedItems.includes(item.id))
+                              .reduce((sum, item) => sum + item.calories, 0)
+                              .toFixed(0)} kcal
+                          </p>
+                        </div>
+                        <div className="bg-[#E3F2FD] p-3 rounded-lg border border-[#2196F3]">
+                          <p className="text-sm text-[#1565C0] font-bold">{language === 'en' ? 'Total Protein' : language === 'ca' ? 'Proteïna Total' : 'Proteína Total'}</p>
+                          <p className="text-xl font-bold text-[#0D47A1]">
+                            {[...refrigeratorFood, ...pantryFood]
+                              .filter(item => selectedItems.includes(item.id))
+                              .reduce((sum, item) => sum + item.nutritionalValue.protein, 0)
+                              .toFixed(1)}g
+                          </p>
                         </div>
                       </div>
                     </div>
                   )}
+                  
+                  <Button 
+                    onClick={handleCook}
+                    disabled={selectedItems.length === 0}
+                    className="w-full bg-gradient-to-r from-[#4CAF50] to-[#3F9142] hover:brightness-110 text-white font-bold py-3 px-4 rounded-xl transition-all shadow-md border-2 border-[#2E7D32] disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {language === 'en' ? 'Cook Meal' : language === 'ca' ? 'Cuinar Àpat' : 'Cocinar Comida'}
+                  </Button>
                 </div>
               </div>
             </div>
           ) : (
-            // Modo de Recetas Guiadas
-            <div>
-              {renderGuidedRecipes()}
-              
-              {/* Nota al pie para indicar cómo ver ingredientes disponibles */}
-              <div className="mt-8 p-4 bg-[#FDF6E3] border-2 border-[#F5D6A4] rounded-xl">
-                <h4 className="font-bold text-[#8B5E34] flex items-center mb-2">
-                  <span className="text-xl mr-2">💡</span> 
-                  {language === 'en' ? 'Tip' : language === 'ca' ? 'Consell' : 'Consejo'}
-                </h4>
-                <p className="text-[#8B5E34]">
-                  {language === 'en' 
-                    ? "To see your available ingredients, click on the 'Free Cooking' button above. There you can view what's in your refrigerator and pantry." 
-                    : language === 'ca'
-                    ? "Per veure els teus ingredients disponibles, fes clic al botó 'Cuina Lliure' a la part superior. Allà podràs veure el que hi ha a la teva nevera i rebost." 
-                    : "Para ver tus ingredientes disponibles, haz clic en el botón 'Cocina Libre' de arriba. Allí podrás ver lo que hay en tu nevera y despensa."}
-                </p>
-              </div>
-            </div>
+            // Modo guiado (sin mostrar la guía)
+            renderGuidedRecipes()
           )}
         </div>
       </div>
