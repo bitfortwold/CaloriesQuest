@@ -271,10 +271,16 @@ export function harvestPlant(plot: GardenPlot): GardenPlot {
 export function waterPlant(plot: GardenPlot): GardenPlot {
   if (!plot.plant) return plot;
   
+  const now = Date.now();
+  
+  // Si es la primera vez que se riega, iniciar el crecimiento
+  const plantedAt = plot.plantedAt === null ? now : plot.plantedAt;
+  
   return {
     ...plot,
     waterLevel: 100,
-    lastWatered: Date.now(),
+    plantedAt: plantedAt, // Iniciar el crecimiento si es el primer riego
+    lastWatered: now,
     healthLevel: Math.min(100, plot.healthLevel + 10)
   };
 }
@@ -287,10 +293,10 @@ export function plantSeed(plot: GardenPlot, plant: Plant): GardenPlot {
     ...plot,
     plant,
     state: 'seedling',
-    plantedAt: Date.now(),
-    waterLevel: 100,
-    healthLevel: 100,
-    lastWatered: Date.now(),
+    plantedAt: null, // La planta no comienza a crecer hasta que se riega
+    waterLevel: 0,   // Comienza sin agua, necesita ser regada manualmente
+    healthLevel: 80, // Salud inicial moderada
+    lastWatered: null, // No se ha regado aún
     growthPercentage: 0
   };
 }
