@@ -7,7 +7,7 @@ import { usePlayerStore, FoodItem } from "../stores/usePlayerStore";
 import { useGameStateStore } from "../stores/useGameStateStore";
 import { useLanguage } from "../i18n/LanguageContext";
 import { toast } from "sonner";
-import { ForceExitButton } from "./ForceExitButton";
+import { useExitHelper } from "./ExitHelper";
 
 interface KitchenProps {
   onExit: () => void;
@@ -374,12 +374,17 @@ const Kitchen = ({ onExit }: KitchenProps) => {
               <h1 className="text-4xl font-bold text-white drop-shadow-lg tracking-wide uppercase">{language === 'en' ? 'Kitchen' : language === 'ca' ? 'Cuina' : 'Cocina'}</h1>
             </div>
 
-            {/* Botón Salir estilo sencillo */}
+            {/* Botón Salir estilo sencillo con ExitHelper */}
             <div className="relative">
               <button
                 onClick={() => {
-                  console.log("Saliendo de la cocina - BOTÓN SIMPLE ESTILO IMÁGEN");
-                  useGameStateStore.setState({ gameState: "playing" });
+                  console.log("Saliendo de la cocina con posición segura");
+                  // Usamos helper para salir correctamente
+                  const { exitBuilding } = useExitHelper();
+                  exitBuilding("kitchen");
+                  
+                  // Llamamos a onExit para limpieza de componente
+                  onExit();
                 }}
                 className="bg-[#E57373] hover:bg-[#EF5350] py-3 px-12 rounded-full shadow-md border-2 border-[#C62828] transition duration-300"
               >
