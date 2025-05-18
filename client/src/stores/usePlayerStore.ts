@@ -46,6 +46,7 @@ export interface PlayerData {
   achievements: string[]; // Lista de logros obtenidos
   garden: GardenPlot[]; // Huerto virtual con parcelas
   seeds: Plant[]; // Semillas disponibles para plantar
+  lastGardenAction?: string; // Última acción realizada en el huerto (plantar, regar, cosechar)
 }
 
 // Define store state

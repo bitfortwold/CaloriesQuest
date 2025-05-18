@@ -292,6 +292,7 @@ const Player = () => {
       // Comportamiento personalizado según el edificio
       if (lastGameStateRef.current === "garden") {
         console.log("Saliendo del huerto");
+        
         // Colocar al jugador en el camino ocre frente al huerto
         const exitPos = getGardenExitPosition();
         setPlayerPosition({
@@ -299,6 +300,12 @@ const Player = () => {
           y: playerPosition.y, // Mantenemos la altura actual
           z: exitPos.z
         });
+        
+        // Verificar si hubo acción de riego o cosecha
+        const { playerData } = usePlayerStore.getState();
+        if (playerData?.lastGardenAction === "harvest" || playerData?.lastGardenAction === "water") {
+          console.log(`Detectada acción previa en el huerto: ${playerData.lastGardenAction}`);
+        }
         
         // Configuración mejorada de cámara para vista desde frente
         if (camera) {

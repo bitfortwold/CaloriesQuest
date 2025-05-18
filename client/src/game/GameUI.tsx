@@ -125,6 +125,16 @@ const GameUI = () => {
                 onClick={() => {
                   console.log("SOLUCIÓN FINAL: Salida directa del huerto");
                   
+                  // Resetear cualquier estado específico del huerto antes de salir
+                  const { updatePlayer, playerData } = usePlayerStore.getState();
+                  if (playerData) {
+                    // Aseguramos que tenga una salida limpia
+                    updatePlayer({
+                      ...playerData,
+                      lastGardenAction: "exit"
+                    });
+                  }
+                  
                   // Solo necesitamos salir del edificio
                   // La lógica de reposicionamiento está ahora en Player.tsx
                   exitBuilding();
@@ -138,6 +148,15 @@ const GameUI = () => {
             <div className="fixed inset-0 z-50 flex items-center justify-center">
               <Garden onExit={() => {
                 console.log("Saliendo del huerto mediante función onExit");
+                // Resetear cualquier estado específico del huerto antes de salir
+                const { updatePlayer, playerData } = usePlayerStore.getState();
+                if (playerData) {
+                  // Aseguramos que tenga una salida limpia
+                  updatePlayer({
+                    ...playerData,
+                    lastGardenAction: "exit"
+                  });
+                }
                 exitBuilding();
               }} />
             </div>
