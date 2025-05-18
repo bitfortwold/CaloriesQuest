@@ -293,33 +293,39 @@ const Player = () => {
       if (lastGameStateRef.current === "garden") {
         console.log("Saliendo del huerto");
         
-        // Colocar al jugador en el camino ocre frente al huerto
-        const exitPos = getGardenExitPosition();
+        // Posición exacta según la captura de pantalla - jugador en el camino ocre frente al huerto
         setPlayerPosition({
-          x: exitPos.x,
-          y: playerPosition.y, // Mantenemos la altura actual
-          z: exitPos.z
+          x: 0,            // Centrado en el camino ocre
+          y: 0,            // A nivel del suelo
+          z: -10           // En mitad del camino para mejor vista del huerto
         });
         
         // Verificar si hubo acción de riego o cosecha
         const { playerData } = usePlayerStore.getState();
         if (playerData?.lastGardenAction === "harvest" || playerData?.lastGardenAction === "water") {
           console.log(`Detectada acción previa en el huerto: ${playerData.lastGardenAction}`);
+          // Resetear la acción después de procesarla
+          if (playerData) {
+            updatePlayer({
+              ...playerData,
+              lastGardenAction: undefined // Limpiar la acción
+            });
+          }
         }
         
-        // Configuración mejorada de cámara para vista desde frente
+        // Configuración precisa de la cámara según la captura de pantalla
         if (camera) {
-          // Posicionamos la cámara detrás del personaje, apuntando hacia el huerto
+          // Posicionamos la cámara detrás del personaje, con vista completa del huerto
           camera.position.set(
-            0,             // Centro del mapa en X
-            5,             // Altura adecuada para vista completa
-            2              // Ligeramente detrás del personaje mirando al huerto
+            0,             // Centrado con el jugador
+            8,             // Altura suficiente para vista completa
+            5              // Detrás del jugador mirando hacia el huerto
           );
           
           // Hacer que la cámara mire hacia el huerto
-          camera.lookAt(0, 0, -15); // Mirando directamente al huerto
+          camera.lookAt(0, 0, -15); // Mirando hacia el huerto
           
-          console.log("Cámara reposicionada: vista mejorada para mejor visualización");
+          console.log("Cámara reposicionada exactamente como en la imagen de referencia");
         }
         
       } else if (lastGameStateRef.current === "market") {
