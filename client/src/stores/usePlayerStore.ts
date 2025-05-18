@@ -98,14 +98,20 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   destinationBuilding: null,
   setDestinationBuilding: (building) => set({ destinationBuilding: building }),
   setTargetPosition: (target) => {
-    // La función usará cualquier implementación existente en Player.tsx
-    // Este es solo un placeholder para la interfaz
-    console.log("Target position to be set in Player component", target);
+    // Ahora es una función real que actualiza el estado
+    if (typeof window !== 'undefined' && window.dispatchEvent) {
+      // Creamos un evento personalizado para avisar a Player.tsx
+      const event = new CustomEvent('setTargetPosition', { detail: target });
+      window.dispatchEvent(event);
+    }
   },
   setIsMovingToTarget: (isMoving) => {
-    // La función usará cualquier implementación existente en Player.tsx
-    // Este es solo un placeholder para la interfaz
-    console.log("isMovingToTarget to be set in Player component", isMoving);
+    // Ahora es una función real que actualiza el estado
+    if (typeof window !== 'undefined' && window.dispatchEvent) {
+      // Creamos un evento personalizado para avisar a Player.tsx
+      const event = new CustomEvent('setIsMovingToTarget', { detail: isMoving });
+      window.dispatchEvent(event);
+    }
   },
   
   // Funciones para el huerto virtual

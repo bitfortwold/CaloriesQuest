@@ -46,6 +46,35 @@ const Player = () => {
   const [targetPosition, setTargetPosition] = useState<THREE.Vector3 | null>(null);
   const [isMovingToTarget, setIsMovingToTarget] = useState(false);
   
+  // Escuchar eventos emitidos por el store
+  useEffect(() => {
+    const handleSetTargetPosition = (event: any) => {
+      if (event.detail) {
+        setTargetPosition(new THREE.Vector3(
+          event.detail.x,
+          event.detail.y,
+          event.detail.z
+        ));
+      } else {
+        setTargetPosition(null);
+      }
+    };
+    
+    const handleSetIsMovingToTarget = (event: any) => {
+      setIsMovingToTarget(event.detail);
+    };
+    
+    // Agregar listeners
+    window.addEventListener('setTargetPosition', handleSetTargetPosition);
+    window.addEventListener('setIsMovingToTarget', handleSetIsMovingToTarget);
+    
+    // Eliminar listeners al desmontar
+    return () => {
+      window.removeEventListener('setTargetPosition', handleSetTargetPosition);
+      window.removeEventListener('setIsMovingToTarget', handleSetIsMovingToTarget);
+    };
+  }, []);
+  
   // Get Three.js scene and camera
   const { camera, gl, scene } = useThree();
 
@@ -433,7 +462,12 @@ const Player = () => {
           console.log(`Llegando al destino, entrando a ${destinationBuilding}...`);
           // Pequeño retraso para que sea más natural
           setTimeout(() => {
-            enterBuilding(destinationBuilding);
+            // Validamos que el edificio sea uno de los permitidos
+            if (destinationBuilding === "market" || destinationBuilding === "kitchen" || destinationBuilding === "garden") {
+              enterBuilding(destinationBuilding);
+            } else {
+              console.error(`Tipo de edificio no válido: ${destinationBuilding}`);
+            }
             setDestinationBuilding(null); // Limpiar el destino
           }, 200);
         }
