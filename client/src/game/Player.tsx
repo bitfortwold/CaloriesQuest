@@ -285,7 +285,13 @@ const Player = () => {
       setJustExitedBuilding(true);
       
       // Al salir de cualquier edificio, el jugador permanece en la misma posición
-      console.log("Saliendo de edificio, manteniendo posición actual");
+      if (lastGameStateRef.current === "garden") {
+        console.log("Saliendo del huerto");
+      } else if (lastGameStateRef.current === "market") {
+        console.log("Saliendo del mercado");
+      } else if (lastGameStateRef.current === "kitchen") {
+        console.log("Saliendo de la cocina");
+      }
       // No cambiamos la posición del jugador, se queda donde está
       
       // Restaurar la capacidad de interactuar después de un periodo más largo
