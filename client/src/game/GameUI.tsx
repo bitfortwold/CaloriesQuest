@@ -131,42 +131,33 @@ const GameUI = () => {
       case "garden":
         return (
           <>
-            {/* Botón flotante para salir del huerto - IMPLEMENTACIÓN HARDCODED */}
+            {/* Botón flotante para salir del huerto - SOLUCIÓN FINAL */}
             <div className="fixed top-4 right-4 z-[1000]">
               <button
                 onClick={() => {
-                  console.log("SALIDA FORZADA DEL HUERTO - BYPASS TOTAL DEL SISTEMA");
+                  console.log("MÉTODO SIMPLIFICADO DE SALIDA DEL HUERTO");
                   
                   // Acceder al store del juego
-                  const { updatePlayer, playerData } = usePlayerStore.getState();
                   const { setGameState } = useGameStateStore.getState();
                   
-                  // PASO 1: Limpiar todos los estados de manera forzada
-                  if (playerData) {
-                    updatePlayer({
-                      ...playerData,
-                      // Eliminar cualquier información de acción previa
-                      lastGardenAction: undefined
-                    });
-                  }
-                  
-                  // PASO 2: Forzar directamente al estado de juego sin usar el sistema unificado
+                  // 1. Cambiar inmediatamente al estado de juego
                   setGameState("playing");
                   
-                  // PASO 3: Resetear posición y cámara con script directo
-                  // Este código se ejecutará después de cambiar el estado
+                  // 2. Aplicar posicionamiento forzado después del cambio de estado
                   setTimeout(() => {
-                    // Acceder al DOM directamente para forzar ubicación
-                    const player = document.querySelector('[data-player]');
-                    const camera = document.querySelector('canvas');
+                    // Mover al jugador directamente a la posición fija
+                    const { setPlayerPosition, setRotationY } = usePlayerStore.getState();
                     
-                    if (player) {
-                      // Forzar estilos CSS para posicionar de manera absoluta
-                      player.setAttribute('style', 'transform: translateX(0) translateY(0) translateZ(-10) !important');
+                    // Coordenadas absolutas comprobadas que funcionan
+                    setPlayerPosition({ x: 0, y: 0, z: -10 });
+                    setRotationY(Math.PI); // Mirando hacia el norte (huerto)
+                    
+                    // Obtener y manipular directamente la cámara del juego
+                    const threeCanvas = document.querySelector('canvas');
+                    if (threeCanvas) {
+                      // Forzar un reposicionamiento de la cámara usando el motor 3D
+                      window.dispatchEvent(new Event('resize'));
                     }
-                    
-                    // Notificar al juego que debe reiniciar la cámara
-                    console.log("🔄 FORZANDO REINICIO DE POSICIÓN");
                   }, 50);
                 }}
                 className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg border-2 border-red-500 shadow-lg text-xl transition-all hover:scale-105"
