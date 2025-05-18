@@ -55,47 +55,6 @@ const GameUI = () => {
       case "market":
         return (
           <>
-            {/* Botones flotantes para controlar el mercado - independientes de la interfaz */}
-            <div className="fixed top-4 right-4 z-[1000]">
-              <button
-                onClick={() => handleBuildingExit("market")}
-                className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg border-2 border-red-500 shadow-lg text-xl transition-all hover:scale-105"
-              >
-                {t.exit}
-              </button>
-            </div>
-            
-            {/* Botón flotante para el carrito en la esquina izquierda */}
-            <div className="fixed top-4 left-4 z-[1000]">
-              <button
-                id="floating-cart-button"
-                onClick={() => {
-                  console.log("Toggle cart from floating button");
-                  // En el mercado, activar el showCart del componente Market
-                  if (gameState === "market") {
-                    // Comunicamos con el componente Market a través de un evento personalizado
-                    const marketCartEvent = new CustomEvent('toggleMarketCart');
-                    document.dispatchEvent(marketCartEvent);
-                  } else {
-                    // Comportamiento normal para otros casos
-                    const cartPanel = document.getElementById('cart-panel');
-                    if (cartPanel) {
-                      cartPanel.style.display = cartPanel.style.display === 'none' ? 'block' : 'none';
-                    }
-                  }
-                }}
-                className="bg-amber-600 hover:bg-amber-700 text-white font-bold py-3 px-8 rounded-lg border-2 border-amber-500 shadow-lg text-xl transition-all hover:scale-105 flex items-center justify-center relative"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                </svg>
-                {t.cart}
-                <span id="cart-counter" className="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold rounded-full h-6 w-6 flex items-center justify-center border-2 border-amber-500">
-                  0
-                </span>
-              </button>
-            </div>
-            
             <div className="fixed inset-0 z-50 flex items-center justify-center">
               <Market onExit={() => {
                 console.log("GameUI attempting to exit market");
@@ -107,16 +66,6 @@ const GameUI = () => {
       case "kitchen":
         return (
           <>
-            {/* Botón flotante para salir de la cocina - independiente de la interfaz */}
-            <div className="fixed top-4 right-4 z-[1000]">
-              <button
-                onClick={() => handleBuildingExit("kitchen")}
-                className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg border-2 border-red-500 shadow-lg text-xl transition-all hover:scale-105"
-              >
-                {t.exit}
-              </button>
-            </div>
-            
             <div className="fixed inset-0 z-50 flex items-center justify-center">
               <Kitchen onExit={() => {
                 console.log("GameUI attempting to exit kitchen");
@@ -129,16 +78,6 @@ const GameUI = () => {
       case "garden":
         return (
           <>
-            {/* Botón flotante para salir del huerto - SISTEMA ESTÁNDAR */}
-            <div className="fixed top-4 right-4 z-[1000]">
-              <button
-                onClick={() => handleBuildingExit("garden")}
-                className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg border-2 border-red-500 shadow-lg text-xl transition-all hover:scale-105"
-              >
-                {t.exit}
-              </button>
-            </div>
-            
             <div className="fixed inset-0 z-50 flex items-center justify-center">
               <Garden onExit={() => handleBuildingExit("garden")} />
             </div>
