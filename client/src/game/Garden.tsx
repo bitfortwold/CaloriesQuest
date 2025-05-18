@@ -172,8 +172,17 @@ const Garden = ({ onExit }: GardenProps) => {
     <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center overflow-hidden p-4">
       <div className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-[#FFF8E9] rounded-3xl shadow-2xl border-8 border-[#CD8E3E]">
 
-        {/* Header de madera estilizado */}
+        {/* Header de madera estilizado - VERSIÓN MEJORADA */}
         <div className="bg-gradient-to-r from-[#C68642] to-[#A05F2C] p-4 rounded-t-2xl relative overflow-hidden">
+          {/* Botón de salida fijo en la propia interfaz */}
+          <div className="absolute top-2 right-2">
+            <button
+              onClick={onExit}
+              className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded shadow text-sm"
+            >
+              Salir del huerto
+            </button>
+          </div>
           {/* Textura de madera */}
           <div className="absolute inset-0 opacity-30 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMCIgaGVpZ2h0PSIzMCI+CjxyZWN0IHdpZHRoPSIzMCIgaGVpZ2h0PSIzMCIgZmlsbD0iI2ZmZiI+PC9yZWN0Pgo8cmVjdCB4PSIxNSIgeT0iMCIgd2lkdGg9IjE1IiBoZWlnaHQ9IjE1IiBmaWxsPSIjZjNmNGY2Ij48L3JlY3Q+CjxyZWN0IHg9IjAiIHk9IjE1IiB3aWR0aD0iMTUiIGhlaWdodD0iMTUiIGZpbGw9IiNmM2Y0ZjYiPjwvcmVjdD4KPC9zdmc+')]"></div>
           
