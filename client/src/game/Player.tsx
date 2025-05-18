@@ -311,89 +311,92 @@ const Player = () => {
   // Referencia para almacenar el último estado conocido
   const lastGameStateRef = useRef<string | null>(null);
   
-  // SOLUCIÓN DEFINITIVA v3.0 - Sistema mejorado para salir de edificios
+  // Sistema unificado para todos los edificios
   useEffect(() => {
     const buildingStates = ["garden", "market", "kitchen"];
     
     // Verificar si acabamos de salir de un edificio
     if (buildingStates.includes(lastGameStateRef.current || "") && gameState === "playing") {
       const exitedBuilding = lastGameStateRef.current;
-      console.log(`🔄 SISTEMA DEFINITIVO v3: Saliendo de ${exitedBuilding}`);
+      console.log(`Saliendo de ${exitedBuilding} con sistema unificado`);
       
       // Marcar que acabamos de salir para evitar interacciones inmediatas
       setJustExitedBuilding(true);
       
-      // --- SISTEMA DE TRATAMIENTO ESPECÍFICO SEGÚN EDIFICIO ---
-      
-      // Acceder solo al reset de cámara
+      // Resetear cámara para todos los edificios
       const { requestReset } = useCameraStore.getState();
+      console.log("🎯 CÁMARA: Solicitado reseteo forzado");
       requestReset();
       
-      // TRATAMIENTO ESPECIAL PARA EL HUERTO - SISTEMA FINAL DEFINITIVO
-      if (exitedBuilding === "garden") {
-        console.log("🌱 SISTEMA DEFINITIVO HUERTO v4.0 ACTIVADO");
-        
-        // Obtener posición EXACTA definida en Buildings.tsx
-        const gardExitPos = getGardenExitPosition();
-        console.log(`Posicionando en coordenadas fijas: ${JSON.stringify(gardExitPos)}`);
-        
-        // Aplicar posición absolutamente fija
-        setPlayerPosition(gardExitPos);
-        setRotationY(Math.PI); // Mirando al norte (hacia el huerto)
-        
-        // SOLUCIÓN DEFINITIVA: VISTA NORMAL (NO CENITAL)
-        if (camera) {
-          // COORDENADAS PARA VISTA NORMAL - Altura y distancia normales
-          camera.position.set(0, 8, 5); // Altura 8, distancia 5
-          camera.lookAt(0, 0, -12);     // Mirar hacia el huerto (norte)
-          
-          // Asegurar rotación correcta
-          camera.rotation.order = 'YXZ';
-          camera.updateProjectionMatrix();
-          
-          // Forzar reinicio completo de controles para prevenir interferencias
-          if (camera.userData.controls) {
-            camera.userData.controls.enabled = false;
-            setTimeout(() => {
-              if (camera.userData.controls) camera.userData.controls.enabled = true;
-            }, 100);
-          }
-        }
-        
-        // BLOQUEO ANTI-COLISIÓN: Breve periodo de "inmunidad" para evitar interacciones accidentales
-        const storeRef = usePlayerStore.getState();
-        if (storeRef) {
-          storeRef.setIsMovingToTarget(false);
-        }
-      } 
-      // Para otros edificios, mantener el sistema existente
-      else {
-        // Posición central para todos
-        setPlayerPosition({ x: 0, y: 0, z: -10 });
-        setRotationY(Math.PI);
-        
-        setTimeout(() => {
-          if (camera) {
-            camera.position.set(0, 8, 5);
-            camera.lookAt(0, 0, -12);
-            camera.rotation.order = 'YXZ';
-          }
-        }, 100);
+      // Determinar posición de salida según el edificio
+      let exitPosition = { x: 0, y: 0, z: 0 };
+      let lookDirection = 0;
+      
+      switch (exitedBuilding) {
+        case "garden":
+          exitPosition = getGardenExitPosition();
+          lookDirection = Math.PI; // Mirando hacia el norte (huerto)
+          break;
+        case "market":
+          exitPosition = getMarketExitPosition();
+          lookDirection = Math.PI / 2; // Mirando hacia el este
+          break;
+        case "kitchen":
+          exitPosition = getKitchenExitPosition();
+          lookDirection = -Math.PI / 2; // Mirando hacia el oeste
+          break;
       }
       
-      // PASO 5: Limpiar cualquier estado pendiente en todos los casos
-      const { playerData } = usePlayerStore.getState();
+      // Aplicar posición y rotación
+      setPlayerPosition(exitPosition);
+      setRotationY(lookDirection);
+      
+      // Configuración estándar de cámara para TODOS los edificios
+      if (camera) {
+        // Altura y distancia estandarizada
+        const cameraHeight = 8;
+        const cameraDistance = 5;
+        
+        switch (exitedBuilding) {
+          case "garden":
+            // Cámara mirando al norte
+            camera.position.set(0, cameraHeight, exitPosition.z + cameraDistance);
+            camera.lookAt(0, 0, -15); // Mirar hacia el huerto
+            break;
+          case "market":
+            // Cámara mirando al este
+            camera.position.set(exitPosition.x - cameraDistance, cameraHeight, exitPosition.z);
+            camera.lookAt(-8, 0, 0); // Mirar hacia el mercado
+            break;
+          case "kitchen":
+            // Cámara mirando al oeste
+            camera.position.set(exitPosition.x + cameraDistance, cameraHeight, exitPosition.z);
+            camera.lookAt(8, 0, 0); // Mirar hacia la cocina
+            break;
+        }
+        
+        // Configuración común para todos los edificios
+        camera.rotation.order = 'YXZ';
+        camera.updateProjectionMatrix();
+      }
+      
+      // Desactivar movimiento para todos los edificios
+      const storeRef = usePlayerStore.getState();
+      if (storeRef) {
+        storeRef.setIsMovingToTarget(false);
+      }
+      
+      // Limpiar estado para todos los edificios de la misma manera
       if (playerData) {
-        // Limpieza general para todos los edificios
         updatePlayer({
           ...playerData,
-          lastGardenAction: undefined
+          lastBuildingExit: exitedBuilding // Usar la misma propiedad para todos
         });
       }
       
-      // PASO 6: Permitir interacciones después de un breve periodo
+      // Permitir interacciones después de un breve periodo
       setTimeout(() => {
-        console.log("▶▶▶ Sistema unificado: listo para nuevas interacciones");
+        console.log("Sistema unificado: listo para nuevas interacciones");
         setJustExitedBuilding(false);
       }, 1000);
     }
