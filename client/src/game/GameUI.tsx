@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { useGameStateStore } from "../stores/useGameStateStore";
 import { usePlayerStore } from "../stores/usePlayerStore";
+import { useCameraStore } from "../lib/stores/useCameraStore";
 import { SoundButton } from "../components/ui/SoundButton";
 import { LanguageSelector } from "../components/ui/LanguageSelector";
 import { useLanguage } from "../i18n/LanguageContext";
@@ -28,26 +29,44 @@ const GameUI = () => {
   // Don't render anything if DOM is not ready
   if (!domReady) return null;
   
-  // SISTEMA UNIFICADO PARA LA SALIDA DE EDIFICIOS
+  // SISTEMA UNIFICADO PARA LA SALIDA DE EDIFICIOS CON TRATAMIENTO ESPECIAL PARA HUERTO
   const handleBuildingExit = (buildingType: string) => {
     console.log(`Saliendo de ${buildingType} mediante sistema unificado - VERSIÓN FINAL`);
     
     // Obtener el store del jugador para actualizaciones y posicionamiento
-    const { updatePlayer, playerData } = usePlayerStore.getState();
+    const { updatePlayer, playerData, setPlayerPosition } = usePlayerStore.getState();
+    const { requestReset } = useCameraStore.getState();
     
-    // Guardar qué edificio estamos abandonando para coordinar la posición
+    // TRATAMIENTO ESPECIAL PARA EL HUERTO - FIJA VALORES ABSOLUTOS
+    if (buildingType === "garden") {
+      // Resetear cámara completamente
+      requestReset();
+      
+      // Forzar posición jugador explícitamente - VALORES FIJOS NO NEGOCIABLES
+      setTimeout(() => {
+        setPlayerPosition({ x: 0, y: 0, z: -8 });
+        
+        // Aplicar valores fijos directamente a la cámara
+        const scene = document.querySelector("canvas")?.parentElement;
+        if (scene) {
+          const cameraEvent = new CustomEvent('resetCamera', {
+            detail: { x: 0, y: 10, z: 10, lookAt: { x: 0, y: 0, z: -15 } }
+          });
+          scene.dispatchEvent(cameraEvent);
+        }
+      }, 10);
+    }
+    
+    // Actualizar estado para todos los edificios
     if (playerData) {
-      // PASO CLAVE: Guardar info de salida para TODOS los edificios igual
-      // Esto es crucial para que el jugador se posicione correctamente
       updatePlayer({
         ...playerData,
-        // IMPORTANTE: este valor "unified_exit" es detectado por el sistema unificado
+        // Indicar salida unificada
         lastGardenAction: "unified_exit"
       });
     }
     
-    // PASO FINAL: Devolver el control al juego (cambia el estado a "playing")
-    // Esto activará el useEffect en Player.tsx que detecta el cambio de estado
+    // Devolver control al juego
     exitBuilding();
   };
   

@@ -311,45 +311,66 @@ const Player = () => {
   // Referencia para almacenar el último estado conocido
   const lastGameStateRef = useRef<string | null>(null);
   
-  // SOLUCIÓN DEFINITIVA v2.0 - Sistema totalmente unificado para salir de edificios
+  // SOLUCIÓN DEFINITIVA v3.0 - Sistema mejorado para salir de edificios
   useEffect(() => {
     const buildingStates = ["garden", "market", "kitchen"];
     
-    // Si venimos de cualquier edificio y ahora estamos jugando
+    // Verificar si acabamos de salir de un edificio
     if (buildingStates.includes(lastGameStateRef.current || "") && gameState === "playing") {
       const exitedBuilding = lastGameStateRef.current;
-      console.log(`🔄 SISTEMA DEFINITIVO: Saliendo de ${exitedBuilding}`);
+      console.log(`🔄 SISTEMA DEFINITIVO v3: Saliendo de ${exitedBuilding}`);
       
       // Marcar que acabamos de salir para evitar interacciones inmediatas
       setJustExitedBuilding(true);
-
-      // --- SISTEMA DE POSICIONAMIENTO MEJORADO CON TOTALMENTE ABSOLUTO Y ESTABLE ---
       
-      // Acceder al controlador de cámara
-      const { 
-        gardenExitCameraPosition, 
-        gardenExitCameraTarget,
-        requestReset 
-      } = useCameraStore.getState();
+      // --- SISTEMA DE TRATAMIENTO ESPECÍFICO SEGÚN EDIFICIO ---
       
-      // IMPORTANTE: Forzar reseteo de cámara
+      // Acceder solo al reset de cámara
+      const { requestReset } = useCameraStore.getState();
       requestReset();
-      console.log(`📸 SOLICITUD DE RESETEO TOTAL (saliendo de ${exitedBuilding})`);
       
-      // Posicionamiento simple y directo para jugador y cámara
-      const POSICION_CENTRAL = { x: 0, y: 0, z: -10 };
-      setPlayerPosition(POSICION_CENTRAL);
-      setRotationY(Math.PI);
-      
-      // Ajustar cámara con timeout para asegurar aplicación correcta
-      setTimeout(() => {
+      // TRATAMIENTO ESPECIAL PARA EL HUERTO
+      if (exitedBuilding === "garden") {
+        console.log("👨‍🌾 SISTEMA ESPECIALIZADO PARA HUERTO ACTIVADO");
+        
+        // POSICIÓN ABSOLUTAMENTE FIJA - Coordenadas explícitas
+        const POSICION_CENTRAL = { x: 0, y: 0, z: -8 };
+        setPlayerPosition(POSICION_CENTRAL);
+        setRotationY(Math.PI); // Mirando al norte (hacia el huerto)
+        
+        // RESETEO DOBLE DE CÁMARA - Primera pasada inmediata
         if (camera) {
-          camera.position.set(0, 8, 5);
-          camera.lookAt(0, 0, -12);
+          // Valores iniciales para eliminar cualquier estado anterior
+          camera.position.set(0, 10, 10);
+          camera.lookAt(0, 0, -15);
           camera.rotation.order = 'YXZ';
-          console.log("🎯 CÁMARA REPOSICIONADA AL SALIR");
         }
-      }, 100);
+        
+        // Segunda pasada con delay para asegurar la aplicación
+        setTimeout(() => {
+          if (camera) {
+            // Reconfirmar posición y orientación
+            camera.position.set(0, 10, 10);
+            camera.lookAt(0, 0, -15);
+            camera.rotation.order = 'YXZ';
+            console.log("🎯 POSICIÓN DE CÁMARA HUERTO GARANTIZADA");
+          }
+        }, 50);
+      } 
+      // Para otros edificios, mantener el sistema existente
+      else {
+        // Posición central para todos
+        setPlayerPosition({ x: 0, y: 0, z: -10 });
+        setRotationY(Math.PI);
+        
+        setTimeout(() => {
+          if (camera) {
+            camera.position.set(0, 8, 5);
+            camera.lookAt(0, 0, -12);
+            camera.rotation.order = 'YXZ';
+          }
+        }, 100);
+      }
       
       // PASO 5: Limpiar cualquier estado pendiente en todos los casos
       const { playerData } = usePlayerStore.getState();
