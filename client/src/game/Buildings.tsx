@@ -16,16 +16,17 @@ interface Position {
 let gardenPosition: Position = { x: 0, y: 0, z: -15 };
 export const getGardenPosition = () => gardenPosition;
 
-// Posiciones específicas para la salida de cada edificio
-let gardenExitPosition: Position = { x: 0, y: 0, z: -7 }; // Posición en el camino ocre frente al huerto
+// Posiciones específicas para la salida de cada edificio - Ajustadas para perfecta visualización
+// Posición para la salida del huerto (en el camino ocre frente al huerto)
+let gardenExitPosition: Position = { x: 0, y: 0, z: -10 }; // Posición optimizada en el camino ocre frente al huerto
 export const getGardenExitPosition = () => gardenExitPosition;
 
 // Posición para la salida del mercado (en el camino ocre frente al mercado)
-let marketExitPosition: Position = { x: -8, y: 0, z: 3 }; // Posición en el camino frente al mercado
+let marketExitPosition: Position = { x: 20, y: 0, z: -10 }; // Posición optimizada en el camino frente al mercado
 export const getMarketExitPosition = () => marketExitPosition;
 
-// Posición para la salida de la cocina (en el camino ocre central)
-let kitchenExitPosition: Position = { x: 0, y: 0, z: 0 }; // Posición en el camino ocre central
+// Posición para la salida de la cocina (en el camino ocre frente a la cocina)
+let kitchenExitPosition: Position = { x: -20, y: 0, z: -10 }; // Posición optimizada en el camino frente a la cocina
 export const getKitchenExitPosition = () => kitchenExitPosition;
 
 // Ya no usamos el círculo amarillo, ya que implementamos detección de proximidad

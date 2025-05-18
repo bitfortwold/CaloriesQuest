@@ -23,7 +23,8 @@ const Player = () => {
     playerPosition, 
     setPlayerPosition, 
     playerData,
-    increaseCaloriesBurned
+    increaseCaloriesBurned,
+    updatePlayer
   } = usePlayerStore();
   const { marketPosition, kitchenPosition } = useFoodStore();
   // Obtener la posición del huerto
@@ -293,11 +294,12 @@ const Player = () => {
       if (lastGameStateRef.current === "garden") {
         console.log("Saliendo del huerto");
         
-        // Posición exacta según la captura de pantalla - jugador en el camino ocre frente al huerto
+        // Colocar al jugador en el camino ocre frente al huerto
+        const exitPos = getGardenExitPosition();
         setPlayerPosition({
-          x: 0,            // Centrado en el camino ocre
-          y: 0,            // A nivel del suelo
-          z: -10           // En mitad del camino para mejor vista del huerto
+          x: exitPos.x,
+          y: playerPosition.y, // Mantenemos la altura actual
+          z: exitPos.z
         });
         
         // Verificar si hubo acción de riego o cosecha
@@ -317,19 +319,20 @@ const Player = () => {
         if (camera) {
           // Posicionamos la cámara detrás del personaje, con vista completa del huerto
           camera.position.set(
-            0,             // Centrado con el jugador
+            exitPos.x,     // Centrado con el jugador
             8,             // Altura suficiente para vista completa
             5              // Detrás del jugador mirando hacia el huerto
           );
           
           // Hacer que la cámara mire hacia el huerto
-          camera.lookAt(0, 0, -15); // Mirando hacia el huerto
+          camera.lookAt(exitPos.x, 0, -15); // Mirando hacia el huerto
           
-          console.log("Cámara reposicionada exactamente como en la imagen de referencia");
+          console.log("Cámara reposicionada para vista perfecta del huerto");
         }
         
       } else if (lastGameStateRef.current === "market") {
         console.log("Saliendo del mercado");
+        
         // Colocar al jugador en el camino ocre frente al mercado
         const exitPos = getMarketExitPosition();
         setPlayerPosition({
@@ -337,8 +340,24 @@ const Player = () => {
           y: playerPosition.y, // Mantenemos la altura actual
           z: exitPos.z
         });
+        
+        // Configuración precisa de la cámara según la captura de pantalla
+        if (camera) {
+          // Posicionamos la cámara detrás del personaje, con vista completa del mercado
+          camera.position.set(
+            exitPos.x,      // Alineado con el jugador en X
+            8,              // Altura suficiente para vista completa
+            5               // Detrás del jugador mirando hacia el mercado
+          );
+          
+          // Hacer que la cámara mire hacia el mercado
+          camera.lookAt(exitPos.x, 0, -15); // Mirando hacia el mercado
+          
+          console.log("Cámara reposicionada para vista perfecta del mercado");
+        }
       } else if (lastGameStateRef.current === "kitchen") {
         console.log("Saliendo de la cocina");
+        
         // Colocar al jugador en el camino ocre frente a la cocina
         const exitPos = getKitchenExitPosition();
         setPlayerPosition({
@@ -346,6 +365,21 @@ const Player = () => {
           y: playerPosition.y, // Mantenemos la altura actual
           z: exitPos.z
         });
+        
+        // Configuración precisa de la cámara según la captura de pantalla
+        if (camera) {
+          // Posicionamos la cámara detrás del personaje, con vista completa de la cocina
+          camera.position.set(
+            exitPos.x,      // Alineado con el jugador en X
+            8,              // Altura suficiente para vista completa
+            5               // Detrás del jugador mirando hacia la cocina
+          );
+          
+          // Hacer que la cámara mire hacia la cocina
+          camera.lookAt(exitPos.x, 0, -15); // Mirando hacia la cocina
+          
+          console.log("Cámara reposicionada para vista perfecta de la cocina");
+        }
       }
       
       // Restaurar la capacidad de interactuar después de un periodo más largo
