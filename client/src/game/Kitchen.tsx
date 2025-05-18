@@ -374,8 +374,17 @@ const Kitchen = ({ onExit }: KitchenProps) => {
               <h1 className="text-4xl font-bold text-white drop-shadow-lg tracking-wide uppercase">{language === 'en' ? 'Kitchen' : language === 'ca' ? 'Cuina' : 'Cocina'}</h1>
             </div>
 
-            {/* Botón de salida con ForceExitButton */}
-            <ForceExitButton />
+            {/* Botón Salir simple y directo */}
+            <button
+              onClick={() => {
+                console.log("Saliendo de la cocina - BOTÓN SIMPLE");
+                // Este es el método más simple y directo
+                useGameStateStore.setState({ gameState: "playing" });
+              }}
+              className="bg-gradient-to-r from-[#E74C3C] to-[#C0392B] text-white px-6 py-2 rounded-lg font-bold shadow-md border-2 border-[#A93226] hover:from-[#C0392B] hover:to-[#E74C3C] transition duration-300"
+            >
+              {language === 'en' ? 'Exit' : language === 'ca' ? 'Sortir' : 'Salir'}
+            </button>
           </div>
           
           {/* Contador de calorías */}
