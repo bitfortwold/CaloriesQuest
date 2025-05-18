@@ -16,15 +16,20 @@ interface CameraStoreState {
   wasResetRecently: () => boolean;
 }
 
+// CONSTANTES GLOBALES PARA POSICIONAMIENTO INVARIABLE
+// Estas se mantienen fuera del store para evitar cualquier modificación accidental
+const FIXED_GARDEN_CAMERA_POSITION = {x: 0, y: 8, z: 5};
+const FIXED_GARDEN_CAMERA_TARGET = {x: 0, y: 0, z: -12};
+
 // Crear store con valores predeterminados calibrados según la captura de referencia
 export const useCameraStore = create<CameraStoreState>()((set, get) => ({
   // Estado inicial
   resetPending: false,
   lastResetTimestamp: 0,
   
-  // Posición EXACTA según la captura proporcionada - AJUSTADA PARA MAYOR ESTABILIDAD
-  gardenExitCameraPosition: {x: 0, y: 8, z: 5},
-  gardenExitCameraTarget: {x: 0, y: 1, z: -10},
+  // Posición EXACTA según la captura proporcionada - VALORES FIJOS ABSOLUTOS
+  gardenExitCameraPosition: FIXED_GARDEN_CAMERA_POSITION,
+  gardenExitCameraTarget: FIXED_GARDEN_CAMERA_TARGET,
   
   // Solicita un reseteo de cámara
   requestReset: () => {

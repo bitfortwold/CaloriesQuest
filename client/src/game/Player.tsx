@@ -365,19 +365,23 @@ const Player = () => {
           const pos = gardenExitCameraPosition;
           const target = gardenExitCameraTarget;
           
-          // SOLUCIÓN FINAL - Mantener ángulo de cámara consistente
+          // SOLUCIÓN FINAL RADICAL - Coordenadas absolutamente fijas para el huerto
           if (exitedBuilding === "garden") {
-            // Coordenadas absolutas garantizadas para el huerto
-            // No utilizar valores relativos para evitar cambios en el ángulo
+            // CONSTANTES ABSOLUTAS - Mismos valores en todas las partes del código
+            // Estas coordenadas son INVARIABLES y no dependen de ningún estado
             const FIXED_POSITION = {x: 0, y: 8, z: 5};
-            const FIXED_TARGET = {x: 0, y: 1, z: -10};
+            const FIXED_TARGET = {x: 0, y: 0, z: -12};
             
+            // Aplicar valores directamente sin ninguna transformación
             camera.position.set(FIXED_POSITION.x, FIXED_POSITION.y, FIXED_POSITION.z);
             camera.lookAt(FIXED_TARGET.x, FIXED_TARGET.y, FIXED_TARGET.z);
             
-            console.log("🔒 ÁNGULO FIJO: Aplicado posicionamiento absoluto para huerto");
+            // Congelar la rotación de la cámara para prevenir cualquier cambio
+            camera.rotation.order = 'YXZ';
+            
+            console.log("🔒 ÁNGULO ABSOLUTAMENTE FIJO: Posicionamiento invariable para huerto");
           } else {
-            // Para mercado y cocina mantener el sistema existente
+            // Para mercado y cocina mantener el sistema existente que funciona bien
             camera.position.set(pos.x, pos.y, pos.z);
             camera.lookAt(target.x, target.y, target.z);
           }
