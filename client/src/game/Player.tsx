@@ -298,17 +298,14 @@ const Player = () => {
           console.log("Saliendo del huerto");
           exitPos = getGardenExitPosition();
           
-          // Verificar si hubo acción de riego o cosecha (solo aplica al huerto)
+          // Limpiar cualquier acción del huerto sin procesar condicionalmente
           const { playerData } = usePlayerStore.getState();
-          if (playerData?.lastGardenAction === "harvest" || playerData?.lastGardenAction === "water") {
-            console.log(`Detectada acción previa en el huerto: ${playerData.lastGardenAction}`);
-            // Resetear la acción después de procesarla
-            if (playerData) {
-              updatePlayer({
-                ...playerData,
-                lastGardenAction: undefined // Limpiar la acción
-              });
-            }
+          if (playerData && playerData.lastGardenAction !== undefined) {
+            console.log("Limpiando acciones del huerto para salida unificada");
+            updatePlayer({
+              ...playerData,
+              lastGardenAction: undefined // Siempre limpiar la acción
+            });
           }
           break;
         case "market":
