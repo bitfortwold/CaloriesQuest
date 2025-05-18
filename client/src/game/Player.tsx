@@ -299,6 +299,26 @@ const Player = () => {
           y: playerPosition.y, // Mantenemos la altura actual
           z: exitPos.z
         });
+        
+        // Restablecer la posición de la cámara para una vista consistente
+        // Ponemos la cámara mirando hacia el huerto desde el camino
+        if (camera) {
+          // Establecer una rotación consistente de la cámara
+          const cameraDirection = new THREE.Vector3();
+          cameraDirection.subVectors(
+            new THREE.Vector3(0, 0, -15), // Dirección al huerto
+            new THREE.Vector3(exitPos.x, playerPosition.y, exitPos.z)
+          ).normalize();
+          
+          // Aplicar la rotación a la cámara
+          camera.position.set(
+            exitPos.x - cameraDirection.x * 15, // Posicionamos la cámara detrás del jugador
+            10, // Altura fija para una buena vista
+            exitPos.z - cameraDirection.z * 15 // Alejamos la cámara del jugador
+          );
+          camera.lookAt(exitPos.x, playerPosition.y, exitPos.z - 5); // Mirando ligeramente delante del jugador
+        }
+        
       } else if (lastGameStateRef.current === "market") {
         console.log("Saliendo del mercado");
         // Colocar al jugador en el camino ocre frente al mercado
