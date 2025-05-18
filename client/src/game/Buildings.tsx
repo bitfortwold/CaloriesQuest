@@ -158,20 +158,35 @@ const Buildings = () => {
       
       {/* Huerto rediseñado - Simple superficie plana */}
       <group position={gardenPos}>
-        {/* Superficie plana principal del huerto */}
-        <mesh receiveShadow position={[0, 0.01, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        {/* Superficie plana principal del huerto - Con ID para detectar clics */}
+        <mesh 
+          receiveShadow 
+          position={[0, 0.01, 0]} 
+          rotation={[-Math.PI / 2, 0, 0]}
+          name="gardenSurface" // ID para detección de clics
+        >
           <planeGeometry args={[12, 12]} />
           <meshStandardMaterial color="#7D5A38" />
         </mesh>
         
-        {/* Superficie cultivable central */}
-        <mesh receiveShadow position={[0, 0.02, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        {/* Superficie cultivable central - Con ID para detectar clics */}
+        <mesh 
+          receiveShadow 
+          position={[0, 0.02, 0]} 
+          rotation={[-Math.PI / 2, 0, 0]}
+          name="gardenSurface" // ID para detección de clics 
+        >
           <planeGeometry args={[10, 10]} />
           <meshStandardMaterial color="#553311" />
         </mesh>
         
-        {/* Cuadrícula de plantación visible */}
-        <mesh receiveShadow position={[0, 0.03, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        {/* Cuadrícula de plantación visible - Con ID para detectar clics */}
+        <mesh 
+          receiveShadow 
+          position={[0, 0.03, 0]} 
+          rotation={[-Math.PI / 2, 0, 0]}
+          name="gardenSurface" // ID para detección de clics
+        >
           <planeGeometry args={[10, 10]} />
           <meshStandardMaterial color="#6B4423" wireframe={true} />
         </mesh>

@@ -38,7 +38,7 @@ const Player = () => {
   const [isMovingToTarget, setIsMovingToTarget] = useState(false);
   
   // Get Three.js scene and camera
-  const { camera, gl } = useThree();
+  const { camera, gl, scene } = useThree();
 
   // Handle click on ground for movement con cámara fluida
   const handleGroundClick = (event: MouseEvent) => {
@@ -65,6 +65,23 @@ const Player = () => {
     const raycaster = new THREE.Raycaster();
     raycaster.setFromCamera(mouse, camera);
     
+    // Comprobar si el clic fue directamente sobre algún objeto en la escena
+    const intersects = raycaster.intersectObjects(scene.children, true);
+    
+    // Primero revisar si el clic fue sobre la superficie del huerto
+    let clickedOnGarden = false;
+    for (let i = 0; i < intersects.length; i++) {
+      if (intersects[i].object.name === 'gardenSurface') {
+        clickedOnGarden = true;
+        console.log("¡Clic detectado sobre la superficie del huerto!");
+        
+        // Entrar directamente al huerto si hicimos clic sobre él
+        enterBuilding("garden");
+        return;
+      }
+    }
+    
+    // Si no se hizo clic en el huerto, continuar con la detección normal
     // Find intersections con el suelo desde la perspectiva actual de la cámara
     const groundPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0); // Y-up plane at y=0
     const targetPoint = new THREE.Vector3();
