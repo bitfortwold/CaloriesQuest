@@ -323,67 +323,57 @@ const Player = () => {
       // Marcar que acabamos de salir para evitar interacciones inmediatas
       setJustExitedBuilding(true);
 
-      // --- USAMOS EL NUEVO SISTEMA DE POSICIONAMIENTO FIJO PARA TOTAL COHERENCIA ---
+      // --- SISTEMA DE POSICIONAMIENTO MEJORADO CON TOTALMENTE ABSOLUTO Y ESTABLE ---
       
-      // Acceder al controlador de cámara para tener referencias absolutas
+      // Acceder al controlador de cámara
       const { 
         gardenExitCameraPosition, 
         gardenExitCameraTarget,
         requestReset 
       } = useCameraStore.getState();
       
-      // Notificar que estamos forzando un reseteo
+      // IMPORTANTE: Forzar reseteo de cámara
       requestReset();
-      console.log(`📸 SOLICITUD DE RESETEO DE CÁMARA (saliendo de ${exitedBuilding})`);
+      console.log(`📸 SOLICITUD DE RESETEO TOTAL (saliendo de ${exitedBuilding})`);
       
-      // PASO 1: RESETEO RADICAL - Forzar posición en origen antes de cualquier cálculo
-      setPlayerPosition({
-        x: 0,
-        y: 0,
-        z: 0
-      });
+      // POSICIONAMIENTO DE JUGADOR EN TRES PASOS
       
-      // PASO 2: POSICIÓN GLOBAL UNIFICADA - Siempre la misma independientemente del edificio
-      const POSICION_FINAL = { x: 0, y: 0, z: -10 }; // Calibrada según captura de referencia
+      // PASO 1: Reseteo a origen absoluto para eliminar cualquier acumulación de errores
+      console.log(`🏁 RESETEO ABSOLUTO - FASE 1`);
+      setPlayerPosition({ x: 0, y: 0, z: 0 });
       
-      // PASO 3: RESETEO COMPLETO EN DOS FASES para garantizar coherencia total
-      // Primer movimiento inmediato
+      // PASO 2: Aplicación de posición fija final (exactamente igual para todos los edificios)
+      const POSICION_FINAL = { x: 0, y: 0, z: -10 }; // COORDENADAS FIJAS - Posición central del camino
+      
+      // Retardo para asegurar actualización completa
       setTimeout(() => {
-        console.log(`📍 POSICIONAMIENTO FASE 1: Origen (${exitedBuilding})`);
+        console.log(`🏁 RESETEO ABSOLUTO - FASE 2 (${exitedBuilding})`);
+        
+        // Asegurar posicionamiento con precisión
         setPlayerPosition({
-          x: 0,
-          y: 0,
-          z: 0
+          x: POSICION_FINAL.x,
+          y: POSICION_FINAL.z > -10 ? 0 : 0, // Asegurar valor Y preciso
+          z: POSICION_FINAL.z
         });
         
-        // Segunda fase - posición final exacta
-        setTimeout(() => {
-          console.log(`📍 POSICIONAMIENTO FASE 2: Final (${exitedBuilding})`);
-          setPlayerPosition({
-            x: POSICION_FINAL.x,
-            y: 0,
-            z: POSICION_FINAL.z
-          });
+        // Orientación exacta - siempre mirando al huerto (norte)
+        setRotationY(Math.PI);
+        
+        // Aplicar posición de cámara absolutamente fija
+        if (camera) {
+          // Usar valores absolutos para total coherencia
+          const pos = gardenExitCameraPosition;
+          const target = gardenExitCameraTarget;
           
-          // ORIENTACIÓN FIJA - siempre mirando hacia el norte (huerto)
-          setRotationY(Math.PI);
+          // IMPORTANTE: Reseteo completo de propiedades de cámara
+          camera.position.set(pos.x, pos.y, pos.z);
+          camera.lookAt(target.x, target.y, target.z);
           
-          // RESETEO FINAL DE CÁMARA con posición absoluta
-          if (camera) {
-            // Usar valores del store para garantizar coherencia
-            const camPos = gardenExitCameraPosition;
-            const camTarget = gardenExitCameraTarget;
-            
-            // Aplicar posición exacta
-            camera.position.set(camPos.x, camPos.y, camPos.z);
-            camera.lookAt(camTarget.x, camTarget.y, camTarget.z);
-            
-            console.log(`📸 CÁMARA REPOSICIONADA A VALORES ABSOLUTOS`);
-            console.log(`   Posición: (${camPos.x}, ${camPos.y}, ${camPos.z})`);
-            console.log(`   Mirando hacia: (${camTarget.x}, ${camTarget.y}, ${camTarget.z})`);
-          }
-        }, 50);
-      }, 50);
+          // Verificar posicionamiento final
+          console.log(`🎯 POSICIÓN FINAL - JUGADOR: (${POSICION_FINAL.x}, 0, ${POSICION_FINAL.z})`);
+          console.log(`🎯 POSICIÓN FINAL - CÁMARA: (${pos.x}, ${pos.y}, ${pos.z})`);
+        }
+      }, 100);
       
       // PASO 5: Limpiar cualquier estado pendiente en todos los casos
       const { playerData } = usePlayerStore.getState();

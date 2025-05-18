@@ -22,9 +22,9 @@ export const useCameraStore = create<CameraStoreState>()((set, get) => ({
   resetPending: false,
   lastResetTimestamp: 0,
   
-  // Posición EXACTA según la captura proporcionada
-  gardenExitCameraPosition: {x: 0, y: 7, z: 0},
-  gardenExitCameraTarget: {x: 0, y: 1, z: -15},
+  // Posición EXACTA según la captura proporcionada - AJUSTADA PARA MAYOR ESTABILIDAD
+  gardenExitCameraPosition: {x: 0, y: 8, z: 5},
+  gardenExitCameraTarget: {x: 0, y: 1, z: -10},
   
   // Solicita un reseteo de cámara
   requestReset: () => {
