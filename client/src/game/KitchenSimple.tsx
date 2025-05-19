@@ -9,7 +9,7 @@ interface KitchenProps {
 
 const KitchenSimple = ({ onExit }: KitchenProps) => {
   const [activeTab, setActiveTab] = useState("guided-recipes");
-  const { playerData, consumeFood } = usePlayerStore();
+  const { playerData, consumeFood, removeIngredientByName } = usePlayerStore();
   const { exitBuilding } = useGameStateStore();
 
   // Manejar la tecla Escape para salir
@@ -64,6 +64,11 @@ const KitchenSimple = ({ onExit }: KitchenProps) => {
       toast.error(`No tienes todos los ingredientes para preparar ${name}. Necesitas: ${ingredients.join(', ')}`);
       return;
     }
+    
+    // Consumir los ingredientes necesarios (eliminarlos del inventario)
+    ingredients.forEach(ingredient => {
+      removeIngredientByName(ingredient);
+    });
     
     // Crear un ID único para la comida preparada
     const mealId = `meal-${Date.now()}-${Math.floor(Math.random() * 1000)}`;

@@ -72,6 +72,7 @@ interface PlayerState {
   updateCoins: (amount: number) => void;
   addFood: (food: FoodItem) => void;
   removeFood: (foodId: string) => void;
+  removeIngredientByName: (ingredientName: string) => void; // Elimina un ingrediente por nombre
   consumeFood: (calories: number, food?: FoodItem) => void;
   increaseCaloriesBurned: (calories: number) => void;
   calculateDailyCalories: (gender: string, age: number, weight: number, height: number, activityLevel: string) => number;
@@ -362,6 +363,28 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       const updatedInventory = state.playerData.inventory.filter(
         item => item.id !== foodId
       );
+      
+      return {
+        playerData: { ...state.playerData, inventory: updatedInventory }
+      };
+    });
+  },
+  
+  // Función para remover ingredientes por nombre (para recetas)
+  removeIngredientByName: (ingredientName: string) => {
+    set((state) => {
+      if (!state.playerData) return { playerData: null };
+      
+      // Encontrar el primer ingrediente con ese nombre
+      const indexToRemove = state.playerData.inventory.findIndex(
+        item => item.name.toLowerCase().includes(ingredientName.toLowerCase())
+      );
+      
+      if (indexToRemove === -1) return { playerData: state.playerData }; // No encontrado
+      
+      // Crear una copia del inventario y eliminar el ingrediente
+      const updatedInventory = [...state.playerData.inventory];
+      updatedInventory.splice(indexToRemove, 1);
       
       return {
         playerData: { ...state.playerData, inventory: updatedInventory }
