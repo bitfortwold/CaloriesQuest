@@ -97,6 +97,7 @@ const Kitchen = ({ onExit }: KitchenProps) => {
   
   // Renderizado de recetas guiadas
   const renderGuidedRecipes = () => {
+    // Lista de recetas definidas
     const recipes = [
       {
         id: "breakfast",
@@ -320,9 +321,10 @@ const Kitchen = ({ onExit }: KitchenProps) => {
       }
     ];
     
+    // Renderizar cada receta
     return (
-      <div className="grid grid-cols-1 gap-4 max-h-[500px] overflow-y-auto pr-2">
-        {recipes.map(recipe => (
+      <div className="grid grid-cols-1 gap-5 overflow-y-auto pr-2 pt-4 pb-10">
+        {recipes.slice(0, 3).map(recipe => (
           <Card key={recipe.id} className="bg-[#FFFAF0] border-4 border-[#F5D6A4] shadow-lg rounded-2xl overflow-hidden">
             <CardHeader className="bg-gradient-to-r from-[#F9A826] to-[#F48E11] pb-2 border-b-4 border-[#E47F0E]">
               <CardTitle className="text-white text-xl drop-shadow-md">{recipe.name}</CardTitle>
@@ -401,6 +403,180 @@ const Kitchen = ({ onExit }: KitchenProps) => {
               </div>
               <Button 
                 className="w-full mt-4 bg-gradient-to-r from-[#F9A826] to-[#F48E11] hover:brightness-110 text-white font-bold py-3 px-4 rounded-xl transition-all shadow-md border-2 border-[#E47F0E]"
+              >
+                {language === 'en' ? 'Follow Recipe' : language === 'ca' ? 'Seguir Recepta' : 'Seguir Receta'}
+              </Button>
+            </CardContent>
+          </Card>
+        ))}
+
+        {/* Segunda sección de recetas */}
+        {recipes.slice(3, 6).map(recipe => (
+          <Card key={recipe.id} className="bg-[#FFFAF0] border-4 border-[#F5D6A4] shadow-lg rounded-2xl overflow-hidden">
+            <CardHeader className="bg-gradient-to-r from-[#4CAF50] to-[#2E7D32] pb-2 border-b-4 border-[#1B5E20]">
+              <CardTitle className="text-white text-xl drop-shadow-md">{recipe.name}</CardTitle>
+              <p className="text-white text-opacity-90 text-sm">{recipe.description}</p>
+            </CardHeader>
+            <CardContent className="p-4">
+              <div className="mb-3">
+                <h4 className="font-bold text-[#8B5E34] mb-1">{language === 'en' ? 'Ingredients' : language === 'ca' ? 'Ingredients' : 'Ingredientes'}:</h4>
+                <div className="flex flex-wrap gap-2">
+                  {recipe.ingredients.map((ingredient, idx) => (
+                    <div key={idx} className="bg-[#E0F2E9] text-[#2E7D32] px-3 py-1 rounded-lg border border-[#A5D6A7] font-medium">
+                      {ingredient}
+                    </div>
+                  ))}
+                </div>
+              </div>
+              
+              {/* Información Nutricional */}
+              <div className="my-3 bg-[#F5FFF8] p-3 border-2 border-[#A5D6A7] rounded-xl">
+                <h4 className="font-bold text-[#2E7D32] mb-2 flex items-center">
+                  <span className="mr-2">📊</span>
+                  {language === 'en' ? 'Nutritional Information' : language === 'ca' ? 'Informació Nutricional' : 'Información Nutricional'}:
+                </h4>
+                <div className="grid grid-cols-4 gap-2 mb-2">
+                  <div className="bg-[#E0F2E9] text-[#2E7D32] p-2 rounded-lg text-center">
+                    <div className="font-bold">{recipe.nutritionalInfo.calories}</div>
+                    <div className="text-xs">{language === 'en' ? 'Calories' : language === 'ca' ? 'Calories' : 'Calorías'}</div>
+                  </div>
+                  <div className="bg-[#E0F2E9] text-[#2E7D32] p-2 rounded-lg text-center">
+                    <div className="font-bold">{recipe.nutritionalInfo.protein}g</div>
+                    <div className="text-xs">{language === 'en' ? 'Protein' : language === 'ca' ? 'Proteïna' : 'Proteína'}</div>
+                  </div>
+                  <div className="bg-[#E0F2E9] text-[#2E7D32] p-2 rounded-lg text-center">
+                    <div className="font-bold">{recipe.nutritionalInfo.carbs}g</div>
+                    <div className="text-xs">{language === 'en' ? 'Carbs' : language === 'ca' ? 'Carbohidrats' : 'Carbohidratos'}</div>
+                  </div>
+                  <div className="bg-[#E0F2E9] text-[#2E7D32] p-2 rounded-lg text-center">
+                    <div className="font-bold">{recipe.nutritionalInfo.fat}g</div>
+                    <div className="text-xs">{language === 'en' ? 'Fat' : language === 'ca' ? 'Greix' : 'Grasa'}</div>
+                  </div>
+                </div>
+                
+                {/* Indicador de Sostenibilidad */}
+                <div className="flex items-center">
+                  <div className="text-xs font-bold text-[#2E7D32] mr-2">
+                    {language === 'en' ? 'Sustainability' : language === 'ca' ? 'Sostenibilitat' : 'Sostenibilidad'}:
+                  </div>
+                  <div className="flex-1 h-2 bg-gray-200 rounded-full">
+                    {(() => {
+                      const score = recipe.nutritionalInfo.sustainabilityScore;
+                      const percentage = score * 10;
+                      
+                      let color = "bg-red-500";
+                      if (score >= 7) {
+                        color = "bg-green-500";
+                      } else if (score >= 5) {
+                        color = "bg-yellow-500";
+                      } else if (score >= 3) {
+                        color = "bg-orange-500";
+                      }
+                      
+                      return (
+                        <div className={`${color} h-2 rounded-full`} style={{ width: `${percentage}%` }}></div>
+                      );
+                    })()}
+                  </div>
+                  <div className="ml-2 text-sm font-bold text-[#2E7D32]">
+                    {recipe.nutritionalInfo.sustainabilityScore}/10
+                  </div>
+                </div>
+              </div>
+              
+              <div>
+                <h4 className="font-bold text-[#2E7D32] mb-1">{language === 'en' ? 'Benefits' : language === 'ca' ? 'Beneficis' : 'Beneficios'}:</h4>
+                <p className="text-[#1B5E20] text-sm">{recipe.benefits}</p>
+              </div>
+              <Button 
+                className="w-full mt-4 bg-gradient-to-r from-[#4CAF50] to-[#2E7D32] hover:brightness-110 text-white font-bold py-3 px-4 rounded-xl transition-all shadow-md border-2 border-[#1B5E20]"
+              >
+                {language === 'en' ? 'Follow Recipe' : language === 'ca' ? 'Seguir Recepta' : 'Seguir Receta'}
+              </Button>
+            </CardContent>
+          </Card>
+        ))}
+
+        {/* Tercera sección de recetas */}
+        {recipes.slice(6, 10).map(recipe => (
+          <Card key={recipe.id} className="bg-[#FFFAF0] border-4 border-[#42A5F5] shadow-lg rounded-2xl overflow-hidden">
+            <CardHeader className="bg-gradient-to-r from-[#1976D2] to-[#0D47A1] pb-2 border-b-4 border-[#0D47A1]">
+              <CardTitle className="text-white text-xl drop-shadow-md">{recipe.name}</CardTitle>
+              <p className="text-white text-opacity-90 text-sm">{recipe.description}</p>
+            </CardHeader>
+            <CardContent className="p-4">
+              <div className="mb-3">
+                <h4 className="font-bold text-[#1976D2] mb-1">{language === 'en' ? 'Ingredients' : language === 'ca' ? 'Ingredients' : 'Ingredientes'}:</h4>
+                <div className="flex flex-wrap gap-2">
+                  {recipe.ingredients.map((ingredient, idx) => (
+                    <div key={idx} className="bg-[#E3F2FD] text-[#1976D2] px-3 py-1 rounded-lg border border-[#90CAF9] font-medium">
+                      {ingredient}
+                    </div>
+                  ))}
+                </div>
+              </div>
+              
+              {/* Información Nutricional */}
+              <div className="my-3 bg-[#F5FBFF] p-3 border-2 border-[#90CAF9] rounded-xl">
+                <h4 className="font-bold text-[#1976D2] mb-2 flex items-center">
+                  <span className="mr-2">📊</span>
+                  {language === 'en' ? 'Nutritional Information' : language === 'ca' ? 'Informació Nutricional' : 'Información Nutricional'}:
+                </h4>
+                <div className="grid grid-cols-4 gap-2 mb-2">
+                  <div className="bg-[#E3F2FD] text-[#1976D2] p-2 rounded-lg text-center">
+                    <div className="font-bold">{recipe.nutritionalInfo.calories}</div>
+                    <div className="text-xs">{language === 'en' ? 'Calories' : language === 'ca' ? 'Calories' : 'Calorías'}</div>
+                  </div>
+                  <div className="bg-[#E3F2FD] text-[#1976D2] p-2 rounded-lg text-center">
+                    <div className="font-bold">{recipe.nutritionalInfo.protein}g</div>
+                    <div className="text-xs">{language === 'en' ? 'Protein' : language === 'ca' ? 'Proteïna' : 'Proteína'}</div>
+                  </div>
+                  <div className="bg-[#E3F2FD] text-[#1976D2] p-2 rounded-lg text-center">
+                    <div className="font-bold">{recipe.nutritionalInfo.carbs}g</div>
+                    <div className="text-xs">{language === 'en' ? 'Carbs' : language === 'ca' ? 'Carbohidrats' : 'Carbohidratos'}</div>
+                  </div>
+                  <div className="bg-[#E3F2FD] text-[#1976D2] p-2 rounded-lg text-center">
+                    <div className="font-bold">{recipe.nutritionalInfo.fat}g</div>
+                    <div className="text-xs">{language === 'en' ? 'Fat' : language === 'ca' ? 'Greix' : 'Grasa'}</div>
+                  </div>
+                </div>
+                
+                {/* Indicador de Sostenibilidad */}
+                <div className="flex items-center">
+                  <div className="text-xs font-bold text-[#1976D2] mr-2">
+                    {language === 'en' ? 'Sustainability' : language === 'ca' ? 'Sostenibilitat' : 'Sostenibilidad'}:
+                  </div>
+                  <div className="flex-1 h-2 bg-gray-200 rounded-full">
+                    {(() => {
+                      const score = recipe.nutritionalInfo.sustainabilityScore;
+                      const percentage = score * 10;
+                      
+                      let color = "bg-red-500";
+                      if (score >= 7) {
+                        color = "bg-green-500";
+                      } else if (score >= 5) {
+                        color = "bg-yellow-500";
+                      } else if (score >= 3) {
+                        color = "bg-orange-500";
+                      }
+                      
+                      return (
+                        <div className={`${color} h-2 rounded-full`} style={{ width: `${percentage}%` }}></div>
+                      );
+                    })()}
+                  </div>
+                  <div className="ml-2 text-sm font-bold text-[#1976D2]">
+                    {recipe.nutritionalInfo.sustainabilityScore}/10
+                  </div>
+                </div>
+              </div>
+              
+              <div>
+                <h4 className="font-bold text-[#1976D2] mb-1">{language === 'en' ? 'Benefits' : language === 'ca' ? 'Beneficis' : 'Beneficios'}:</h4>
+                <p className="text-[#0D47A1] text-sm">{recipe.benefits}</p>
+              </div>
+              <Button 
+                className="w-full mt-4 bg-gradient-to-r from-[#1976D2] to-[#0D47A1] hover:brightness-110 text-white font-bold py-3 px-4 rounded-xl transition-all shadow-md border-2 border-[#0D47A1]"
               >
                 {language === 'en' ? 'Follow Recipe' : language === 'ca' ? 'Seguir Recepta' : 'Seguir Receta'}
               </Button>
