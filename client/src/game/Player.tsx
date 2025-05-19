@@ -109,7 +109,14 @@ const Player = () => {
       let exitPosition = { x: 0, y: 0, z: 0 };
       
       if (exitedBuilding === "garden") {
-        exitPosition = getGardenExitPosition();
+        const basePosition = getGardenExitPosition();
+        // Posición personalizada para el huerto para ver mejor al personaje
+        exitPosition = {
+          x: basePosition.x,
+          y: basePosition.y,
+          z: -3 // Ajuste para que el personaje esté correctamente posicionado frente al huerto
+        };
+        console.log("🚪 Saliendo de garden con posición segura:", exitPosition);
         targetRotation = Math.PI; // Mirando hacia el norte (huerto)
       } 
       else if (exitedBuilding === "market") {

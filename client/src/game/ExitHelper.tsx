@@ -4,7 +4,6 @@ import { getMarketExitPosition, getKitchenExitPosition, getGardenExitPosition } 
 import { useCameraStore } from "../lib/stores/useCameraStore";
 import * as THREE from "three";
 import { getGardenPosition, getMarketPosition, getKitchenPosition } from "./Buildings";
-import { useThree } from "@react-three/fiber";
 
 /**
  * ExitHelper - Componente de ayuda para salir de los edificios
@@ -62,21 +61,13 @@ export const useExitHelper = () => {
   
   // Función auxiliar para ajustar la cámara después de salir
   const adjustCameraAfterExit = (building: string, exitPosition: {x: number, y: number, z: number}) => {
+    // Solicitamos un reseteo de cámara usando el store dedicado
     const { requestReset } = useCameraStore.getState();
     requestReset(); // Reset cámara para evitar acumulación de cambios
     
-    // Solo para el huerto, aplicamos un ajuste más dramático para ver mejor al personaje
-    if (building === "garden") {
-      const camera = useCameraStore.getState().camera;
-      if (camera) {
-        const gardenPos = getGardenPosition();
-        
-        // Posicionamos la cámara para ver el personaje completamente centrado
-        camera.position.set(0, 14, 5); // Más alta y más atrás para tener mejor perspectiva
-        camera.lookAt(new THREE.Vector3(0, 1, -6)); // Mirar más abajo para centrar el personaje
-        camera.updateProjectionMatrix();
-      }
-    }
+    // El reseteo efectivo de la cámara se realizará desde el componente Player
+    // que tiene acceso a la cámara de Three.js a través de useThree()
+    console.log(`Solicitado reseteo de cámara para ${building}`);
   };
   
   return { exitBuilding };
