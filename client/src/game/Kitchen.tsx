@@ -7,6 +7,7 @@ import { usePlayerStore } from "../stores/usePlayerStore";
 import { useLanguage } from "../i18n/LanguageContext";
 import { toast } from "sonner";
 import { useKeyboardExit } from "../hooks/useKeyboardExit";
+import AlertSound from "../components/AlertSound";
 
 interface KitchenProps {
   onExit: () => void;
@@ -22,6 +23,8 @@ const Kitchen = ({ onExit }: KitchenProps) => {
   
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
   const [showGuide, setShowGuide] = useState<boolean>(false);
+  const [playSound, setPlaySound] = useState<boolean>(false);
+  const [soundType, setSoundType] = useState<"success" | "error" | "notification">("notification");
   
   // Cargar alimentos de muestra si la nevera y despensa están vacías
   useEffect(() => {
@@ -100,6 +103,18 @@ const Kitchen = ({ onExit }: KitchenProps) => {
     // Primero actualizar el estado
     setShowGuide(newGuideState);
     
+    // Configurar el tipo de sonido según la acción
+    if (newGuideState) {
+      // Activando la guía - usar sonido de éxito
+      setSoundType("success");
+    } else {
+      // Desactivando la guía - usar sonido de notificación
+      setSoundType("notification");
+    }
+    
+    // Activar el sonido
+    setPlaySound(true);
+    
     // Mostrar confirmación con toast
     if (newGuideState) {
       // Activando la guía
@@ -121,6 +136,11 @@ const Kitchen = ({ onExit }: KitchenProps) => {
     setTimeout(() => {
       console.log("✅ Estado de guía actualizado, estado actual:", !showGuide);
     }, 50);
+  };
+  
+  // Función para manejar la finalización de la reproducción del sonido
+  const handleSoundComplete = () => {
+    setPlaySound(false);
   };
   
   // Renderizado de recetas guiadas

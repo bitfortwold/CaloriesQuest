@@ -40,6 +40,10 @@ export interface FoodItem {
 interface FoodStore {
   refrigeratorFood: FoodItem[];
   pantryFood: FoodItem[];
+  marketPosition?: { x: number, y: number, z: number };
+  kitchenPosition?: { x: number, y: number, z: number };
+  setMarketPosition: (position: { x: number, y: number, z: number }) => void;
+  setKitchenPosition: (position: { x: number, y: number, z: number }) => void;
   addToRefrigerator: (food: Omit<FoodItem, 'id' | 'storageType'>) => void;
   addToPantry: (food: Omit<FoodItem, 'id' | 'storageType'>) => void;
   removeFromKitchen: (id: string) => void;
@@ -53,6 +57,14 @@ interface FoodStore {
 export const useFoodStore = create<FoodStore>((set, get) => ({
   refrigeratorFood: [],
   pantryFood: [],
+  marketPosition: undefined,
+  kitchenPosition: undefined,
+  
+  // Establecer posición del mercado
+  setMarketPosition: (position) => set({ marketPosition: position }),
+  
+  // Establecer posición de la cocina
+  setKitchenPosition: (position) => set({ kitchenPosition: position }),
 
   // Añadir alimento a la nevera
   addToRefrigerator: (food) => set((state) => ({
