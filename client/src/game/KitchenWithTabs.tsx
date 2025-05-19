@@ -15,7 +15,7 @@ interface KitchenProps {
 
 const Kitchen = ({ onExit }: KitchenProps) => {
   const { refrigeratorFood, pantryFood, removeFromKitchen } = useFoodStore();
-  const { playerData } = usePlayerStore();
+  const { playerData, consumeFood } = usePlayerStore();
   const { language } = useLanguage();
   
   // Activar salida con tecla ESC
@@ -651,13 +651,23 @@ const Kitchen = ({ onExit }: KitchenProps) => {
             </div>
           </div>
           
-          <Button 
-            onClick={handleCook}
-            className="w-full bg-gradient-to-r from-[#4CAF50] to-[#2E7D32] hover:brightness-110 text-white font-bold py-3 px-4 rounded-xl transition-all shadow-md border-2 border-[#1B5E20] flex items-center justify-center"
-          >
-            <span className="mr-2 text-xl">🔥</span>
-            {language === 'en' ? 'Cook Selected Items' : language === 'ca' ? 'Cuinar Elements Seleccionats' : 'Cocinar Elementos Seleccionados'}
-          </Button>
+          <div className="grid grid-cols-2 gap-4 mt-4">
+            <Button 
+              onClick={handleCook}
+              className="bg-gradient-to-r from-[#4CAF50] to-[#2E7D32] hover:brightness-110 text-white font-bold py-3 px-4 rounded-xl transition-all shadow-md border-2 border-[#1B5E20] flex items-center justify-center"
+            >
+              <span className="mr-2 text-xl">🔥</span>
+              {language === 'en' ? 'Cook' : language === 'ca' ? 'Cuinar' : 'Cocinar'}
+            </Button>
+            
+            <Button 
+              onClick={handleConsume}
+              className="bg-gradient-to-r from-[#FF9800] to-[#F57C00] hover:brightness-110 text-white font-bold py-3 px-4 rounded-xl transition-all shadow-md border-2 border-[#E65100] flex items-center justify-center"
+            >
+              <span className="mr-2 text-xl">🍽️</span>
+              {language === 'en' ? 'Consume' : language === 'ca' ? 'Consumir' : 'Consumir'}
+            </Button>
+          </div>
         </>
       )}
     </div>
