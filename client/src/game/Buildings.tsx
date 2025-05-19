@@ -116,23 +116,38 @@ const Buildings = () => {
       <group position={marketPos}>
         {/* Ya no hay área clickeable para todo el edificio */}
         
-        {/* Puertas dobles - ahora las puertas son clickeables */}
+        {/* Puertas dobles - mejoradas para ser más interactivas */}
         <group position={[0, 0, 2.5]}>
-          {/* Área clickeable solo para las puertas */}
+          {/* Área clickeable más grande para las puertas */}
           <mesh 
-            onClick={handleMarketClick}
-            position={[0, 1, 0]}
+            onClick={(e) => {
+              e.stopPropagation(); // Evitar propagación
+              handleMarketClick(e);
+            }}
+            onPointerOver={(e) => e.stopPropagation()}
+            position={[0, 1.5, 0.5]} // Posición ligeramente adelantada
             name="market_doors_clickable"
           >
-            <boxGeometry args={[2, 2, 0.5]} />
-            <meshStandardMaterial color="#8B4513" opacity={0.9} />
+            <boxGeometry args={[2.5, 3, 1]} /> {/* Más grande para facilitar interacción */}
+            <meshStandardMaterial color="#8B4513" opacity={0.7} transparent={true} />
+          </mesh>
+          
+          {/* Puertas visibles */}
+          <mesh position={[-0.6, 1, 0]} castShadow receiveShadow>
+            <boxGeometry args={[0.8, 2, 0.1]} />
+            <meshStandardMaterial color="#8B4513" />
+          </mesh>
+          
+          <mesh position={[0.6, 1, 0]} castShadow receiveShadow>
+            <boxGeometry args={[0.8, 2, 0.1]} />
+            <meshStandardMaterial color="#8B4513" />
           </mesh>
           
           {/* Letrero encima de la puerta */}
           <Text
-            position={[0, 2.3, 0]}
+            position={[0, 2.7, 0]}
             rotation={[0, 0, 0]}
-            fontSize={0.4}
+            fontSize={0.5}
             color="#FFD700"
             anchorX="center"
             anchorY="middle"
@@ -217,23 +232,38 @@ const Buildings = () => {
       <group position={kitchenPos}>
         {/* Ya no hay área clickeable para todo el edificio */}
         
-        {/* Puertas dobles - ahora clickeables */}
+        {/* Puertas dobles - mejoradas para ser más interactivas */}
         <group position={[0, 0, 2.5]}>
-          {/* Área clickeable solo para las puertas */}
+          {/* Área clickeable más grande para las puertas */}
           <mesh 
-            onClick={handleKitchenClick}
-            position={[0, 1, 0]}
+            onClick={(e) => {
+              e.stopPropagation(); // Evitar propagación
+              handleKitchenClick(e);
+            }}
+            onPointerOver={(e) => e.stopPropagation()}
+            position={[0, 1.5, 0.5]} // Posición ligeramente adelantada
             name="kitchen_doors_clickable"
           >
-            <boxGeometry args={[2, 2, 0.5]} />
-            <meshStandardMaterial color="#8B4513" opacity={0.9} />
+            <boxGeometry args={[2.5, 3, 1]} /> {/* Más grande para facilitar interacción */}
+            <meshStandardMaterial color="#8B4513" opacity={0.7} transparent={true} />
+          </mesh>
+          
+          {/* Puertas visibles */}
+          <mesh position={[-0.6, 1, 0]} castShadow receiveShadow>
+            <boxGeometry args={[0.8, 2, 0.1]} />
+            <meshStandardMaterial color="#8B4513" />
+          </mesh>
+          
+          <mesh position={[0.6, 1, 0]} castShadow receiveShadow>
+            <boxGeometry args={[0.8, 2, 0.1]} />
+            <meshStandardMaterial color="#8B4513" />
           </mesh>
           
           {/* Letrero encima de la puerta */}
           <Text
-            position={[0, 2.3, 0]}
+            position={[0, 2.7, 0]}
             rotation={[0, 0, 0]}
-            fontSize={0.4}
+            fontSize={0.5}
             color="#FFD700"
             anchorX="center"
             anchorY="middle"
@@ -284,27 +314,42 @@ const Buildings = () => {
         </Text>
       </group>
       
-      {/* Garden - Con puerta clickeable */}
+      {/* Garden - Con puerta clickeable mejorada */}
       <group position={gardenPos}>
         {/* Ya no hay área clickeable invisible para todo el huerto */}
         
-        {/* Puertas dobles - ahora clickeables */}
+        {/* Puertas dobles - mejoradas para ser más interactivas */}
         <group position={[0, 0, 2.5]}>
-          {/* Área clickeable solo para las puertas */}
+          {/* Área clickeable más grande para las puertas */}
           <mesh 
-            onClick={handleGardenClick}
-            position={[0, 1, 0]}
+            onClick={(e) => {
+              e.stopPropagation(); // Evitar propagación
+              handleGardenClick(e);
+            }}
+            onPointerOver={(e) => e.stopPropagation()}
+            position={[0, 1.5, 0.5]} // Posición ligeramente adelantada
             name="garden_doors_clickable"
           >
-            <boxGeometry args={[2, 2, 0.5]} />
-            <meshStandardMaterial color="#8B4513" opacity={0.9} />
+            <boxGeometry args={[2.5, 3, 1]} /> {/* Más grande para facilitar interacción */}
+            <meshStandardMaterial color="#8B4513" opacity={0.7} transparent={true} />
+          </mesh>
+          
+          {/* Puertas visibles */}
+          <mesh position={[-0.6, 1, 0]} castShadow receiveShadow>
+            <boxGeometry args={[0.8, 2, 0.1]} />
+            <meshStandardMaterial color="#8B4513" />
+          </mesh>
+          
+          <mesh position={[0.6, 1, 0]} castShadow receiveShadow>
+            <boxGeometry args={[0.8, 2, 0.1]} />
+            <meshStandardMaterial color="#8B4513" />
           </mesh>
           
           {/* Letrero encima de la puerta */}
           <Text
-            position={[0, 2.3, 0]}
+            position={[0, 2.7, 0]}
             rotation={[0, 0, 0]}
-            fontSize={0.4}
+            fontSize={0.5}
             color="#FFD700"
             anchorX="center"
             anchorY="middle"
