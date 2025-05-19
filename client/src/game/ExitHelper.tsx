@@ -71,8 +71,8 @@ export const useExitHelper = () => {
         const gardenPos = getGardenPosition();
         
         // Posicionamos la cámara más atrás y más alta para ver mejor al personaje
-        camera.position.set(0, 10, 0); // Posición alta, mirando desde arriba
-        camera.lookAt(new THREE.Vector3(0, 0, -10)); // Mirar hacia el norte donde está el huerto
+        camera.position.set(0, 12, 2); // Posición más alta y un poco más atrás
+        camera.lookAt(new THREE.Vector3(0, 2, -8)); // Mirar hacia el norte, pero más alto para centrar el personaje
         camera.updateProjectionMatrix();
       }
     }
