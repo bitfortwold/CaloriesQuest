@@ -33,7 +33,7 @@ const Kitchen = ({ onExit }: KitchenProps) => {
   const [soundType, setSoundType] = useState<"success" | "error" | "notification">("notification");
   
   // Activar salida con tecla ESC
-  useKeyboardExit("kitchen", onExit);
+  useKeyboardExit("kitchen", handleExit);
   
   // Cargar alimentos de muestra si la nevera y despensa están vacías
   useEffect(() => {
