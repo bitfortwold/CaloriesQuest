@@ -12,6 +12,11 @@ interface KitchenProps {
 }
 
 const Kitchen = ({ onExit }: KitchenProps) => {
+  // Asegurar que la función onExit está correctamente enlazada
+  const handleExit = () => {
+    console.log("Saliendo de la cocina...");
+    if (onExit) onExit();
+  };
   const { refrigeratorFood, pantryFood, removeFromKitchen } = useFoodStore();
   const { playerData, consumeFood } = usePlayerStore();
   const { language } = useLanguage();
@@ -559,7 +564,7 @@ const Kitchen = ({ onExit }: KitchenProps) => {
             {/* Botón de salir */}
             <button 
               type="button"
-              onClick={onExit}
+              onClick={handleExit}
               className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-6 rounded-xl shadow-md border-2 border-red-600 transition-all"
             >
               {language === 'en' ? 'Exit' : language === 'ca' ? 'Sortir' : 'Salir'}
