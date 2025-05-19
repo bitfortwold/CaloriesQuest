@@ -20,20 +20,21 @@ const Kitchen = ({ onExit }: KitchenProps) => {
   // Activar salida con tecla ESC
   useKeyboardExit("kitchen", onExit);
   
+  // Estado para gestionar elementos seleccionados y modo de cocina
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
-  const [showGuide, setShowGuide] = useState<boolean>(false);
+  const [cookingMode, setCookingMode] = useState<"guided" | "free">("free");
   
-  // Función para traducir nombres de elementos
-  const getTranslation = (key: string): string => {
-    return key; // Placeholder
-  };
-  
-  // Registro para debug
+  // Registrar cambios en el estado para debug
   useEffect(() => {
     console.log("Nevera:", refrigeratorFood);
     console.log("Despensa:", pantryFood);
-    console.log("Estado actual - Guía:", showGuide);
-  }, [refrigeratorFood, pantryFood, showGuide]);
+    console.log("Estado actual - Modo:", cookingMode);
+  }, [refrigeratorFood, pantryFood, cookingMode]);
+  
+  // Función para traducir nombres de elementos
+  const getTranslation = (key: string): string => {
+    return key; // Placeholder - se implementaría un sistema de traducciones real
+  };
   
   // Gestionar la selección de alimentos
   const handleSelectFoodItem = (foodId: string) => {
@@ -60,45 +61,70 @@ const Kitchen = ({ onExit }: KitchenProps) => {
     // Calcular nutrientes y calorías totales
     let totalCalories = 0;
     let totalProtein = 0;
+    let totalCarbs = 0;
+    let totalFat = 0;
+    let totalSustainability = 0;
     
     itemsToConsume.forEach(food => {
       totalCalories += food.calories;
       totalProtein += food.nutritionalValue.protein;
+      // Simular otros nutrientes que tendrías en una implementación completa
+      totalCarbs += food.nutritionalValue.carbs || 0;
+      totalFat += food.nutritionalValue.fat || 0;
+      totalSustainability += food.sustainabilityScore;
       
       // Eliminar el alimento de la cocina
       removeFromKitchen(food.id);
     });
     
+    // Calcular promedio de sostenibilidad
+    const avgSustainability = itemsToConsume.length > 0 
+      ? Math.round(totalSustainability / itemsToConsume.length) 
+      : 0;
+    
+    // Determinar la calidad de la comida en base a los nutrientes
+    let mealQuality = "regular";
+    const hasProtein = totalProtein >= 15;
+    const hasBalance = totalCarbs >= 20 && totalFat >= 5;
+    
+    if (hasProtein && hasBalance && avgSustainability >= 7) {
+      mealQuality = "excelente";
+    } else if (hasProtein || hasBalance) {
+      mealQuality = "buena";
+    }
+    
     // Actualizar calorías del jugador (simulado)
     if (playerData) {
-      console.log(`Comida consumida: ${totalCalories} calorías, ${totalProtein}g proteína`);
+      console.log(`Comida consumida: ${totalCalories} calorías, ${totalProtein}g proteína, calidad: ${mealQuality}`);
+    }
+    
+    // Mensaje personalizado basado en la calidad
+    let message = "";
+    if (language === 'en') {
+      message = mealQuality === "excelente" 
+        ? "Excellent meal! Perfect nutritional balance." 
+        : mealQuality === "buena"
+        ? "Good meal! Decent nutritional content."
+        : "Basic meal prepared. Try to include more variety next time.";
+    } else if (language === 'ca') {
+      message = mealQuality === "excelente" 
+        ? "Àpat excel·lent! Equilibri nutricional perfecte." 
+        : mealQuality === "buena"
+        ? "Bon àpat! Contingut nutricional decent."
+        : "Àpat bàsic preparat. Intenta incloure més varietat la propera vegada.";
+    } else {
+      message = mealQuality === "excelente" 
+        ? "¡Comida excelente! Equilibrio nutricional perfecto." 
+        : mealQuality === "buena"
+        ? "¡Buena comida! Contenido nutricional decente."
+        : "Comida básica preparada. Intenta incluir más variedad la próxima vez.";
     }
     
     // Notificar al usuario
-    toast.success(language === 'en' ? "Meal prepared successfully!" : 
-                 language === 'ca' ? "Àpat preparat amb èxit!" : 
-                 "¡Comida preparada con éxito!");
+    toast.success(message);
     
     // Resetear selección
     setSelectedItems([]);
-  };
-  
-  // Función para alternar entre guía y cocina libre
-  const toggleGuide = () => {
-    setShowGuide(!showGuide);
-    if (!showGuide) {
-      toast.success(language === 'en' 
-        ? "Guide Mode Activated" 
-        : language === 'ca' 
-        ? "Mode Guia Activat" 
-        : "Modo Guía Activado");
-    } else {
-      toast.info(language === 'en' 
-        ? "Free Cooking Mode" 
-        : language === 'ca' 
-        ? "Mode Cuina Lliure" 
-        : "Modo Cocina Libre");
-    }
   };
   
   // Renderizado de recetas guiadas
@@ -117,7 +143,14 @@ const Kitchen = ({ onExit }: KitchenProps) => {
                      ["Huevos", "Pan", "Manzana"],
         benefits: language === 'en' ? "High in proteins and complex carbohydrates for sustained energy" : 
                   language === 'ca' ? "Alt en proteïnes i carbohidrats complexos per a energia sostinguda" : 
-                  "Alto en proteínas y carbohidratos complejos para energía sostenida"
+                  "Alto en proteínas y carbohidratos complejos para energía sostenida",
+        nutritionalInfo: {
+          calories: 420,
+          protein: "22g",
+          carbs: "45g",
+          fat: "14g"
+        },
+        sustainabilityScore: 8
       },
       {
         id: "lunch",
@@ -132,12 +165,41 @@ const Kitchen = ({ onExit }: KitchenProps) => {
                      ["Frijoles", "Arroz", "Brócoli", "Zanahoria"],
         benefits: language === 'en' ? "Rich in fiber and provides essential vitamins and minerals" : 
                   language === 'ca' ? "Ric en fibra i proporciona vitamines i minerals essencials" : 
-                  "Rico en fibra y proporciona vitaminas y minerales esenciales"
+                  "Rico en fibra y proporciona vitaminas y minerales esenciales",
+        nutritionalInfo: {
+          calories: 520,
+          protein: "18g",
+          carbs: "80g",
+          fat: "8g"
+        },
+        sustainabilityScore: 9
+      },
+      {
+        id: "dinner",
+        name: language === 'en' ? "Mediterranean Dinner" : 
+              language === 'ca' ? "Sopar Mediterrani" : 
+              "Cena Mediterránea",
+        description: language === 'en' ? "A balanced dinner with fish, vegetables and olive oil" : 
+                     language === 'ca' ? "Un sopar equilibrat amb peix, verdures i oli d'oliva" : 
+                     "Una cena equilibrada con pescado, verduras y aceite de oliva",
+        ingredients: language === 'en' ? ["Fish", "Tomato", "Olive Oil", "Zucchini"] : 
+                     language === 'ca' ? ["Peix", "Tomàquet", "Oli d'oliva", "Carbassó"] : 
+                     ["Pescado", "Tomate", "Aceite de oliva", "Calabacín"],
+        benefits: language === 'en' ? "Contains omega-3 fatty acids and antioxidants" : 
+                  language === 'ca' ? "Conté àcids grassos omega-3 i antioxidants" : 
+                  "Contiene ácidos grasos omega-3 y antioxidantes",
+        nutritionalInfo: {
+          calories: 480,
+          protein: "32g",
+          carbs: "30g",
+          fat: "22g"
+        },
+        sustainabilityScore: 7
       }
     ];
     
     return (
-      <div className="grid grid-cols-1 gap-4">
+      <div className="grid grid-cols-1 gap-6">
         {recipes.map(recipe => (
           <Card key={recipe.id} className="bg-[#FFFAF0] border-4 border-[#F5D6A4] shadow-lg rounded-2xl overflow-hidden">
             <CardHeader className="bg-gradient-to-r from-[#F9A826] to-[#F48E11] pb-2 border-b-4 border-[#E47F0E]">
@@ -155,10 +217,55 @@ const Kitchen = ({ onExit }: KitchenProps) => {
                   ))}
                 </div>
               </div>
+              
+              <div className="mb-3">
+                <h4 className="font-bold text-[#8B5E34] mb-1">{language === 'en' ? 'Nutritional Information' : language === 'ca' ? 'Informació Nutricional' : 'Información Nutricional'}:</h4>
+                <div className="grid grid-cols-4 gap-2 text-sm">
+                  <div className="bg-[#FFE0A3] text-[#8B5E34] p-2 rounded-lg text-center">
+                    <div className="font-bold">{recipe.nutritionalInfo.calories}</div>
+                    <div>{language === 'en' ? 'Calories' : language === 'ca' ? 'Calories' : 'Calorías'}</div>
+                  </div>
+                  <div className="bg-[#FFE0A3] text-[#8B5E34] p-2 rounded-lg text-center">
+                    <div className="font-bold">{recipe.nutritionalInfo.protein}</div>
+                    <div>{language === 'en' ? 'Protein' : language === 'ca' ? 'Proteïna' : 'Proteína'}</div>
+                  </div>
+                  <div className="bg-[#FFE0A3] text-[#8B5E34] p-2 rounded-lg text-center">
+                    <div className="font-bold">{recipe.nutritionalInfo.carbs}</div>
+                    <div>{language === 'en' ? 'Carbs' : language === 'ca' ? 'Carbohidrats' : 'Carbohidratos'}</div>
+                  </div>
+                  <div className="bg-[#FFE0A3] text-[#8B5E34] p-2 rounded-lg text-center">
+                    <div className="font-bold">{recipe.nutritionalInfo.fat}</div>
+                    <div>{language === 'en' ? 'Fat' : language === 'ca' ? 'Greix' : 'Grasa'}</div>
+                  </div>
+                </div>
+              </div>
+              
               <div>
                 <h4 className="font-bold text-[#8B5E34] mb-1">{language === 'en' ? 'Benefits' : language === 'ca' ? 'Beneficis' : 'Beneficios'}:</h4>
                 <p className="text-[#7E4E1B] text-sm">{recipe.benefits}</p>
               </div>
+              
+              <div className="mt-2 flex items-center">
+                <span className="text-[#7E4E1B] text-sm font-bold mr-2">
+                  {language === 'en' ? 'Sustainability Score:' : 
+                   language === 'ca' ? 'Puntuació de Sostenibilitat:' : 
+                   'Puntuación de Sostenibilidad:'}
+                </span>
+                <div className="flex items-center">
+                  {Array.from({ length: 10 }).map((_, i) => (
+                    <span 
+                      key={i} 
+                      className={`h-2 w-4 rounded-full mx-0.5 ${
+                        i < recipe.sustainabilityScore 
+                          ? 'bg-green-500' 
+                          : 'bg-gray-300'
+                      }`}
+                    />
+                  ))}
+                </div>
+                <span className="ml-2 text-[#7E4E1B] text-sm">{recipe.sustainabilityScore}/10</span>
+              </div>
+              
               <Button 
                 className="w-full mt-4 bg-gradient-to-r from-[#F9A826] to-[#F48E11] hover:brightness-110 text-white font-bold py-3 px-4 rounded-xl transition-all shadow-md border-2 border-[#E47F0E]"
               >
@@ -187,61 +294,76 @@ const Kitchen = ({ onExit }: KitchenProps) => {
             : 'Selecciona una receta guiada del panel izquierdo para obtener instrucciones paso a paso sobre cómo preparar la comida. Cada receta está diseñada para ser nutricionalmente equilibrada y utiliza ingredientes disponibles en tu refrigerador y despensa.'}
         </p>
         
-        <h4 className="text-xl font-bold text-[#8B5E34] mt-6 mb-2">
-          {language === 'en' ? 'Tips for Healthy Cooking' : language === 'ca' ? 'Consells per a una Cuina Saludable' : 'Consejos para una Cocina Saludable'}:
-        </h4>
+        <div className="bg-[#FFE9D1] p-4 rounded-xl border-2 border-[#F5D6A4] mt-4">
+          <h4 className="text-xl font-bold text-[#8B5E34] mb-2">
+            {language === 'en' ? 'Nutritional Balance' : language === 'ca' ? 'Equilibri Nutricional' : 'Equilibrio Nutricional'}
+          </h4>
+          <p className="text-[#7E4E1B] mb-2">
+            {language === 'en'
+              ? 'A balanced meal should include:'
+              : language === 'ca'
+              ? 'Un àpat equilibrat hauria d\'incloure:'
+              : 'Una comida equilibrada debe incluir:'}
+          </p>
+          <ul className="list-disc pl-6 space-y-2">
+            <li>
+              <span className="font-bold text-[#8B5E34]">
+                {language === 'en' ? 'Proteins' : language === 'ca' ? 'Proteïnes' : 'Proteínas'}:
+              </span> 
+              {language === 'en'
+                ? ' 15-30g per meal (meat, fish, eggs, legumes)'
+                : language === 'ca'
+                ? ' 15-30g per àpat (carn, peix, ous, llegums)'
+                : ' 15-30g por comida (carne, pescado, huevos, legumbres)'}
+            </li>
+            <li>
+              <span className="font-bold text-[#8B5E34]">
+                {language === 'en' ? 'Carbohydrates' : language === 'ca' ? 'Carbohidrats' : 'Carbohidratos'}:
+              </span> 
+              {language === 'en'
+                ? ' 45-60g per meal (grains, fruits, vegetables)'
+                : language === 'ca'
+                ? ' 45-60g per àpat (cereals, fruites, verdures)'
+                : ' 45-60g por comida (cereales, frutas, verduras)'}
+            </li>
+            <li>
+              <span className="font-bold text-[#8B5E34]">
+                {language === 'en' ? 'Healthy Fats' : language === 'ca' ? 'Greixos Saludables' : 'Grasas Saludables'}:
+              </span> 
+              {language === 'en'
+                ? ' 10-15g per meal (olive oil, nuts, avocado)'
+                : language === 'ca'
+                ? ' 10-15g per àpat (oli d\'oliva, fruits secs, alvocat)'
+                : ' 10-15g por comida (aceite de oliva, frutos secos, aguacate)'}
+            </li>
+          </ul>
+        </div>
         
-        <ul className="list-disc pl-6 space-y-2">
-          <li>
-            {language === 'en' 
-              ? 'Balance your meals with proteins, carbohydrates, and healthy fats.'
+        <div className="bg-[#E8F5E9] p-4 rounded-xl border-2 border-[#A5D6A7] mt-4">
+          <h4 className="text-xl font-bold text-[#2E7D32] mb-2">
+            {language === 'en' ? 'Sustainability Score' : language === 'ca' ? 'Puntuació de Sostenibilitat' : 'Puntuación de Sostenibilidad'}
+          </h4>
+          <p className="text-[#2E7D32] mb-2">
+            {language === 'en'
+              ? 'The sustainability score indicates the environmental impact of your ingredients. Higher scores mean lower environmental impact.'
               : language === 'ca'
-              ? 'Equilibra els teus àpats amb proteïnes, carbohidrats i greixos saludables.'
-              : 'Equilibra tus comidas con proteínas, carbohidratos y grasas saludables.'}
-          </li>
-          <li>
-            {language === 'en' 
-              ? 'Include a variety of colorful vegetables to get essential vitamins and minerals.'
+              ? 'La puntuació de sostenibilitat indica l\'impacte ambiental dels teus ingredients. Puntuacions més altes signifiquen un menor impacte ambiental.'
+              : 'La puntuación de sostenibilidad indica el impacto ambiental de tus ingredientes. Puntuaciones más altas significan un menor impacto ambiental.'}
+          </p>
+          <div className="flex items-center mt-2">
+            <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+              <div className="bg-green-600 h-2.5 rounded-full" style={{ width: '70%' }}></div>
+            </div>
+            <span className="ml-2 text-green-700 font-bold">7/10</span>
+          </div>
+          <p className="text-sm text-[#2E7D32] mt-2 italic">
+            {language === 'en'
+              ? 'Aim for a score of 7 or higher for environmentally friendly meals.'
               : language === 'ca'
-              ? 'Inclou una varietat de verdures colorides per obtenir vitamines i minerals essencials.'
-              : 'Incluye una variedad de verduras coloridas para obtener vitaminas y minerales esenciales.'}
-          </li>
-          <li>
-            {language === 'en' 
-              ? 'Pay attention to portion sizes to maintain a healthy caloric intake.'
-              : language === 'ca'
-              ? 'Presta atenció a les mides de les porcions per mantenir una ingesta calòrica saludable.'
-              : 'Presta atención a los tamaños de las porciones para mantener una ingesta calórica saludable.'}
-          </li>
-          <li>
-            {language === 'en' 
-              ? 'Consider the sustainability score of your ingredients to make environmentally responsible decisions.'
-              : language === 'ca'
-              ? 'Considera la puntuació de sostenibilitat dels teus ingredients per prendre decisions respectuoses amb el medi ambient.'
-              : 'Considera la puntuación de sostenibilidad de tus ingredientes para tomar decisiones respetuosas con el medio ambiente.'}
-          </li>
-        </ul>
-        
-        <h4 className="text-xl font-bold text-[#8B5E34] mt-6 mb-2">
-          {language === 'en' ? 'Refrigerator and Pantry Organization' : language === 'ca' ? 'Organització del Refrigerador i Rebost' : 'Organización del Refrigerador y Despensa'}:
-        </h4>
-        
-        <ul className="list-disc pl-6 space-y-2">
-          <li>
-            {language === 'en' 
-              ? 'Refrigerator: Store perishable items that need cooling to stay fresh, like dairy, fruits, vegetables, and proteins.'
-              : language === 'ca'
-              ? 'Refrigerador: Emmagatzema articles peribles que necessiten refrigeració per mantenir-se frescos, com làctics, fruites, verdures i proteïnes.'
-              : 'Refrigerador: Almacena artículos perecederos que necesitan refrigeración para mantenerse frescos, como lácteos, frutas, verduras y proteínas.'}
-          </li>
-          <li>
-            {language === 'en' 
-              ? 'Pantry: Store non-perishable items like grains, canned goods, spices, and oils at room temperature.'
-              : language === 'ca'
-              ? 'Rebost: Emmagatzema articles no peribles com cereals, conserves, espècies i olis a temperatura ambient.'
-              : 'Despensa: Almacena artículos no perecederos como cereales, conservas, especias y aceites a temperatura ambiente.'}
-          </li>
-        </ul>
+              ? 'Intenta aconseguir una puntuació de 7 o superior per a àpats respectuosos amb el medi ambient.'
+              : 'Intenta conseguir una puntuación de 7 o superior para comidas respetuosas con el medio ambiente.'}
+          </p>
+        </div>
       </div>
     </div>
   );
@@ -357,7 +479,124 @@ const Kitchen = ({ onExit }: KitchenProps) => {
       </div>
     </div>
   );
-
+  
+  // Función para renderizar los elementos seleccionados
+  const renderSelectedItems = () => (
+    <div className="bg-[#FFF8E9] p-4 rounded-2xl border-4 border-[#F5D6A4] shadow-lg h-full">
+      <h3 className="text-xl font-bold text-[#8B5E34] mb-3 pb-2 border-b-2 border-[#F5D6A4] flex items-center">
+        <span className="mr-2 text-2xl">🍳</span>
+        {language === 'en' ? 'Selected Items' : language === 'ca' ? 'Elements Seleccionats' : 'Elementos Seleccionados'}
+        <span className="ml-2 bg-[#F9CC6A] text-[#8B5E34] text-sm py-1 px-2 rounded-full font-bold">
+          {selectedItems.length}
+        </span>
+      </h3>
+      
+      {selectedItems.length === 0 ? (
+        <div className="flex flex-col items-center justify-center h-[200px]">
+          <div className="bg-[#FFF8E9] p-6 rounded-xl border-2 border-[#F5D6A4] shadow-inner text-center max-w-xs mx-auto">
+            <div className="text-5xl mb-4">🥗</div>
+            <p className="text-[#C68642]">
+              {language === 'en' 
+                ? "Select ingredients from your refrigerator and pantry to cook a meal." 
+                : language === 'ca'
+                ? "Selecciona ingredients del teu refrigerador i rebost per cuinar un àpat." 
+                : "Selecciona ingredientes de tu refrigerador y despensa para cocinar una comida."}
+            </p>
+          </div>
+        </div>
+      ) : (
+        <>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-[240px] overflow-y-auto pr-2 mb-4">
+            {selectedItems.map(itemId => {
+              const item = [...refrigeratorFood, ...pantryFood].find(food => food.id === itemId);
+              if (!item) return null;
+              
+              return (
+                <div 
+                  key={itemId}
+                  className="bg-white rounded-lg shadow p-2 border-2 border-[#F5D6A4] flex flex-col"
+                >
+                  <div className="flex justify-between items-center mb-1">
+                    <span className="truncate text-sm text-[#8B5E34] font-medium">{getTranslation(item.name)}</span>
+                    <button 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleSelectFoodItem(itemId);
+                      }}
+                      className="text-red-500 hover:text-red-700 p-1"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                      </svg>
+                    </button>
+                  </div>
+                  <div className="flex justify-between text-xs">
+                    <span className="text-[#C68642]">{item.calories} kcal</span>
+                    <span className="text-green-600">{item.nutritionalValue.protein}g prot</span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          
+          {/* Panel de Análisis Nutricional */}
+          <div className="bg-[#FFFAF0] p-3 rounded-xl border-2 border-[#F5D6A4] mb-4">
+            <h4 className="text-sm font-bold text-[#8B5E34] mb-2">
+              {language === 'en' ? 'Nutritional Analysis' : language === 'ca' ? 'Anàlisi Nutricional' : 'Análisis Nutricional'}:
+            </h4>
+            
+            <div className="grid grid-cols-3 gap-2">
+              {/* Calcular valores de nutrientes para mostrar */}
+              {(() => {
+                let totalCalories = 0;
+                let totalProtein = 0;
+                let totalSustainability = 0;
+                
+                selectedItems.forEach(itemId => {
+                  const item = [...refrigeratorFood, ...pantryFood].find(food => food.id === itemId);
+                  if (item) {
+                    totalCalories += item.calories;
+                    totalProtein += item.nutritionalValue.protein;
+                    totalSustainability += item.sustainabilityScore;
+                  }
+                });
+                
+                const avgSustainability = selectedItems.length > 0 
+                  ? Math.round(totalSustainability / selectedItems.length) 
+                  : 0;
+                
+                return (
+                  <>
+                    <div className="bg-[#FFE0A3] text-[#8B5E34] p-2 rounded-lg text-center">
+                      <div className="font-bold">{totalCalories}</div>
+                      <div className="text-xs">{language === 'en' ? 'Calories' : language === 'ca' ? 'Calories' : 'Calorías'}</div>
+                    </div>
+                    <div className="bg-[#FFE0A3] text-[#8B5E34] p-2 rounded-lg text-center">
+                      <div className="font-bold">{totalProtein}g</div>
+                      <div className="text-xs">{language === 'en' ? 'Protein' : language === 'ca' ? 'Proteïna' : 'Proteína'}</div>
+                    </div>
+                    <div className="bg-[#FFE0A3] text-[#8B5E34] p-2 rounded-lg text-center">
+                      <div className="font-bold">{avgSustainability}/10</div>
+                      <div className="text-xs">{language === 'en' ? 'Sustainability' : language === 'ca' ? 'Sostenibilitat' : 'Sostenibilidad'}</div>
+                    </div>
+                  </>
+                );
+              })()}
+            </div>
+          </div>
+          
+          <Button 
+            onClick={handleCook}
+            className="w-full bg-gradient-to-r from-[#4CAF50] to-[#2E7D32] hover:brightness-110 text-white font-bold py-3 px-4 rounded-xl transition-all shadow-md border-2 border-[#1B5E20] flex items-center justify-center"
+          >
+            <span className="mr-2 text-xl">🔥</span>
+            {language === 'en' ? 'Cook Selected Items' : language === 'ca' ? 'Cuinar Elements Seleccionats' : 'Cocinar Elementos Seleccionados'}
+          </Button>
+        </>
+      )}
+    </div>
+  );
+  
   return (
     <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 overflow-auto">
       <div className="w-full max-w-5xl max-h-[90vh] overflow-auto bg-[#FFF8E9] rounded-3xl shadow-2xl border-8 border-[#CD8E3E]">
@@ -368,21 +607,39 @@ const Kitchen = ({ onExit }: KitchenProps) => {
           
           {/* Botones superiores */}
           <div className="flex justify-between items-center mb-2">
-            {/* Botón de guía de cocina (a la izquierda) */}
-            <button 
-              type="button"
-              onClick={toggleGuide}
-              className={`flex items-center gap-2 px-6 py-2 rounded-lg font-bold transition-all 
-                ${showGuide 
+            {/* Botón para cambiar entre guía de cocina y cocina libre */}
+            <Button 
+              variant={cookingMode === "guided" ? "success" : "default"} 
+              className={`px-6 py-2 rounded-lg font-bold transition-all ${
+                cookingMode === "guided" 
                   ? 'bg-green-500 text-white border-2 border-green-700 hover:bg-green-600' 
-                  : 'bg-orange-500 text-white border-2 border-orange-700 hover:bg-orange-600'}
-              `}
+                  : 'bg-orange-500 text-white border-2 border-orange-700 hover:bg-orange-600'
+              }`}
+              onClick={() => {
+                console.log("BOTÓN DE MODO CLICADO");
+                const newMode = cookingMode === "free" ? "guided" : "free";
+                setCookingMode(newMode);
+                
+                if (newMode === "guided") {
+                  toast.success(language === 'en' 
+                    ? "Recipe Guide Mode Activated" 
+                    : language === 'ca' 
+                    ? "Mode de Guia de Receptes Activat" 
+                    : "Modo Guía de Recetas Activado");
+                } else {
+                  toast.info(language === 'en' 
+                    ? "Free Cooking Mode" 
+                    : language === 'ca' 
+                    ? "Mode de Cuina Lliure" 
+                    : "Modo Cocina Libre");
+                }
+              }}
             >
-              <span className="mr-2 text-xl">👨‍🍳</span>
-              <span>
-                {language === 'en' ? 'Cooking Guide' : language === 'ca' ? 'Guia de Cuina' : 'Guía de Cocina'}
-              </span>
-            </button>
+              <div className="flex items-center">
+                <span className="mr-2 text-xl">👨‍🍳</span>
+                <span>{language === 'en' ? 'Cooking Guide' : language === 'ca' ? 'Guia de Cuina' : 'Guía de Cocina'}</span>
+              </div>
+            </Button>
 
             {/* Título con aspecto de cartel de madera (centrado) */}
             <div className="bg-[#BA7D45] px-12 py-3 rounded-2xl shadow-lg border-4 border-[#8B5E34] transform rotate-0 relative">
@@ -392,12 +649,11 @@ const Kitchen = ({ onExit }: KitchenProps) => {
             
             {/* Botón de salir (a la derecha) */}
             <button 
-              type="button"
               onClick={() => {
                 console.log("BOTÓN SALIR PRESIONADO");
-                // Lanzar evento ESC para complementar la salida
+                // Disparar evento de teclado Escape para complementar la salida
                 window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
-                // Llamar directamente a la función de salida
+                // Llamar a la función de salida directamente
                 onExit();
               }}
               className="bg-gradient-to-r from-[#EF5350] to-[#F44336] hover:from-[#D32F2F] hover:to-[#EF5350] text-white font-bold px-6 py-3 rounded-xl shadow-md border-2 border-[#D32F2F] transform transition-all hover:scale-105"
@@ -417,9 +673,9 @@ const Kitchen = ({ onExit }: KitchenProps) => {
         
         {/* Contenido principal */}
         <div className="p-4">
-          {showGuide ? (
-            // Mostrar contenido de la guía de cocina
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {cookingMode === "guided" ? (
+            // Mostrar contenido del modo guiado con recetas
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <div>
                 {renderGuidedRecipes()}
               </div>
@@ -429,7 +685,7 @@ const Kitchen = ({ onExit }: KitchenProps) => {
             </div>
           ) : (
             // Modo de cocina libre (con refrigerador y despensa)
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Panel izquierdo - Nevera y despensa */}
               <div>
                 <Tabs defaultValue="refrigerator" className="w-full">
@@ -460,59 +716,7 @@ const Kitchen = ({ onExit }: KitchenProps) => {
               
               {/* Panel derecho - Elementos seleccionados */}
               <div>
-                <div className="bg-[#FFF8E9] p-4 rounded-2xl border-4 border-[#F5D6A4] shadow-lg h-full">
-                  <h3 className="text-xl font-bold text-[#8B5E34] mb-3 pb-2 border-b-2 border-[#F5D6A4] flex items-center">
-                    <span className="mr-2 text-2xl">🍳</span>
-                    {language === 'en' ? 'Selected Items' : language === 'ca' ? 'Elements Seleccionats' : 'Elementos Seleccionados'}
-                    <span className="ml-2 bg-[#F9CC6A] text-[#8B5E34] text-sm py-1 px-2 rounded-lg">
-                      {selectedItems.length}
-                    </span>
-                  </h3>
-                  
-                  {selectedItems.length === 0 ? (
-                    <p className="text-[#C68642] py-4 text-center bg-[#FFF8E9] rounded-xl border-2 border-[#F5D6A4] shadow-inner">
-                      {language === 'en' 
-                        ? "Select ingredients from your refrigerator and pantry to cook." 
-                        : language === 'ca'
-                        ? "Selecciona ingredients del teu refrigerador i rebost per cuinar." 
-                        : "Selecciona ingredientes de tu refrigerador y despensa para cocinar."}
-                    </p>
-                  ) : (
-                    <>
-                      <div className="grid grid-cols-2 gap-2 mt-2 mb-4">
-                        {selectedItems.map(itemId => {
-                          const item = [...refrigeratorFood, ...pantryFood].find(food => food.id === itemId);
-                          if (!item) return null;
-                          
-                          return (
-                            <div 
-                              key={itemId}
-                              className="bg-white rounded-lg shadow p-2 border-2 border-[#F5D6A4] flex items-center justify-between"
-                            >
-                              <span className="truncate text-sm text-[#8B5E34] font-medium">{getTranslation(item.name)}</span>
-                              <button 
-                                onClick={() => handleSelectFoodItem(itemId)}
-                                className="text-red-500 hover:text-red-700"
-                              >
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                                </svg>
-                              </button>
-                            </div>
-                          );
-                        })}
-                      </div>
-                      
-                      <Button 
-                        onClick={handleCook}
-                        className="w-full bg-gradient-to-r from-[#4CAF50] to-[#2E7D32] hover:brightness-110 text-white font-bold py-3 px-4 rounded-xl transition-all shadow-md border-2 border-[#1B5E20]"
-                      >
-                        <span className="mr-2 text-xl">🔥</span>
-                        {language === 'en' ? 'Cook Selected Items' : language === 'ca' ? 'Cuinar Elements Seleccionats' : 'Cocinar Elementos Seleccionados'}
-                      </Button>
-                    </>
-                  )}
-                </div>
+                {renderSelectedItems()}
               </div>
             </div>
           )}
