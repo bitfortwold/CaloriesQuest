@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { useRef, useEffect } from "react";
-import { useThree } from "@react-three/fiber";
+import { useThree, useFrame } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import { usePlayerStore } from "../stores/usePlayerStore";
 
@@ -28,7 +28,7 @@ const MacMouseControls = () => {
     }
   }, [camera, playerPosition]);
 
-  // Actualizar target para seguir al jugador usando useFrame para asegurar actualizaciones constantes
+  // Usar useFrame para actualizar la cámara en cada frame de renderizado
   useFrame(() => {
     if (orbitControlsRef.current && playerPosition) {
       // Actualizar el objetivo para que siga al jugador
