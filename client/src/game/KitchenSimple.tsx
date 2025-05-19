@@ -37,10 +37,34 @@ const KitchenSimple = ({ onExit }: KitchenProps) => {
     }, 100);
   };
 
+  // Estado para las comidas preparadas
+  const [preparedMeals, setPreparedMeals] = useState<{ name: string; calories: number; id: string }[]>([]);
+  
   // Función para cocinar
   const prepareMeal = (name: string, calories: number) => {
-    toast.success(`¡Has preparado: ${name}! (+${calories} calorías)`);
+    // Crear un ID único para la comida preparada
+    const mealId = `meal-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+    
+    // Añadir la comida preparada al estado
+    setPreparedMeals(prev => [...prev, { name, calories, id: mealId }]);
+    
+    // Mostrar mensaje de éxito
+    toast.success(`¡Has preparado: ${name}! La comida está lista en el comedor.`);
+    
+    // Cambiar automáticamente a la pestaña del comedor
+    setActiveTab("dining");
+  };
+  
+  // Función para consumir una comida preparada
+  const consumePreparedMeal = (mealId: string, name: string, calories: number) => {
+    // Contabilizar calorías consumidas
     consumeFood(calories);
+    
+    // Eliminar la comida de la lista de preparadas
+    setPreparedMeals(prev => prev.filter(meal => meal.id !== mealId));
+    
+    // Mostrar mensaje de éxito
+    toast.success(`¡Has comido: ${name}! (+${calories} calorías)`);
   };
 
   return (
@@ -237,14 +261,52 @@ const KitchenSimple = ({ onExit }: KitchenProps) => {
           )}
           
           {activeTab === 'dining' && (
-            <div className="text-center p-4">
-              <h2 className="text-xl text-amber-900 font-bold mb-4">Área del Comedor</h2>
-              <p className="mb-6">
+            <div className="p-4">
+              <h2 className="text-xl text-amber-900 font-bold mb-4 text-center">Área del Comedor</h2>
+              <p className="text-center mb-6">
                 Este es un espacio para disfrutar de tus comidas preparadas.
                 Puedes sentarte y comer aquí para obtener los beneficios nutricionales.
               </p>
-              <div className="bg-amber-100 p-4 rounded-lg inline-block">
-                <p>¡Próximamente más funcionalidades!</p>
+              
+              {preparedMeals.length > 0 ? (
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold text-amber-800 mb-2">Comidas Preparadas:</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {preparedMeals.map((meal) => (
+                      <div 
+                        key={meal.id} 
+                        className="bg-white rounded-lg shadow-md overflow-hidden border border-amber-200"
+                      >
+                        <div className="bg-amber-100 p-3">
+                          <h4 className="font-bold text-amber-900">{meal.name}</h4>
+                          <p className="text-sm text-gray-600">{meal.calories} calorías</p>
+                        </div>
+                        <div className="p-3 flex justify-between items-center">
+                          <span className="text-sm text-gray-500">Listo para consumir</span>
+                          <button
+                            onClick={() => consumePreparedMeal(meal.id, meal.name, meal.calories)}
+                            className="bg-green-600 hover:bg-green-700 text-white py-1 px-3 rounded-md text-sm transition-colors"
+                          >
+                            Consumir
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <div className="bg-amber-50 border border-amber-200 rounded-lg p-6 text-center">
+                  <p className="text-amber-800 mb-2">No tienes comidas preparadas en este momento.</p>
+                  <p className="text-gray-600">Prepara una receta en la sección "Recetas Guiadas" y aparecerá aquí.</p>
+                </div>
+              )}
+              
+              <div className="mt-8 bg-amber-100 p-4 rounded-lg">
+                <h3 className="font-semibold text-amber-800 mb-2">Tip Nutricional:</h3>
+                <p className="text-sm text-gray-700">
+                  Mantener un horario regular para las comidas ayuda a tu metabolismo y contribuye a mantener niveles
+                  estables de energía a lo largo del día.
+                </p>
               </div>
             </div>
           )}
