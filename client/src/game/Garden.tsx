@@ -208,28 +208,27 @@ const Garden = ({ onExit }: GardenProps) => {
                 onClick={() => {
                   console.log("🌱 SALIDA HUERTO - INICIANDO SECUENCIA SEGURA");
                   
-                  // Primero llamamos a onExit para cerrar la interfaz del huerto
-                  if (onExit) onExit();
+                  console.log("🌱 SALIDA HUERTO - Usando patrón seguro de salida");
                   
-                  // Luego usando setTimeout damos tiempo a que se cierre la interfaz
-                  setTimeout(() => {
-                    // Limpiar inmediatamente todos los estados de movimiento
-                    const { setIsMovingToTarget, setTargetPosition, setDestinationBuilding, setPlayerPosition } = usePlayerStore.getState();
-                    setTargetPosition(null);
-                    setIsMovingToTarget(false);
-                    setDestinationBuilding(null);
-                    
-                    // Posicionar al jugador en una zona segura frente al huerto
-                    // Modificamos ligeramente la posición para evitar problemas
-                    setPlayerPosition({ x: 0, y: 0, z: -15 });
-                    
-                    // Por último, cambiar el estado del juego
-                    const { setGameState } = useGameStateStore.getState();
-                    setGameState("playing");
-                    
-                    // Loguear a consola en posición fija para debugueo
-                    console.log("🚀 JUGADOR POSICIONADO CORRECTAMENTE FUERA DEL HUERTO");
-                  }, 100);
+                  // Paso 1: Cambiar estado global del juego a "playing"
+                  const { setGameState } = useGameStateStore.getState();
+                  setGameState("playing");
+                  
+                  // Paso 2: Cambiar ubicación del jugador a una posición MUY alejada del huerto
+                  const { setPlayerPosition, setTargetPosition, setIsMovingToTarget, setDestinationBuilding } = usePlayerStore.getState();
+                  
+                  // Resetear todos los estados de navegación
+                  setTargetPosition(null);
+                  setIsMovingToTarget(false);
+                  setDestinationBuilding(null);
+                  
+                  // Posicionar al jugador en una zona MUY alejada del huerto
+                  // Lo suficientemente lejos como para evitar interacción con la puerta
+                  setPlayerPosition({ x: 5, y: 0, z: -20 });
+                  console.log("🚀 JUGADOR POSICIONADO LEJOS DEL HUERTO", { x: 5, y: 0, z: -20 });
+                  
+                  // Paso 3: Finalmente cerramos la interfaz
+                  if (onExit) onExit();
                 }}
                 className="bg-gradient-to-r from-red-700 to-red-800 py-3 px-10 rounded-xl shadow-xl border-2 border-red-900 transform transition-all duration-300 flex items-center gap-3 hover:scale-105 hover:shadow-2xl"
               >
