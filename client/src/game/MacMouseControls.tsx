@@ -82,8 +82,8 @@ const MacMouseControls = () => {
       enableRotate={true}
       minDistance={3}
       maxDistance={30}
-      minPolarAngle={Math.PI / 4} // Aumentado para vista más frontal (45 grados)
-      maxPolarAngle={Math.PI / 3} // Reducido para evitar vista cenital, aprox 60 grados
+      minPolarAngle={Math.PI / 8} // Ángulo mínimo respecto al eje Y (desde arriba hacia abajo)
+      maxPolarAngle={Math.PI / 2.5} // Ángulo máximo para no estar demasiado horizontal
       zoomSpeed={0.8}
       rotateSpeed={0.4}
       panSpeed={0.4}
@@ -91,8 +91,6 @@ const MacMouseControls = () => {
       dampingFactor={0.1}
       screenSpacePanning={true}
       keyPanSpeed={20}
-      // Posición inicial de la cámara más frontal
-      position={[0, 5, 10]} // Posicionar la cámara más hacia atrás y más alta
       mouseButtons={{
         LEFT: THREE.MOUSE.ROTATE,
         MIDDLE: THREE.MOUSE.DOLLY,
