@@ -1,122 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import { useGameStateStore } from '../stores/useGameStateStore';
 import { usePlayerStore } from '../stores/usePlayerStore';
+import { useTutorialStore } from '../stores/useTutorialStore';
 
-// Definición de los pasos del tutorial
-interface TutorialStep {
-  id: number;
-  title: string;
-  content: string;
-  task: string;
-  completed: boolean;
-  trigger?: string; // Evento que activa el siguiente paso
-  location?: string; // Ubicación necesaria para este paso
-  rewardCoins?: number; // Recompensa en iHumanCoins
-  rewardExp?: number; // Recompensa en experiencia
-}
-
-// Estados posibles del tutorial
-type TutorialState = 'inactive' | 'active' | 'completed' | 'paused';
+// Importamos los tipos desde la tienda de tutorial
+import type { TutorialStep, TutorialState } from '../stores/useTutorialStore';
 
 const TutorialSystem: React.FC = () => {
   // Estado global del juego
   const { gameState } = useGameStateStore();
   const { playerPosition, playerData, updatePlayer } = usePlayerStore();
   
-  // Estado local del tutorial
-  const [tutorialState, setTutorialState] = useState<TutorialState>('inactive');
-  const [currentStepIndex, setCurrentStepIndex] = useState(0);
-  const [showModal, setShowModal] = useState(false);
-  const [tutorialCompleted, setTutorialCompleted] = useState(false);
-  
-  // Definición de todos los pasos del tutorial
-  const [tutorialSteps, setTutorialSteps] = useState<TutorialStep[]>([
-    {
-      id: 1,
-      title: "¡Bienvenido al juego Consumo Calórico!",
-      content: "Aprenderás sobre nutrición, sostenibilidad y gestión de recursos mientras te diviertes.",
-      task: "Haz clic en 'Siguiente' para continuar.",
-      completed: false,
-      trigger: 'next_button'
-    },
-    {
-      id: 2,
-      title: "Movimiento básico",
-      content: "Puedes moverte usando las teclas WASD o las flechas del teclado. También puedes hacer clic en cualquier punto del mapa para moverte allí.",
-      task: "Intenta moverte un poco por el mapa.",
-      completed: false,
-      trigger: 'movement'
-    },
-    {
-      id: 3,
-      title: "Visita el Mercado",
-      content: "El Mercado es donde puedes comprar alimentos usando tus iHumanCoins (IHC).",
-      task: "Acércate a la puerta del Mercado y haz clic para entrar.",
-      completed: false,
-      location: 'market',
-      trigger: 'enter_building',
-      rewardCoins: 50
-    },
-    {
-      id: 4,
-      title: "Compra tu primer alimento",
-      content: "Cada alimento tiene un valor calórico y un precio en IHC. Intenta comprar algo saludable.",
-      task: "Compra cualquier alimento del Mercado.",
-      completed: false,
-      location: 'market',
-      trigger: 'purchase_food',
-      rewardCoins: 100
-    },
-    {
-      id: 5,
-      title: "Visita la Cocina",
-      content: "En la Cocina puedes preparar comidas con los alimentos que has comprado.",
-      task: "Sal del Mercado (ESC) y visita la Cocina.",
-      completed: false,
-      location: 'kitchen',
-      trigger: 'enter_building',
-      rewardCoins: 50
-    },
-    {
-      id: 6,
-      title: "Prepara tu primera comida",
-      content: "Combina ingredientes para crear comidas nutritivas y deliciosas.",
-      task: "Prepara cualquier receta en la Cocina.",
-      completed: false,
-      location: 'kitchen',
-      trigger: 'cook_meal',
-      rewardCoins: 100
-    },
-    {
-      id: 7,
-      title: "Visita el Huerto Virtual",
-      content: "En el Huerto puedes cultivar tus propios alimentos de manera sostenible.",
-      task: "Sal de la Cocina (ESC) y visita el Huerto.",
-      completed: false,
-      location: 'garden',
-      trigger: 'enter_building',
-      rewardCoins: 50
-    },
-    {
-      id: 8,
-      title: "Cultiva tu primer alimento",
-      content: "Cultivar tus propios alimentos es económico y sostenible.",
-      task: "Planta cualquier semilla en el Huerto.",
-      completed: false,
-      location: 'garden',
-      trigger: 'plant_seed',
-      rewardCoins: 100
-    },
-    {
-      id: 9,
-      title: "¡Tutorial completado!",
-      content: "Has aprendido los fundamentos básicos del juego. Ahora puedes explorar libremente, comprar y preparar alimentos, cultivar en tu huerto y gestionar tus recursos calóricos.",
-      task: "Disfruta del juego y aprende sobre nutrición saludable.",
-      completed: false,
-      trigger: 'next_button',
-      rewardCoins: 200,
-      rewardExp: 100
-    }
+  // Estado del tutorial desde el store
+  const { 
+    tutorialState,
+    currentStepIndex, 
+    tutorialSteps,
+    showTutorialModal,
+    advanceToNextStep,
+    triggerTutorialEvent,
+    toggleTutorialModal,
+    startTutorial
+  } = useTutorialStore();
   ]);
   
   // Lógica para iniciar el tutorial
