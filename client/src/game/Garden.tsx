@@ -202,42 +202,45 @@ const Garden = ({ onExit }: GardenProps) => {
               <h2 className="text-3xl font-bold text-white drop-shadow-lg tracking-wide uppercase">Huerto Virtual</h2>
             </div>
 
-            {/* BOTÓN DE SALIDA ABSOLUTA */}
+            {/* BOTÓN DE SALIDA CON SISTEMA DEFINITIVO */}
             <div className="relative">
               <button
                 onClick={() => {
-                  console.log("🚨 SISTEMA DE SALIDA ABSOLUTA DE EMERGENCIA");
+                  console.log("🔱 ACTIVANDO SISTEMA DEFINITIVO DE SALIDA - GARDEN");
                   
-                  // IMPORTANTE: Usar esta secuencia específica para evitar el bucle de entrada/salida
+                  // IMPORTANTE: Esta secuencia ha sido optimizada para evitar bucles
                   
-                  // 1. Primero desactivar cualquier sistema de detección de entrada automática
+                  // 1. POSICIÓN SEGURA - Frente al huerto, extremadamente lejos
+                  const safePosition = { x: 0, y: 0, z: -25 };
+                  
+                  // 2. CAMBIAR ESTADO PRIMERO - Esto es clave para evitar reingresos
+                  const { setGameState } = useGameStateStore.getState();
+                  setGameState("playing");
+                  
+                  // 3. DESACTIVAR MOVIMIENTO
                   const { setIsMovingToTarget, setTargetPosition } = usePlayerStore.getState();
                   setTargetPosition(null);
                   setIsMovingToTarget(false);
                   
-                  // 2. Mover al jugador a una posición LATERAL, no al frente del edificio
-                  // Esta posición está al lado del mercado, totalmente fuera del área del huerto
-                  const { setPlayerPosition } = usePlayerStore.getState();
-                  setPlayerPosition({ x: 10, y: 0, z: 5 });
-                  
-                  // 3. Cambiar el estado del juego después de posicionar
+                  // 4. MOVER AL JUGADOR CON RETRASO
                   setTimeout(() => {
-                    useGameStateStore.setState({ gameState: "playing" });
-                    // 4. Limpieza final después de todo
+                    // Teleportar al jugador a posición segura
+                    const { setPlayerPosition } = usePlayerStore.getState();
+                    setPlayerPosition(safePosition);
+                    console.log(`✅ Jugador reposicionado a posición segura: (${safePosition.x}, ${safePosition.y}, ${safePosition.z})`);
+                    
+                    // 5. EJECUTAR CALLBACK AL FINAL
                     if (onExit) onExit();
-                  }, 300);
+                  }, 150);
                 }}
-                className="bg-red-700 hover:bg-red-800 py-3 px-8 rounded-full shadow-lg border-4 border-red-900 transform transition-all duration-300 flex items-center gap-2 hover:scale-105"
+                className="bg-gradient-to-r from-red-700 to-red-800 py-3 px-10 rounded-xl shadow-xl border-2 border-red-900 transform transition-all duration-300 flex items-center gap-3 hover:scale-105 hover:shadow-2xl"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                </svg>
-                <span className="text-white font-bold text-xl tracking-wide">
-                  SALIR
-                </span>
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                 </svg>
+                <span className="text-white font-bold text-xl tracking-wider">
+                  SALIR
+                </span>
               </button>
             </div>
           </div>

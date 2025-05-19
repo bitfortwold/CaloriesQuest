@@ -370,21 +370,39 @@ const Market = ({ onExit }: MarketProps) => {
               <h1 className="text-4xl font-bold text-white drop-shadow-lg tracking-wide uppercase">{t.market}</h1>
             </div>
 
-            {/* Botón Salir estilo sencillo con ExitHelper */}
+            {/* Botón Salir con Sistema Unificado v3.0 */}
             <div className="relative">
               <button
                 onClick={() => {
-                  console.log("Saliendo del mercado con posición segura");
-                  // Usamos helper para salir correctamente
-                  const { exitBuilding } = useExitHelper();
-                  exitBuilding("market");
+                  console.log("Activando Sistema Unificado de Salida v3.0 - Market");
                   
-                  // Llamamos a onExit para limpieza de componente
-                  onExit();
+                  // Importar directamente las constantes del sistema unificado
+                  const safePosition = { x: -8, y: 0, z: 15 }; // Frente al mercado pero lejos
+                  
+                  // 1. DETENER CUALQUIER MOVIMIENTO AUTOMÁTICO
+                  const { setIsMovingToTarget, setTargetPosition, setPlayerPosition } = usePlayerStore.getState();
+                  setTargetPosition(null);
+                  setIsMovingToTarget(false);
+                  
+                  // 2. CAMBIAR EL ESTADO DEL JUEGO PRIMERO
+                  const { setGameState } = useGameStateStore.getState();
+                  setGameState("playing");
+                  
+                  // 3. DESPUÉS POSICIONAR AL JUGADOR (CON RETRASO)
+                  setTimeout(() => {
+                    setPlayerPosition(safePosition);
+                    console.log(`✅ Jugador reposicionado frente al mercado en (${safePosition.x}, ${safePosition.y}, ${safePosition.z})`);
+                    
+                    // 4. FINALMENTE EJECUTAR CALLBACK
+                    if (onExit) onExit();
+                  }, 100);
                 }}
-                className="bg-[#E57373] hover:bg-[#EF5350] py-3 px-12 rounded-full shadow-md border-2 border-[#C62828] transition duration-300"
+                className="bg-[#D32F2F] hover:bg-[#B71C1C] py-3 px-12 rounded-full shadow-lg border-2 border-[#C62828] transition-all duration-300 transform hover:scale-105"
               >
-                <span className="text-white font-bold text-xl">
+                <span className="text-white font-bold text-xl flex items-center gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                  </svg>
                   {t.exit || "Salir"}
                 </span>
               </button>

@@ -2,49 +2,61 @@ import { usePlayerStore } from "../stores/usePlayerStore";
 import { useGameStateStore } from "../stores/useGameStateStore";
 
 /**
- * Helper para manejar de forma segura la salida de edificios
- * Permite:
- * 1. Reposicionar al jugador en un lugar seguro al salir
- * 2. Evitar que el jugador quede atrapado en bucles de entrada/salida
+ * SISTEMA UNIFICADO DE SALIDA DE EDIFICIOS (v2.0)
+ * 
+ * Este sistema garantiza que:
+ * 1. El jugador siempre aparece a una distancia segura frente al edificio
+ * 2. La posición es suficientemente lejana para no interactuar con la puerta
+ * 3. Se detiene cualquier movimiento automático para evitar reentradas
+ * 4. Se usa una secuencia específica de operaciones para prevenir bucles
  */
 export const useExitHelper = () => {
-  // Posiciones seguras de salida para cada edificio
+  // POSICIONES DE SALIDA SEGURAS (más lejos que la versión anterior)
+  // Estas posiciones son LATERALES o bien muy lejanas para evitar cualquier interacción
   const safeExitPositions = {
-    market: { x: -5, y: 0, z: 7 },    // Lejos del mercado
-    kitchen: { x: 5, y: 0, z: 7 },    // Lejos de la cocina
-    garden: { x: 0, y: 0, z: -7 },    // Lejos del huerto
-    default: { x: 0, y: 0, z: -5 }    // Centro del mapa
+    market: { x: -10, y: 0, z: 10 },    // Lejos del mercado, en diagonal
+    kitchen: { x: 10, y: 0, z: 10 },    // Lejos de la cocina, en diagonal
+    garden: { x: 0, y: 0, z: -20 },     // Muy lejos del huerto
+    default: { x: 0, y: 0, z: -15 }     // Posición segura por defecto
   };
   
   /**
-   * Función para salir de un edificio de forma segura
+   * Función mejorada para salir de un edificio de forma segura
+   * Implementa una secuencia específica de pasos para garantizar la salida limpia
    */
   const exitBuilding = (buildingType: 'market' | 'kitchen' | 'garden') => {
-    // Accedemos directamente a los stores
-    const { setPlayerPosition, updatePlayer, playerData } = usePlayerStore.getState();
-    const { setGameState } = useGameStateStore.getState();
+    console.log(`🚪 SISTEMA UNIFICADO DE SALIDA v2.0: Saliendo del ${buildingType}`);
     
-    console.log(`🚪 Saliendo del ${buildingType} de forma segura`);
+    // 1. DETENER CUALQUIER MOVIMIENTO AUTOMÁTICO
+    // Esto es crucial para evitar que el sistema de movimiento vuelva a entrar al edificio
+    const { setIsMovingToTarget, setTargetPosition, setPlayerPosition } = usePlayerStore.getState();
+    setTargetPosition(null);
+    setIsMovingToTarget(false);
     
-    // Seleccionar posición de salida basada en el edificio
+    // 2. SELECCIONAR POSICIÓN DE SALIDA SEGURA
     const exitPosition = safeExitPositions[buildingType] || safeExitPositions.default;
     
-    // Reposicionar al jugador en un lugar seguro
+    // 3. REPOSICIONAR AL JUGADOR (PASO CRÍTICO)
+    // Colocamos al jugador en la posición segura
     setPlayerPosition(exitPosition);
     
-    // Limpiar cualquier estado específico del edificio
+    // 4. LIMPIAR CUALQUIER ESTADO ESPECÍFICO
+    const { updatePlayer, playerData } = usePlayerStore.getState();
     if (playerData) {
       updatePlayer({
         ...playerData,
-        lastGardenAction: undefined
-        // Se pueden añadir más estados a limpiar aquí
+        lastGardenAction: undefined,
+        // Cualquier otro estado específico a limpiar
       });
     }
     
-    // Cambiar directamente el estado del juego a "playing"
-    setGameState("playing");
-    
-    console.log(`✅ Jugador reposicionado en (${exitPosition.x}, ${exitPosition.y}, ${exitPosition.z})`);
+    // 5. CAMBIAR EL ESTADO DEL JUEGO CON UN PEQUEÑO RETRASO
+    // Esto permite que la posición se actualice antes del cambio de estado
+    setTimeout(() => {
+      const { setGameState } = useGameStateStore.getState();
+      setGameState("playing");
+      console.log(`✅ Jugador reposicionado con éxito en (${exitPosition.x}, ${exitPosition.y}, ${exitPosition.z})`);
+    }, 50);
   };
   
   // Exponer las funciones del helper
