@@ -222,9 +222,8 @@ const Garden = ({ onExit }: GardenProps) => {
                   setIsMovingToTarget(false);
                   setDestinationBuilding(null);
                   
-                  // Importamos directamente la posición de salida del huerto desde Buildings
-                  const { getGardenExitPosition } = require("./Buildings");
-                  const gardenExitPosition = getGardenExitPosition();
+                  // Definimos la posición exacta donde debe aparecer el jugador
+                  const gardenExitPosition = { x: 0, y: 0, z: -5 };
                   
                   // Usamos la posición oficial de salida del huerto
                   // Esto asegura consistencia con el resto del código
