@@ -383,46 +383,118 @@ const Player = () => {
           targetPosition.z - buildingPos.z
         ).normalize();
         
-        // Calcular vector de dirección alternativa para rodear el edificio
+        // Sistema mejorado de navegación para evitar vibraciones y atascos en esquinas
+        
+        // 1. Crear un vector de dirección para el desvío
         let alternativeDir = new THREE.Vector3();
         
-        if (isPlayerLeftOfBuilding && isPlayerInFrontOfBuilding) {
-          // Estamos en la esquina frontal izquierda
-          if (targetPosition.x > buildingPos.x && targetPosition.z > buildingPos.z) {
-            // Destino está en diagonal opuesta (atrás derecha), rodear por la izquierda
-            alternativeDir.set(-1, 0, targetVector.z);
+        // 2. Determinar la dirección más segura para rodear el edificio
+        const distToTarget = new THREE.Vector3(
+          targetPosition.x - playerPosition.x,
+          0,
+          targetPosition.z - playerPosition.z
+        ).length();
+        
+        // 3. Determinar la mejor dirección de desvío basada en la posición relativa
+        if (isPlayerLeftOfBuilding) {
+          // Jugador a la izquierda del edificio
+          // Moverse más a la izquierda y ligeramente en dirección Z hacia el objetivo
+          const zDir = targetPosition.z > playerPosition.z ? 0.7 : -0.7;
+          alternativeDir.set(-1.5, 0, zDir);
+        } 
+        else if (isPlayerRightOfBuilding) {
+          // Jugador a la derecha del edificio
+          // Moverse más a la derecha y ligeramente en dirección Z hacia el objetivo
+          const zDir = targetPosition.z > playerPosition.z ? 0.7 : -0.7;
+          alternativeDir.set(1.5, 0, zDir);
+        } 
+        else if (isPlayerInFrontOfBuilding) {
+          // Jugador delante del edificio
+          // Determinar el lado más eficiente para rodear el edificio
+          const xOffset = playerPosition.x - buildingPos.x;
+          // Si estamos más cerca del lado izquierdo, rodear por la izquierda
+          if (xOffset < 0) {
+            alternativeDir.set(-1.5, 0, -0.7);
           } else {
-            // Intentar rodear por donde sea más eficiente
-            alternativeDir.set(targetVector.x > 0 ? -1 : targetVector.x, 0, targetVector.z > 0 ? -1 : targetVector.z);
+            // Si no, rodear por la derecha
+            alternativeDir.set(1.5, 0, -0.7);
           }
-        } else if (isPlayerRightOfBuilding && isPlayerInFrontOfBuilding) {
-          // Estamos en la esquina frontal derecha
-          if (targetPosition.x < buildingPos.x && targetPosition.z > buildingPos.z) {
-            // Destino está en diagonal opuesta (atrás izquierda), rodear por la derecha
-            alternativeDir.set(1, 0, targetVector.z);
+        } 
+        else if (isPlayerBehindBuilding) {
+          // Jugador detrás del edificio
+          // Determinar el lado más eficiente para rodear el edificio
+          const xOffset = playerPosition.x - buildingPos.x;
+          // Si estamos más cerca del lado izquierdo, rodear por la izquierda
+          if (xOffset < 0) {
+            alternativeDir.set(-1.5, 0, 0.7);
           } else {
-            alternativeDir.set(targetVector.x < 0 ? 1 : targetVector.x, 0, targetVector.z > 0 ? -1 : targetVector.z);
+            // Si no, rodear por la derecha
+            alternativeDir.set(1.5, 0, 0.7);
           }
-        } else if (isPlayerLeftOfBuilding) {
-          // Jugador a la izquierda, moverse más hacia la izquierda
-          alternativeDir.set(-1, 0, targetVector.z);
-        } else if (isPlayerRightOfBuilding) {
-          // Jugador a la derecha, moverse más hacia la derecha
-          alternativeDir.set(1, 0, targetVector.z);
-        } else if (isPlayerInFrontOfBuilding) {
-          // Jugador delante del edificio, moverse lateralmente basado en el destino
-          alternativeDir.set(buildingToTarget.x > 0 ? 1 : -1, 0, -0.5);
-        } else if (isPlayerBehindBuilding) {
-          // Jugador detrás del edificio, moverse lateralmente basado en el destino
-          alternativeDir.set(buildingToTarget.x > 0 ? 1 : -1, 0, 0.5);
-        } else {
-          // Dentro/muy cerca del edificio, alejarse en dirección opuesta al centro
+        } 
+        else {
+          // Estamos dentro o muy cerca del edificio
+          // Movernos directamente lejos del centro del edificio
           const fromBuildingCenter = new THREE.Vector3(
             playerPosition.x - buildingPos.x,
             0,
             playerPosition.z - buildingPos.z
-          ).normalize();
+          );
+          
+          if (fromBuildingCenter.length() < 0.1) {
+            // Si estamos muy cerca del centro, movernos en una dirección aleatoria pero constante
+            fromBuildingCenter.set(1, 0, 1);
+          }
+          
+          fromBuildingCenter.normalize();
+          // Multiplicamos por 2 para asegurar un movimiento significativo lejos del edificio
+          fromBuildingCenter.multiplyScalar(2);
           alternativeDir.copy(fromBuildingCenter);
+        }
+        
+        // 4. Verificar si esta posición alternativa también causa colisión
+        const tentativeAlternativePosition = {
+          x: playerPosition.x + alternativeDir.x * PLAYER_SPEED,
+          y: playerPosition.y,
+          z: playerPosition.z + alternativeDir.z * PLAYER_SPEED
+        };
+        
+        const secondCollision = checkBuildingCollisions(tentativeAlternativePosition);
+        
+        // 5. Si la dirección alternativa también colisiona, intentar una dirección más radical
+        if (secondCollision) {
+          console.log("⚠️ Navegación: Ruta alternativa también tiene colisión, buscando mejor camino");
+          
+          // Intentar en 45°, 90°, 135°, 180° desde la dirección original
+          const angles = [Math.PI/4, Math.PI/2, 3*Math.PI/4, Math.PI];
+          let validDirection = false;
+          
+          for (const angle of angles) {
+            // Rotar el vector dirección en el ángulo especificado
+            const cos = Math.cos(angle);
+            const sin = Math.sin(angle);
+            const rotatedX = targetVector.x * cos - targetVector.z * sin;
+            const rotatedZ = targetVector.x * sin + targetVector.z * cos;
+            
+            const testPos = {
+              x: playerPosition.x + rotatedX * PLAYER_SPEED * 1.5,
+              y: playerPosition.y,
+              z: playerPosition.z + rotatedZ * PLAYER_SPEED * 1.5
+            };
+            
+            if (!checkBuildingCollisions(testPos)) {
+              console.log(`🔄 Navegación: Encontrada dirección segura en rotación ${(angle * 180/Math.PI).toFixed(0)}°`);
+              alternativeDir.set(rotatedX, 0, rotatedZ);
+              validDirection = true;
+              break;
+            }
+          }
+          
+          // Si ninguna dirección funciona, moverse temporalmente en dirección opuesta
+          if (!validDirection) {
+            console.log("🔄 Navegación: Moviéndose en dirección opuesta al objetivo para desatascar");
+            alternativeDir.set(-targetVector.x * 2, 0, -targetVector.z * 2);
+          }
         }
         
         // Normalizar la dirección alternativa
