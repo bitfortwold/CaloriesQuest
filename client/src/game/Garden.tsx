@@ -206,27 +206,33 @@ const Garden = ({ onExit }: GardenProps) => {
             <div className="relative">
               <button
                 onClick={() => {
-                  console.log("SACANDO JUGADOR DEL HUERTO HACIA POSICIÓN EXACTA");
+                  console.log("SALIDA DIRECTA DEL HUERTO - FORCE MODE");
                   
-                  // PASO 1: Cambiar estado del juego inmediatamente
+                  // PASO 1: Ejecutamos callback primero
+                  if (onExit) onExit();
+                  
+                  // PASO 2: Forzamos cambio de estado
+                  const { exitBuilding } = useGameStateStore.getState();
+                  exitBuilding(); // Método que fuerza salida
+                  
+                  // PASO 3: Aseguramos cambio de estado después del callback
                   const { setGameState } = useGameStateStore.getState();
                   setGameState("playing");
                   
-                  // PASO 2: Detener cualquier movimiento pendiente
+                  // PASO 4: Limpiamos movimiento
                   const { setIsMovingToTarget, setTargetPosition, setDestinationBuilding } = usePlayerStore.getState();
                   setTargetPosition(null);
                   setIsMovingToTarget(false);
                   setDestinationBuilding(null);
                   
-                  // PASO 3: Posicionar al jugador exactamente en la posición mostrada en la captura
-                  // (justo frente al huerto, mirando hacia él)
-                  const { setPlayerPosition } = usePlayerStore.getState();
-                  setPlayerPosition({ x: 0, y: 0, z: -13 });
-                  
-                  console.log("✅ JUGADOR POSICIONADO EN LA UBICACIÓN EXACTA");
-                  
-                  // PASO 4: Notificar al componente padre (último paso)
-                  if (onExit) onExit();
+                  // PASO 5: Posicionamos jugador en último paso
+                  // Esperar unos milisegundos para garantizar que el componente se ha desmontado
+                  setTimeout(() => {
+                    // Tomamos referencias frescas del store
+                    const { setPlayerPosition } = usePlayerStore.getState();
+                    setPlayerPosition({ x: 0, y: 0, z: -15 });
+                    console.log("⭐ JUGADOR REPOSICIONADO FRENTE AL HUERTO");
+                  }, 100);
                 }}
                 className="bg-gradient-to-r from-red-700 to-red-800 py-3 px-10 rounded-xl shadow-xl border-2 border-red-900 transform transition-all duration-300 flex items-center gap-3 hover:scale-105 hover:shadow-2xl"
               >
