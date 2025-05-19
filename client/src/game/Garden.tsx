@@ -222,12 +222,12 @@ const Garden = ({ onExit }: GardenProps) => {
                   setIsMovingToTarget(false);
                   setDestinationBuilding(null);
                   
-                  // Colocar al jugador EXACTAMENTE frente al huerto como muestra la captura
-                  // Posición recalibrada basada en tus capturas de pantalla
-                  const gardenExitPosition = { x: 0, y: 0, z: -5 };
+                  // Importamos directamente la posición de salida del huerto desde Buildings
+                  const { getGardenExitPosition } = require("./Buildings");
+                  const gardenExitPosition = getGardenExitPosition();
                   
-                  // Esta posición debe ser segura para evitar la interacción automática
-                  // y mostrar correctamente al jugador frente al huerto
+                  // Usamos la posición oficial de salida del huerto
+                  // Esto asegura consistencia con el resto del código
                   setPlayerPosition(gardenExitPosition);
                   console.log("🚀 JUGADOR POSICIONADO FRENTE AL HUERTO", gardenExitPosition);
                   
