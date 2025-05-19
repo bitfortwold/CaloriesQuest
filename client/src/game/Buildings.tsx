@@ -459,62 +459,11 @@ const Buildings = () => {
         </group>
       </group>
       
-      {/* Instrucciones en pantalla para navegación */}
-      <Text
-        position={[0, 7, 0]}
-        rotation={[0, 0, 0]}
-        fontSize={0.5}
-        color="black"
-        anchorX="center"
-        anchorY="middle"
-      >
-        Usa las teclas WASD para moverte
-      </Text>
+      {/* Instrucciones eliminadas - ahora están en el botón de información */}
       
-      <Text
-        position={[0, 6.4, 0]}
-        rotation={[0, 0, 0]}
-        fontSize={0.5}
-        color="black"
-        anchorX="center"
-        anchorY="middle"
-      >
-        Acércate a las puertas o haz clic en los edificios para entrar
-      </Text>
+      {/* Indicadores sobre edificios eliminados - ahora solo se identifican visualmente */}
       
-      {/* Indicadores sobre cada edificio */}
-      <Text
-        position={[-8, 5, 0]}
-        rotation={[0, 0, 0]}
-        fontSize={0.4}
-        color="black"
-        anchorX="center"
-        anchorY="middle"
-      >
-        Mercado
-      </Text>
-      
-      <Text
-        position={[8, 6, 0]}
-        rotation={[0, 0, 0]}
-        fontSize={0.4}
-        color="black"
-        anchorX="center"
-        anchorY="middle"
-      >
-        Cocina
-      </Text>
-      
-      <Text
-        position={[0, 2, -12]}
-        rotation={[0, 0, 0]}
-        fontSize={0.4}
-        color="black"
-        anchorX="center"
-        anchorY="middle"
-      >
-        Huerto
-      </Text>
+      {/* Etiqueta del huerto también eliminada */}
     </group>
   );
 };
