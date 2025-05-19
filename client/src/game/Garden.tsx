@@ -222,10 +222,10 @@ const Garden = ({ onExit }: GardenProps) => {
                   setIsMovingToTarget(false);
                   setDestinationBuilding(null);
                   
-                  // Basándonos en los logs y la constante DOOR_DETECTION_DISTANCE = 1.5
-                  // Colocamos al jugador exactamente a 2.6 unidades de la puerta para evitar interacción
-                  // La puerta está en z: -12.5, así que posicionamos el jugador en z: -9.9
-                  const gardenExitPosition = { x: 0, y: 0, z: -9.9 };
+                  // Colocamos al jugador más cerca de la cámara (más lejos de la puerta)
+                  // Esta posición debería estar frente a la puerta pero sin interactuar con ella
+                  // La posición z: -8.7 está mucho más lejos de la puerta que el límite de interacción
+                  const gardenExitPosition = { x: 0, y: 0, z: -8.7 };
                   
                   // Usamos la posición oficial de salida del huerto
                   // Esto asegura consistencia con el resto del código
