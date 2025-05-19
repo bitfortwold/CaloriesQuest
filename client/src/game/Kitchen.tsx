@@ -8,7 +8,6 @@ import { useGameStateStore } from "../stores/useGameStateStore";
 import { useLanguage } from "../i18n/LanguageContext";
 import { toast } from "sonner";
 import { useKeyboardExit } from "../hooks/useKeyboardExit";
-import { KitchenGuideButton } from "../components/ui/KitchenGuideButton";
 
 interface KitchenProps {
   onExit: () => void;
@@ -30,6 +29,13 @@ const Kitchen = ({ onExit }: KitchenProps) => {
   const getTranslation = (key: string): string => {
     return key; // Placeholder
   };
+  
+  // Registrar cambios en el estado para debug
+  useEffect(() => {
+    console.log("Nevera:", refrigeratorFood);
+    console.log("Despensa:", pantryFood);
+    console.log("Estado actual - Modo:", cookingMode, "- Guía:", showGuide);
+  }, [refrigeratorFood, pantryFood, cookingMode, showGuide]);
   
   // Gestionar la selección de alimentos
   const handleSelectFoodItem = (foodId: string) => {
@@ -149,51 +155,26 @@ const Kitchen = ({ onExit }: KitchenProps) => {
     );
   };
   
-  // Función completamente rediseñada como una función directa y síncrona
+  // Función para alternar entre la guía y el modo libre
   const handleToggleGuide = () => {
-    try {
-      console.log("🔴 BOTÓN GUÍA PRESIONADO - ESTADO ACTUAL:", showGuide);
-      
-      // Cambiar primero el modo de cocina para forzar la actualización
-      const nuevoModo = !showGuide ? "guided" : "free";
-      console.log("🔄 Cambiando modo de cocina a:", nuevoModo);
-      setCookingMode(nuevoModo);
-      
-      // Luego cambiar el estado de la guía
-      const nuevoEstadoGuia = !showGuide;
-      console.log("🔄 Cambiando estado de guía a:", nuevoEstadoGuia);
-      setShowGuide(nuevoEstadoGuia);
-      
-      // Mostrar notificación visible del cambio al usuario
-      if (nuevoEstadoGuia) {
-        toast.success(language === 'en' 
-          ? "Guide mode activated!" 
-          : language === 'ca' 
-            ? "Mode guia activat!"
-            : "¡Modo guía activado!");
-      } else {
-        toast.info(language === 'en' 
-          ? "Free cooking mode activated." 
-          : language === 'ca' 
-            ? "Mode de cuina lliure activat."
-            : "Modo de cocina libre activado.");
-      }
-      
-      console.log("✅ Cambio de modo completado:", { 
-        modo_nuevo: nuevoModo, 
-        guia_nueva: nuevoEstadoGuia 
-      });
-      
-      // Forzar refresco del componente
-      setTimeout(() => {
-        console.log("Estado actual después del cambio:", { 
-          modo: cookingMode, 
-          guia: showGuide 
-        });
-      }, 10);
-    } catch (error) {
-      console.error("❌ ERROR cambiando modo:", error);
-      toast.error("Error al cambiar modo. Por favor, intenta nuevamente.");
+    const newGuideState = !showGuide;
+    console.log(`🔧 Cambiando modo de guía: ${showGuide} -> ${newGuideState}`);
+    
+    // Cambiar el estado y mostrar notificación
+    setShowGuide(newGuideState);
+    
+    if (newGuideState) {
+      toast.success(language === 'en' 
+        ? "Guide Mode Activated" 
+        : language === 'ca' 
+          ? "Mode Guia Activat" 
+          : "Modo Guía Activado");
+    } else {
+      toast.info(language === 'en' 
+        ? "Free Cooking Mode" 
+        : language === 'ca' 
+          ? "Mode Cuina Lliure" 
+          : "Modo Cocina Libre");
     }
   };
   
@@ -362,9 +343,9 @@ const Kitchen = ({ onExit }: KitchenProps) => {
               }`}
               onClick={() => handleSelectFoodItem(food.id)}
             >
-              <div className="bg-gradient-to-r from-[#F9C784] to-[#F8B04D] p-2 border-b-3 border-[#E8A43B] flex justify-between items-center">
+              <div className="bg-gradient-to-r from-[#EDBF69] to-[#D9A84A] p-2 border-b-3 border-[#CD9F3C] flex justify-between items-center">
                 <span className="font-bold text-white drop-shadow-sm truncate">{getTranslation(food.name)}</span>
-                <span className="bg-[#E8A43B] text-white text-sm py-1 px-2 rounded-lg font-semibold shadow-inner">{food.calories} kcal</span>
+                <span className="bg-[#CD9F3C] text-white text-sm py-1 px-2 rounded-lg font-semibold shadow-inner">{food.calories} kcal</span>
               </div>
               <div className="p-2">
                 <div className="flex justify-between text-[#7E4E1B] text-xs mb-1">
@@ -384,34 +365,6 @@ const Kitchen = ({ onExit }: KitchenProps) => {
     </div>
   );
   
-  // Añadir un efecto para ver los valores de refrigeratorFood y pantryFood
-  useEffect(() => {
-    console.log("Nevera:", refrigeratorFood);
-    console.log("Despensa:", pantryFood);
-    console.log("Estado actual - Modo:", cookingMode, "- Guía:", showGuide);
-  }, [refrigeratorFood, pantryFood, cookingMode, showGuide]);
-
-  // Manejo de la activación/desactivación de la guía
-  const toggleGuide = () => {
-    // Cambiar el estado de la guía y actualizar el modo
-    const newGuideState = !showGuide;
-    console.log("⚙️ Boton guía presionado - Cambiando a: " + (newGuideState ? "ACTIVA" : "INACTIVA"));
-    
-    // Primero actualizar el modo de cocina
-    if (newGuideState) {
-      setCookingMode("guided");
-    } else {
-      setCookingMode("free");
-    }
-    
-    // Luego actualizar el estado de la guía con un pequeño retraso para asegurar
-    // que la UI tenga tiempo de reflejarlo
-    setTimeout(() => {
-      setShowGuide(newGuideState);
-      console.log("🟢 Estado de la guía actualizado:", newGuideState);
-    }, 100);
-  };
-
   return (
     <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 overflow-auto">
       <div className="w-full max-w-5xl max-h-[90vh] overflow-auto bg-[#FFF8E9] rounded-3xl shadow-2xl border-8 border-[#CD8E3E]">
@@ -422,7 +375,7 @@ const Kitchen = ({ onExit }: KitchenProps) => {
           
           {/* Botones superiores */}
           <div className="flex justify-between items-center mb-2">
-            {/* Botón convencional de guía (a la izquierda) */}
+            {/* Botón de guía de cocina (a la izquierda) */}
             <button
               onClick={handleToggleGuide}
               className={`flex items-center gap-2 px-6 py-2 rounded-lg font-bold transition-all 
@@ -470,8 +423,15 @@ const Kitchen = ({ onExit }: KitchenProps) => {
         {/* Contenido principal */}
         <div className="p-4">
           {showGuide ? (
-            // Guía de Cocina
-            renderCookingGuide()
+            // Contenido de la guía de cocina
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                {renderGuidedRecipes()}
+              </div>
+              <div>
+                {renderCookingGuide()}
+              </div>
+            </div>
           ) : (
             // Modo de Cocina Libre
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -493,96 +453,80 @@ const Kitchen = ({ onExit }: KitchenProps) => {
                     </TabsTrigger>
                   </TabsList>
                   
-                  <TabsContent value="refrigerator" className="mt-0">
+                  <TabsContent value="refrigerator" className="bg-white p-4 rounded-b-lg border-2 border-[#CD8E3E]">
                     {renderRefrigerator()}
                   </TabsContent>
                   
-                  <TabsContent value="pantry" className="mt-0">
+                  <TabsContent value="pantry" className="bg-white p-4 rounded-b-lg border-2 border-[#CD8E3E]">
                     {renderPantry()}
                   </TabsContent>
                 </Tabs>
               </div>
               
-              {/* Panel derecho - Elementos seleccionados y botón de cocinar */}
-              <div className="bg-[#FFF8E9] p-4 rounded-2xl border-4 border-[#F5D6A4] shadow-lg">
-                <h3 className="text-xl font-bold text-[#8B5E34] mb-3 pb-2 border-b-2 border-[#F5D6A4] flex items-center">
-                  <span className="mr-2 text-2xl">👨‍🍳</span> 
-                  {language === 'en' ? 'Selected Items' : language === 'ca' ? 'Elements Seleccionats' : 'Elementos Seleccionados'}
-                </h3>
-                
-                <div className="max-h-[400px] overflow-y-auto pr-2 mb-4">
+              {/* Panel derecho - Elementos seleccionados */}
+              <div>
+                <div className="bg-[#FFF8E9] p-4 rounded-xl border-4 border-[#F5D6A4] shadow-lg h-full">
+                  <h3 className="text-xl font-bold text-[#8B5E34] pb-3 mb-4 border-b-2 border-[#F5D6A4] flex items-center">
+                    <span className="mr-2 text-2xl">🍳</span>
+                    {language === 'en' ? 'Selected Items' : language === 'ca' ? 'Elements Seleccionats' : 'Elementos Seleccionados'}
+                    <span className="ml-2 bg-[#F9CC6A] text-[#8B5E34] text-sm py-1 px-2 rounded-full">
+                      {selectedItems.length}
+                    </span>
+                  </h3>
+                  
                   {selectedItems.length === 0 ? (
-                    <p className="text-[#C68642] py-6 text-center bg-[#FFF8E9] rounded-xl border-2 border-[#F5D6A4] shadow-inner">
-                      {language === 'en' 
-                        ? "Select ingredients from your refrigerator and pantry to start cooking!" 
-                        : language === 'ca'
-                        ? "Selecciona ingredients del teu refrigerador i rebost per començar a cuinar!" 
-                        : "¡Selecciona ingredientes de tu refrigerador y despensa para empezar a cocinar!"}
-                    </p>
-                  ) : (
-                    <div className="grid grid-cols-1 gap-2">
-                      {[...refrigeratorFood, ...pantryFood]
-                        .filter(item => selectedItems.includes(item.id))
-                        .map((food) => (
-                          <div 
-                            key={food.id} 
-                            className="rounded-lg border-2 border-[#4CAF50] bg-[#E8F5E9] p-2 flex justify-between items-center"
-                          >
-                            <div>
-                              <p className="font-semibold text-[#2E7D32]">{getTranslation(food.name)}</p>
-                              <p className="text-xs text-[#388E3C]">{food.calories} kcal • {food.nutritionalValue.protein}g protein</p>
-                            </div>
-                            <button 
-                              onClick={() => handleSelectFoodItem(food.id)}
-                              className="bg-[#EF5350] text-white h-6 w-6 rounded-full flex items-center justify-center shadow-md border border-[#D32F2F] hover:bg-[#D32F2F] transition-colors"
-                            >
-                              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                                <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-                              </svg>
-                            </button>
-                          </div>
-                        ))
-                      }
-                    </div>
-                  )}
-                </div>
-                
-                <div className="flex flex-col space-y-4">
-                  {selectedItems.length > 0 && (
-                    <div>
-                      <h4 className="font-bold text-[#8B5E34] mb-2">
-                        {language === 'en' ? 'Nutritional Summary' : language === 'ca' ? 'Resum Nutricional' : 'Resumen Nutricional'}:
-                      </h4>
-                      <div className="grid grid-cols-2 gap-3">
-                        <div className="bg-[#E8F5E9] p-3 rounded-lg border border-[#4CAF50]">
-                          <p className="text-sm text-[#2E7D32] font-bold">{language === 'en' ? 'Total Calories' : language === 'ca' ? 'Calories Totals' : 'Calorías Totales'}</p>
-                          <p className="text-xl font-bold text-[#1B5E20]">
-                            {[...refrigeratorFood, ...pantryFood]
-                              .filter(item => selectedItems.includes(item.id))
-                              .reduce((sum, item) => sum + item.calories, 0)
-                              .toFixed(0)} kcal
-                          </p>
-                        </div>
-                        <div className="bg-[#E3F2FD] p-3 rounded-lg border border-[#2196F3]">
-                          <p className="text-sm text-[#1565C0] font-bold">{language === 'en' ? 'Total Protein' : language === 'ca' ? 'Proteïna Total' : 'Proteína Total'}</p>
-                          <p className="text-xl font-bold text-[#0D47A1]">
-                            {[...refrigeratorFood, ...pantryFood]
-                              .filter(item => selectedItems.includes(item.id))
-                              .reduce((sum, item) => sum + item.nutritionalValue.protein, 0)
-                              .toFixed(1)}g
-                          </p>
-                        </div>
+                    <div className="flex flex-col items-center justify-center h-[200px]">
+                      <div className="bg-[#FFF8E9] p-6 rounded-xl border-2 border-[#F5D6A4] shadow-inner text-center">
+                        <p className="text-[#C68642] mb-3">
+                          {language === 'en' 
+                            ? "Select ingredients from your refrigerator and pantry to cook." 
+                            : language === 'ca'
+                            ? "Selecciona ingredients del teu refrigerador i rebost per cuinar." 
+                            : "Selecciona ingredientes de tu refrigerador y despensa para cocinar."}
+                        </p>
+                        <div className="text-5xl">🥗</div>
                       </div>
                     </div>
+                  ) : (
+                    <>
+                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-[300px] overflow-y-auto pr-2 mb-4">
+                        {selectedItems.map(itemId => {
+                          const item = [...refrigeratorFood, ...pantryFood].find(food => food.id === itemId);
+                          if (!item) return null;
+                          
+                          return (
+                            <div 
+                              key={itemId}
+                              className="bg-white rounded-lg shadow p-2 border-2 border-[#F5D6A4] flex flex-col"
+                            >
+                              <div className="flex justify-between items-center mb-1">
+                                <span className="truncate text-sm text-[#8B5E34] font-medium">{getTranslation(item.name)}</span>
+                                <button 
+                                  onClick={() => handleSelectFoodItem(itemId)}
+                                  className="text-red-500 hover:text-red-700 p-1"
+                                >
+                                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                                  </svg>
+                                </button>
+                              </div>
+                              <div className="text-xs text-[#C68642]">
+                                {item.calories} kcal
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                      
+                      <Button 
+                        onClick={handleCook}
+                        className="w-full bg-gradient-to-r from-[#4CAF50] to-[#2E7D32] hover:brightness-110 text-white font-bold py-3 px-4 rounded-xl transition-all shadow-md border-2 border-[#1B5E20] flex items-center justify-center"
+                      >
+                        <span className="mr-2 text-xl">🔥</span>
+                        {language === 'en' ? 'Cook Selected Items' : language === 'ca' ? 'Cuinar Elements Seleccionats' : 'Cocinar Elementos Seleccionados'}
+                      </Button>
+                    </>
                   )}
-                  
-                  <Button 
-                    onClick={handleCook}
-                    disabled={selectedItems.length === 0}
-                    className="w-full bg-gradient-to-r from-[#4CAF50] to-[#3F9142] hover:brightness-110 text-white font-bold py-3 px-4 rounded-xl transition-all shadow-md border-2 border-[#2E7D32] disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {language === 'en' ? 'Cook Meal' : language === 'ca' ? 'Cuinar Àpat' : 'Cocinar Comida'}
-                  </Button>
                 </div>
               </div>
             </div>
