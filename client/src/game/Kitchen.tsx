@@ -470,16 +470,28 @@ const Kitchen = ({ onExit }: KitchenProps) => {
                   </h3>
                   
                   {selectedItems.length === 0 ? (
-                    <p className="text-[#C68642] py-4 text-center bg-[#FFF8E9] rounded-xl border-2 border-[#F5D6A4] shadow-inner">
-                      {language === 'en' 
-                        ? "Select ingredients from your refrigerator and pantry to cook." 
-                        : language === 'ca'
-                        ? "Selecciona ingredients del teu refrigerador i rebost per cuinar." 
-                        : "Selecciona ingredientes de tu refrigerador y despensa para cocinar."}
-                    </p>
+                    <div className="flex flex-col items-center justify-center h-[300px]">
+                      <div className="bg-[#FFF8E9] p-6 rounded-xl border-2 border-[#F5D6A4] shadow-inner text-center max-w-xs">
+                        <div className="text-5xl mb-4">🥗</div>
+                        <p className="text-[#C68642] mb-2">
+                          {language === 'en' 
+                            ? "Select ingredients from your refrigerator and pantry to cook." 
+                            : language === 'ca'
+                            ? "Selecciona ingredients del teu refrigerador i rebost per cuinar." 
+                            : "Selecciona ingredientes de tu refrigerador y despensa para cocinar."}
+                        </p>
+                        <p className="text-sm text-[#C68642] italic">
+                          {language === 'en' 
+                            ? "Create your own balanced meals and see their nutritional values!" 
+                            : language === 'ca'
+                            ? "Crea els teus propis àpats equilibrats i veu els seus valors nutricionals!" 
+                            : "¡Crea tus propias comidas equilibradas y ve sus valores nutricionales!"}
+                        </p>
+                      </div>
+                    </div>
                   ) : (
                     <>
-                      <div className="grid grid-cols-2 gap-2 mt-2 mb-4">
+                      <div className="grid grid-cols-2 gap-2 mt-2 mb-4 max-h-[200px] overflow-y-auto pr-2">
                         {selectedItems.map(itemId => {
                           const item = [...refrigeratorFood, ...pantryFood].find(food => food.id === itemId);
                           if (!item) return null;
@@ -487,25 +499,175 @@ const Kitchen = ({ onExit }: KitchenProps) => {
                           return (
                             <div 
                               key={itemId}
-                              className="bg-white rounded-lg shadow p-2 border-2 border-[#F5D6A4] flex items-center justify-between"
+                              className="bg-white rounded-lg shadow p-2 border-2 border-[#F5D6A4] flex flex-col"
                             >
-                              <span className="truncate text-sm text-[#8B5E34] font-medium">{getTranslation(item.name)}</span>
-                              <button 
-                                onClick={() => handleSelectFoodItem(itemId)}
-                                className="text-red-500 hover:text-red-700"
-                              >
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                                </svg>
-                              </button>
+                              <div className="flex justify-between items-center mb-1">
+                                <span className="truncate text-sm text-[#8B5E34] font-medium">{getTranslation(item.name)}</span>
+                                <button 
+                                  onClick={() => handleSelectFoodItem(itemId)}
+                                  className="text-red-500 hover:text-red-700 p-1"
+                                  aria-label="Remove item"
+                                >
+                                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                                  </svg>
+                                </button>
+                              </div>
+                              <div className="flex justify-between text-xs">
+                                <span className="text-[#C68642]">{item.calories} kcal</span>
+                                <span className="text-green-600">{item.nutritionalValue.protein}g prot</span>
+                              </div>
                             </div>
                           );
                         })}
                       </div>
                       
+                      {/* Panel de Análisis Nutricional Estimado */}
+                      <div className="bg-[#FFFAF0] p-3 rounded-xl border-2 border-[#F5D6A4] mb-4">
+                        <h4 className="text-sm font-bold text-[#8B5E34] mb-2 flex items-center">
+                          <span className="mr-2">📊</span>
+                          {language === 'en' ? 'Nutritional Analysis' : language === 'ca' ? 'Anàlisi Nutricional' : 'Análisis Nutricional'}:
+                        </h4>
+                        
+                        <div className="grid grid-cols-4 gap-2">
+                          {/* Calcular valores de nutrientes para mostrar */}
+                          {(() => {
+                            let totalCalories = 0;
+                            let totalProtein = 0;
+                            let totalSustainability = 0;
+                            let totalCarbs = 0;
+                            let totalFat = 0;
+                            
+                            selectedItems.forEach(itemId => {
+                              const item = [...refrigeratorFood, ...pantryFood].find(food => food.id === itemId);
+                              if (item) {
+                                totalCalories += item.calories;
+                                totalProtein += item.nutritionalValue.protein;
+                                totalSustainability += item.sustainabilityScore;
+                                // Simular otros nutrientes que existirían en implementación completa
+                                totalCarbs += (item.nutritionalValue.carbs || 0);
+                                totalFat += (item.nutritionalValue.fat || 0);
+                              }
+                            });
+                            
+                            const avgSustainability = selectedItems.length > 0 
+                              ? Math.round(totalSustainability / selectedItems.length) 
+                              : 0;
+                            
+                            return (
+                              <>
+                                <div className="bg-[#FFE0A3] text-[#8B5E34] p-2 rounded-lg text-center">
+                                  <div className="font-bold">{totalCalories}</div>
+                                  <div className="text-xs">{language === 'en' ? 'Calories' : language === 'ca' ? 'Calories' : 'Calorías'}</div>
+                                </div>
+                                <div className="bg-[#FFE0A3] text-[#8B5E34] p-2 rounded-lg text-center">
+                                  <div className="font-bold">{totalProtein}g</div>
+                                  <div className="text-xs">{language === 'en' ? 'Protein' : language === 'ca' ? 'Proteïna' : 'Proteína'}</div>
+                                </div>
+                                <div className="bg-[#FFE0A3] text-[#8B5E34] p-2 rounded-lg text-center">
+                                  <div className="font-bold">{totalCarbs || "~"}g</div>
+                                  <div className="text-xs">{language === 'en' ? 'Carbs' : language === 'ca' ? 'Carbohidrats' : 'Carbohidratos'}</div>
+                                </div>
+                                <div className="bg-[#FFE0A3] text-[#8B5E34] p-2 rounded-lg text-center">
+                                  <div className="font-bold">{totalFat || "~"}g</div>
+                                  <div className="text-xs">{language === 'en' ? 'Fat' : language === 'ca' ? 'Greix' : 'Grasa'}</div>
+                                </div>
+                              </>
+                            );
+                          })()}
+                        </div>
+                        
+                        {/* Indicador de equilibrio nutricional */}
+                        <div className="mt-3 flex items-center">
+                          <div className="text-xs font-bold text-[#8B5E34] mr-2">
+                            {language === 'en' ? 'Balance:' : language === 'ca' ? 'Equilibri:' : 'Equilibrio:'}
+                          </div>
+                          <div className="flex-1 h-2 bg-gray-200 rounded-full">
+                            {(() => {
+                              // Calcular equilibrio nutricional básico basado en proporción de proteínas
+                              let totalCalories = 0;
+                              let totalProtein = 0;
+                              
+                              selectedItems.forEach(itemId => {
+                                const item = [...refrigeratorFood, ...pantryFood].find(food => food.id === itemId);
+                                if (item) {
+                                  totalCalories += item.calories;
+                                  totalProtein += item.nutritionalValue.protein;
+                                }
+                              });
+                              
+                              const proteinPercentage = totalCalories > 0 
+                                ? (totalProtein * 4 / totalCalories) * 100 // 4 calorías por gramo de proteína
+                                : 0;
+                              
+                              // Determinar color y porcentaje basado en proporción de proteínas
+                              let color = "bg-gray-400"; // Neutral/bajo
+                              let percentage = 30; // Porcentaje básico
+                              
+                              if (proteinPercentage >= 15 && proteinPercentage <= 30) {
+                                color = "bg-green-500"; // Ideal
+                                percentage = 100;
+                              } else if (proteinPercentage > 10) {
+                                color = "bg-yellow-500"; // Aceptable
+                                percentage = 70;
+                              } else if (proteinPercentage > 5) {
+                                color = "bg-orange-400"; // Bajo
+                                percentage = 40;
+                              }
+                              
+                              return (
+                                <div className={`${color} h-2 rounded-full`} style={{ width: `${percentage}%` }}></div>
+                              );
+                            })()}
+                          </div>
+                        </div>
+                        
+                        {/* Indicador de sostenibilidad */}
+                        <div className="mt-2 flex items-center">
+                          <div className="text-xs font-bold text-[#8B5E34] mr-2">
+                            {language === 'en' ? 'Sustainability:' : language === 'ca' ? 'Sostenibilitat:' : 'Sostenibilidad:'}
+                          </div>
+                          <div className="flex-1 h-2 bg-gray-200 rounded-full">
+                            {(() => {
+                              // Calcular sostenibilidad promedio
+                              let totalSustainability = 0;
+                              
+                              selectedItems.forEach(itemId => {
+                                const item = [...refrigeratorFood, ...pantryFood].find(food => food.id === itemId);
+                                if (item) {
+                                  totalSustainability += item.sustainabilityScore;
+                                }
+                              });
+                              
+                              const avgSustainability = selectedItems.length > 0 
+                                ? totalSustainability / selectedItems.length 
+                                : 0;
+                              
+                              // Convertir puntuación de 0-10 a porcentaje
+                              const percentage = avgSustainability * 10;
+                              
+                              // Color basado en sostenibilidad
+                              let color = "bg-red-500"; // Muy bajo
+                              
+                              if (avgSustainability >= 7) {
+                                color = "bg-green-500"; // Excelente
+                              } else if (avgSustainability >= 5) {
+                                color = "bg-yellow-500"; // Bueno
+                              } else if (avgSustainability >= 3) {
+                                color = "bg-orange-500"; // Regular
+                              }
+                              
+                              return (
+                                <div className={`${color} h-2 rounded-full`} style={{ width: `${percentage}%` }}></div>
+                              );
+                            })()}
+                          </div>
+                        </div>
+                      </div>
+                      
                       <Button 
                         onClick={handleCook}
-                        className="w-full bg-gradient-to-r from-[#4CAF50] to-[#2E7D32] hover:brightness-110 text-white font-bold py-3 px-4 rounded-xl transition-all shadow-md border-2 border-[#1B5E20]"
+                        className="w-full bg-gradient-to-r from-[#4CAF50] to-[#2E7D32] hover:brightness-110 text-white font-bold py-3 px-4 rounded-xl transition-all shadow-md border-2 border-[#1B5E20] flex items-center justify-center"
                       >
                         <span className="mr-2 text-xl">🔥</span>
                         {language === 'en' ? 'Cook Selected Items' : language === 'ca' ? 'Cuinar Elements Seleccionats' : 'Cocinar Elementos Seleccionados'}
