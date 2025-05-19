@@ -253,7 +253,7 @@ interface KitchenProps {
 
 export default function KitchenNew({ onExit }: KitchenProps) {
   const [activeTab, setActiveTab] = useState("guided-recipes");
-  const { player, addPlayerCalories } = usePlayerStore();
+  const { playerData, consumeFood } = usePlayerStore();
   const { foods } = useFoodStore();
   const { exitBuilding } = useGameStateStore();
   const { t } = useLanguage();
@@ -279,12 +279,12 @@ export default function KitchenNew({ onExit }: KitchenProps) {
   // Funciones para cocinar recetas
   const cookBreakfast = () => {
     // Verifica si tienes los ingredientes necesarios
-    const hasEggs = foods.some((item: any) => item.name.toLowerCase().includes("huevo"));
-    const hasBread = foods.some((item: any) => item.name.toLowerCase().includes("pan"));
-    const hasApple = foods.some((item: any) => item.name.toLowerCase().includes("manzana"));
+    const hasEggs = playerData?.inventory.some((item) => item.name.toLowerCase().includes("huevo"));
+    const hasBread = playerData?.inventory.some((item) => item.name.toLowerCase().includes("pan"));
+    const hasApple = playerData?.inventory.some((item) => item.name.toLowerCase().includes("manzana"));
 
     if (hasEggs && hasBread && hasApple) {
-      addPlayerCalories(350);
+      consumeFood(350);
       toast.success("¡Has preparado un desayuno equilibrado! (+350 calorías)");
     } else {
       toast.error("No tienes todos los ingredientes necesarios para esta receta");
@@ -293,12 +293,12 @@ export default function KitchenNew({ onExit }: KitchenProps) {
 
   const cookLunch = () => {
     // Verifica si tienes los ingredientes necesarios
-    const hasBeans = foods.some((item: any) => item.name.toLowerCase().includes("frijol"));
-    const hasRice = foods.some((item: any) => item.name.toLowerCase().includes("arroz"));
-    const hasBroccoli = foods.some((item: any) => item.name.toLowerCase().includes("brócoli"));
+    const hasBeans = playerData?.inventory.some((item) => item.name.toLowerCase().includes("frijol"));
+    const hasRice = playerData?.inventory.some((item) => item.name.toLowerCase().includes("arroz"));
+    const hasBroccoli = playerData?.inventory.some((item) => item.name.toLowerCase().includes("brócoli"));
 
     if (hasBeans && hasRice && hasBroccoli) {
-      addPlayerCalories(420);
+      consumeFood(420);
       toast.success("¡Has preparado un almuerzo vegetariano! (+420 calorías)");
     } else {
       toast.error("No tienes todos los ingredientes necesarios para esta receta");
@@ -307,12 +307,12 @@ export default function KitchenNew({ onExit }: KitchenProps) {
 
   const cookDinner = () => {
     // Verifica si tienes los ingredientes necesarios
-    const hasChicken = foods.some((item: any) => item.name.toLowerCase().includes("pollo"));
-    const hasPotato = foods.some((item: any) => item.name.toLowerCase().includes("patata"));
-    const hasSpinach = foods.some((item: any) => item.name.toLowerCase().includes("espinaca"));
+    const hasChicken = playerData?.inventory.some((item) => item.name.toLowerCase().includes("pollo"));
+    const hasPotato = playerData?.inventory.some((item) => item.name.toLowerCase().includes("patata"));
+    const hasSpinach = playerData?.inventory.some((item) => item.name.toLowerCase().includes("espinaca"));
 
     if (hasChicken && hasPotato && hasSpinach) {
-      addPlayerCalories(480);
+      consumeFood(480);
       toast.success("¡Has preparado una cena proteica! (+480 calorías)");
     } else {
       toast.error("No tienes todos los ingredientes necesarios para esta receta");
@@ -392,9 +392,9 @@ export default function KitchenNew({ onExit }: KitchenProps) {
       <div>
         <h2 style={styles.inventoryTitle}>Tus Ingredientes Disponibles</h2>
         
-        {foodItems.length > 0 ? (
+        {playerData?.inventory && playerData.inventory.length > 0 ? (
           <div style={styles.foodGrid}>
-            {foodItems.map((food, index) => (
+            {playerData.inventory.map((food, index) => (
               <div key={index} style={styles.foodItem}>
                 <div style={styles.foodName}>{food.name}</div>
                 <div style={styles.foodCalories}>{food.calories} kcal</div>
@@ -436,7 +436,7 @@ export default function KitchenNew({ onExit }: KitchenProps) {
         
         <div style={styles.caloriesBar}>
           <p style={styles.caloriesText}>
-            Calorías: {calories} / 2620
+            Calorías: {playerData?.caloriesConsumed || 0} / {playerData?.dailyCalories || 2620}
           </p>
         </div>
         
