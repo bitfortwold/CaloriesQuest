@@ -9,7 +9,7 @@ import Market from "./Market";
 import Kitchen from "./Kitchen";
 import Garden from "./Garden";
 import StatsPanel from "./StatsPanel";
-import HelpButton from "../components/HelpButton";
+import ControlsHelp from "../components/ControlsHelp";
 
 const GameUI = () => {
   // Access game state and translations
@@ -110,7 +110,7 @@ const GameUI = () => {
             {/* Botones flotantes en la esquina inferior derecha */}
             <div className="fixed bottom-4 right-4 flex flex-col gap-2">
               <SoundButton />
-              <HelpButton />
+              <ControlsHelp />
             </div>
           </div>
         );
