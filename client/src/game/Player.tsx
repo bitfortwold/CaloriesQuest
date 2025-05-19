@@ -149,8 +149,8 @@ const Player = () => {
         
         if (exitedBuilding === "garden") {
           // Cámara especial para el huerto que muestra mejor al personaje
-          camera.position.set(0, 10, 10); // Posición ideal para ver al jugador completo
-          camera.lookAt(0, 1.5, -3); // Mirar hacia el jugador
+          camera.position.set(0, 15, 2); // Más alta y más cercana para ver completamente al jugador
+          camera.lookAt(0, 1.5, -5); // Mirar hacia el camino del huerto
         }
         else if (exitedBuilding === "market") {
           // Cámara mirando al este (mercado)
