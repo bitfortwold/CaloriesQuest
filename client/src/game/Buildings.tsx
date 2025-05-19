@@ -168,16 +168,16 @@ const Buildings = () => {
           <meshStandardMaterial color="#8B4513" />
         </mesh>
         
-        {/* Market sign */}
+        {/* Market sign - Integrado en el edificio */}
         <Text
-          position={[0, 4.2, 0]}
+          position={[0, 4.2, 2.1]} // Posición frontal
           rotation={[0, 0, 0]}
           fontSize={0.8}
           color="#F5DEB3"
           anchorX="center"
           anchorY="middle"
         >
-          MARKET
+          MERCADO
         </Text>
 
         {/* Food display area */}
@@ -301,16 +301,16 @@ const Buildings = () => {
           <meshStandardMaterial color="#ADD8E6" opacity={0.7} transparent />
         </mesh>
         
-        {/* Kitchen sign */}
+        {/* Kitchen sign - Integrado en el edificio */}
         <Text
-          position={[0, 5.5, 0]}
+          position={[0, 5.5, 2.6]} // Posición frontal
           rotation={[0, 0, 0]}
           fontSize={0.8}
           color="#F5DEB3"
           anchorX="center"
           anchorY="middle"
         >
-          KITCHEN
+          COCINA
         </Text>
       </group>
       
@@ -397,10 +397,11 @@ const Buildings = () => {
           <meshStandardMaterial color="#A0522D" />
         </mesh>
         
+        {/* Letrero frontal del huerto integrado en la estructura */}
         <Text
-          position={[0, 1.5, 0.1]}
+          position={[0, 2.5, 2.1]} // Movido al frente y elevado para mayor visibilidad 
           rotation={[0, 0, 0]}
-          fontSize={0.8}
+          fontSize={0.9}
           color="#FFDD33"
           anchorX="center"
           anchorY="middle"
