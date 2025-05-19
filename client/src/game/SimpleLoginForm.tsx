@@ -121,6 +121,14 @@ const SimpleLoginForm = () => {
       };
       
       // Actualizar estado global
+      // Importar la posición central definida en el mapa
+      import("./Buildings").then(({ CENTRAL_SPAWN_POSITION }) => {
+        // Establecer la posición inicial del jugador en el punto central del mapa
+        const { setPlayerPosition } = usePlayerStore.getState();
+        setPlayerPosition(CENTRAL_SPAWN_POSITION);
+        console.log("🎮 Posición inicial del jugador establecida en el punto central (login):", CENTRAL_SPAWN_POSITION);
+      });
+      
       setPlayerData(playerData);
       setIsRegistered(true);
       setError("");
