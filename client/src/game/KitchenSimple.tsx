@@ -9,6 +9,7 @@ interface KitchenProps {
 
 const KitchenSimple = ({ onExit }: KitchenProps) => {
   const [activeTab, setActiveTab] = useState("guided-recipes");
+  const [showNutritionGuide, setShowNutritionGuide] = useState(false);
   const { playerData, consumeFood, removeIngredientByName } = usePlayerStore();
   const { exitBuilding } = useGameStateStore();
 
@@ -199,7 +200,10 @@ const KitchenSimple = ({ onExit }: KitchenProps) => {
               </div>
               
               <div className="text-center">
-                <button className="bg-amber-600 text-white px-6 py-2 rounded-md hover:bg-amber-700 transition">
+                <button 
+                  className="bg-amber-600 text-white px-6 py-2 rounded-md hover:bg-amber-700 transition"
+                  onClick={() => setShowNutritionGuide(true)}
+                >
                   Guía Nutricional Completa
                 </button>
               </div>
