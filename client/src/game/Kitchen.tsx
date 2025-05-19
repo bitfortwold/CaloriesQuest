@@ -372,30 +372,35 @@ const Kitchen = ({ onExit }: KitchenProps) => {
           
           {/* Botones superiores */}
           <div className="flex justify-between items-center mb-2">
-            {/* Botón redondo de Guía (a la izquierda) */}
-            <button
+            {/* Botón convencional de guía (a la izquierda) */}
+            <Button
               onClick={() => {
-                // Invertir directamente el estado de guía
-                const newGuideState = !showGuide;
-                console.log("⚠️ BOTÓN GUÍA PRESIONADO - Estado actual:", showGuide, "- Nuevo estado:", newGuideState);
+                // Invertir estado y aplicar cambios
+                console.log("BOTÓN GUÍA PRESIONADO - Cambiando estado");
                 
-                // Aplicar los cambios
-                setCookingMode(newGuideState ? "guided" : "free");
-                setShowGuide(newGuideState);
+                if (showGuide) {
+                  console.log("Desactivando guía...");
+                  setCookingMode("free");
+                  setShowGuide(false);
+                } else {
+                  console.log("Activando guía...");
+                  setCookingMode("guided");
+                  setShowGuide(true);
+                }
               }}
-              className={`rounded-full font-bold transition-all shadow-lg h-14 w-14 flex items-center justify-center
+              className={`px-6 py-2 rounded-lg font-bold transition-all 
                 ${showGuide 
-                ? 'bg-gradient-to-r from-[#22c55e] to-[#16a34a] text-white border-2 border-[#15803d] hover:from-[#15803d] hover:to-[#22c55e]' 
-                : 'bg-gradient-to-r from-[#f97316] to-[#ea580c] text-white border-2 border-[#c2410c] hover:from-[#c2410c] hover:to-[#f97316]'}
+                  ? 'bg-green-600 text-white border-2 border-green-700 hover:bg-green-700' 
+                  : 'bg-orange-500 text-white border-2 border-orange-700 hover:bg-orange-600'}
               `}
             >
-              <div className="flex flex-col items-center justify-center">
-                <span className="text-xl">👨‍🍳</span>
-                <span className="text-xs mt-1">
-                  {language === 'en' ? 'Guide' : language === 'ca' ? 'Guia' : 'Guía'}
+              <div className="flex items-center">
+                <span className="mr-2 text-xl">👨‍🍳</span>
+                <span>
+                  {language === 'en' ? 'Cooking Guide' : language === 'ca' ? 'Guia de Cuina' : 'Guía de Cocina'}
                 </span>
               </div>
-            </button>
+            </Button>
 
             {/* Título con aspecto de cartel de madera (centrado) */}
             <div className="bg-[#BA7D45] px-12 py-3 rounded-2xl shadow-lg border-4 border-[#8B5E34] transform rotate-0 relative">
