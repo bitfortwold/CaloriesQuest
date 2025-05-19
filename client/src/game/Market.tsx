@@ -8,6 +8,7 @@ import { useCartStore } from "../stores/useCartStore";
 import { useLanguage } from "../i18n/LanguageContext";
 import { toast } from "sonner";
 import { useExitHelper } from "./ExitHelper";
+import { useKeyboardExit } from "../hooks/useKeyboardExit";
 
 interface MarketProps {
   onExit: () => void;
@@ -17,6 +18,9 @@ const Market = ({ onExit }: MarketProps) => {
   const { playerData, addFood, updateCoins, addSeed } = usePlayerStore();
   const { purchasedFood, addPurchasedFood, transferToKitchen } = useFoodStore();
   const { t } = useLanguage();
+  
+  // Activar salida con tecla ESC
+  useKeyboardExit("market", onExit);
   
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [activeTab, setActiveTab] = useState<"food" | "seeds">("food");

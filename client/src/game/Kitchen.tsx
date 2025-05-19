@@ -8,6 +8,7 @@ import { useGameStateStore } from "../stores/useGameStateStore";
 import { useLanguage } from "../i18n/LanguageContext";
 import { toast } from "sonner";
 import { useExitHelper } from "./ExitHelper";
+import { useKeyboardExit } from "../hooks/useKeyboardExit";
 
 interface KitchenProps {
   onExit: () => void;
@@ -17,6 +18,9 @@ const Kitchen = ({ onExit }: KitchenProps) => {
   const { refrigeratorFood, pantryFood, removeFromKitchen } = useFoodStore();
   const { playerData, consumeFood } = usePlayerStore();
   const { t, language } = useLanguage();
+  
+  // Activar salida con tecla ESC
+  useKeyboardExit("kitchen", onExit);
   
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
   const [cookingMode, setCookingMode] = useState<"guided" | "free">("guided");

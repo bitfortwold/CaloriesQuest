@@ -5,6 +5,7 @@ import { Plant, GardenPlot, calculateGrowthProgress, updatePlantState, waterPlan
 import { useLanguage } from "../i18n/LanguageContext";
 import { toast } from "sonner";
 import { useExitHelper } from "./ExitHelper";
+import { useKeyboardExit } from "../hooks/useKeyboardExit";
 
 interface GardenProps {
   onExit: () => void;
@@ -14,6 +15,9 @@ interface GardenProps {
 const Garden = ({ onExit }: GardenProps) => {
   const { playerData, updatePlayer } = usePlayerStore();
   const { t } = useLanguage();
+  
+  // Activar salida con tecla ESC
+  useKeyboardExit("garden", onExit);
   const [selectedPlot, setSelectedPlot] = useState<GardenPlot | null>(null);
   const [selectedSeed, setSelectedSeed] = useState<Plant | null>(null);
   const [activeTab, setActiveTab] = useState<"garden" | "seeds">("garden");
