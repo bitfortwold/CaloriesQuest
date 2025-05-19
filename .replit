@@ -13,6 +13,10 @@ run = ["sh", "-c", "npm run dev"]
 localPort = 5000
 externalPort = 80
 
+[[ports]]
+localPort = 8000
+externalPort = 8000
+
 [workflows]
 
 [[workflows.workflow]]
