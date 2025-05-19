@@ -149,26 +149,51 @@ const Kitchen = ({ onExit }: KitchenProps) => {
     );
   };
   
-  // Función completamente rediseñada para alternar entre guía y cocina libre
+  // Función completamente rediseñada como una función directa y síncrona
   const handleToggleGuide = () => {
-    // Invierte directamente los estados
-    const newGuideState = !showGuide;
-    console.log("🔄 ALTERNANDO GUÍA (versión corregida):", 
-      {estado_actual: showGuide, nuevo_estado: newGuideState, modo_actual: cookingMode});
-    
-    // Actualiza primero el estado de la guía
-    setShowGuide(newGuideState);
-    
-    // Luego actualiza el modo de cocina
-    setCookingMode(newGuideState ? "guided" : "free");
-    
-    // Notificar al usuario sobre el cambio
-    if (newGuideState) {
-      toast.info(language === 'en' 
-        ? "Guide mode activated. Select a recipe to follow step-by-step instructions." 
-        : language === 'ca' 
-          ? "Mode de guia activat. Selecciona una recepta per seguir instruccions pas a pas."
-          : "Modo guía activado. Selecciona una receta para seguir instrucciones paso a paso.");
+    try {
+      console.log("🔴 BOTÓN GUÍA PRESIONADO - ESTADO ACTUAL:", showGuide);
+      
+      // Cambiar primero el modo de cocina para forzar la actualización
+      const nuevoModo = !showGuide ? "guided" : "free";
+      console.log("🔄 Cambiando modo de cocina a:", nuevoModo);
+      setCookingMode(nuevoModo);
+      
+      // Luego cambiar el estado de la guía
+      const nuevoEstadoGuia = !showGuide;
+      console.log("🔄 Cambiando estado de guía a:", nuevoEstadoGuia);
+      setShowGuide(nuevoEstadoGuia);
+      
+      // Mostrar notificación visible del cambio al usuario
+      if (nuevoEstadoGuia) {
+        toast.success(language === 'en' 
+          ? "Guide mode activated!" 
+          : language === 'ca' 
+            ? "Mode guia activat!"
+            : "¡Modo guía activado!");
+      } else {
+        toast.info(language === 'en' 
+          ? "Free cooking mode activated." 
+          : language === 'ca' 
+            ? "Mode de cuina lliure activat."
+            : "Modo de cocina libre activado.");
+      }
+      
+      console.log("✅ Cambio de modo completado:", { 
+        modo_nuevo: nuevoModo, 
+        guia_nueva: nuevoEstadoGuia 
+      });
+      
+      // Forzar refresco del componente
+      setTimeout(() => {
+        console.log("Estado actual después del cambio:", { 
+          modo: cookingMode, 
+          guia: showGuide 
+        });
+      }, 10);
+    } catch (error) {
+      console.error("❌ ERROR cambiando modo:", error);
+      toast.error("Error al cambiar modo. Por favor, intenta nuevamente.");
     }
   };
   
