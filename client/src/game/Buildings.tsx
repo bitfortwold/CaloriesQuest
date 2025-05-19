@@ -114,35 +114,18 @@ const Buildings = () => {
     <group>
       {/* Market Building */}
       <group position={marketPos}>
-        {/* Área clickeable invisible */}
-        <mesh 
-          onClick={handleMarketClick}
-          visible={false}
-        >
-          <boxGeometry args={[6, 6, 5]} />
-          <meshStandardMaterial transparent opacity={0} />
-        </mesh>
+        {/* Ya no hay área clickeable para todo el edificio */}
         
-        {/* Puertas dobles */}
+        {/* Puertas dobles - ahora las puertas son clickeables */}
         <group position={[0, 0, 2.5]}>
+          {/* Área clickeable solo para las puertas */}
           <mesh 
-            castShadow
-            receiveShadow
-            position={[-0.6, 1, 0]}
-            name="market_door_left"
+            onClick={handleMarketClick}
+            position={[0, 1, 0]}
+            name="market_doors_clickable"
           >
-            <boxGeometry args={[0.8, 2, 0.1]} />
-            <meshStandardMaterial color="#8B4513" />
-          </mesh>
-          
-          <mesh 
-            castShadow
-            receiveShadow
-            position={[0.6, 1, 0]} 
-            name="market_door_right"
-          >
-            <boxGeometry args={[0.8, 2, 0.1]} />
-            <meshStandardMaterial color="#8B4513" />
+            <boxGeometry args={[2, 2, 0.5]} />
+            <meshStandardMaterial color="#8B4513" opacity={0.9} />
           </mesh>
           
           {/* Letrero encima de la puerta */}
@@ -232,35 +215,18 @@ const Buildings = () => {
       
       {/* Kitchen Building */}
       <group position={kitchenPos}>
-        {/* Área clickeable invisible */}
-        <mesh 
-          onClick={handleKitchenClick}
-          visible={false}
-        >
-          <boxGeometry args={[6, 6, 5]} />
-          <meshStandardMaterial transparent opacity={0} />
-        </mesh>
+        {/* Ya no hay área clickeable para todo el edificio */}
         
-        {/* Puertas dobles */}
+        {/* Puertas dobles - ahora clickeables */}
         <group position={[0, 0, 2.5]}>
+          {/* Área clickeable solo para las puertas */}
           <mesh 
-            castShadow
-            receiveShadow
-            position={[-0.6, 1, 0]}
-            name="kitchen_door_left"
+            onClick={handleKitchenClick}
+            position={[0, 1, 0]}
+            name="kitchen_doors_clickable"
           >
-            <boxGeometry args={[0.8, 2, 0.1]} />
-            <meshStandardMaterial color="#8B4513" />
-          </mesh>
-          
-          <mesh 
-            castShadow
-            receiveShadow
-            position={[0.6, 1, 0]} 
-            name="kitchen_door_right"
-          >
-            <boxGeometry args={[0.8, 2, 0.1]} />
-            <meshStandardMaterial color="#8B4513" />
+            <boxGeometry args={[2, 2, 0.5]} />
+            <meshStandardMaterial color="#8B4513" opacity={0.9} />
           </mesh>
           
           {/* Letrero encima de la puerta */}
@@ -318,37 +284,20 @@ const Buildings = () => {
         </Text>
       </group>
       
-      {/* Garden - Ahora clickeable */}
+      {/* Garden - Con puerta clickeable */}
       <group position={gardenPos}>
-        {/* Área clickeable invisible */}
-        <mesh 
-          onClick={handleGardenClick}
-          visible={false}
-        >
-          <boxGeometry args={[12, 4, 12]} />
-          <meshStandardMaterial transparent opacity={0} />
-        </mesh>
+        {/* Ya no hay área clickeable invisible para todo el huerto */}
         
-        {/* Puertas dobles */}
+        {/* Puertas dobles - ahora clickeables */}
         <group position={[0, 0, 2.5]}>
+          {/* Área clickeable solo para las puertas */}
           <mesh 
-            castShadow
-            receiveShadow
-            position={[-0.6, 1, 0]}
-            name="garden_door_left"
+            onClick={handleGardenClick}
+            position={[0, 1, 0]}
+            name="garden_doors_clickable"
           >
-            <boxGeometry args={[0.8, 2, 0.1]} />
-            <meshStandardMaterial color="#8B4513" />
-          </mesh>
-          
-          <mesh 
-            castShadow
-            receiveShadow
-            position={[0.6, 1, 0]} 
-            name="garden_door_right"
-          >
-            <boxGeometry args={[0.8, 2, 0.1]} />
-            <meshStandardMaterial color="#8B4513" />
+            <boxGeometry args={[2, 2, 0.5]} />
+            <meshStandardMaterial color="#8B4513" opacity={0.9} />
           </mesh>
           
           {/* Letrero encima de la puerta */}
