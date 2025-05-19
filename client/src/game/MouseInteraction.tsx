@@ -107,47 +107,51 @@ function MouseInteraction() {
           
           // Obtener el nombre del objeto para análisis
           const objectName = intersects[0].object.name || '';
+          const clickPoint = intersects[0].point.clone();
           
-          // Verificar si es uno de los edificios principales (que podría causar problemas de colisión)
+          // Detectar si el usuario ha hecho clic en un edificio (no en una puerta)
           const isBuilding = 
             objectName.includes('market') || 
             objectName.includes('kitchen') || 
             objectName.includes('garden') ||
             objectName.includes('building');
             
-          if (isBuilding) {
-            console.log(`🏢 Clic en edificio ${objectName} - encontrando un punto seguro cercano`);
+          if (isBuilding && !objectName.includes('_doors_clickable')) {
+            console.log(`🏢 Edificio clickeado: ${objectName} - encontrando punto seguro`);
             
-            // Calcular un punto seguro fuera del edificio
-            const clickPoint = intersects[0].point.clone();
-            const playerPos = usePlayerStore.getState().playerPosition;
+            // Calcular qué edificio es basado en su nombre
+            let buildingType = '';
+            if (objectName.includes('market')) buildingType = 'market';
+            else if (objectName.includes('kitchen')) buildingType = 'kitchen';
+            else if (objectName.includes('garden')) buildingType = 'garden';
             
-            // Vector desde el jugador al punto de clic
-            const directionToClick = new THREE.Vector3(
-              clickPoint.x - playerPos.x,
-              0,
-              clickPoint.z - playerPos.z
-            ).normalize();
+            console.log(`🏢 ${buildingType} clickeado: moviéndose hacia ella...`);
             
-            // Encontrar un punto seguro a 2 unidades del edificio en dirección opuesta al clic
-            const safePoint = new THREE.Vector3(
-              clickPoint.x - directionToClick.x * 2,
-              clickPoint.y,
-              clickPoint.z - directionToClick.z * 2
-            );
+            // Obtener posición del edificio
+            let buildingPos;
+            if (buildingType === 'market') buildingPos = { x: -8, y: 0, z: 0 };
+            else if (buildingType === 'kitchen') buildingPos = { x: 8, y: 0, z: 0 };
+            else if (buildingType === 'garden') buildingPos = { x: 0, y: 0, z: -15 };
             
-            console.log(`🛡️ Punto seguro calculado: ${JSON.stringify(safePoint)}`);
-            setTargetPosition(safePoint);
+            // Configurar como destino la puerta, no el edificio donde hizo clic
+            if (buildingPos) {
+              const targetPos = new THREE.Vector3(buildingPos.x, 0, buildingPos.z + 2.5);
+              console.log(`🛡️ Dirigiéndose a la puerta: ${JSON.stringify(targetPos)}`);
+              setTargetPosition(targetPos);
+              // Importante: establecer el edificio como destino para entrar cuando llegue
+              setDestinationBuilding(buildingType);
+            } else {
+              // Punto normal en caso de no poder identificar el edificio
+              console.log(`🚶 Moviendo a punto en el mundo: ${JSON.stringify(clickPoint)}`);
+              setTargetPosition(clickPoint);
+            }
           } else {
             // Punto normal en un objeto no-edificio
-            const targetPos = new THREE.Vector3().copy(intersects[0].point);
-            console.log(`🚶 Moviendo a punto en el mundo: ${JSON.stringify(targetPos)}`);
-            setTargetPosition(targetPos);
+            console.log(`🚶 Moviendo a punto en el mundo: ${JSON.stringify(clickPoint)}`);
+            setTargetPosition(clickPoint);
           }
           
           setIsMovingToTarget(true);
-          // Importante: no setear destino de edificio para clics en otros objetos
-          setDestinationBuilding(null);
         }
       } else {
         // Si no hay intersección con objetos, intentar con el plano del suelo

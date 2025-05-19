@@ -218,8 +218,8 @@ const Player = () => {
     lastGameStateRef.current = gameState;
   }, [gameState, camera, setPlayerPosition, setRotationY, updatePlayer, playerData]);
 
-  // Función simplificada para detectar colisiones con edificios
-  const checkBuildingCollisions = (newPos: { x: number, y: number, z: number }): boolean => {
+  // Función para detectar colisiones con edificios
+  const checkBuildingCollisions = (newPos: { x: number, y: number, z: number }) => {
     // Dimensiones del Mercado (ajustar según el tamaño real en Buildings.tsx)
     const marketWidth = 5; // Ancho del edificio
     const marketDepth = 4; // Profundidad del edificio
@@ -238,41 +238,68 @@ const Player = () => {
     // Radio del jugador (para colisión)
     const playerRadius = 0.7;
     
+    // Margen de seguridad para mantener distancia con los edificios
+    const SAFETY_MARGIN = 1.0;
+    
     // Comprobar colisión con el Mercado (colisión rectangular)
-    if (
-      newPos.x > marketPos.x - marketWidth/2 - playerRadius && 
-      newPos.x < marketPos.x + marketWidth/2 + playerRadius &&
-      newPos.z > marketPos.z - marketDepth/2 - playerRadius && 
-      newPos.z < marketPos.z + marketDepth/2 + playerRadius
-    ) {
-      console.log("Colisión con el mercado");
-      return true; // Hay colisión
-    }
+    const marketCollision = 
+      newPos.x > marketPos.x - marketWidth/2 - playerRadius - SAFETY_MARGIN && 
+      newPos.x < marketPos.x + marketWidth/2 + playerRadius + SAFETY_MARGIN &&
+      newPos.z > marketPos.z - marketDepth/2 - playerRadius - SAFETY_MARGIN && 
+      newPos.z < marketPos.z + marketDepth/2 + playerRadius + SAFETY_MARGIN;
     
     // Comprobar colisión con la Cocina (colisión rectangular)
-    if (
-      newPos.x > kitchenPos.x - kitchenWidth/2 - playerRadius && 
-      newPos.x < kitchenPos.x + kitchenWidth/2 + playerRadius &&
-      newPos.z > kitchenPos.z - kitchenDepth/2 - playerRadius && 
-      newPos.z < kitchenPos.z + kitchenDepth/2 + playerRadius
-    ) {
-      console.log("Colisión con la cocina");
-      return true; // Hay colisión
-    }
+    const kitchenCollision = 
+      newPos.x > kitchenPos.x - kitchenWidth/2 - playerRadius - SAFETY_MARGIN && 
+      newPos.x < kitchenPos.x + kitchenWidth/2 + playerRadius + SAFETY_MARGIN &&
+      newPos.z > kitchenPos.z - kitchenDepth/2 - playerRadius - SAFETY_MARGIN && 
+      newPos.z < kitchenPos.z + kitchenDepth/2 + playerRadius + SAFETY_MARGIN;
     
     // Comprobar colisión con el Huerto (colisión rectangular)
-    if (
-      newPos.x > gardenPos.x - gardenWidth/2 - playerRadius && 
-      newPos.x < gardenPos.x + gardenWidth/2 + playerRadius &&
-      newPos.z > gardenPos.z - gardenDepth/2 - playerRadius && 
-      newPos.z < gardenPos.z + gardenDepth/2 + playerRadius
-    ) {
+    const gardenCollision = 
+      newPos.x > gardenPos.x - gardenWidth/2 - playerRadius - SAFETY_MARGIN && 
+      newPos.x < gardenPos.x + gardenWidth/2 + playerRadius + SAFETY_MARGIN &&
+      newPos.z > gardenPos.z - gardenDepth/2 - playerRadius - SAFETY_MARGIN && 
+      newPos.z < gardenPos.z + gardenDepth/2 + playerRadius + SAFETY_MARGIN;
+    
+    // Devolver información sobre la colisión
+    if (marketCollision) {
+      console.log("Colisión con el mercado");
+      return {
+        collided: true,
+        building: {
+          name: "market",
+          pos: marketPos,
+          width: marketWidth,
+          depth: marketDepth
+        }
+      };
+    } else if (kitchenCollision) {
+      console.log("Colisión con la cocina");
+      return {
+        collided: true,
+        building: {
+          name: "kitchen",
+          pos: kitchenPos,
+          width: kitchenWidth,
+          depth: kitchenDepth
+        }
+      };
+    } else if (gardenCollision) {
       console.log("Colisión con el huerto");
-      return true; // Hay colisión
+      return {
+        collided: true,
+        building: {
+          name: "garden",
+          pos: gardenPos,
+          width: gardenWidth,
+          depth: gardenDepth
+        }
+      };
     }
     
     // No hay colisión
-    return false;
+    return { collided: false };
   };
 
   // Handle movement and interactions in each frame
@@ -322,15 +349,15 @@ const Player = () => {
         z: playerPosition.z + targetVector.z * PLAYER_SPEED
       };
       
-      // Verificar colisión
-      const hasCollision = checkBuildingCollisions(tentativePosition);
+      // Verificar colisión con la nueva función
+      const collisionResult = checkBuildingCollisions(tentativePosition);
       
-      if (hasCollision) {
-        // Si hay colisión, simplemente detener el movimiento
-        console.log("🚫 Colisión detectada - No es posible moverse en esa dirección");
+      if (collisionResult.collided) {
+        // Si hay colisión, calculamos una ruta alternativa
+        console.log("🚫 Colisión detectada - Calculando ruta alternativa");
         
-        // Detenemos el movimiento para evitar problemas
-        usePlayerStore.getState().setIsMovingToTarget(false);
+        // Obtener información sobre el edificio con el que colisionamos
+        const building = collisionResult.building;
         
         // SOLUCIÓN ALTERNATIVA: Si estamos muy cerca del destino final, simplemente teletransportar al jugador
         // a uno de los lados del edificio más cercano al punto objetivo
