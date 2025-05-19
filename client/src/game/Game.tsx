@@ -27,6 +27,15 @@ const Game = () => {
   useEffect(() => {
     if (!isInitialized) {
       console.log("Game initialized");
+      
+      // Importamos la posición central y la establecemos como punto de spawn
+      import("./Buildings").then(({ CENTRAL_SPAWN_POSITION }) => {
+        // Establecer la posición inicial del jugador en el punto central del mapa
+        const { setPlayerPosition } = usePlayerStore.getState();
+        setPlayerPosition(CENTRAL_SPAWN_POSITION);
+        console.log("🎮 Posición inicial del jugador establecida en el punto central:", CENTRAL_SPAWN_POSITION);
+      });
+      
       setGameState("playing");
       setIsInitialized(true);
     }

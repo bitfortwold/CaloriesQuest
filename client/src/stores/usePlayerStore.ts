@@ -94,8 +94,8 @@ interface PlayerState {
 }
 
 export const usePlayerStore = create<PlayerState>((set, get) => ({
-  // Estado inicial
-  playerPosition: { x: 0, y: 0, z: 0 },
+  // Estado inicial - Usar la posición central definida como punto de spawn
+  playerPosition: { x: 0, y: 0, z: 0 }, // Se actualizará al cargar el juego
   playerData: null,
   
   // Estado para el sistema de movimiento hacia edificios
