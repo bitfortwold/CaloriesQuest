@@ -72,6 +72,7 @@ export const SoundButton = () => {
           <div 
             className="absolute bottom-14 left-0 bg-black/80 p-3 rounded-lg flex flex-col items-center shadow-lg"
             ref={volumeControlsRef}
+            onClick={(e) => e.stopPropagation()} // Evitar que los clics en el panel de control se propaguen
           >
             <div className="text-white text-xs opacity-80 font-medium mb-2 text-center">
               Música de fondo
@@ -100,7 +101,10 @@ export const SoundButton = () => {
               {/* Botón de disminuir volumen */}
               <button
                 className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-white hover:bg-white/30 transition-all"
-                onClick={decreaseVolume}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  decreaseVolume();
+                }}
                 title="Bajar volumen de música"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

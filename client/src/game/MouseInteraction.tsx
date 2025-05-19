@@ -20,6 +20,11 @@ function MouseInteraction() {
     }
 
     function onMouseClick(event: MouseEvent) {
+      // No procesar clics si el clic fue en un botón o elemento de UI
+      if ((event.target as HTMLElement).closest('button') || (event.target as HTMLElement).closest('.modal')) {
+        console.log('🖱️ Clic en UI, ignorando para movimiento del jugador');
+        return;
+      }
       raycaster.setFromCamera(mouse, camera);
       // Aumentamos la precisión del raycaster
       raycaster.params.Line.threshold = 0.1;
