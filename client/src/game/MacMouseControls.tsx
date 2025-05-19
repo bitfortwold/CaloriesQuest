@@ -82,15 +82,17 @@ const MacMouseControls = () => {
       enableRotate={true}
       minDistance={3}
       maxDistance={30}
-      minPolarAngle={Math.PI / 8} // Limitar rotación hacia abajo
-      maxPolarAngle={Math.PI / 2} // Limitar rotación hacia arriba (hasta horizontal)
-      zoomSpeed={0.8} // Velocidad de zoom suave
-      rotateSpeed={0.4} // Velocidad de rotación suave
-      panSpeed={0.4} // Velocidad de paneo suave
-      enableDamping={true} // Inercia para movimientos fluidos
-      dampingFactor={0.1} // Factor de inercia optimizado para Magic Mouse
-      screenSpacePanning={true} // Paneo en espacio de pantalla
-      keyPanSpeed={20} // Velocidad de paneo con teclado
+      minPolarAngle={Math.PI / 4} // Aumentado para vista más frontal (45 grados)
+      maxPolarAngle={Math.PI / 3} // Reducido para evitar vista cenital, aprox 60 grados
+      zoomSpeed={0.8}
+      rotateSpeed={0.4}
+      panSpeed={0.4}
+      enableDamping={true}
+      dampingFactor={0.1}
+      screenSpacePanning={true}
+      keyPanSpeed={20}
+      // Posición inicial de la cámara más frontal
+      position={[0, 5, 10]} // Posicionar la cámara más hacia atrás y más alta
       mouseButtons={{
         LEFT: THREE.MOUSE.ROTATE,
         MIDDLE: THREE.MOUSE.DOLLY,
