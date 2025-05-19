@@ -13,7 +13,7 @@ export const LanguageSelector: React.FC = () => {
   };
 
   return (
-    <div className="fixed top-4 left-4 z-[1000] flex items-center space-x-2">
+    <div className="fixed top-4 right-24 z-[1000] flex items-center space-x-2">
       <span className="text-sm text-white font-medium">{t.language}:</span>
       <div className="flex bg-gray-800 rounded-lg overflow-hidden">
         <button
