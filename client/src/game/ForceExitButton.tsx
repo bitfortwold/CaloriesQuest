@@ -12,22 +12,28 @@ export const ForceExitButton = () => {
     // 1. Forzamos directamente el cambio de estado a "playing"
     useGameStateStore.setState({ gameState: "playing" });
     
-    // 2. Movemos al jugador para evitar reentrada
+    // 2. Movemos al jugador para evitar reentrada - posición MUY lejos
     const { setPlayerPosition } = usePlayerStore.getState();
-    // Posición segura
     setPlayerPosition({
       x: 0,
       y: 0,
-      z: -10 // Alejado de cualquier edificio
+      z: -20 // Extremadamente alejado de cualquier edificio
     });
+    
+    // 3. Mensaje para notificar al usuario
+    setTimeout(() => {
+      if (document.visibilityState === 'visible') {
+        alert("¡Salida de emergencia exitosa! Has salido del edificio.");
+      }
+    }, 100);
   };
 
   return (
     <button
       onClick={handleExit}
-      className="fixed top-4 right-4 z-[9999] bg-red-600 text-white px-6 py-2 rounded-lg font-bold shadow-md hover:bg-red-700 transition duration-300"
+      className="fixed bottom-4 right-4 z-[9999] bg-red-600 text-white px-8 py-3 rounded-lg font-bold text-xl shadow-xl hover:bg-red-700 transition duration-300 animate-pulse border-4 border-yellow-300"
     >
-      ⚠️ SALIR DE EMERGENCIA ⚠️
+      🚨 SALIR DE EMERGENCIA 🚨
     </button>
   );
 };
