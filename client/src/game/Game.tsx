@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { useEffect, useState, useRef } from "react";
 import { useFrame, useThree } from "@react-three/fiber"; 
-import { OrbitControls, Sky, PerspectiveCamera, Html } from "@react-three/drei";
+import { Sky, PerspectiveCamera } from "@react-three/drei";
 import { useGameStateStore } from "../stores/useGameStateStore";
 import { usePlayerStore } from "../stores/usePlayerStore";
 
@@ -10,7 +10,7 @@ import Player from "./Player";
 import Buildings from "./Buildings";
 import GameUI from "./GameUI";
 import Garden from "./Garden";
-import MacTrackpadCamera from "./MacTrackpadCamera";
+import MacMouseControls from "./MacMouseControls";
 
 const Game = () => {
   const { gameState, setGameState, enterBuilding, exitBuilding } = useGameStateStore();
@@ -52,9 +52,9 @@ const Game = () => {
 
   return (
     <>
-      {/* Sistema de cámara optimizado para ratón Mac */}
+      {/* Controles optimizados para ratón Mac */}
       {gameState === "playing" && (
-        <MacTrackpadCamera />
+        <MacMouseControls />
       )}
       
       {/* Sky background */}
