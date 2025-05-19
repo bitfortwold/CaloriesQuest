@@ -11,6 +11,7 @@ import Buildings from "./Buildings";
 import GameUI from "./GameUI";
 import Garden from "./Garden";
 import MacMouseControls from "./MacMouseControls";
+import MouseInteraction from "./MouseInteraction";
 
 const Game = () => {
   const { gameState, setGameState, enterBuilding, exitBuilding } = useGameStateStore();
@@ -54,7 +55,10 @@ const Game = () => {
     <>
       {/* Controles optimizados para ratón Mac */}
       {gameState === "playing" && (
-        <MacMouseControls />
+        <>
+          <MacMouseControls />
+          <MouseInteraction />
+        </>
       )}
       
       {/* Sky background */}
