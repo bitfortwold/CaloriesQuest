@@ -333,6 +333,30 @@ const Player = () => {
       if (distanceToTarget < 0.2) {
         // Llegamos al objetivo
         console.log("🏁 Llegado al punto de destino");
+        
+        // Comprobar si tenemos un destino final almacenado (estábamos en un waypoint)
+        const finalDestinationStr = localStorage.getItem('finalDestination');
+        if (finalDestinationStr) {
+          try {
+            const finalDestination = JSON.parse(finalDestinationStr);
+            console.log("🧭 Destino final encontrado, continuando hacia:", finalDestination);
+            
+            // Establecer el destino final como nuevo objetivo
+            usePlayerStore.getState().setTargetPosition(finalDestination);
+            
+            // Limpiar el almacenamiento
+            localStorage.removeItem('finalDestination');
+            
+            // No detener el movimiento, continuar hacia el destino final
+            return;
+          } catch (error) {
+            console.error("Error al procesar el destino final:", error);
+            // Si hay error, eliminar el dato corrupto y detener
+            localStorage.removeItem('finalDestination');
+          }
+        }
+        
+        // Si no hay destino final o hubo error, simplemente detener
         usePlayerStore.getState().setIsMovingToTarget(false);
         return;
       }
@@ -353,14 +377,108 @@ const Player = () => {
       const collisionResult = checkBuildingCollisions(tentativePosition);
       
       if (collisionResult.collided) {
-        // Si hay colisión, calculamos una ruta alternativa
-        console.log("🚫 Colisión detectada - Calculando ruta alternativa");
+        // Si hay colisión, calculamos una ruta inteligente para rodear el edificio
+        console.log("🚫 Colisión detectada - Calculando ruta inteligente para rodear");
         
         // Obtener información sobre el edificio con el que colisionamos
         const building = collisionResult.building;
         
-        // SOLUCIÓN ALTERNATIVA: Si estamos muy cerca del destino final, simplemente teletransportar al jugador
-        // a uno de los lados del edificio más cercano al punto objetivo
+        if (building) {
+          console.log(`🏢 Colisión con ${building.name} - Calculando ruta de desvío`);
+          
+          // Vector desde el centro del edificio al jugador
+          const buildingToPlayer = new THREE.Vector3(
+            playerPosition.x - building.pos.x,
+            0,
+            playerPosition.z - building.pos.z
+          );
+          
+          // Vector desde el centro del edificio al punto de destino
+          const buildingToTarget = new THREE.Vector3(
+            targetPosition.x - building.pos.x,
+            0,
+            targetPosition.z - building.pos.z
+          );
+          
+          // Normalizar los vectores para tener solo dirección
+          buildingToPlayer.normalize();
+          buildingToTarget.normalize();
+          
+          // Calcular un vector perpendicular al vector edificio-jugador
+          // Este vector nos dará una dirección para rodear el edificio
+          const perpendicular = new THREE.Vector3(
+            buildingToPlayer.z,
+            0,
+            -buildingToPlayer.x
+          );
+          
+          // Determinar si rodear por la izquierda o derecha según el camino más corto hacia el destino
+          // Producto punto entre el vector perpendicular y el vector hacia el destino
+          // Si es positivo, rodear por la dirección del vector perpendicular
+          // Si es negativo, rodear por la dirección opuesta
+          const dotProduct = perpendicular.dot(buildingToTarget);
+          
+          // Vector final de desvío
+          const deviationVector = new THREE.Vector3();
+          
+          if (dotProduct >= 0) {
+            // Rodear por la dirección del vector perpendicular
+            deviationVector.copy(perpendicular);
+          } else {
+            // Rodear por la dirección opuesta
+            deviationVector.copy(perpendicular).negate();
+          }
+          
+          // Añadir un poco de la dirección original para mantener la tendencia hacia el destino
+          deviationVector.add(buildingToTarget.multiplyScalar(0.2));
+          deviationVector.normalize();
+          
+          // Calcular la nueva posición con un margen de seguridad amplio
+          const SAFETY_MARGIN = 0.5; // Margin adicional para evitar oscilaciones
+          newPosition = {
+            x: playerPosition.x + deviationVector.x * PLAYER_SPEED * (1 + SAFETY_MARGIN),
+            y: playerPosition.y,
+            z: playerPosition.z + deviationVector.z * PLAYER_SPEED * (1 + SAFETY_MARGIN)
+          };
+          
+          // Verificar que esta nueva posición no choque con otro edificio
+          const secondaryCheck = checkBuildingCollisions(newPosition);
+          
+          if (secondaryCheck.collided) {
+            console.log("🚫 Ruta de desvío también tiene colisión - Buscando alternativa");
+            
+            // Si también colisiona, probar con el vector opuesto
+            deviationVector.negate();
+            
+            newPosition = {
+              x: playerPosition.x + deviationVector.x * PLAYER_SPEED * (1 + SAFETY_MARGIN),
+              y: playerPosition.y,
+              z: playerPosition.z + deviationVector.z * PLAYER_SPEED * (1 + SAFETY_MARGIN)
+            };
+            
+            // Verificar esta tercera posición
+            const tertiaryCheck = checkBuildingCollisions(newPosition);
+            
+            if (tertiaryCheck.collided) {
+              // Si todavía hay colisión, intentar moverse directamente lejos del edificio
+              console.log("🚫 Todas las rutas de desvío tienen colisión - Alejándose del edificio");
+              
+              newPosition = {
+                x: playerPosition.x + buildingToPlayer.x * PLAYER_SPEED * 2,
+                y: playerPosition.y,
+                z: playerPosition.z + buildingToPlayer.z * PLAYER_SPEED * 2
+              };
+            }
+          }
+          
+          // Actualizar rotación para mirar hacia la dirección del movimiento de desvío
+          setRotationY(Math.atan2(deviationVector.x, deviationVector.z));
+          
+          console.log(`🧭 Rodeando ${building.name} con vector de desvío: (${deviationVector.x.toFixed(2)}, ${deviationVector.z.toFixed(2)})`);
+          return; // Continuar con el movimiento usando la nueva posición calculada
+        }
+        
+        // Si no pudimos identificar el edificio, usar el enfoque anterior
         const distanceToTarget = Math.sqrt(
           Math.pow(targetPosition.x - playerPosition.x, 2) + 
           Math.pow(targetPosition.z - playerPosition.z, 2)

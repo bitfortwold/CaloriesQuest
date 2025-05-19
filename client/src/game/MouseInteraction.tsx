@@ -29,8 +29,12 @@ function MouseInteraction() {
       // Obtener la posición actual del jugador para el análisis
       const playerPosition = usePlayerStore.getState().playerPosition;
       
-      // Obtener el destino actual del edificio
-      const currentDestinationBuilding = usePlayerStore.getState().destinationBuilding;
+      // Obtener información de todos los edificios para análisis de colisiones
+      const buildingPositions = [
+        { name: "market", pos: { x: -8, y: 0, z: 0 }, width: 5, depth: 4 },
+        { name: "kitchen", pos: { x: 8, y: 0, z: 0 }, width: 6, depth: 5 },
+        { name: "garden", pos: { x: 0, y: 0, z: -15 }, width: 8, depth: 6 }
+      ];
       
       raycaster.setFromCamera(mouse, camera);
       // Aumentamos la precisión del raycaster
@@ -58,6 +62,71 @@ function MouseInteraction() {
         for (let i = 0; i < Math.min(3, intersects.length); i++) {
           const obj = intersects[i].object;
           console.log(`🟢 Objeto #${i+1}: ${obj.name || 'sin nombre'} (distancia: ${intersects[i].distance.toFixed(2)})`);
+        }
+        
+        // Obtener el punto de intersección donde se hizo clic
+        const clickPoint = intersects[0].point.clone();
+        
+        // Calcular si hay un edificio bloqueando la línea recta entre el jugador y el punto de clic
+        // Esto es crucial para decidir si necesitamos una ruta alternativa
+        let blockingBuilding = null;
+        
+        for (const building of buildingPositions) {
+          // Vector desde el jugador al punto de clic
+          const directionToClick = new THREE.Vector3(
+            clickPoint.x - playerPosition.x,
+            0,
+            clickPoint.z - playerPosition.z
+          ).normalize();
+          
+          // Distancia del jugador al punto de clic
+          const distanceToClick = new THREE.Vector3(
+            clickPoint.x - playerPosition.x, 
+            0, 
+            clickPoint.z - playerPosition.z
+          ).length();
+          
+          // Punto del edificio más cercano a la línea jugador-clic
+          // Simplificación: comprobamos si la línea pasa cerca del centro del edificio
+          
+          // Vector desde el jugador al centro del edificio
+          const toBuilding = new THREE.Vector3(
+            building.pos.x - playerPosition.x,
+            0,
+            building.pos.z - playerPosition.z
+          );
+          
+          // Proyectar este vector sobre la dirección de clic
+          const projection = toBuilding.dot(directionToClick);
+          
+          // Si la proyección es negativa o mayor que la distancia al clic,
+          // el edificio está detrás del jugador o más allá del punto de clic
+          if (projection <= 0 || projection >= distanceToClick) {
+            continue;
+          }
+          
+          // Punto en la línea jugador-clic más cercano al centro del edificio
+          const closest = new THREE.Vector3(
+            playerPosition.x + directionToClick.x * projection,
+            0,
+            playerPosition.z + directionToClick.z * projection
+          );
+          
+          // Distancia de este punto al centro del edificio
+          const distToBuildingCenter = new THREE.Vector3(
+            closest.x - building.pos.x,
+            0,
+            closest.z - building.pos.z
+          ).length();
+          
+          // Si esta distancia es menor que la mitad del ancho o largo del edificio
+          // (añadiendo un pequeño margen), hay colisión
+          const buildingRadius = Math.max(building.width, building.depth) / 2 + 1;
+          
+          if (distToBuildingCenter < buildingRadius) {
+            blockingBuilding = building;
+            break;
+          }
         }
         
         // Si hay puertas, usamos la primera puerta (prioridad máxima)
@@ -105,50 +174,60 @@ function MouseInteraction() {
         } else {
           // Si no es una puerta pero es un objeto, intentar moverse a ese punto
           
-          // Obtener el nombre del objeto para análisis
-          const objectName = intersects[0].object.name || '';
+          // Punto de clic en el mundo
           const clickPoint = intersects[0].point.clone();
+          console.log(`🎯 Punto de clic: ${JSON.stringify(clickPoint)}`);
           
-          // Detectar si el usuario ha hecho clic en un edificio (no en una puerta)
-          const isBuilding = 
-            objectName.includes('market') || 
-            objectName.includes('kitchen') || 
-            objectName.includes('garden') ||
-            objectName.includes('building');
+          // Si hay un edificio bloqueando la ruta directa, calcular una ruta alternativa
+          if (blockingBuilding) {
+            console.log(`🚧 Edificio ${blockingBuilding.name} bloquea la ruta directa - calculando desvío`);
             
-          if (isBuilding && !objectName.includes('_doors_clickable')) {
-            console.log(`🏢 Edificio clickeado: ${objectName} - encontrando punto seguro`);
+            // Calcular el vector perpendicular al vector jugador-edificio para rodear el edificio
+            const buildingCenter = new THREE.Vector3(blockingBuilding.pos.x, 0, blockingBuilding.pos.z);
+            const playerPos = new THREE.Vector3(playerPosition.x, 0, playerPosition.z);
             
-            // Calcular qué edificio es basado en su nombre
-            let buildingType = '';
-            if (objectName.includes('market')) buildingType = 'market';
-            else if (objectName.includes('kitchen')) buildingType = 'kitchen';
-            else if (objectName.includes('garden')) buildingType = 'garden';
+            // Vector desde el jugador al edificio
+            const toBuilding = new THREE.Vector3().subVectors(buildingCenter, playerPos).normalize();
             
-            console.log(`🏢 ${buildingType} clickeado: moviéndose hacia ella...`);
+            // Vector desde el edificio al punto destino
+            const toBuildingTarget = new THREE.Vector3().subVectors(clickPoint, buildingCenter).normalize();
             
-            // Obtener posición del edificio
-            let buildingPos;
-            if (buildingType === 'market') buildingPos = { x: -8, y: 0, z: 0 };
-            else if (buildingType === 'kitchen') buildingPos = { x: 8, y: 0, z: 0 };
-            else if (buildingType === 'garden') buildingPos = { x: 0, y: 0, z: -15 };
+            // Crear un vector perpendicular para rodear el edificio
+            const perpendicular = new THREE.Vector3(toBuilding.z, 0, -toBuilding.x);
             
-            // Configurar como destino la puerta, no el edificio donde hizo clic
-            if (buildingPos) {
-              const targetPos = new THREE.Vector3(buildingPos.x, 0, buildingPos.z + 2.5);
-              console.log(`🛡️ Dirigiéndose a la puerta: ${JSON.stringify(targetPos)}`);
-              setTargetPosition(targetPos);
-              // Importante: establecer el edificio como destino para entrar cuando llegue
-              setDestinationBuilding(buildingType);
-            } else {
-              // Punto normal en caso de no poder identificar el edificio
-              console.log(`🚶 Moviendo a punto en el mundo: ${JSON.stringify(clickPoint)}`);
-              setTargetPosition(clickPoint);
-            }
+            // Tomar el vector perpendicular que está más en dirección del objetivo
+            const dotProduct = perpendicular.dot(toBuildingTarget);
+            const finalPerpendicular = dotProduct >= 0 ? perpendicular : perpendicular.clone().negate();
+            
+            // Calcular el radio de seguridad alrededor del edificio
+            const SAFETY_MARGIN = 2;
+            const buildingRadius = Math.max(blockingBuilding.width, blockingBuilding.depth) / 2 + SAFETY_MARGIN;
+            
+            // Calcular punto intermedio seguro para rodear el edificio
+            const waypointOffset = finalPerpendicular.clone().multiplyScalar(buildingRadius);
+            
+            // Añadir el offset al centro del edificio para obtener el punto intermedio
+            const waypoint = new THREE.Vector3().addVectors(buildingCenter, waypointOffset);
+            
+            console.log(`🧭 Punto intermedio calculado: ${JSON.stringify(waypoint)}`);
+            
+            // Establecer el waypoint como posición objetivo inicial
+            setTargetPosition(waypoint);
+            
+            // Almacenar el punto de destino final en localStorage para recogerlo después
+            localStorage.setItem('finalDestination', JSON.stringify({
+              x: clickPoint.x,
+              y: clickPoint.y,
+              z: clickPoint.z
+            }));
+            
+            // Aquí deberíamos tener algún sistema para manejar cuando el jugador
+            // llega al punto intermedio y debería continuar hacia el destino final
           } else {
-            // Punto normal en un objeto no-edificio
-            console.log(`🚶 Moviendo a punto en el mundo: ${JSON.stringify(clickPoint)}`);
+            // No hay obstáculos, mover directamente al punto de clic
+            console.log(`🚶 Ruta directa disponible - moviéndose al punto: ${JSON.stringify(clickPoint)}`);
             setTargetPosition(clickPoint);
+            localStorage.removeItem('finalDestination');
           }
           
           setIsMovingToTarget(true);
