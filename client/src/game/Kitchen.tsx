@@ -374,7 +374,15 @@ const Kitchen = ({ onExit }: KitchenProps) => {
           <div className="flex justify-between items-center mb-2">
             {/* Botón redondo de Guía (a la izquierda) */}
             <button
-              onClick={toggleGuide}
+              onClick={() => {
+                // Invertir directamente el estado de guía
+                const newGuideState = !showGuide;
+                console.log("⚠️ BOTÓN GUÍA PRESIONADO - Estado actual:", showGuide, "- Nuevo estado:", newGuideState);
+                
+                // Aplicar los cambios
+                setCookingMode(newGuideState ? "guided" : "free");
+                setShowGuide(newGuideState);
+              }}
               className={`rounded-full font-bold transition-all shadow-lg h-14 w-14 flex items-center justify-center
                 ${showGuide 
                 ? 'bg-gradient-to-r from-[#22c55e] to-[#16a34a] text-white border-2 border-[#15803d] hover:from-[#15803d] hover:to-[#22c55e]' 
