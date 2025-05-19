@@ -29,37 +29,23 @@ const GameUI = () => {
   // Don't render anything if DOM is not ready
   if (!domReady) return null;
   
-  // SISTEMA UNIFICADO PARA LA SALIDA DE EDIFICIOS
+  // SISTEMA DE SALIDA BÁSICO
+  // ⚠️ Este sistema solo actualiza el estado del juego
+  // Las posiciones del jugador se manejan directamente en cada componente
   const handleBuildingExit = (buildingType: string) => {
-    console.log(`SISTEMA UNIFICADO: Saliendo de ${buildingType} - [VERSIÓN MEJORADA]`);
+    console.log(`Salida de edificio: ${buildingType} - Actualizando jugador`);
     
-    // Obtener el estado actual del jugador y del juego
-    const { updatePlayer, playerData, setPlayerPosition } = usePlayerStore.getState();
-    const { setGameState } = useGameStateStore.getState();
+    // Solo limpiar información específica del jugador si es necesario
+    const { updatePlayer, playerData } = usePlayerStore.getState();
     
-    // Guardar información de salida para todos los edificios de la misma manera
     if (playerData) {
       updatePlayer({
         ...playerData,
-        // Limpiar cualquier estado anterior específico de edificios
         lastGardenAction: undefined
       });
     }
     
-    // Mover al jugador a la posición de salida correspondiente según el edificio
-    if (buildingType === "kitchen") {
-      // Posición de salida frente a la cocina (reutilizando la constante definida en Buildings.tsx)
-      setPlayerPosition({ x: 8, y: 0, z: 3 });
-    } else if (buildingType === "market") {
-      setPlayerPosition({ x: -8, y: 0, z: 3 });
-    } else if (buildingType === "garden") {
-      setPlayerPosition({ x: 0, y: 0, z: -10 });
-    }
-    
-    // Establecer el estado directamente a playing
-    setGameState("playing");
-    
-    // Ya no llamamos a exitBuilding() porque setGameState lo hace de manera más directa
+    // No manipulamos posición ni estado aquí - eso lo hace cada componente
   };
   
   // Render UI based on game state
