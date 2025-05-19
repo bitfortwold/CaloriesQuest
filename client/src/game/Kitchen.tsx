@@ -412,36 +412,31 @@ const Kitchen = ({ onExit }: KitchenProps) => {
         
         {/* Contenido principal */}
         <div className="p-4">
-          {/* Modo de cocina (guiada o libre) */}
+          {/* Botón de Guía de Cocina redondeado */}
           <div className="mb-4 flex justify-center">
-            <div className="grid grid-cols-2 gap-4 w-full max-w-xl">
+            <div className="w-full flex justify-center">
               <Button 
                 onClick={() => {
-                  console.log("Seleccionando Cocina Libre desde botones centrales");
-                  setCookingMode("free");
-                  setShowGuide(false);
+                  console.log("Seleccionando Guía de Cocina");
+                  setShowGuide(!showGuide);
+                  if (!showGuide) {
+                    setCookingMode("guided");
+                  } else {
+                    setCookingMode("free");
+                  }
                 }}
-                className={`py-3 px-8 rounded-xl font-bold transition-all shadow-md 
-                  ${cookingMode === "free" 
-                  ? 'bg-gradient-to-r from-[#F48E11] to-[#F9A826] text-white border-3 border-[#E47F0E]' 
-                  : 'bg-gradient-to-r from-[#FFD166] to-[#FFBD3E] text-[#7E4E1B] border-2 border-[#FFBD3E]'}
-                `}
-              >
-                {language === 'en' ? 'Free Cooking' : language === 'ca' ? 'Cuina Lliure' : 'Cocina Libre'}
-              </Button>
-              
-              <Button 
-                onClick={() => {
-                  console.log("Seleccionando Guía de Cocina desde botones centrales");
-                  setShowGuide(true);
-                }}
-                className={`py-3 px-8 rounded-xl font-bold transition-all shadow-md 
+                className={`rounded-full font-bold transition-all shadow-lg w-16 h-16 flex items-center justify-center
                   ${showGuide 
-                  ? 'bg-gradient-to-r from-[#F48E11] to-[#F9A826] text-white border-3 border-[#E47F0E]' 
-                  : 'bg-gradient-to-r from-[#FFD166] to-[#FFBD3E] text-[#7E4E1B] border-2 border-[#FFBD3E]'}
+                  ? 'bg-gradient-to-r from-[#22c55e] to-[#16a34a] text-white border-2 border-[#15803d] hover:from-[#15803d] hover:to-[#22c55e]' 
+                  : 'bg-gradient-to-r from-[#f97316] to-[#ea580c] text-white border-2 border-[#c2410c] hover:from-[#c2410c] hover:to-[#f97316]'}
                 `}
               >
-                {language === 'en' ? 'Cooking Guide' : language === 'ca' ? 'Guia de Cuina' : 'Guía de Cocina'}
+                <div className="flex flex-col items-center justify-center">
+                  <span className="text-xl">👨‍🍳</span>
+                  <span className="text-xs mt-1">
+                    {language === 'en' ? 'Guide' : language === 'ca' ? 'Guia' : 'Guía'}
+                  </span>
+                </div>
               </Button>
             </div>
           </div>
