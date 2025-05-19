@@ -173,6 +173,38 @@ const GameUI = () => {
                         <li><span className="text-amber-400 font-bold">Cocina:</span> Prepara comidas combinando ingredientes.</li>
                         <li><span className="text-amber-400 font-bold">Huerto:</span> Cultiva tus propios alimentos para ahorrar.</li>
                       </ul>
+                      
+                      {/* Mapa simple de ubicación de edificios */}
+                      <div className="mt-4 p-4 bg-gray-900 rounded-lg">
+                        <h4 className="text-amber-300 text-center mb-3">Mapa de Ubicaciones</h4>
+                        <div className="relative w-full h-44 bg-green-800 rounded-lg overflow-hidden border border-amber-600">
+                          {/* Jugador (centro) */}
+                          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-4 h-4 bg-blue-500 rounded-full z-10" title="Tu posición"></div>
+                          
+                          {/* Mercado (izquierda) */}
+                          <div className="absolute top-1/2 left-[20%] transform -translate-x-1/2 -translate-y-1/2">
+                            <div className="w-10 h-10 bg-amber-700 border-2 border-amber-500" title="Mercado"></div>
+                            <p className="text-xs text-white text-center mt-1">Mercado</p>
+                          </div>
+                          
+                          {/* Cocina (derecha) */}
+                          <div className="absolute top-1/2 right-[20%] transform translate-x-1/2 -translate-y-1/2">
+                            <div className="w-10 h-10 bg-red-900 border-2 border-red-500" title="Cocina"></div>
+                            <p className="text-xs text-white text-center mt-1">Cocina</p>
+                          </div>
+                          
+                          {/* Huerto (abajo) */}
+                          <div className="absolute bottom-[15%] left-1/2 transform -translate-x-1/2">
+                            <div className="w-12 h-8 bg-green-900 border-2 border-green-500" title="Huerto Virtual"></div>
+                            <p className="text-xs text-white text-center mt-1">Huerto</p>
+                          </div>
+                          
+                          {/* Caminos */}
+                          <div className="absolute top-1/2 left-0 right-0 h-1 bg-gray-300"></div>
+                          <div className="absolute top-1/2 left-1/2 bottom-0 w-1 bg-gray-300 transform -translate-x-1/2"></div>
+                        </div>
+                        <p className="text-xs text-gray-400 mt-2 text-center">El punto azul representa tu posición inicial.</p>
+                      </div>
                     </div>
                     
                     <div className="border-b border-gray-700 pb-3">
