@@ -15,8 +15,8 @@ interface MarketProps {
 }
 
 const Market = ({ onExit }: MarketProps) => {
-  const { playerData, addFood, updateCoins, addSeed } = usePlayerStore();
-  const { purchasedFood, addPurchasedFood, transferToKitchen } = useFoodStore();
+  const { playerData, updateCoins, addSeed } = usePlayerStore();
+  const { addToRefrigerator, addToPantry } = useFoodStore();
   const { t } = useLanguage();
   
   // Activar salida con tecla ESC
@@ -296,8 +296,12 @@ const Market = ({ onExit }: MarketProps) => {
             id: uniqueId
           };
           
-          addPurchasedFood(foodWithId);
-          addFood(foodWithId);
+          // Determinar si va a la nevera o a la despensa basado en el tipo de alimento
+          if (item.item.storageType === 'refrigerator') {
+            useFoodStore.getState().addToRefrigerator(foodWithId);
+          } else {
+            useFoodStore.getState().addToPantry(foodWithId);
+          }
           foodItems.push(uniqueId);
         }
       } else if (item.type === "seed") {
@@ -310,9 +314,9 @@ const Market = ({ onExit }: MarketProps) => {
       }
     });
     
-    // Transferir alimentos a la cocina si hay alguno
+    // Ya no necesitamos transferir alimentos a la cocina porque los añadimos directamente a la nevera o despensa
     if (foodItems.length > 0) {
-      transferToKitchen(foodItems);
+      console.log("Alimentos comprados correctamente:", foodItems.length);
     }
     
     // Actualizar monedas
