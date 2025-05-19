@@ -1,89 +1,54 @@
-import { useGameStateStore } from "../stores/useGameStateStore";
 import { usePlayerStore } from "../stores/usePlayerStore";
-import { getMarketExitPosition, getKitchenExitPosition, getGardenExitPosition } from "./Buildings";
-import { useCameraStore } from "../lib/stores/useCameraStore";
-import * as THREE from "three";
-import { getGardenPosition, getMarketPosition, getKitchenPosition } from "./Buildings";
+import { useGameStateStore } from "../stores/useGameStateStore";
 
 /**
- * ExitHelper - Componente de ayuda para salir de los edificios
- * 
- * Esta función manipula directamente el estado del juego y la posición del jugador
- * para asegurar que al salir de un edificio, el jugador aparezca lejos de las puertas
- * y así evitar el ciclo de reentrar automáticamente.
+ * Helper para manejar de forma segura la salida de edificios
+ * Permite:
+ * 1. Reposicionar al jugador en un lugar seguro al salir
+ * 2. Evitar que el jugador quede atrapado en bucles de entrada/salida
  */
 export const useExitHelper = () => {
-  const exitBuilding = (building: "market" | "kitchen" | "garden") => {
-    // 1. Obtener posiciones relevantes
-    let exitPosition;
-    
-    // Ajustamos diferentes distancias para cada edificio para que la vista funcione bien
-    if (building === "market") {
-      const basePosition = getMarketExitPosition();
-      exitPosition = {
-        x: basePosition.x,
-        y: basePosition.y,
-        z: basePosition.z + 4 // Alejándose bastante de la puerta
-      };
-    } 
-    else if (building === "kitchen") {
-      const basePosition = getKitchenExitPosition();
-      exitPosition = {
-        x: basePosition.x,
-        y: basePosition.y,
-        z: basePosition.z + 4 // Alejándose bastante de la puerta
-      };
-    }
-    else if (building === "garden") {
-      const basePosition = getGardenExitPosition();
-      // Para el huerto, usamos una posición ajustada para que se vea el personaje completo
-      exitPosition = {
-        x: basePosition.x,
-        y: basePosition.y,
-        z: -3 // Ajuste para que el personaje esté correctamente posicionado frente al huerto
-      };
-    }
-    
-    // 2. Cambiar estado del juego a "playing"
-    useGameStateStore.setState({ gameState: "playing" });
-    
-    // 3. Mover al jugador a una posición segura lejos de las puertas y reiniciar el destino
-    if (exitPosition) {
-      const { setPlayerPosition, setDestinationBuilding, setIsMovingToTarget, setTargetPosition } = usePlayerStore.getState();
-      
-      // Limpiar el destino y movimiento para evitar re-entrada automática
-      setDestinationBuilding(null);
-      setIsMovingToTarget(false);
-      setTargetPosition(null);
-      
-      // Posicionar al jugador en un lugar seguro
-      setPlayerPosition(exitPosition);
-      
-      // 4. Ajustar la cámara para obtener una mejor vista
-      adjustCameraAfterExit(building, exitPosition);
-      
-      console.log(`🚪 Saliendo de ${building} con posición segura:`, exitPosition);
-    }
+  // Posiciones seguras de salida para cada edificio
+  const safeExitPositions = {
+    market: { x: -5, y: 0, z: 7 },    // Lejos del mercado
+    kitchen: { x: 5, y: 0, z: 7 },    // Lejos de la cocina
+    garden: { x: 0, y: 0, z: -7 },    // Lejos del huerto
+    default: { x: 0, y: 0, z: -5 }    // Centro del mapa
   };
   
-  // Función auxiliar para ajustar la cámara después de salir
-  const adjustCameraAfterExit = (building: string, exitPosition: {x: number, y: number, z: number}) => {
-    const { requestReset } = useCameraStore.getState();
-    requestReset(); // Reset cámara para evitar acumulación de cambios
+  /**
+   * Función para salir de un edificio de forma segura
+   */
+  const exitBuilding = (buildingType: 'market' | 'kitchen' | 'garden') => {
+    // Accedemos directamente a los stores
+    const { setPlayerPosition, updatePlayer, playerData } = usePlayerStore.getState();
+    const { setGameState } = useGameStateStore.getState();
     
-    // Solo para el huerto, aplicamos un ajuste más dramático para ver mejor al personaje
-    if (building === "garden") {
-      const camera = useCameraStore.getState().camera;
-      if (camera) {
-        const gardenPos = getGardenPosition();
-        
-        // Ajustamos la cámara para que esté en la posición correcta
-        camera.position.set(0, 10, 10); // Altura y distancia adecuadas
-        camera.lookAt(new THREE.Vector3(0, 1.5, -3)); // Mirar directamente al personaje
-        camera.updateProjectionMatrix();
-      }
+    console.log(`🚪 Saliendo del ${buildingType} de forma segura`);
+    
+    // Seleccionar posición de salida basada en el edificio
+    const exitPosition = safeExitPositions[buildingType] || safeExitPositions.default;
+    
+    // Reposicionar al jugador en un lugar seguro
+    setPlayerPosition(exitPosition);
+    
+    // Limpiar cualquier estado específico del edificio
+    if (playerData) {
+      updatePlayer({
+        ...playerData,
+        lastGardenAction: undefined
+        // Se pueden añadir más estados a limpiar aquí
+      });
     }
+    
+    // Cambiar directamente el estado del juego a "playing"
+    setGameState("playing");
+    
+    console.log(`✅ Jugador reposicionado en (${exitPosition.x}, ${exitPosition.y}, ${exitPosition.z})`);
   };
   
-  return { exitBuilding };
+  // Exponer las funciones del helper
+  return {
+    exitBuilding
+  };
 };
