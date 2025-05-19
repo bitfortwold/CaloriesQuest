@@ -6,7 +6,7 @@ import { useCameraStore } from "../lib/stores/useCameraStore";
 import { SoundButton } from "../components/ui/SoundButton";
 import { useLanguage } from "../i18n/LanguageContext";
 import Market from "./Market";
-import Kitchen from "./KitchenSimplified";
+import Kitchen from "./KitchenNew";
 import Garden from "./Garden";
 import StatsPanel from "./StatsPanel";
 
