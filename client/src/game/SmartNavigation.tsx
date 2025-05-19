@@ -108,9 +108,12 @@ const SmartNavigation = () => {
       z: currPos.z + moveDirection.z * PLAYER_SPEED
     };
     
-    // Actualizar posición y rotación del jugador
+    // Actualizar solo la posición del jugador
+    // La rotación se maneja en el componente Player.tsx automáticamente
     usePlayerStore.getState().setPlayerPosition(newPos);
-    usePlayerStore.getState().rotatePlayer(Math.atan2(moveDirection.x, moveDirection.z));
+    
+    // No intentamos actualizar la rotación aquí, se calcula en Player.tsx
+    // basado en el movimiento entre frames
   });
   
   // Este componente no renderiza nada visible
