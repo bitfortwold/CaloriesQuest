@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useFoodStore } from "../stores/useFoodStore";
 import { usePlayerStore } from "../stores/usePlayerStore";
+import { useGameStateStore } from "../stores/useGameStateStore";
 import { useLanguage } from "../i18n/LanguageContext";
 import { toast } from "sonner";
 import { useKeyboardExit } from "../hooks/useKeyboardExit";
@@ -21,19 +22,20 @@ const Kitchen = ({ onExit }: KitchenProps) => {
   useKeyboardExit("kitchen", onExit);
   
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
-  const [showGuidedRecipes, setShowGuidedRecipes] = useState<boolean>(false);
+  const [cookingMode, setCookingMode] = useState<"guided" | "free">("free");
+  const [showGuide, setShowGuide] = useState<boolean>(false);
   
   // Función para traducir nombres de elementos
   const getTranslation = (key: string): string => {
     return key; // Placeholder
   };
-
-  // Debug efectos
+  
+  // Registrar cambios en el estado para debug
   useEffect(() => {
     console.log("Nevera:", refrigeratorFood);
     console.log("Despensa:", pantryFood);
-    console.log("Estado actual - Guía:", showGuidedRecipes);
-  }, [refrigeratorFood, pantryFood, showGuidedRecipes]);
+    console.log("Estado actual - Modo:", cookingMode, "- Guía:", showGuide);
+  }, [refrigeratorFood, pantryFood, cookingMode, showGuide]);
   
   // Gestionar la selección de alimentos
   const handleSelectFoodItem = (foodId: string) => {
@@ -153,6 +155,29 @@ const Kitchen = ({ onExit }: KitchenProps) => {
     );
   };
   
+  // Función para alternar entre la guía y el modo libre
+  const handleToggleGuide = () => {
+    const newGuideState = !showGuide;
+    console.log(`🔧 Cambiando modo de guía: ${showGuide} -> ${newGuideState}`);
+    
+    // Cambiar el estado y mostrar notificación
+    setShowGuide(newGuideState);
+    
+    if (newGuideState) {
+      toast.success(language === 'en' 
+        ? "Guide Mode Activated" 
+        : language === 'ca' 
+          ? "Mode Guia Activat" 
+          : "Modo Guía Activado");
+    } else {
+      toast.info(language === 'en' 
+        ? "Free Cooking Mode" 
+        : language === 'ca' 
+          ? "Mode Cuina Lliure" 
+          : "Modo Cocina Libre");
+    }
+  };
+  
   // Contenido de la Guía de Cocina
   const renderCookingGuide = () => (
     <div className="bg-[#FFF8E9] p-5 rounded-2xl border-4 border-[#F5D6A4] shadow-lg">
@@ -194,6 +219,34 @@ const Kitchen = ({ onExit }: KitchenProps) => {
               : language === 'ca'
               ? 'Presta atenció a les mides de les porcions per mantenir una ingesta calòrica saludable.'
               : 'Presta atención a los tamaños de las porciones para mantener una ingesta calórica saludable.'}
+          </li>
+          <li>
+            {language === 'en' 
+              ? 'Consider the sustainability score of your ingredients to make environmentally responsible decisions.'
+              : language === 'ca'
+              ? 'Considera la puntuació de sostenibilitat dels teus ingredients per prendre decisions respectuoses amb el medi ambient.'
+              : 'Considera la puntuación de sostenibilidad de tus ingredientes para tomar decisiones respetuosas con el medio ambiente.'}
+          </li>
+        </ul>
+        
+        <h4 className="text-xl font-bold text-[#8B5E34] mt-6 mb-2">
+          {language === 'en' ? 'Refrigerator and Pantry Organization' : language === 'ca' ? 'Organització del Refrigerador i Rebost' : 'Organización del Refrigerador y Despensa'}:
+        </h4>
+        
+        <ul className="list-disc pl-6 space-y-2">
+          <li>
+            {language === 'en' 
+              ? 'Refrigerator: Store perishable items that need cooling to stay fresh, like dairy, fruits, vegetables, and proteins.'
+              : language === 'ca'
+              ? 'Refrigerador: Emmagatzema articles peribles que necessiten refrigeració per mantenir-se frescos, com làctics, fruites, verdures i proteïnes.'
+              : 'Refrigerador: Almacena artículos perecederos que necesitan refrigeración para mantenerse frescos, como lácteos, frutas, verduras y proteínas.'}
+          </li>
+          <li>
+            {language === 'en' 
+              ? 'Pantry: Store non-perishable items like grains, canned goods, spices, and oils at room temperature.'
+              : language === 'ca'
+              ? 'Rebost: Emmagatzema articles no peribles com cereals, conserves, espècies i olis a temperatura ambient.'
+              : 'Despensa: Almacena artículos no perecederos como cereales, conservas, especias y aceites a temperatura ambiente.'}
           </li>
         </ul>
       </div>
@@ -311,7 +364,7 @@ const Kitchen = ({ onExit }: KitchenProps) => {
       </div>
     </div>
   );
-
+  
   return (
     <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 overflow-auto">
       <div className="w-full max-w-5xl max-h-[90vh] overflow-auto bg-[#FFF8E9] rounded-3xl shadow-2xl border-8 border-[#CD8E3E]">
@@ -322,37 +375,20 @@ const Kitchen = ({ onExit }: KitchenProps) => {
           
           {/* Botones superiores */}
           <div className="flex justify-between items-center mb-2">
-            {/* Botón para cambiar entre guía de cocina y cocina libre */}
-            <Button 
-              variant={showGuidedRecipes ? "success" : "default"} 
-              className={`px-6 py-2 rounded-lg font-bold transition-all ${
-                showGuidedRecipes 
+            {/* Botón de guía de cocina (a la izquierda) */}
+            <button
+              onClick={handleToggleGuide}
+              className={`flex items-center gap-2 px-6 py-2 rounded-lg font-bold transition-all 
+                ${showGuide 
                   ? 'bg-green-500 text-white border-2 border-green-700 hover:bg-green-600' 
-                  : 'bg-orange-500 text-white border-2 border-orange-700 hover:bg-orange-600'
-              }`}
-              onClick={() => {
-                console.log("BOTÓN DE GUÍA CLICADO");
-                setShowGuidedRecipes(!showGuidedRecipes);
-                if (!showGuidedRecipes) {
-                  toast.success(language === 'en' 
-                    ? "Guide Mode Activated" 
-                    : language === 'ca' 
-                    ? "Mode Guia Activat" 
-                    : "Modo Guía Activado");
-                } else {
-                  toast.info(language === 'en' 
-                    ? "Free Cooking Mode" 
-                    : language === 'ca' 
-                    ? "Mode Cuina Lliure" 
-                    : "Modo Cocina Libre");
-                }
-              }}
+                  : 'bg-orange-500 text-white border-2 border-orange-700 hover:bg-orange-600'}
+              `}
             >
-              <div className="flex items-center">
-                <span className="mr-2 text-xl">👨‍🍳</span>
-                <span>{language === 'en' ? 'Cooking Guide' : language === 'ca' ? 'Guia de Cuina' : 'Guía de Cocina'}</span>
-              </div>
-            </Button>
+              <span className="mr-2 text-xl">👨‍🍳</span>
+              <span>
+                {language === 'en' ? 'Cooking Guide' : language === 'ca' ? 'Guia de Cuina' : 'Guía de Cocina'}
+              </span>
+            </button>
 
             {/* Título con aspecto de cartel de madera (centrado) */}
             <div className="bg-[#BA7D45] px-12 py-3 rounded-2xl shadow-lg border-4 border-[#8B5E34] transform rotate-0 relative">
@@ -363,8 +399,10 @@ const Kitchen = ({ onExit }: KitchenProps) => {
             {/* Botón de salir (a la derecha) */}
             <button 
               onClick={() => {
-                console.log("BOTÓN SALIR PRESIONADO");
+                console.log("BOTÓN SALIR PRESIONADO - SOLUCIÓN SIMPLE");
+                // Forzar el cambio de estado con un evento directo
                 window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+                // Llamar directamente a la función de salida proporcionada
                 onExit();
               }}
               className="bg-gradient-to-r from-[#EF5350] to-[#F44336] hover:from-[#D32F2F] hover:to-[#EF5350] text-white font-bold px-6 py-3 rounded-xl shadow-md border-2 border-[#D32F2F] transform transition-all hover:scale-105"
@@ -384,8 +422,8 @@ const Kitchen = ({ onExit }: KitchenProps) => {
         
         {/* Contenido principal */}
         <div className="p-4">
-          {showGuidedRecipes ? (
-            // Mostrar contenido de la guía de cocina
+          {showGuide ? (
+            // Contenido de la guía de cocina
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 {renderGuidedRecipes()}
@@ -395,31 +433,31 @@ const Kitchen = ({ onExit }: KitchenProps) => {
               </div>
             </div>
           ) : (
-            // Modo de cocina libre (con refrigerador y despensa)
+            // Modo de Cocina Libre
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Panel izquierdo - Nevera y despensa */}
+              {/* Panel izquierdo - Ingredientes disponibles */}
               <div>
                 <Tabs defaultValue="refrigerator" className="w-full">
-                  <TabsList className="w-full bg-[#F9CC6A] p-0 rounded-t-xl overflow-hidden">
+                  <TabsList className="grid grid-cols-2 mb-4 bg-[#FFD166] px-4 pt-3 flex space-x-2 overflow-x-auto border-b-4 border-[#CD8E3E] rounded-t-lg">
                     <TabsTrigger 
                       value="refrigerator" 
-                      className="data-[state=active]:bg-white data-[state=active]:text-[#8B5E34] flex-1 py-3 text-[#8B5E34] font-bold text-sm sm:text-base"
+                      className="text-[#8B5E34] font-bold transition-all px-4 py-3 data-[state=active]:bg-white rounded-t-lg data-[state=active]:border-2 data-[state=active]:border-b-0 data-[state=active]:border-[#CD8E3E]"
                     >
                       {language === 'en' ? 'Refrigerator' : language === 'ca' ? 'Refrigerador' : 'Refrigerador'}
                     </TabsTrigger>
                     <TabsTrigger 
                       value="pantry" 
-                      className="data-[state=active]:bg-white data-[state=active]:text-[#8B5E34] flex-1 py-3 text-[#8B5E34] font-bold text-sm sm:text-base"
+                      className="text-[#8B5E34] font-bold transition-all px-4 py-3 data-[state=active]:bg-white rounded-t-lg data-[state=active]:border-2 data-[state=active]:border-b-0 data-[state=active]:border-[#CD8E3E]"
                     >
                       {language === 'en' ? 'Pantry' : language === 'ca' ? 'Rebost' : 'Despensa'}
                     </TabsTrigger>
                   </TabsList>
                   
-                  <TabsContent value="refrigerator" className="bg-white p-4 rounded-b-xl border-2 border-[#F9CC6A]">
+                  <TabsContent value="refrigerator" className="bg-white p-4 rounded-b-lg border-2 border-[#CD8E3E]">
                     {renderRefrigerator()}
                   </TabsContent>
                   
-                  <TabsContent value="pantry" className="bg-white p-4 rounded-b-xl border-2 border-[#F9CC6A]">
+                  <TabsContent value="pantry" className="bg-white p-4 rounded-b-lg border-2 border-[#CD8E3E]">
                     {renderPantry()}
                   </TabsContent>
                 </Tabs>
@@ -427,26 +465,31 @@ const Kitchen = ({ onExit }: KitchenProps) => {
               
               {/* Panel derecho - Elementos seleccionados */}
               <div>
-                <div className="bg-[#FFF8E9] p-4 rounded-2xl border-4 border-[#F5D6A4] shadow-lg h-full">
-                  <h3 className="text-xl font-bold text-[#8B5E34] mb-3 pb-2 border-b-2 border-[#F5D6A4] flex items-center">
+                <div className="bg-[#FFF8E9] p-4 rounded-xl border-4 border-[#F5D6A4] shadow-lg h-full">
+                  <h3 className="text-xl font-bold text-[#8B5E34] pb-3 mb-4 border-b-2 border-[#F5D6A4] flex items-center">
                     <span className="mr-2 text-2xl">🍳</span>
                     {language === 'en' ? 'Selected Items' : language === 'ca' ? 'Elements Seleccionats' : 'Elementos Seleccionados'}
-                    <span className="ml-2 bg-[#F9CC6A] text-[#8B5E34] text-sm py-1 px-2 rounded-lg">
+                    <span className="ml-2 bg-[#F9CC6A] text-[#8B5E34] text-sm py-1 px-2 rounded-full">
                       {selectedItems.length}
                     </span>
                   </h3>
                   
                   {selectedItems.length === 0 ? (
-                    <p className="text-[#C68642] py-4 text-center bg-[#FFF8E9] rounded-xl border-2 border-[#F5D6A4] shadow-inner">
-                      {language === 'en' 
-                        ? "Select ingredients from your refrigerator and pantry to cook." 
-                        : language === 'ca'
-                        ? "Selecciona ingredients del teu refrigerador i rebost per cuinar." 
-                        : "Selecciona ingredientes de tu refrigerador y despensa para cocinar."}
-                    </p>
+                    <div className="flex flex-col items-center justify-center h-[200px]">
+                      <div className="bg-[#FFF8E9] p-6 rounded-xl border-2 border-[#F5D6A4] shadow-inner text-center">
+                        <p className="text-[#C68642] mb-3">
+                          {language === 'en' 
+                            ? "Select ingredients from your refrigerator and pantry to cook." 
+                            : language === 'ca'
+                            ? "Selecciona ingredients del teu refrigerador i rebost per cuinar." 
+                            : "Selecciona ingredientes de tu refrigerador y despensa para cocinar."}
+                        </p>
+                        <div className="text-5xl">🥗</div>
+                      </div>
+                    </div>
                   ) : (
                     <>
-                      <div className="grid grid-cols-2 gap-2 mt-2 mb-4">
+                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-[300px] overflow-y-auto pr-2 mb-4">
                         {selectedItems.map(itemId => {
                           const item = [...refrigeratorFood, ...pantryFood].find(food => food.id === itemId);
                           if (!item) return null;
@@ -454,17 +497,22 @@ const Kitchen = ({ onExit }: KitchenProps) => {
                           return (
                             <div 
                               key={itemId}
-                              className="bg-white rounded-lg shadow p-2 border-2 border-[#F5D6A4] flex items-center justify-between"
+                              className="bg-white rounded-lg shadow p-2 border-2 border-[#F5D6A4] flex flex-col"
                             >
-                              <span className="truncate text-sm text-[#8B5E34] font-medium">{getTranslation(item.name)}</span>
-                              <button 
-                                onClick={() => handleSelectFoodItem(itemId)}
-                                className="text-red-500 hover:text-red-700"
-                              >
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                                </svg>
-                              </button>
+                              <div className="flex justify-between items-center mb-1">
+                                <span className="truncate text-sm text-[#8B5E34] font-medium">{getTranslation(item.name)}</span>
+                                <button 
+                                  onClick={() => handleSelectFoodItem(itemId)}
+                                  className="text-red-500 hover:text-red-700 p-1"
+                                >
+                                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                                  </svg>
+                                </button>
+                              </div>
+                              <div className="text-xs text-[#C68642]">
+                                {item.calories} kcal
+                              </div>
                             </div>
                           );
                         })}
@@ -472,7 +520,7 @@ const Kitchen = ({ onExit }: KitchenProps) => {
                       
                       <Button 
                         onClick={handleCook}
-                        className="w-full bg-gradient-to-r from-[#4CAF50] to-[#2E7D32] hover:brightness-110 text-white font-bold py-3 px-4 rounded-xl transition-all shadow-md border-2 border-[#1B5E20]"
+                        className="w-full bg-gradient-to-r from-[#4CAF50] to-[#2E7D32] hover:brightness-110 text-white font-bold py-3 px-4 rounded-xl transition-all shadow-md border-2 border-[#1B5E20] flex items-center justify-center"
                       >
                         <span className="mr-2 text-xl">🔥</span>
                         {language === 'en' ? 'Cook Selected Items' : language === 'ca' ? 'Cuinar Elements Seleccionats' : 'Cocinar Elementos Seleccionados'}
