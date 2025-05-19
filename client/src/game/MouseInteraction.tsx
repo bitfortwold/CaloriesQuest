@@ -48,7 +48,8 @@ function MouseInteraction() {
         if (objectName.includes("market_doors_clickable")) {
           console.log('🚪 Puerta del Mercado clicada');
           // Usar las posiciones correctas desde Buildings.tsx
-          const targetPos = new THREE.Vector3(-8, 0, 3);
+          const marketPos = { x: -8, y: 0, z: 0 }; // Posición del mercado
+          const targetPos = new THREE.Vector3(marketPos.x, 0, marketPos.z + 2.5);
           console.log(`🎯 Configurando destino: Mercado en ${JSON.stringify(targetPos)}`);
           setTargetPosition(targetPos);
           setIsMovingToTarget(true);
@@ -56,7 +57,8 @@ function MouseInteraction() {
         } else if (objectName.includes("kitchen_doors_clickable")) {
           console.log('🚪 Puerta de la Cocina clicada');
           // Usar las posiciones correctas desde Buildings.tsx
-          const targetPos = new THREE.Vector3(8, 0, 3);
+          const kitchenPos = { x: 8, y: 0, z: 0 }; // Posición de la cocina
+          const targetPos = new THREE.Vector3(kitchenPos.x, 0, kitchenPos.z + 2.5);
           console.log(`🎯 Configurando destino: Cocina en ${JSON.stringify(targetPos)}`);
           setTargetPosition(targetPos);
           setIsMovingToTarget(true);
@@ -64,7 +66,8 @@ function MouseInteraction() {
         } else if (objectName.includes("garden_doors_clickable")) {
           console.log('🚪 Puerta del Huerto clicada');
           // Usar las posiciones correctas desde Buildings.tsx
-          const targetPos = new THREE.Vector3(0, 0, -12);
+          const gardenPos = { x: 0, y: 0, z: -15 }; // Posición del huerto
+          const targetPos = new THREE.Vector3(gardenPos.x, 0, gardenPos.z + 2.5);
           console.log(`🎯 Configurando destino: Huerto en ${JSON.stringify(targetPos)}`);
           setTargetPosition(targetPos);
           setIsMovingToTarget(true);
