@@ -4,7 +4,6 @@ import { useGameStateStore } from "../stores/useGameStateStore";
 import { usePlayerStore } from "../stores/usePlayerStore";
 import { useCameraStore } from "../lib/stores/useCameraStore";
 import { SoundButton } from "../components/ui/SoundButton";
-import { LanguageSelector } from "../components/ui/LanguageSelector";
 import { useLanguage } from "../i18n/LanguageContext";
 import Market from "./Market";
 import Kitchen from "./Kitchen";
@@ -107,10 +106,9 @@ const GameUI = () => {
               )}
             </div>
             
-            {/* Botones flotantes para sonido y selección de idioma */}
+            {/* Botón flotante de sonido solamente (selector de idioma eliminado) */}
             <div className="fixed bottom-4 right-4 flex flex-col gap-2">
               <SoundButton />
-              <LanguageSelector />
             </div>
           </div>
         );
