@@ -172,16 +172,16 @@ const KitchenSimplified = ({ onExit }: KitchenProps) => {
             
             <button 
               onClick={() => {
-                console.log("Botón salir clickeado - Método directo");
-                // Utilizar el método directo para salir (sin pasar por el controlador que está causando el problema)
-                const { setGameState } = useGameStateStore.getState();
-                const { setPlayerPosition } = usePlayerStore.getState();
+                console.log("Botón salir clickeado - Método seguro");
                 
-                // Posicionar al jugador lejos de la cocina
-                setPlayerPosition({ x: 3, y: 0, z: -5 });
+                // Importar la función de salida segura directamente para evitar dependencias circulares
+                const { safeExit } = require('../utils/buildingExitHelper');
+                safeExit("kitchen");
                 
-                // Cambiar directamente el estado del juego
-                setGameState("playing");
+                // También notificamos al componente padre por compatibilidad
+                if (onExit) {
+                  setTimeout(() => onExit(), 100);
+                }
               }}
               className="bg-red-500 text-white px-6 py-2 rounded-xl font-bold"
             >
