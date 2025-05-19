@@ -1,189 +1,120 @@
-import { useEffect, useRef } from 'react';
-import { useFrame, useThree } from '@react-three/fiber';
+import { useRef } from 'react';
+import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { usePlayerStore } from '../stores/usePlayerStore';
-import { getMarketPosition, getKitchenPosition, getGardenPosition } from './Buildings';
-
-// Configuración de los edificios para navegación
-const buildings = [
-  { 
-    name: "market", 
-    position: getMarketPosition(), 
-    size: new THREE.Vector3(5, 3, 4) 
-  },
-  { 
-    name: "kitchen", 
-    position: getKitchenPosition(), 
-    size: new THREE.Vector3(6, 3, 5) 
-  },
-  { 
-    name: "garden", 
-    position: getGardenPosition(), 
-    size: new THREE.Vector3(8, 3, 6) 
-  }
-];
 
 /**
- * SmartNavigation - Componente para gestionar el movimiento inteligente del jugador
+ * SmartNavigation - Componente simplificado para movimiento inteligente
+ * Permite al jugador rodear edificios y obstáculos
  */
 const SmartNavigation = () => {
-  const { camera } = useThree();
-  const playerRef = useRef<THREE.Group>(null);
+  // Definición de edificios para detección de colisiones
+  const buildings = [
+    { 
+      name: "market", 
+      position: new THREE.Vector3(-8, 0, 0), 
+      radius: 3.5  // Radio de colisión aproximado
+    },
+    { 
+      name: "kitchen", 
+      position: new THREE.Vector3(8, 0, 0), 
+      radius: 4
+    },
+    { 
+      name: "garden", 
+      position: new THREE.Vector3(0, 0, -15), 
+      radius: 5
+    }
+  ];
   
-  // Obtener estados y funciones del store
-  const { 
-    playerPosition, 
-    setPlayerPosition,
-    setRotationY,
-    targetPosition,
-    isMovingToTarget
-  } = usePlayerStore();
+  // Guardar la ruta: [punto actual, punto destino]
+  const pathRef = useRef<THREE.Vector3[]>([]);
   
+  // Hook principal de animación
   useFrame(() => {
+    // Obtener el estado actual del jugador
+    const {
+      playerPosition,
+      targetPosition,
+      isMovingToTarget
+    } = usePlayerStore.getState();
+    
+    // Si no estamos en movimiento o no hay objetivo, salir
     if (!isMovingToTarget || !targetPosition) return;
     
-    // Crear posición actual del jugador como Vector3
-    const currentPosition = new THREE.Vector3(
-      playerPosition.x, 
-      playerPosition.y, 
-      playerPosition.z
-    );
+    // Convertir posiciones a Vector3 para facilitar cálculos
+    const currPos = new THREE.Vector3(playerPosition.x, playerPosition.y, playerPosition.z);
+    const targPos = new THREE.Vector3(targetPosition.x, targetPosition.y, targetPosition.z);
     
-    // Vector dirección hacia el objetivo
-    const targetPos = new THREE.Vector3(
-      targetPosition.x,
-      targetPosition.y,
-      targetPosition.z
-    );
+    // Vector dirección y distancia al objetivo
+    const dirToTarget = new THREE.Vector3().subVectors(targPos, currPos).normalize();
+    const distToTarget = currPos.distanceTo(targPos);
     
-    const direction = new THREE.Vector3()
-      .subVectors(targetPos, currentPosition)
-      .normalize();
-    
-    // Distancia al objetivo
-    const distanceToTarget = currentPosition.distanceTo(targetPos);
-    
-    // Si llegamos al objetivo, detenemos el movimiento
-    if (distanceToTarget < 0.2) {
+    // Si llegamos al destino, detener movimiento
+    if (distToTarget < 0.2) {
       console.log("🏁 Destino alcanzado");
       usePlayerStore.getState().setIsMovingToTarget(false);
       return;
     }
     
-    // Verificar colisiones con edificios y ajustar la dirección
-    let avoidanceDirection = new THREE.Vector3();
-    let needsAvoidance = false;
+    // Verificar colisiones con edificios
+    let obstacle = false;
+    let steeringForce = new THREE.Vector3();
     
     for (const building of buildings) {
-      const buildingPosition = new THREE.Vector3(
-        building.position.x,
-        building.position.y,
-        building.position.z
-      );
+      // Distancia del jugador al edificio
+      const buildingDist = currPos.distanceTo(building.position);
       
-      // Distancia entre el jugador y el edificio
-      const distanceToBuilding = currentPosition.distanceTo(buildingPosition);
-      
-      // Radio de colisión (diagonal del edificio / 2 + margen de seguridad)
-      const collisionRadius = Math.sqrt(
-        building.size.x * building.size.x + 
-        building.size.z * building.size.z
-      ) / 2 + 1.5; // Margen adicional
-      
-      // Si estamos cerca del edificio, aplicamos fuerza de repulsión
-      if (distanceToBuilding < collisionRadius) {
-        // Vector desde el edificio hasta el jugador (dirección de repulsión)
-        const repulsionDirection = new THREE.Vector3()
-          .subVectors(currentPosition, buildingPosition)
+      // Si estamos cerca del edificio, aplicar fuerza para alejarnos
+      if (buildingDist < building.radius + 1.5) {
+        const pushDir = new THREE.Vector3()
+          .subVectors(currPos, building.position)
           .normalize();
         
         // Fuerza inversamente proporcional a la distancia
-        const repulsionStrength = 1 - (distanceToBuilding / collisionRadius);
+        const force = 1 - (buildingDist / (building.radius + 1.5));
+        steeringForce.add(pushDir.multiplyScalar(force * 2));
+        obstacle = true;
         
-        // Añadir fuerza de repulsión a la dirección de evasión
-        avoidanceDirection.add(
-          repulsionDirection.multiplyScalar(repulsionStrength * 2)
-        );
-        
-        needsAvoidance = true;
-      }
-      
-      // Verificar si el edificio está en la trayectoria directa hacia el objetivo
-      const playerToTarget = new THREE.Vector3().subVectors(targetPos, currentPosition);
-      const playerToBuilding = new THREE.Vector3().subVectors(buildingPosition, currentPosition);
-      
-      // Proyección del edificio sobre la dirección al objetivo
-      const projectionLength = playerToBuilding.dot(direction);
-      
-      // Si la proyección está dentro del rango de interés y el edificio está cerca de la línea
-      if (projectionLength > 0 && projectionLength < distanceToTarget) {
-        // Punto más cercano en la línea al edificio
-        const projectionPoint = new THREE.Vector3()
-          .copy(currentPosition)
-          .add(direction.clone().multiplyScalar(projectionLength));
-        
-        // Distancia del edificio a la línea de trayectoria
-        const lateralDistance = new THREE.Vector3()
-          .subVectors(buildingPosition, projectionPoint)
-          .length();
-        
-        // Si el edificio está lo suficientemente cerca de la trayectoria
-        if (lateralDistance < collisionRadius) {
-          // Determinar de qué lado rodear (producto cruz para saber izquierda/derecha)
-          const crossProduct = new THREE.Vector3()
-            .crossVectors(direction, playerToBuilding)
-            .y;
-          
-          // Vector perpendicular a la dirección para esquivar
-          const avoidDir = new THREE.Vector3(-direction.z, 0, direction.x);
-          if (crossProduct < 0) {
-            avoidDir.multiplyScalar(-1); // Invertir si necesario
-          }
-          
-          // Añadir al vector de evasión
-          avoidanceDirection.add(avoidDir);
-          needsAvoidance = true;
-        }
+        console.log(`🧭 Esquivando ${building.name}`);
       }
     }
     
-    // Determinar dirección final combinando dirección al objetivo y evasión
-    let finalDirection;
-    
-    if (needsAvoidance) {
-      // Normalizar dirección de evasión
-      avoidanceDirection.normalize();
+    // Calcular dirección final combinando objetivo + esquiva
+    let moveDirection;
+    if (obstacle) {
+      // Normalizar la fuerza de esquiva
+      steeringForce.normalize();
       
-      // Combinar dirección original y evasión (70% evasión, 30% hacia objetivo)
-      finalDirection = new THREE.Vector3()
+      // Combinar ambas direcciones (70% esquiva, 30% objetivo)
+      moveDirection = new THREE.Vector3()
         .addVectors(
-          avoidanceDirection.multiplyScalar(0.7),
-          direction.multiplyScalar(0.3)
+          steeringForce.multiplyScalar(0.7),
+          dirToTarget.multiplyScalar(0.3)
         )
         .normalize();
-        
-      console.log("🧭 Rodeando obstáculos", finalDirection);
     } else {
-      // Sin obstáculos, usar dirección directa
-      finalDirection = direction;
+      // Sin obstáculos, ir directo al objetivo
+      moveDirection = dirToTarget;
     }
     
     // Velocidad constante
     const PLAYER_SPEED = 0.1;
     
-    // Aplicar movimiento
-    const newPosition = {
-      x: playerPosition.x + finalDirection.x * PLAYER_SPEED,
-      y: playerPosition.y,
-      z: playerPosition.z + finalDirection.z * PLAYER_SPEED
+    // Calcular nueva posición
+    const newPos = {
+      x: currPos.x + moveDirection.x * PLAYER_SPEED,
+      y: currPos.y,
+      z: currPos.z + moveDirection.z * PLAYER_SPEED
     };
     
-    // Actualizar posición y rotación
-    setPlayerPosition(newPosition);
-    setRotationY(Math.atan2(finalDirection.x, finalDirection.z));
+    // Actualizar posición y rotación del jugador
+    usePlayerStore.getState().setPlayerPosition(newPos);
+    usePlayerStore.getState().rotatePlayer(Math.atan2(moveDirection.x, moveDirection.z));
   });
   
-  return null; // Este componente no renderiza nada, solo maneja la lógica
+  // Este componente no renderiza nada visible
+  return null;
 };
 
 export default SmartNavigation;

@@ -331,12 +331,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
     set({ playerPosition: position });
   },
   
-  // Para rotación directa del jugador (usado por SmartNavigation)
-  setRotationY: (angle: number) => {
-    // set({ playerRotation: angle }); // Mantener actualizado el valor anterior
-    // Llamar a rotatePlayer para mantener compatibilidad con el sistema existente
-    get().rotatePlayer(angle);
-  },
+  // Esta función ya no es necesaria, usaremos directamente rotatePlayer
   
   setPlayerData: (data: PlayerData) => {
     set({ playerData: data });
