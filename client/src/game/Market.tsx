@@ -374,26 +374,14 @@ const Market = ({ onExit }: MarketProps) => {
             <div className="relative">
               <button
                 onClick={() => {
-                  console.log("Salida directa del mercado");
+                  // Importamos la función de salida unificada
+                  const { executeUnifiedExit } = require('../utils/UnifiedExitSystem');
                   
-                  // PASO 1: Detener cualquier movimiento primero
-                  const { setIsMovingToTarget, setTargetPosition } = usePlayerStore.getState();
-                  setTargetPosition(null);
-                  setIsMovingToTarget(false);
+                  // Ejecutamos la salida unificada
+                  executeUnifiedExit("market");
                   
-                  // PASO 2: Cambiar el estado del juego 
-                  const { setGameState } = useGameStateStore.getState();
-                  setGameState("playing");
-                  
-                  // PASO 3: Posicionar al jugador frente al mercado a distancia segura
-                  const { setPlayerPosition } = usePlayerStore.getState();
-                  setPlayerPosition({ x: -8, y: 0, z: 16 });
-                  
-                  // PASO 4: Notificar al callback solo al final del proceso
-                  if (onExit) {
-                    // Ejecutamos sin delay porque ya no hay un handler complejo
-                    onExit();
-                  }
+                  // Notificamos al componente padre
+                  if (onExit) onExit();
                 }}
                 className="bg-[#D32F2F] hover:bg-[#B71C1C] py-3 px-12 rounded-full shadow-lg border-2 border-[#C62828] transition-all duration-300 transform hover:scale-105"
               >
