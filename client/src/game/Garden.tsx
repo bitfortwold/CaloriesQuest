@@ -206,32 +206,37 @@ const Garden = ({ onExit }: GardenProps) => {
             <div className="relative">
               <button
                 onClick={() => {
-                  console.log("🔱 ACTIVANDO SISTEMA DEFINITIVO DE SALIDA - GARDEN");
+                  console.log("⭐ SISTEMA DEFINITIVO DE SALIDA ESTÁTICA - HUERTO");
                   
-                  // IMPORTANTE: Esta secuencia ha sido optimizada para evitar bucles
+                  // ⚠️ POSICIÓN ESTÁTICA SEGURA:
+                  // - Frente al huerto (z negativo, más alejado)
+                  // - Posición muy lejana para evitar interacción automática con la puerta
+                  const safePosition = { x: 0, y: 0, z: -30 }; // Extremadamente lejos
                   
-                  // 1. POSICIÓN SEGURA - Frente al huerto, extremadamente lejos
-                  const safePosition = { x: 0, y: 0, z: -25 };
-                  
-                  // 2. CAMBIAR ESTADO PRIMERO - Esto es clave para evitar reingresos
-                  const { setGameState } = useGameStateStore.getState();
-                  setGameState("playing");
-                  
-                  // 3. DESACTIVAR MOVIMIENTO
-                  const { setIsMovingToTarget, setTargetPosition } = usePlayerStore.getState();
+                  // 1. LIMPIAR CUALQUIER DESTINO O MOVIMIENTO PENDIENTE
+                  const { setIsMovingToTarget, setTargetPosition, setDestinationBuilding } = usePlayerStore.getState();
+                  // Esto es crucial: cancelar CUALQUIER movimiento pendiente
                   setTargetPosition(null);
                   setIsMovingToTarget(false);
+                  setDestinationBuilding(null);
                   
-                  // 4. MOVER AL JUGADOR CON RETRASO
+                  // 2. EJECUTAR CALLBACK PRIMERO - CRUCIAL PARA LIMPIAR COMPONENTES
+                  if (onExit) onExit();
+                  
+                  // 3. CAMBIO DE ESTADO Y POSICIÓN CON RETRASO PROGRAMADO
+                  // El orden y los retrasos son fundamentales para evitar bucles
                   setTimeout(() => {
-                    // Teleportar al jugador a posición segura
-                    const { setPlayerPosition } = usePlayerStore.getState();
-                    setPlayerPosition(safePosition);
-                    console.log(`✅ Jugador reposicionado a posición segura: (${safePosition.x}, ${safePosition.y}, ${safePosition.z})`);
+                    // Primero cambiar el estado
+                    const { setGameState } = useGameStateStore.getState();
+                    setGameState("playing");
                     
-                    // 5. EJECUTAR CALLBACK AL FINAL
-                    if (onExit) onExit();
-                  }, 150);
+                    // Luego posicionar al jugador con un retraso adicional
+                    setTimeout(() => {
+                      const { setPlayerPosition } = usePlayerStore.getState();
+                      setPlayerPosition(safePosition);
+                      console.log(`✅ POSICIONAMIENTO ESTÁTICO EXITOSO frente al huerto en (${safePosition.x}, ${safePosition.y}, ${safePosition.z})`);
+                    }, 200); // Mayor retraso para el huerto
+                  }, 100);
                 }}
                 className="bg-gradient-to-r from-red-700 to-red-800 py-3 px-10 rounded-xl shadow-xl border-2 border-red-900 transform transition-all duration-300 flex items-center gap-3 hover:scale-105 hover:shadow-2xl"
               >
