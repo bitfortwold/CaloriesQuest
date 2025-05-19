@@ -339,9 +339,9 @@ const KitchenSimple = ({ onExit }: KitchenProps) => {
                   )}
                 </div>
                 
-                {/* Refrigerador */}
+                {/* Nevera */}
                 <div className="bg-blue-50 p-5 rounded-lg border border-blue-300">
-                  <h2 className="text-xl text-blue-900 font-bold mb-4">Refrigerador</h2>
+                  <h2 className="text-xl text-blue-900 font-bold mb-4">Nevera</h2>
                   
                   {playerData?.inventory && playerData.inventory.some(food => food.name.toLowerCase().includes("leche") || food.name.toLowerCase().includes("queso") || food.name.toLowerCase().includes("yogur")) ? (
                     <div className="grid grid-cols-2 gap-3">
@@ -382,7 +382,7 @@ const KitchenSimple = ({ onExit }: KitchenProps) => {
                   </div>
                 ) : (
                   <div className="text-center p-4">
-                    <p className="mb-2">No tienes ingredientes en tu despensa o refrigerador.</p>
+                    <p className="mb-2">No tienes ingredientes en tu despensa o nevera.</p>
                     <p>Visita el Mercado para comprar algunos.</p>
                   </div>
                 )}
