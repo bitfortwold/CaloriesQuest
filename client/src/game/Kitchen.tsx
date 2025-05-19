@@ -2,12 +2,10 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useFoodStore, StoredFoodItem } from "../stores/useFoodStore";
-import { usePlayerStore, FoodItem } from "../stores/usePlayerStore";
-import { useGameStateStore } from "../stores/useGameStateStore";
+import { useFoodStore } from "../stores/useFoodStore";
+import { usePlayerStore } from "../stores/usePlayerStore";
 import { useLanguage } from "../i18n/LanguageContext";
 import { toast } from "sonner";
-import { useExitHelper } from "./ExitHelper";
 import { useKeyboardExit } from "../hooks/useKeyboardExit";
 
 interface KitchenProps {
@@ -16,19 +14,18 @@ interface KitchenProps {
 
 const Kitchen = ({ onExit }: KitchenProps) => {
   const { refrigeratorFood, pantryFood, removeFromKitchen } = useFoodStore();
-  const { playerData, consumeFood } = usePlayerStore();
-  const { t, language } = useLanguage();
+  const { playerData } = usePlayerStore();
+  const { language } = useLanguage();
   
   // Activar salida con tecla ESC
   useKeyboardExit("kitchen", onExit);
   
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
-  const [cookingMode, setCookingMode] = useState<"guided" | "free">("guided");
+  const [cookingMode, setCookingMode] = useState<"guided" | "free">("free");
   const [showGuide, setShowGuide] = useState<boolean>(false);
   
   // Función para traducir nombres de elementos
   const getTranslation = (key: string): string => {
-    // Implementar lógica de traducción según el idioma actual
     return key; // Placeholder
   };
   
@@ -266,7 +263,7 @@ const Kitchen = ({ onExit }: KitchenProps) => {
               <div className="p-2">
                 <div className="flex justify-between text-[#7E4E1B] text-xs mb-1">
                   <span>{language === 'en' ? 'Protein' : language === 'ca' ? 'Proteïna' : 'Proteína'}: <b>{food.nutritionalValue.protein}g</b></span>
-                  <span>{language === 'en' ? 'Sustainability' : language === 'ca' ? 'Sostenibilitat' : 'Sostenibilidad'}: <b>{food.sustainabilityScore}/5</b></span>
+                  <span>{language === 'en' ? 'Sustainability' : language === 'ca' ? 'Sostenibilitat' : 'Sostenibilidad'}: <b>{food.sustainabilityScore}/10</b></span>
                 </div>
                 {selectedItems.includes(food.id) && (
                   <div className="bg-[#4CAF50] text-white text-xs py-1 px-2 rounded-lg text-center mt-1">
@@ -315,14 +312,14 @@ const Kitchen = ({ onExit }: KitchenProps) => {
               }`}
               onClick={() => handleSelectFoodItem(food.id)}
             >
-              <div className="bg-gradient-to-r from-[#E6C88D] to-[#D4AD6A] p-2 border-b-3 border-[#C69C5B] flex justify-between items-center">
+              <div className="bg-gradient-to-r from-[#F9C784] to-[#F8B04D] p-2 border-b-3 border-[#E8A43B] flex justify-between items-center">
                 <span className="font-bold text-white drop-shadow-sm truncate">{getTranslation(food.name)}</span>
-                <span className="bg-[#C69C5B] text-white text-sm py-1 px-2 rounded-lg font-semibold shadow-inner">{food.calories} kcal</span>
+                <span className="bg-[#E8A43B] text-white text-sm py-1 px-2 rounded-lg font-semibold shadow-inner">{food.calories} kcal</span>
               </div>
               <div className="p-2">
                 <div className="flex justify-between text-[#7E4E1B] text-xs mb-1">
                   <span>{language === 'en' ? 'Protein' : language === 'ca' ? 'Proteïna' : 'Proteína'}: <b>{food.nutritionalValue.protein}g</b></span>
-                  <span>{language === 'en' ? 'Sustainability' : language === 'ca' ? 'Sostenibilitat' : 'Sostenibilidad'}: <b>{food.sustainabilityScore}/5</b></span>
+                  <span>{language === 'en' ? 'Sustainability' : language === 'ca' ? 'Sostenibilitat' : 'Sostenibilidad'}: <b>{food.sustainabilityScore}/10</b></span>
                 </div>
                 {selectedItems.includes(food.id) && (
                   <div className="bg-[#4CAF50] text-white text-xs py-1 px-2 rounded-lg text-center mt-1">
@@ -336,13 +333,27 @@ const Kitchen = ({ onExit }: KitchenProps) => {
       </div>
     </div>
   );
-
-  // Añadir un efecto para ver los valores de refrigeratorFood y pantryFood y estado de botones
+  
+  // Añadir un efecto para ver los valores de refrigeratorFood y pantryFood
   useEffect(() => {
     console.log("Nevera:", refrigeratorFood);
     console.log("Despensa:", pantryFood);
     console.log("Estado actual - Modo:", cookingMode, "- Guía:", showGuide);
   }, [refrigeratorFood, pantryFood, cookingMode, showGuide]);
+
+  // Manejo de la activación/desactivación de la guía
+  const toggleGuide = () => {
+    const newGuideState = !showGuide;
+    console.log("Seleccionando Guía de Cocina - Cambiando a:", newGuideState ? "Activa" : "Inactiva");
+    
+    if (newGuideState) {
+      setCookingMode("guided");
+    } else {
+      setCookingMode("free");
+    }
+    
+    setShowGuide(newGuideState);
+  };
 
   return (
     <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 overflow-auto">
@@ -356,15 +367,7 @@ const Kitchen = ({ onExit }: KitchenProps) => {
           <div className="flex justify-between items-center mb-2">
             {/* Botón redondo de Guía (a la izquierda) */}
             <button
-              onClick={() => {
-                console.log("Seleccionando Guía de Cocina");
-                setShowGuide(!showGuide);
-                if (!showGuide) {
-                  setCookingMode("guided");
-                } else {
-                  setCookingMode("free");
-                }
-              }}
+              onClick={toggleGuide}
               className={`rounded-full font-bold transition-all shadow-lg h-14 w-14 flex items-center justify-center
                 ${showGuide 
                 ? 'bg-gradient-to-r from-[#22c55e] to-[#16a34a] text-white border-2 border-[#15803d] hover:from-[#15803d] hover:to-[#22c55e]' 
@@ -384,47 +387,31 @@ const Kitchen = ({ onExit }: KitchenProps) => {
               <div className="absolute inset-0 rounded-xl opacity-20 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMCIgaGVpZ2h0PSIzMCI+CjxyZWN0IHdpZHRoPSIzMCIgaGVpZ2h0PSIzMCIgZmlsbD0iI2ZmZiI+PC9yZWN0Pgo8cmVjdCB4PSIxNSIgeT0iMCIgd2lkdGg9IjE1IiBoZWlnaHQ9IjE1IiBmaWxsPSIjZjNmNGY2Ij48L3JlY3Q+CjxyZWN0IHg9IjAiIHk9IjE1IiB3aWR0aD0iMTUiIGhlaWdodD0iMTUiIGZpbGw9IiNmM2Y0ZjYiPjwvcmVjdD4KPC9zdmc+')]"></div>
               <h1 className="text-4xl font-bold text-white drop-shadow-lg tracking-wide uppercase">{language === 'en' ? 'Kitchen' : language === 'ca' ? 'Cuina' : 'Cocina'}</h1>
             </div>
-
-            {/* Botón Salir estilo sencillo con ExitHelper */}
-            <div className="relative">
-              <button
-                onClick={() => {
-                  console.log("Saliendo de la cocina con posición segura");
-                  // Usamos helper para salir correctamente
-                  const { exitBuilding } = useExitHelper();
-                  exitBuilding("kitchen");
-                  
-                  // Llamamos a onExit para limpieza de componente
-                  onExit();
-                }}
-                className="bg-[#E57373] hover:bg-[#EF5350] py-3 px-12 rounded-full shadow-md border-2 border-[#C62828] transition duration-300"
-              >
-                <span className="text-white font-bold text-xl">
-                  {language === 'en' ? 'Exit' : language === 'ca' ? 'Sortir' : 'Salir'}
-                </span>
-              </button>
-            </div>
+            
+            {/* Botón de salir (a la derecha) */}
+            <Button 
+              onClick={onExit}
+              className="bg-gradient-to-r from-[#EF5350] to-[#F44336] hover:from-[#D32F2F] hover:to-[#EF5350] text-white font-bold px-6 py-3 rounded-xl shadow-md border-2 border-[#D32F2F] transform transition-all hover:scale-105"
+            >
+              {language === 'en' ? 'Exit' : language === 'ca' ? 'Sortir' : 'Salir'}
+            </Button>
           </div>
           
-          {/* Contador de calorías */}
-          <div className="flex justify-center mt-2">
-            <div className="bg-gradient-to-r from-[#F9D423] to-[#F5AB1B] px-6 py-3 rounded-xl text-[#7E4E1B] border-2 border-[#EDA617] shadow-lg">
-              <span className="font-bold">{language === 'en' ? 'Calories' : language === 'ca' ? 'Calories' : 'Calorías'}: </span>
-              <span className="text-[#7E4E1B] font-bold text-xl ml-1">
-                {playerData?.caloriesConsumed?.toFixed(0) || 0} / {playerData?.dailyCalories?.toFixed(0) || 0}
-              </span>
-            </div>
+          {/* Panel de Calorías */}
+          <div className="bg-[#FFE9A3] px-6 py-2 rounded-full shadow-md mx-auto w-fit mt-2 border-2 border-[#DFC280]">
+            <p className="text-[#8B5E34] font-bold">
+              {language === 'en' ? 'Calories' : language === 'ca' ? 'Calories' : 'Calorías'}: 
+              <span className="text-[#D35400] ml-2 font-mono">0 / 2620</span>
+            </p>
           </div>
         </div>
         
         {/* Contenido principal */}
         <div className="p-4">
-          {/* El botón se ha movido a la esquina superior izquierda */}
-          
           {showGuide ? (
             // Guía de Cocina
             renderCookingGuide()
-          ) : cookingMode === "free" ? (
+          ) : (
             // Modo de Cocina Libre
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Panel izquierdo - Ingredientes disponibles */}
@@ -472,31 +459,24 @@ const Kitchen = ({ onExit }: KitchenProps) => {
                         : "¡Selecciona ingredientes de tu refrigerador y despensa para empezar a cocinar!"}
                     </p>
                   ) : (
-                    <div className="grid grid-cols-1 gap-3">
+                    <div className="grid grid-cols-1 gap-2">
                       {[...refrigeratorFood, ...pantryFood]
                         .filter(item => selectedItems.includes(item.id))
-                        .map(food => (
+                        .map((food) => (
                           <div 
                             key={food.id} 
-                            className="bg-[#FFFAF0] rounded-xl p-3 border-2 border-[#4CAF50] flex justify-between items-center"
+                            className="rounded-lg border-2 border-[#4CAF50] bg-[#E8F5E9] p-2 flex justify-between items-center"
                           >
                             <div>
-                              <span className="font-bold text-[#8B5E34]">{getTranslation(food.name)}</span>
-                              <div className="text-[#7E4E1B] text-xs">
-                                <span>{food.calories} kcal</span>
-                                <span className="mx-1">•</span>
-                                <span>{food.nutritionalValue.protein}g {language === 'en' ? 'protein' : language === 'ca' ? 'proteïna' : 'proteína'}</span>
-                              </div>
+                              <p className="font-semibold text-[#2E7D32]">{getTranslation(food.name)}</p>
+                              <p className="text-xs text-[#388E3C]">{food.calories} kcal • {food.nutritionalValue.protein}g protein</p>
                             </div>
                             <button 
-                              onClick={(e) => {
-                                e.stopPropagation(); // Evitar que se propague al div padre
-                                handleSelectFoodItem(food.id);
-                              }}
-                              className="bg-[#E74C3C] text-white rounded-full p-1 hover:bg-[#C0392B] transition-colors"
+                              onClick={() => handleSelectFoodItem(food.id)}
+                              className="bg-[#EF5350] text-white h-6 w-6 rounded-full flex items-center justify-center shadow-md border border-[#D32F2F] hover:bg-[#D32F2F] transition-colors"
                             >
-                              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
                               </svg>
                             </button>
                           </div>
@@ -545,9 +525,6 @@ const Kitchen = ({ onExit }: KitchenProps) => {
                 </div>
               </div>
             </div>
-          ) : (
-            // Modo guiado (sin mostrar la guía)
-            renderGuidedRecipes()
           )}
         </div>
       </div>
