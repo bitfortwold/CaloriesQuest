@@ -74,13 +74,57 @@ const Kitchen = ({ onExit }: KitchenProps) => {
     
     // Actualizar calorías del jugador (simulado)
     if (playerData) {
-      console.log(`Comida consumida: ${totalCalories} calorías, ${totalProtein}g proteína`);
+      console.log(`Comida preparada: ${totalCalories} calorías, ${totalProtein}g proteína`);
     }
     
     // Notificar al usuario
     toast.success(language === 'en' ? "Meal prepared successfully!" : 
                  language === 'ca' ? "Àpat preparat amb èxit!" : 
                  "¡Comida preparada con éxito!");
+    
+    // Reproducir sonido
+    setSoundType("success");
+    setPlaySound(true);
+    
+    // Resetear selección
+    setSelectedItems([]);
+  };
+  
+  // Consumir los elementos seleccionados
+  const handleConsume = () => {
+    if (selectedItems.length === 0) {
+      toast.error(language === 'en' ? "Select some items to consume first!" : 
+                  language === 'ca' ? "Selecciona alguns elements per consumir primer!" : 
+                  "¡Selecciona algunos alimentos para consumir primero!");
+      return;
+    }
+    
+    // Calcular total de nutrientes
+    const itemsToConsume = [...refrigeratorFood, ...pantryFood]
+      .filter(item => selectedItems.includes(item.id));
+    
+    // Calcular nutrientes y calorías totales
+    let totalCalories = 0;
+    let totalProtein = 0;
+    
+    itemsToConsume.forEach(food => {
+      totalCalories += food.calories;
+      totalProtein += food.nutritionalValue.protein;
+      
+      // Eliminar el alimento de la cocina
+      removeFromKitchen(food.id);
+    });
+    
+    // Actualizar calorías consumidas en el playerData
+    if (playerData) {
+      consumeFood(totalCalories);
+      console.log(`Comida consumida: ${totalCalories} calorías, ${totalProtein}g proteína`);
+    }
+    
+    // Notificar al usuario
+    toast.success(language === 'en' ? "Food consumed successfully!" : 
+                 language === 'ca' ? "Aliment consumit amb èxit!" : 
+                 "¡Alimentos consumidos con éxito!");
     
     // Reproducir sonido
     setSoundType("success");
