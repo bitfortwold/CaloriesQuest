@@ -98,6 +98,94 @@ const KitchenSimple = ({ onExit }: KitchenProps) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+      {/* Modal de Guía Nutricional */}
+      {showNutritionGuide && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black bg-opacity-70">
+          <div className="bg-white w-11/12 max-w-4xl max-h-[85vh] overflow-y-auto rounded-xl p-6 relative">
+            <div className="flex justify-between items-center mb-4 border-b pb-3">
+              <h2 className="text-2xl font-bold text-amber-700">Guía Nutricional Completa</h2>
+              <button 
+                onClick={() => setShowNutritionGuide(false)}
+                className="text-gray-500 hover:text-gray-700 text-xl font-bold"
+              >
+                ✕
+              </button>
+            </div>
+            
+            <div className="space-y-6">
+              <section>
+                <h3 className="text-xl font-semibold text-amber-600 mb-3">Principios Básicos de Nutrición</h3>
+                <p className="mb-3">Una alimentación balanceada es fundamental para mantener una buena salud. Los nutrientes se dividen en macronutrientes (carbohidratos, proteínas y grasas) y micronutrientes (vitaminas y minerales).</p>
+                
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                  <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
+                    <h4 className="font-bold text-yellow-700 mb-2">Carbohidratos</h4>
+                    <p>Principal fuente de energía. Se encuentran en cereales, legumbres, frutas y verduras.</p>
+                    <p className="mt-2 text-sm text-gray-600">Aporte recomendado: 45-65% de la ingesta calórica diaria.</p>
+                  </div>
+                  
+                  <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+                    <h4 className="font-bold text-green-700 mb-2">Proteínas</h4>
+                    <p>Esenciales para la construcción y reparación de tejidos. Se encuentran en carnes, pescados, huevos, lácteos y legumbres.</p>
+                    <p className="mt-2 text-sm text-gray-600">Aporte recomendado: 10-35% de la ingesta calórica diaria.</p>
+                  </div>
+                  
+                  <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                    <h4 className="font-bold text-blue-700 mb-2">Grasas</h4>
+                    <p>Importantes para la absorción de vitaminas y como reserva energética. Se encuentran en aceites, frutos secos, aguacate y pescados grasos.</p>
+                    <p className="mt-2 text-sm text-gray-600">Aporte recomendado: 20-35% de la ingesta calórica diaria.</p>
+                  </div>
+                </div>
+              </section>
+              
+              <section>
+                <h3 className="text-xl font-semibold text-amber-600 mb-3">El Plato Saludable</h3>
+                <p>Una forma práctica de visualizar una alimentación equilibrada es dividir tu plato en porciones:</p>
+                
+                <div className="bg-white p-4 rounded-lg border border-gray-200 mt-3">
+                  <ul className="list-disc pl-5 space-y-2">
+                    <li><strong>50% Vegetales y Frutas:</strong> Aportan vitaminas, minerales, antioxidantes y fibra.</li>
+                    <li><strong>25% Proteínas:</strong> Carnes magras, pescado, huevos, lácteos o alternativas vegetales.</li>
+                    <li><strong>25% Carbohidratos complejos:</strong> Cereales integrales, legumbres o tubérculos.</li>
+                    <li><strong>Complementos:</strong> Pequeñas cantidades de grasas saludables (aceite de oliva, aguacate, frutos secos).</li>
+                  </ul>
+                </div>
+              </section>
+              
+              <section>
+                <h3 className="text-xl font-semibold text-amber-600 mb-3">Recomendaciones Alimentarias</h3>
+                
+                <div className="bg-white p-4 rounded-lg border border-gray-200">
+                  <ul className="list-decimal pl-5 space-y-3">
+                    <li>Consume una variedad de alimentos para asegurar un aporte completo de nutrientes.</li>
+                    <li>Prioriza alimentos frescos y de temporada sobre procesados.</li>
+                    <li>Mantén una hidratación adecuada (aproximadamente 8 vasos de agua al día).</li>
+                    <li>Reduce el consumo de azúcares añadidos, sal y grasas saturadas.</li>
+                    <li>Distribuye tu alimentación en 3-5 comidas a lo largo del día.</li>
+                    <li>Adapta tu ingesta calórica a tu nivel de actividad física.</li>
+                    <li>Practica la alimentación consciente: come despacio y disfruta de cada bocado.</li>
+                  </ul>
+                </div>
+              </section>
+              
+              <div className="bg-amber-50 p-4 rounded-lg border border-amber-200 mt-6">
+                <h3 className="font-semibold text-amber-700 mb-2">¿Sabías que...?</h3>
+                <p>Los hábitos alimentarios sostenibles no solo benefician tu salud, sino también al planeta. Consumir alimentos de origen local y de temporada reduce la huella de carbono asociada al transporte y almacenamiento.</p>
+              </div>
+              
+              <div className="text-center mt-6">
+                <button 
+                  onClick={() => setShowNutritionGuide(false)}
+                  className="px-6 py-2 bg-amber-600 text-white rounded-md hover:bg-amber-700 transition"
+                >
+                  Volver a la Cocina
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      
       <div className="w-11/12 max-w-4xl bg-amber-200 rounded-xl overflow-hidden shadow-xl">
         {/* Cabecera */}
         <div className="bg-amber-700 p-4 flex justify-between items-center">
