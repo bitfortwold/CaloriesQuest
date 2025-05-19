@@ -147,6 +147,17 @@ const Kitchen = ({ onExit }: KitchenProps) => {
     );
   };
   
+  // Función simplificada para alternar entre guía y cocina libre
+  const handleToggleGuide = () => {
+    // Invierte directamente los estados
+    const newGuideState = !showGuide;
+    console.log("⚠️ ALTERNANDO GUÍA:", {estado_actual: showGuide, nuevo_estado: newGuideState});
+    
+    // Actualiza el modo de cocina y el estado de la guía
+    setCookingMode(newGuideState ? "guided" : "free");
+    setShowGuide(newGuideState);
+  };
+  
   // Contenido de la Guía de Cocina
   const renderCookingGuide = () => (
     <div className="bg-[#FFF8E9] p-5 rounded-2xl border-4 border-[#F5D6A4] shadow-lg">
@@ -374,20 +385,7 @@ const Kitchen = ({ onExit }: KitchenProps) => {
           <div className="flex justify-between items-center mb-2">
             {/* Botón convencional de guía (a la izquierda) */}
             <Button
-              onClick={() => {
-                // Invertir estado y aplicar cambios
-                console.log("BOTÓN GUÍA PRESIONADO - Cambiando estado");
-                
-                if (showGuide) {
-                  console.log("Desactivando guía...");
-                  setCookingMode("free");
-                  setShowGuide(false);
-                } else {
-                  console.log("Activando guía...");
-                  setCookingMode("guided");
-                  setShowGuide(true);
-                }
-              }}
+              onClick={handleToggleGuide}
               className={`px-6 py-2 rounded-lg font-bold transition-all 
                 ${showGuide 
                   ? 'bg-green-600 text-white border-2 border-green-700 hover:bg-green-700' 
