@@ -1,0 +1,141 @@
+.recipe-section {
+  padding: 20px;
+  margin: 10px;
+  background-color: white;
+  border-radius: 10px;
+}
+
+.recipe-title {
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 20px;
+  color: #92400e;
+}
+
+.recipe-grid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+@media (min-width: 768px) {
+  .recipe-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.recipe-card-breakfast {
+  padding: 15px;
+  background-color: #FEF3C7;
+  border-radius: 8px;
+  border: 1px solid #F59E0B;
+}
+
+.recipe-card-lunch {
+  padding: 15px;
+  background-color: #DCFCE7;
+  border-radius: 8px;
+  border: 1px solid #22C55E;
+}
+
+.recipe-card-dinner {
+  padding: 15px;
+  background-color: #DBEAFE;
+  border-radius: 8px;
+  border: 1px solid #3B82F6;
+}
+
+.recipe-name-breakfast {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #92400E;
+}
+
+.recipe-name-lunch {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #166534;
+}
+
+.recipe-name-dinner {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #1E40AF;
+}
+
+.recipe-description {
+  margin-bottom: 10px;
+}
+
+.recipe-btn-breakfast {
+  width: 100%;
+  background-color: #F59E0B;
+  color: white;
+  padding: 8px 15px;
+  border: none;
+  border-radius: 5px;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+.recipe-btn-lunch {
+  width: 100%;
+  background-color: #22C55E;
+  color: white;
+  padding: 8px 15px;
+  border: none;
+  border-radius: 5px;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+.recipe-btn-dinner {
+  width: 100%;
+  background-color: #3B82F6;
+  color: white;
+  padding: 8px 15px;
+  border: none;
+  border-radius: 5px;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+.instructions-box {
+  background-color: white;
+  padding: 15px;
+  margin: 20px 0;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  border: 1px solid #E5E7EB;
+}
+
+.instructions-title {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.instructions-list {
+  padding-left: 25px;
+}
+
+.instructions-item {
+  margin: 5px 0;
+}
+
+.nutrition-btn {
+  background-color: #D97706;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  margin: 10px auto;
+  display: block;
+  cursor: pointer;
+}
