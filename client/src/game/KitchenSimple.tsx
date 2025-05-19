@@ -40,8 +40,31 @@ const KitchenSimple = ({ onExit }: KitchenProps) => {
   // Estado para las comidas preparadas
   const [preparedMeals, setPreparedMeals] = useState<{ name: string; calories: number; id: string }[]>([]);
   
+  // Verificar si el jugador tiene todos los ingredientes necesarios para una receta
+  const hasIngredients = (ingredients: string[]): boolean => {
+    if (!playerData || !playerData.inventory) return false;
+    
+    // Verificar cada ingrediente
+    for (const ingredient of ingredients) {
+      // Buscar el ingrediente en el inventario (comparación case-insensitive)
+      const found = playerData.inventory.some(item => 
+        item.name.toLowerCase().includes(ingredient.toLowerCase())
+      );
+      
+      if (!found) return false; // Si falta un ingrediente, retornar false
+    }
+    
+    return true; // Si tiene todos los ingredientes, retornar true
+  };
+  
   // Función para cocinar
-  const prepareMeal = (name: string, calories: number) => {
+  const prepareMeal = (name: string, calories: number, ingredients: string[]) => {
+    // Verificar si el jugador tiene todos los ingredientes
+    if (!hasIngredients(ingredients)) {
+      toast.error(`No tienes todos los ingredientes para preparar ${name}. Necesitas: ${ingredients.join(', ')}`);
+      return;
+    }
+    
     // Crear un ID único para la comida preparada
     const mealId = `meal-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
     
@@ -125,7 +148,7 @@ const KitchenSimple = ({ onExit }: KitchenProps) => {
                   <p className="mb-3"><strong>Calorías:</strong> 350 kcal</p>
                   <button 
                     className="w-full bg-yellow-500 text-white py-2 rounded-md hover:bg-yellow-600 transition"
-                    onClick={() => prepareMeal("Desayuno Equilibrado", 350)}
+                    onClick={() => prepareMeal("Desayuno Equilibrado", 350, ["Huevos", "Pan", "Manzana"])}
                   >
                     Preparar Receta
                   </button>
@@ -139,7 +162,7 @@ const KitchenSimple = ({ onExit }: KitchenProps) => {
                   <p className="mb-3"><strong>Calorías:</strong> 420 kcal</p>
                   <button 
                     className="w-full bg-green-500 text-white py-2 rounded-md hover:bg-green-600 transition"
-                    onClick={() => prepareMeal("Almuerzo Vegetariano", 420)}
+                    onClick={() => prepareMeal("Almuerzo Vegetariano", 420, ["Frijoles", "Arroz", "Brócoli"])}
                   >
                     Preparar Receta
                   </button>
@@ -153,7 +176,7 @@ const KitchenSimple = ({ onExit }: KitchenProps) => {
                   <p className="mb-3"><strong>Calorías:</strong> 480 kcal</p>
                   <button 
                     className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition"
-                    onClick={() => prepareMeal("Cena Proteica", 480)}
+                    onClick={() => prepareMeal("Cena Proteica", 480, ["Pollo", "Patata", "Espinaca"])}
                   >
                     Preparar Receta
                   </button>
@@ -195,7 +218,7 @@ const KitchenSimple = ({ onExit }: KitchenProps) => {
                             <div className="text-gray-600">{food.calories} kcal</div>
                             <button 
                               className="mt-2 text-sm px-3 py-1 bg-amber-600 text-white rounded hover:bg-amber-700"
-                              onClick={() => prepareMeal(food.name, food.calories)}
+                              onClick={() => prepareMeal(food.name, food.calories, [food.name])}
                             >
                               Consumir
                             </button>
