@@ -1125,375 +1125,373 @@ const Kitchen = ({ onExit }: KitchenProps) => {
             
             {/* Contenido de Recetas Guiadas */}
             <TabsContent value="guided-recipes" className="px-1 pt-2">
-              <div className="space-y-4">
-                <h2 className="text-2xl font-bold text-center text-[#8B5E34] mb-2">
-                  {language === 'en' ? 'Guided Recipes' : language === 'ca' ? 'Receptes Guiades' : 'Recetas Guiadas'}
-                </h2>
-                <p className="text-[#7E4E1B] text-center mb-4">
-                  {language === 'en' 
-                    ? 'Follow step-by-step instructions to create delicious and nutritious meals!' 
-                    : language === 'ca' 
-                    ? 'Segueix les instruccions pas a pas per crear àpats deliciosos i nutritius!' 
-                    : '¡Sigue las instrucciones paso a paso para crear comidas deliciosas y nutritivas!'}
-                </p>
-                
-                {/* RECETAS DE DESAYUNO */}
-                <div className="bg-[#FFF8E9] p-4 rounded-2xl border-4 border-[#F9A826] shadow-lg mb-8">
-                  <h3 className="text-xl font-bold text-[#8B5E34] mb-4 pb-2 border-b-2 border-[#F9A826] flex items-center">
-                    <span className="mr-2">🍳</span>
-                    {language === 'en' ? 'Breakfast Recipes' : language === 'ca' ? 'Receptes d\'Esmorzar' : 'Recetas de Desayuno'}
-                  </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {/* Desayuno Equilibrado */}
-                    <div className="bg-white rounded-xl overflow-hidden border-2 border-[#F5D6A4] shadow-md">
-                      <div className="bg-gradient-to-r from-[#F9A826] to-[#F48E11] p-3">
-                        <h4 className="text-white font-bold">
-                          {language === 'en' ? "Balanced Breakfast" : 
-                           language === 'ca' ? "Esmorzar Equilibrat" : 
-                           "Desayuno Equilibrado"}
-                        </h4>
-                        <p className="text-white text-sm">
-                          {language === 'en' ? "A nutritious breakfast with eggs, bread and fruit" : 
-                           language === 'ca' ? "Un esmorzar nutritiu amb ous, pa i fruita" : 
-                           "Un desayuno nutritivo con huevos, pan y fruta"}
-                        </p>
-                      </div>
-                      <div className="p-3">
-                        <div className="flex flex-wrap gap-1 mb-2">
-                          {(language === 'en' ? ["Eggs", "Bread", "Apple"] : 
-                            language === 'ca' ? ["Ous", "Pa", "Poma"] : 
-                            ["Huevos", "Pan", "Manzana"]).map((item, idx) => (
-                              <span key={idx} className="bg-[#FFE0A3] text-[#8B5E34] px-2 py-1 text-xs rounded-lg">
-                                {item}
-                              </span>
-                            ))
-                          }
+              {/* Importamos y usamos directamente el componente GuidedRecipes */}
+              <div className="overflow-y-auto max-h-[65vh]">
+                {/* Inline component para mostrar las recetas */}
+                <div className="py-4 px-2">
+                  <h2 className="text-2xl font-bold text-center text-amber-800 mb-2">
+                    {language === 'en' ? 'Guided Recipes' : language === 'ca' ? 'Receptes Guiades' : 'Recetas Guiadas'}
+                  </h2>
+                  <p className="text-amber-800 text-center mb-4">
+                    {language === 'en' 
+                      ? 'Follow step-by-step instructions to create delicious and nutritious meals!' 
+                      : language === 'ca' 
+                      ? 'Segueix les instruccions pas a pas per crear àpats deliciosos i nutritius!' 
+                      : '¡Sigue las instrucciones paso a paso para crear comidas deliciosas y nutritivas!'}
+                  </p>
+                  
+                  {/* RECETAS DE DESAYUNO */}
+                  <div className="bg-amber-50 p-4 rounded-xl border-2 border-amber-500 shadow-md mb-6">
+                    <h3 className="text-xl font-bold text-amber-800 mb-3 border-b border-amber-300 pb-2">
+                      {language === 'en' ? 'Breakfast Recipes' : language === 'ca' ? 'Receptes d\'Esmorzar' : 'Recetas de Desayuno'}
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {/* Desayuno Equilibrado */}
+                      <div className="bg-white rounded-xl overflow-hidden border-2 border-amber-200 shadow-md">
+                        <div className="bg-amber-500 p-3">
+                          <h4 className="text-white font-bold">
+                            {language === 'en' ? "Balanced Breakfast" : 
+                             language === 'ca' ? "Esmorzar Equilibrat" : 
+                             "Desayuno Equilibrado"}
+                          </h4>
+                          <p className="text-white text-sm">
+                            {language === 'en' ? "A nutritious breakfast with eggs, bread and fruit" : 
+                             language === 'ca' ? "Un esmorzar nutritiu amb ous, pa i fruita" : 
+                             "Un desayuno nutritivo con huevos, pan y fruta"}
+                          </p>
                         </div>
-                        <div className="flex justify-between text-xs text-[#8B5E34]">
-                          <span>385 kcal</span>
-                          <span>15g {language === 'en' ? 'protein' : language === 'ca' ? 'proteïna' : 'proteína'}</span>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    {/* Avena con Proteínas */}
-                    <div className="bg-white rounded-xl overflow-hidden border-2 border-[#F5D6A4] shadow-md">
-                      <div className="bg-gradient-to-r from-[#F9A826] to-[#F48E11] p-3">
-                        <h4 className="text-white font-bold">
-                          {language === 'en' ? "Protein Oatmeal" : 
-                           language === 'ca' ? "Farinetes amb Proteïnes" : 
-                           "Avena con Proteínas"}
-                        </h4>
-                        <p className="text-white text-sm">
-                          {language === 'en' ? "A hearty breakfast with oats, protein and nuts" : 
-                           language === 'ca' ? "Un esmorzar abundant amb civada, proteïnes i fruits secs" : 
-                           "Un desayuno abundante con avena, proteínas y frutos secos"}
-                        </p>
-                      </div>
-                      <div className="p-3">
-                        <div className="flex flex-wrap gap-1 mb-2">
-                          {(language === 'en' ? ["Oats", "Protein", "Banana", "Almond Milk"] : 
-                            language === 'ca' ? ["Civada", "Proteïna", "Plàtan", "Llet d'Ametlla"] : 
-                            ["Avena", "Proteína", "Plátano", "Leche de Almendra"]).map((item, idx) => (
-                              <span key={idx} className="bg-[#FFE0A3] text-[#8B5E34] px-2 py-1 text-xs rounded-lg">
-                                {item}
-                              </span>
-                            ))
-                          }
-                        </div>
-                        <div className="flex justify-between text-xs text-[#8B5E34]">
-                          <span>375 kcal</span>
-                          <span>25g {language === 'en' ? 'protein' : language === 'ca' ? 'proteïna' : 'proteína'}</span>
+                        <div className="p-3">
+                          <div className="flex flex-wrap gap-1 mb-2">
+                            {(language === 'en' ? ["Eggs", "Bread", "Apple"] : 
+                              language === 'ca' ? ["Ous", "Pa", "Poma"] : 
+                              ["Huevos", "Pan", "Manzana"]).map((item, idx) => (
+                                <span key={idx} className="bg-amber-100 text-amber-800 px-2 py-1 text-xs rounded-lg">
+                                  {item}
+                                </span>
+                              ))
+                            }
+                          </div>
+                          <div className="flex justify-between text-xs text-amber-800">
+                            <span>385 kcal</span>
+                            <span>15g {language === 'en' ? 'protein' : language === 'ca' ? 'proteïna' : 'proteína'}</span>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </div>
-                </div>
-                
-                {/* RECETAS PRINCIPALES */}
-                <div className="bg-[#F2FFF5] p-4 rounded-2xl border-4 border-[#4CAF50] shadow-lg mb-8">
-                  <h3 className="text-xl font-bold text-[#2E7D32] mb-4 pb-2 border-b-2 border-[#4CAF50] flex items-center">
-                    <span className="mr-2">🍲</span>
-                    {language === 'en' ? 'Main Course Recipes' : language === 'ca' ? 'Receptes de Plat Principal' : 'Recetas de Plato Principal'}
-                  </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {/* Almuerzo Vegetariano */}
-                    <div className="bg-white rounded-xl overflow-hidden border-2 border-[#A5D6A7] shadow-md">
-                      <div className="bg-gradient-to-r from-[#4CAF50] to-[#2E7D32] p-3">
-                        <h4 className="text-white font-bold">
-                          {language === 'en' ? "Vegetarian Lunch" : 
-                           language === 'ca' ? "Dinar Vegetarià" : 
-                           "Almuerzo Vegetariano"}
-                        </h4>
-                        <p className="text-white text-sm">
-                          {language === 'en' ? "A plant-based lunch with beans, rice and vegetables" : 
-                           language === 'ca' ? "Un dinar a base de plantes amb mongetes, arròs i verdures" : 
-                           "Un almuerzo a base de plantas con frijoles, arroz y verduras"}
-                        </p>
-                      </div>
-                      <div className="p-3">
-                        <div className="flex flex-wrap gap-1 mb-2">
-                          {(language === 'en' ? ["Beans", "Rice", "Broccoli", "Carrot"] : 
-                            language === 'ca' ? ["Mongetes", "Arròs", "Bròquil", "Pastanaga"] : 
-                            ["Frijoles", "Arroz", "Brócoli", "Zanahoria"]).map((item, idx) => (
-                              <span key={idx} className="bg-[#E0F2E9] text-[#2E7D32] px-2 py-1 text-xs rounded-lg">
-                                {item}
-                              </span>
-                            ))
-                          }
+                      
+                      {/* Avena con Proteínas */}
+                      <div className="bg-white rounded-xl overflow-hidden border-2 border-amber-200 shadow-md">
+                        <div className="bg-amber-500 p-3">
+                          <h4 className="text-white font-bold">
+                            {language === 'en' ? "Protein Oatmeal" : 
+                             language === 'ca' ? "Farinetes amb Proteïnes" : 
+                             "Avena con Proteínas"}
+                          </h4>
+                          <p className="text-white text-sm">
+                            {language === 'en' ? "A hearty breakfast with oats, protein and nuts" : 
+                             language === 'ca' ? "Un esmorzar abundant amb civada, proteïnes i fruits secs" : 
+                             "Un desayuno abundante con avena, proteínas y frutos secos"}
+                          </p>
                         </div>
-                        <div className="flex justify-between text-xs text-[#2E7D32]">
-                          <span>320 kcal</span>
-                          <span>12g {language === 'en' ? 'protein' : language === 'ca' ? 'proteïna' : 'proteína'}</span>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    {/* Cena Equilibrada */}
-                    <div className="bg-white rounded-xl overflow-hidden border-2 border-[#A5D6A7] shadow-md">
-                      <div className="bg-gradient-to-r from-[#4CAF50] to-[#2E7D32] p-3">
-                        <h4 className="text-white font-bold">
-                          {language === 'en' ? "Balanced Dinner" : 
-                           language === 'ca' ? "Sopar Equilibrat" : 
-                           "Cena Equilibrada"}
-                        </h4>
-                        <p className="text-white text-sm">
-                          {language === 'en' ? "A balanced dinner with fish, vegetables and grains" : 
-                           language === 'ca' ? "Un sopar equilibrat amb peix, verdures i cereals" : 
-                           "Una cena equilibrada con pescado, verduras y cereales"}
-                        </p>
-                      </div>
-                      <div className="p-3">
-                        <div className="flex flex-wrap gap-1 mb-2">
-                          {(language === 'en' ? ["Fish", "Quinoa", "Spinach", "Tomatoes"] : 
-                            language === 'ca' ? ["Peix", "Quinoa", "Espinacs", "Tomàquets"] : 
-                            ["Pescado", "Quinoa", "Espinacas", "Tomates"]).map((item, idx) => (
-                              <span key={idx} className="bg-[#E0F2E9] text-[#2E7D32] px-2 py-1 text-xs rounded-lg">
-                                {item}
-                              </span>
-                            ))
-                          }
-                        </div>
-                        <div className="flex justify-between text-xs text-[#2E7D32]">
-                          <span>450 kcal</span>
-                          <span>32g {language === 'en' ? 'protein' : language === 'ca' ? 'proteïna' : 'proteína'}</span>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    {/* Ensalada Energética */}
-                    <div className="bg-white rounded-xl overflow-hidden border-2 border-[#A5D6A7] shadow-md">
-                      <div className="bg-gradient-to-r from-[#4CAF50] to-[#2E7D32] p-3">
-                        <h4 className="text-white font-bold">
-                          {language === 'en' ? "Power Salad" : 
-                           language === 'ca' ? "Amanida Energètica" : 
-                           "Ensalada Energética"}
-                        </h4>
-                        <p className="text-white text-sm">
-                          {language === 'en' ? "A protein-packed salad with chicken and avocado" : 
-                           language === 'ca' ? "Una amanida rica en proteïnes amb pollastre i alvocat" : 
-                           "Una ensalada rica en proteínas con pollo y aguacate"}
-                        </p>
-                      </div>
-                      <div className="p-3">
-                        <div className="flex flex-wrap gap-1 mb-2">
-                          {(language === 'en' ? ["Chicken", "Avocado", "Lettuce", "Tomato"] : 
-                            language === 'ca' ? ["Pollastre", "Alvocat", "Enciam", "Tomàquet"] : 
-                            ["Pollo", "Aguacate", "Lechuga", "Tomate"]).map((item, idx) => (
-                              <span key={idx} className="bg-[#E0F2E9] text-[#2E7D32] px-2 py-1 text-xs rounded-lg">
-                                {item}
-                              </span>
-                            ))
-                          }
-                        </div>
-                        <div className="flex justify-between text-xs text-[#2E7D32]">
-                          <span>410 kcal</span>
-                          <span>35g {language === 'en' ? 'protein' : language === 'ca' ? 'proteïna' : 'proteína'}</span>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    {/* Bowl Mediterráneo */}
-                    <div className="bg-white rounded-xl overflow-hidden border-2 border-[#A5D6A7] shadow-md">
-                      <div className="bg-gradient-to-r from-[#4CAF50] to-[#2E7D32] p-3">
-                        <h4 className="text-white font-bold">
-                          {language === 'en' ? "Mediterranean Bowl" : 
-                           language === 'ca' ? "Bol Mediterrani" : 
-                           "Bowl Mediterráneo"}
-                        </h4>
-                        <p className="text-white text-sm">
-                          {language === 'en' ? "A hearty bowl with chickpeas and vegetables" : 
-                           language === 'ca' ? "Un bol abundant amb cigrons i verdures" : 
-                           "Un bowl abundante con garbanzos y verduras"}
-                        </p>
-                      </div>
-                      <div className="p-3">
-                        <div className="flex flex-wrap gap-1 mb-2">
-                          {(language === 'en' ? ["Chickpeas", "Quinoa", "Feta", "Olives"] : 
-                            language === 'ca' ? ["Cigrons", "Quinoa", "Feta", "Olives"] : 
-                            ["Garbanzos", "Quinoa", "Feta", "Aceitunas"]).map((item, idx) => (
-                              <span key={idx} className="bg-[#E0F2E9] text-[#2E7D32] px-2 py-1 text-xs rounded-lg">
-                                {item}
-                              </span>
-                            ))
-                          }
-                        </div>
-                        <div className="flex justify-between text-xs text-[#2E7D32]">
-                          <span>395 kcal</span>
-                          <span>15g {language === 'en' ? 'protein' : language === 'ca' ? 'proteïna' : 'proteína'}</span>
+                        <div className="p-3">
+                          <div className="flex flex-wrap gap-1 mb-2">
+                            {(language === 'en' ? ["Oats", "Protein", "Banana", "Almond Milk"] : 
+                              language === 'ca' ? ["Civada", "Proteïna", "Plàtan", "Llet d'Ametlla"] : 
+                              ["Avena", "Proteína", "Plátano", "Leche de Almendra"]).map((item, idx) => (
+                                <span key={idx} className="bg-amber-100 text-amber-800 px-2 py-1 text-xs rounded-lg">
+                                  {item}
+                                </span>
+                              ))
+                            }
+                          </div>
+                          <div className="flex justify-between text-xs text-amber-800">
+                            <span>375 kcal</span>
+                            <span>25g {language === 'en' ? 'protein' : language === 'ca' ? 'proteïna' : 'proteína'}</span>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
-                
-                {/* RECETAS ESPECIALES */}
-                <div className="bg-[#EFF8FF] p-4 rounded-2xl border-4 border-[#1976D2] shadow-lg mb-8">
-                  <h3 className="text-xl font-bold text-[#1976D2] mb-4 pb-2 border-b-2 border-[#1976D2] flex items-center">
-                    <span className="mr-2">🌟</span>
-                    {language === 'en' ? 'Special Recipes' : language === 'ca' ? 'Receptes Especials' : 'Recetas Especiales'}
-                  </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {/* Bowl de Batido */}
-                    <div className="bg-white rounded-xl overflow-hidden border-2 border-[#90CAF9] shadow-md">
-                      <div className="bg-gradient-to-r from-[#1976D2] to-[#0D47A1] p-3">
-                        <h4 className="text-white font-bold">
-                          {language === 'en' ? "Antioxidant Smoothie Bowl" : 
-                           language === 'ca' ? "Bol de Batut Antioxidant" : 
-                           "Bowl de Batido Antioxidante"}
-                        </h4>
-                        <p className="text-white text-sm">
-                          {language === 'en' ? "A refreshing bowl with berries and superfoods" : 
-                           language === 'ca' ? "Un bol refrescant amb fruits vermells i superaliments" : 
-                           "Un bowl refrescante con bayas y superalimentos"}
-                        </p>
-                      </div>
-                      <div className="p-3">
-                        <div className="flex flex-wrap gap-1 mb-2">
-                          {(language === 'en' ? ["Berries", "Banana", "Yogurt", "Honey"] : 
-                            language === 'ca' ? ["Fruits Vermells", "Plàtan", "Iogurt", "Mel"] : 
-                            ["Bayas", "Plátano", "Yogur", "Miel"]).map((item, idx) => (
-                              <span key={idx} className="bg-[#E3F2FD] text-[#1976D2] px-2 py-1 text-xs rounded-lg">
-                                {item}
-                              </span>
-                            ))
-                          }
+                  
+                  {/* RECETAS PRINCIPALES */}
+                  <div className="bg-green-50 p-4 rounded-xl border-2 border-green-500 shadow-md mb-6">
+                    <h3 className="text-xl font-bold text-green-800 mb-3 border-b border-green-300 pb-2">
+                      {language === 'en' ? 'Main Course Recipes' : language === 'ca' ? 'Receptes de Plat Principal' : 'Recetas de Plato Principal'}
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {/* Almuerzo Vegetariano */}
+                      <div className="bg-white rounded-xl overflow-hidden border-2 border-green-200 shadow-md">
+                        <div className="bg-green-600 p-3">
+                          <h4 className="text-white font-bold">
+                            {language === 'en' ? "Vegetarian Lunch" : 
+                             language === 'ca' ? "Dinar Vegetarià" : 
+                             "Almuerzo Vegetariano"}
+                          </h4>
+                          <p className="text-white text-sm">
+                            {language === 'en' ? "A plant-based lunch with beans, rice and vegetables" : 
+                             language === 'ca' ? "Un dinar a base de plantes amb mongetes, arròs i verdures" : 
+                             "Un almuerzo a base de plantas con frijoles, arroz y verduras"}
+                          </p>
                         </div>
-                        <div className="flex justify-between text-xs text-[#1976D2]">
-                          <span>340 kcal</span>
-                          <span>12g {language === 'en' ? 'protein' : language === 'ca' ? 'proteïna' : 'proteína'}</span>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    {/* Salteado de Verduras */}
-                    <div className="bg-white rounded-xl overflow-hidden border-2 border-[#90CAF9] shadow-md">
-                      <div className="bg-gradient-to-r from-[#1976D2] to-[#0D47A1] p-3">
-                        <h4 className="text-white font-bold">
-                          {language === 'en' ? "Asian Veggie Stir Fry" : 
-                           language === 'ca' ? "Saltat de Verdures Asiàtic" : 
-                           "Salteado de Verduras Asiático"}
-                        </h4>
-                        <p className="text-white text-sm">
-                          {language === 'en' ? "A quick stir fry with ginger and soy sauce" : 
-                           language === 'ca' ? "Un saltat ràpid amb gingebre i salsa de soja" : 
-                           "Un salteado rápido con jengibre y salsa de soja"}
-                        </p>
-                      </div>
-                      <div className="p-3">
-                        <div className="flex flex-wrap gap-1 mb-2">
-                          {(language === 'en' ? ["Broccoli", "Carrot", "Garlic", "Soy Sauce"] : 
-                            language === 'ca' ? ["Bròquil", "Pastanaga", "All", "Salsa de Soja"] : 
-                            ["Brócoli", "Zanahoria", "Ajo", "Salsa de Soja"]).map((item, idx) => (
-                              <span key={idx} className="bg-[#E3F2FD] text-[#1976D2] px-2 py-1 text-xs rounded-lg">
-                                {item}
-                              </span>
-                            ))
-                          }
-                        </div>
-                        <div className="flex justify-between text-xs text-[#1976D2]">
-                          <span>290 kcal</span>
-                          <span>8g {language === 'en' ? 'protein' : language === 'ca' ? 'proteïna' : 'proteína'}</span>
+                        <div className="p-3">
+                          <div className="flex flex-wrap gap-1 mb-2">
+                            {(language === 'en' ? ["Beans", "Rice", "Broccoli", "Carrot"] : 
+                              language === 'ca' ? ["Mongetes", "Arròs", "Bròquil", "Pastanaga"] : 
+                              ["Frijoles", "Arroz", "Brócoli", "Zanahoria"]).map((item, idx) => (
+                                <span key={idx} className="bg-green-100 text-green-800 px-2 py-1 text-xs rounded-lg">
+                                  {item}
+                                </span>
+                              ))
+                            }
+                          </div>
+                          <div className="flex justify-between text-xs text-green-800">
+                            <span>320 kcal</span>
+                            <span>12g {language === 'en' ? 'protein' : language === 'ca' ? 'proteïna' : 'proteína'}</span>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    
-                    {/* Sopa de Verduras */}
-                    <div className="bg-white rounded-xl overflow-hidden border-2 border-[#90CAF9] shadow-md">
-                      <div className="bg-gradient-to-r from-[#1976D2] to-[#0D47A1] p-3">
-                        <h4 className="text-white font-bold">
-                          {language === 'en' ? "Hearty Vegetable Soup" : 
-                           language === 'ca' ? "Sopa Abundant de Verdures" : 
-                           "Sopa Abundante de Verduras"}
-                        </h4>
-                        <p className="text-white text-sm">
-                          {language === 'en' ? "A comforting soup with vegetables and beans" : 
-                           language === 'ca' ? "Una sopa reconfortant amb verdures i llegums" : 
-                           "Una sopa reconfortante con verduras y legumbres"}
-                        </p>
-                      </div>
-                      <div className="p-3">
-                        <div className="flex flex-wrap gap-1 mb-2">
-                          {(language === 'en' ? ["Tomatoes", "Carrots", "Beans", "Broth"] : 
-                            language === 'ca' ? ["Tomàquets", "Pastanagues", "Mongetes", "Brou"] : 
-                            ["Tomates", "Zanahorias", "Frijoles", "Caldo"]).map((item, idx) => (
-                              <span key={idx} className="bg-[#E3F2FD] text-[#1976D2] px-2 py-1 text-xs rounded-lg">
-                                {item}
-                              </span>
-                            ))
-                          }
+                      
+                      {/* Cena Equilibrada */}
+                      <div className="bg-white rounded-xl overflow-hidden border-2 border-green-200 shadow-md">
+                        <div className="bg-green-600 p-3">
+                          <h4 className="text-white font-bold">
+                            {language === 'en' ? "Balanced Dinner" : 
+                             language === 'ca' ? "Sopar Equilibrat" : 
+                             "Cena Equilibrada"}
+                          </h4>
+                          <p className="text-white text-sm">
+                            {language === 'en' ? "A balanced dinner with fish, vegetables and grains" : 
+                             language === 'ca' ? "Un sopar equilibrat amb peix, verdures i cereals" : 
+                             "Una cena equilibrada con pescado, verduras y cereales"}
+                          </p>
                         </div>
-                        <div className="flex justify-between text-xs text-[#1976D2]">
-                          <span>220 kcal</span>
-                          <span>10g {language === 'en' ? 'protein' : language === 'ca' ? 'proteïna' : 'proteína'}</span>
+                        <div className="p-3">
+                          <div className="flex flex-wrap gap-1 mb-2">
+                            {(language === 'en' ? ["Fish", "Quinoa", "Spinach", "Tomatoes"] : 
+                              language === 'ca' ? ["Peix", "Quinoa", "Espinacs", "Tomàquets"] : 
+                              ["Pescado", "Quinoa", "Espinacas", "Tomates"]).map((item, idx) => (
+                                <span key={idx} className="bg-green-100 text-green-800 px-2 py-1 text-xs rounded-lg">
+                                  {item}
+                                </span>
+                              ))
+                            }
+                          </div>
+                          <div className="flex justify-between text-xs text-green-800">
+                            <span>450 kcal</span>
+                            <span>32g {language === 'en' ? 'protein' : language === 'ca' ? 'proteïna' : 'proteína'}</span>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    
-                    {/* Pimientos Rellenos */}
-                    <div className="bg-white rounded-xl overflow-hidden border-2 border-[#90CAF9] shadow-md">
-                      <div className="bg-gradient-to-r from-[#1976D2] to-[#0D47A1] p-3">
-                        <h4 className="text-white font-bold">
-                          {language === 'en' ? "Stuffed Bell Peppers" : 
-                           language === 'ca' ? "Pebrots Farcits" : 
-                           "Pimientos Rellenos"}
-                        </h4>
-                        <p className="text-white text-sm">
-                          {language === 'en' ? "Bell peppers stuffed with quinoa and beans" : 
-                           language === 'ca' ? "Pebrots farcits amb quinoa i mongetes" : 
-                           "Pimientos rellenos con quinoa y frijoles"}
-                        </p>
-                      </div>
-                      <div className="p-3">
-                        <div className="flex flex-wrap gap-1 mb-2">
-                          {(language === 'en' ? ["Peppers", "Quinoa", "Beans", "Cheese"] : 
-                            language === 'ca' ? ["Pebrots", "Quinoa", "Mongetes", "Formatge"] : 
-                            ["Pimientos", "Quinoa", "Frijoles", "Queso"]).map((item, idx) => (
-                              <span key={idx} className="bg-[#E3F2FD] text-[#1976D2] px-2 py-1 text-xs rounded-lg">
-                                {item}
-                              </span>
-                            ))
-                          }
+                      
+                      {/* Ensalada Energética */}
+                      <div className="bg-white rounded-xl overflow-hidden border-2 border-green-200 shadow-md">
+                        <div className="bg-green-600 p-3">
+                          <h4 className="text-white font-bold">
+                            {language === 'en' ? "Power Salad" : 
+                             language === 'ca' ? "Amanida Energètica" : 
+                             "Ensalada Energética"}
+                          </h4>
+                          <p className="text-white text-sm">
+                            {language === 'en' ? "A protein-packed salad with chicken and avocado" : 
+                             language === 'ca' ? "Una amanida rica en proteïnes amb pollastre i alvocat" : 
+                             "Una ensalada rica en proteínas con pollo y aguacate"}
+                          </p>
                         </div>
-                        <div className="flex justify-between text-xs text-[#1976D2]">
-                          <span>310 kcal</span>
-                          <span>14g {language === 'en' ? 'protein' : language === 'ca' ? 'proteïna' : 'proteína'}</span>
+                        <div className="p-3">
+                          <div className="flex flex-wrap gap-1 mb-2">
+                            {(language === 'en' ? ["Chicken", "Avocado", "Lettuce", "Tomato"] : 
+                              language === 'ca' ? ["Pollastre", "Alvocat", "Enciam", "Tomàquet"] : 
+                              ["Pollo", "Aguacate", "Lechuga", "Tomate"]).map((item, idx) => (
+                                <span key={idx} className="bg-green-100 text-green-800 px-2 py-1 text-xs rounded-lg">
+                                  {item}
+                                </span>
+                              ))
+                            }
+                          </div>
+                          <div className="flex justify-between text-xs text-green-800">
+                            <span>410 kcal</span>
+                            <span>35g {language === 'en' ? 'protein' : language === 'ca' ? 'proteïna' : 'proteína'}</span>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      {/* Bowl Mediterráneo */}
+                      <div className="bg-white rounded-xl overflow-hidden border-2 border-green-200 shadow-md">
+                        <div className="bg-green-600 p-3">
+                          <h4 className="text-white font-bold">
+                            {language === 'en' ? "Mediterranean Bowl" : 
+                             language === 'ca' ? "Bol Mediterrani" : 
+                             "Bowl Mediterráneo"}
+                          </h4>
+                          <p className="text-white text-sm">
+                            {language === 'en' ? "A hearty bowl with chickpeas and vegetables" : 
+                             language === 'ca' ? "Un bol abundant amb cigrons i verdures" : 
+                             "Un bowl abundante con garbanzos y verduras"}
+                          </p>
+                        </div>
+                        <div className="p-3">
+                          <div className="flex flex-wrap gap-1 mb-2">
+                            {(language === 'en' ? ["Chickpeas", "Quinoa", "Feta", "Olives"] : 
+                              language === 'ca' ? ["Cigrons", "Quinoa", "Feta", "Olives"] : 
+                              ["Garbanzos", "Quinoa", "Feta", "Aceitunas"]).map((item, idx) => (
+                                <span key={idx} className="bg-green-100 text-green-800 px-2 py-1 text-xs rounded-lg">
+                                  {item}
+                                </span>
+                              ))
+                            }
+                          </div>
+                          <div className="flex justify-between text-xs text-green-800">
+                            <span>395 kcal</span>
+                            <span>15g {language === 'en' ? 'protein' : language === 'ca' ? 'proteïna' : 'proteína'}</span>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
-                
-                {/* Botón para ver más detalles */}
-                <div className="flex justify-center mt-6">
-                  <button className="bg-gradient-to-r from-[#F9A826] to-[#F48E11] hover:brightness-110 text-white font-bold py-3 px-6 rounded-xl transition-all shadow-md border-2 border-[#E47F0E] flex items-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clipRule="evenodd" />
-                    </svg>
-                    {language === 'en' ? 'View Detailed Recipes' : 
-                     language === 'ca' ? 'Veure Receptes Detallades' : 
-                     'Ver Recetas Detalladas'}
-                  </button>
+                  
+                  {/* RECETAS ESPECIALES */}
+                  <div className="bg-blue-50 p-4 rounded-xl border-2 border-blue-500 shadow-md mb-6">
+                    <h3 className="text-xl font-bold text-blue-800 mb-3 border-b border-blue-300 pb-2">
+                      {language === 'en' ? 'Special Recipes' : language === 'ca' ? 'Receptes Especials' : 'Recetas Especiales'}
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {/* Bowl de Batido */}
+                      <div className="bg-white rounded-xl overflow-hidden border-2 border-blue-200 shadow-md">
+                        <div className="bg-blue-600 p-3">
+                          <h4 className="text-white font-bold">
+                            {language === 'en' ? "Antioxidant Smoothie Bowl" : 
+                             language === 'ca' ? "Bol de Batut Antioxidant" : 
+                             "Bowl de Batido Antioxidante"}
+                          </h4>
+                          <p className="text-white text-sm">
+                            {language === 'en' ? "A refreshing bowl with berries and superfoods" : 
+                             language === 'ca' ? "Un bol refrescant amb fruits vermells i superaliments" : 
+                             "Un bowl refrescante con bayas y superalimentos"}
+                          </p>
+                        </div>
+                        <div className="p-3">
+                          <div className="flex flex-wrap gap-1 mb-2">
+                            {(language === 'en' ? ["Berries", "Banana", "Yogurt", "Honey"] : 
+                              language === 'ca' ? ["Fruits Vermells", "Plàtan", "Iogurt", "Mel"] : 
+                              ["Bayas", "Plátano", "Yogur", "Miel"]).map((item, idx) => (
+                                <span key={idx} className="bg-blue-100 text-blue-800 px-2 py-1 text-xs rounded-lg">
+                                  {item}
+                                </span>
+                              ))
+                            }
+                          </div>
+                          <div className="flex justify-between text-xs text-blue-800">
+                            <span>340 kcal</span>
+                            <span>12g {language === 'en' ? 'protein' : language === 'ca' ? 'proteïna' : 'proteína'}</span>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      {/* Salteado de Verduras */}
+                      <div className="bg-white rounded-xl overflow-hidden border-2 border-blue-200 shadow-md">
+                        <div className="bg-blue-600 p-3">
+                          <h4 className="text-white font-bold">
+                            {language === 'en' ? "Asian Veggie Stir Fry" : 
+                             language === 'ca' ? "Saltat de Verdures Asiàtic" : 
+                             "Salteado de Verduras Asiático"}
+                          </h4>
+                          <p className="text-white text-sm">
+                            {language === 'en' ? "A quick stir fry with ginger and soy sauce" : 
+                             language === 'ca' ? "Un saltat ràpid amb gingebre i salsa de soja" : 
+                             "Un salteado rápido con jengibre y salsa de soja"}
+                          </p>
+                        </div>
+                        <div className="p-3">
+                          <div className="flex flex-wrap gap-1 mb-2">
+                            {(language === 'en' ? ["Broccoli", "Carrot", "Garlic", "Soy Sauce"] : 
+                              language === 'ca' ? ["Bròquil", "Pastanaga", "All", "Salsa de Soja"] : 
+                              ["Brócoli", "Zanahoria", "Ajo", "Salsa de Soja"]).map((item, idx) => (
+                                <span key={idx} className="bg-blue-100 text-blue-800 px-2 py-1 text-xs rounded-lg">
+                                  {item}
+                                </span>
+                              ))
+                            }
+                          </div>
+                          <div className="flex justify-between text-xs text-blue-800">
+                            <span>290 kcal</span>
+                            <span>8g {language === 'en' ? 'protein' : language === 'ca' ? 'proteïna' : 'proteína'}</span>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      {/* Sopa de Verduras */}
+                      <div className="bg-white rounded-xl overflow-hidden border-2 border-blue-200 shadow-md">
+                        <div className="bg-blue-600 p-3">
+                          <h4 className="text-white font-bold">
+                            {language === 'en' ? "Hearty Vegetable Soup" : 
+                             language === 'ca' ? "Sopa Abundant de Verdures" : 
+                             "Sopa Abundante de Verduras"}
+                          </h4>
+                          <p className="text-white text-sm">
+                            {language === 'en' ? "A comforting soup with vegetables and beans" : 
+                             language === 'ca' ? "Una sopa reconfortant amb verdures i llegums" : 
+                             "Una sopa reconfortante con verduras y legumbres"}
+                          </p>
+                        </div>
+                        <div className="p-3">
+                          <div className="flex flex-wrap gap-1 mb-2">
+                            {(language === 'en' ? ["Tomatoes", "Carrots", "Beans", "Broth"] : 
+                              language === 'ca' ? ["Tomàquets", "Pastanagues", "Mongetes", "Brou"] : 
+                              ["Tomates", "Zanahorias", "Frijoles", "Caldo"]).map((item, idx) => (
+                                <span key={idx} className="bg-blue-100 text-blue-800 px-2 py-1 text-xs rounded-lg">
+                                  {item}
+                                </span>
+                              ))
+                            }
+                          </div>
+                          <div className="flex justify-between text-xs text-blue-800">
+                            <span>220 kcal</span>
+                            <span>10g {language === 'en' ? 'protein' : language === 'ca' ? 'proteïna' : 'proteína'}</span>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      {/* Pimientos Rellenos */}
+                      <div className="bg-white rounded-xl overflow-hidden border-2 border-blue-200 shadow-md">
+                        <div className="bg-blue-600 p-3">
+                          <h4 className="text-white font-bold">
+                            {language === 'en' ? "Stuffed Bell Peppers" : 
+                             language === 'ca' ? "Pebrots Farcits" : 
+                             "Pimientos Rellenos"}
+                          </h4>
+                          <p className="text-white text-sm">
+                            {language === 'en' ? "Bell peppers stuffed with quinoa and beans" : 
+                             language === 'ca' ? "Pebrots farcits amb quinoa i mongetes" : 
+                             "Pimientos rellenos con quinoa y frijoles"}
+                          </p>
+                        </div>
+                        <div className="p-3">
+                          <div className="flex flex-wrap gap-1 mb-2">
+                            {(language === 'en' ? ["Peppers", "Quinoa", "Beans", "Cheese"] : 
+                              language === 'ca' ? ["Pebrots", "Quinoa", "Mongetes", "Formatge"] : 
+                              ["Pimientos", "Quinoa", "Frijoles", "Queso"]).map((item, idx) => (
+                                <span key={idx} className="bg-blue-100 text-blue-800 px-2 py-1 text-xs rounded-lg">
+                                  {item}
+                                </span>
+                              ))
+                            }
+                          </div>
+                          <div className="flex justify-between text-xs text-blue-800">
+                            <span>310 kcal</span>
+                            <span>14g {language === 'en' ? 'protein' : language === 'ca' ? 'proteïna' : 'proteína'}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Botón para ver más detalles */}
+                  <div className="flex justify-center mt-6">
+                    <button className="bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 px-6 rounded-xl shadow-md">
+                      {language === 'en' ? 'View Detailed Recipes' : 
+                       language === 'ca' ? 'Veure Receptes Detallades' : 
+                       'Ver Recetas Detalladas'}
+                    </button>
+                  </div>
                 </div>
               </div>
             </TabsContent>
