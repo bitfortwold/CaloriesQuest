@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import RecipesGuided from "./RecipesGuided";
 import { useFoodStore } from "../stores/useFoodStore";
 import { usePlayerStore } from "../stores/usePlayerStore";
 import { useLanguage } from "../i18n/LanguageContext";
@@ -1123,63 +1124,9 @@ const Kitchen = ({ onExit }: KitchenProps) => {
               </div>
             </TabsContent>
             
-            {/* Contenido de Recetas Guiadas - HTML SIMPLE */}
+            {/* Contenido de Recetas Guiadas - COMPONENTE IMPORTADO */}
             <TabsContent value="guided-recipes">
-              <div>
-                <h2 style={{fontSize: "24px", fontWeight: "bold", textAlign: "center", margin: "20px 0"}}>Las Tres Recetas Básicas</h2>
-                
-                <table style={{width: "100%", borderCollapse: "separate", borderSpacing: "10px"}}>
-                  <tbody>
-                    <tr>
-                      <td style={{width: "33%", padding: "15px", backgroundColor: "#FEF3C7", borderRadius: "8px", border: "1px solid #F59E0B"}}>
-                        <h3 style={{fontSize: "18px", fontWeight: "bold", color: "#92400E", marginBottom: "10px"}}>Desayuno Equilibrado</h3>
-                        <p style={{marginBottom: "10px"}}>Un desayuno nutritivo con huevos, pan y fruta fresca</p>
-                        <p><strong>Ingredientes:</strong> Huevos, Pan, Manzana</p>
-                        <p><strong>Calorías:</strong> 350 kcal</p>
-                        <button style={{width: "100%", backgroundColor: "#F59E0B", color: "white", padding: "8px", border: "none", borderRadius: "5px", marginTop: "10px"}}>
-                          Preparar
-                        </button>
-                      </td>
-                      
-                      <td style={{width: "33%", padding: "15px", backgroundColor: "#DCFCE7", borderRadius: "8px", border: "1px solid #22C55E"}}>
-                        <h3 style={{fontSize: "18px", fontWeight: "bold", color: "#166534", marginBottom: "10px"}}>Almuerzo Vegetariano</h3>
-                        <p style={{marginBottom: "10px"}}>Un almuerzo a base de plantas con frijoles, arroz y verduras</p>
-                        <p><strong>Ingredientes:</strong> Frijoles, Arroz, Brócoli</p>
-                        <p><strong>Calorías:</strong> 420 kcal</p>
-                        <button style={{width: "100%", backgroundColor: "#22C55E", color: "white", padding: "8px", border: "none", borderRadius: "5px", marginTop: "10px"}}>
-                          Preparar
-                        </button>
-                      </td>
-                      
-                      <td style={{width: "33%", padding: "15px", backgroundColor: "#DBEAFE", borderRadius: "8px", border: "1px solid #3B82F6"}}>
-                        <h3 style={{fontSize: "18px", fontWeight: "bold", color: "#1E40AF", marginBottom: "10px"}}>Cena Proteica</h3>
-                        <p style={{marginBottom: "10px"}}>Una cena rica en proteínas con pollo, patatas y vegetales</p>
-                        <p><strong>Ingredientes:</strong> Pollo, Patata, Espinaca</p>
-                        <p><strong>Calorías:</strong> 480 kcal</p>
-                        <button style={{width: "100%", backgroundColor: "#3B82F6", color: "white", padding: "8px", border: "none", borderRadius: "5px", marginTop: "10px"}}>
-                          Preparar
-                        </button>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-                
-                <div style={{backgroundColor: "white", padding: "15px", margin: "20px 0", borderRadius: "8px", boxShadow: "0 2px 5px rgba(0,0,0,0.1)"}}>
-                  <h3 style={{fontSize: "20px", fontWeight: "bold", marginBottom: "10px"}}>Instrucciones:</h3>
-                  <ol style={{paddingLeft: "25px"}}>
-                    <li style={{margin: "5px 0"}}>Selecciona una receta según tus necesidades nutricionales</li>
-                    <li style={{margin: "5px 0"}}>Asegúrate de tener todos los ingredientes en tu inventario</li>
-                    <li style={{margin: "5px 0"}}>Sigue cada paso para preparar una comida nutritiva</li>
-                    <li style={{margin: "5px 0"}}>¡Disfruta de tu comida y aprende sobre nutrición!</li>
-                  </ol>
-                </div>
-                
-                <div style={{textAlign: "center", marginTop: "20px"}}>
-                  <button style={{backgroundColor: "#D97706", color: "white", padding: "10px 20px", border: "none", borderRadius: "8px", fontWeight: "bold"}}>
-                    Guía Nutricional Completa
-                  </button>
-                </div>
-              </div>
+              <RecipesGuided />
             </TabsContent>
           </Tabs>
         </div>
