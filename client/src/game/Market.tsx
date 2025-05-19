@@ -348,14 +348,13 @@ const Market = ({ onExit }: MarketProps) => {
                 toggleCartVisibility();
                 console.log("Cart visibility after toggle:", !showCart);
               }}
-              className="bg-gradient-to-r from-[#E67E22] to-[#F39C12] text-white px-6 py-2 rounded-lg font-bold shadow-md border-2 border-[#D35400] hover:from-[#D35400] hover:to-[#E67E22] transition duration-300 flex items-center"
+              className="bg-gradient-to-r from-green-500 to-green-600 text-white p-3 rounded-full font-bold shadow-md border-2 border-green-700 hover:from-green-600 hover:to-green-700 transition duration-300 flex items-center justify-center h-14 w-14 relative"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
               </svg>
-              {t.cart}
               {cart.length > 0 && (
-                <span className="ml-2 bg-red-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold rounded-full h-6 w-6 flex items-center justify-center border border-white">
                   {cart.length}
                 </span>
               )}
