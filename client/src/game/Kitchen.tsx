@@ -1124,9 +1124,56 @@ const Kitchen = ({ onExit }: KitchenProps) => {
               </div>
             </TabsContent>
             
-            {/* Contenido de Recetas Guiadas - COMPONENTE IMPORTADO */}
+            {/* Contenido de Recetas Guiadas - DIRECTO EN KITCHEN.TSX */}
             <TabsContent value="guided-recipes">
-              <RecipesGuided />
+              <div style={{padding: '20px', margin: '10px'}}>
+                <h2 style={{fontSize: '24px', fontWeight: 'bold', textAlign: 'center', marginBottom: '20px'}}>Las Tres Recetas Básicas</h2>
+                
+                <div style={{display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '15px', marginBottom: '20px'}}>
+                  {/* Receta 1 */}
+                  <div style={{padding: '15px', backgroundColor: '#FEF3C7', borderRadius: '8px', border: '1px solid #F59E0B'}}>
+                    <h3 style={{fontSize: '20px', fontWeight: 'bold', marginBottom: '10px', color: '#92400E'}}>Desayuno Equilibrado</h3>
+                    <p style={{marginBottom: '10px'}}>Un desayuno nutritivo con huevos, pan y fruta fresca</p>
+                    <p><strong>Ingredientes:</strong> Huevos, Pan, Manzana</p>
+                    <p><strong>Calorías:</strong> 350 kcal</p>
+                    <button style={{width: '100%', backgroundColor: '#F59E0B', color: 'white', padding: '8px 15px', border: 'none', borderRadius: '5px', marginTop: '10px'}}>
+                      Preparar Receta
+                    </button>
+                  </div>
+                  
+                  {/* Receta 2 */}
+                  <div style={{padding: '15px', backgroundColor: '#DCFCE7', borderRadius: '8px', border: '1px solid #22C55E'}}>
+                    <h3 style={{fontSize: '20px', fontWeight: 'bold', marginBottom: '10px', color: '#166534'}}>Almuerzo Vegetariano</h3>
+                    <p style={{marginBottom: '10px'}}>Un almuerzo a base de plantas con frijoles, arroz y verduras</p>
+                    <p><strong>Ingredientes:</strong> Frijoles, Arroz, Brócoli</p>
+                    <p><strong>Calorías:</strong> 420 kcal</p>
+                    <button style={{width: '100%', backgroundColor: '#22C55E', color: 'white', padding: '8px 15px', border: 'none', borderRadius: '5px', marginTop: '10px'}}>
+                      Preparar Receta
+                    </button>
+                  </div>
+                  
+                  {/* Receta 3 */}
+                  <div style={{padding: '15px', backgroundColor: '#DBEAFE', borderRadius: '8px', border: '1px solid #3B82F6'}}>
+                    <h3 style={{fontSize: '20px', fontWeight: 'bold', marginBottom: '10px', color: '#1E40AF'}}>Cena Proteica</h3>
+                    <p style={{marginBottom: '10px'}}>Una cena rica en proteínas con pollo, patatas y verduras</p>
+                    <p><strong>Ingredientes:</strong> Pollo, Patata, Espinaca</p>
+                    <p><strong>Calorías:</strong> 480 kcal</p>
+                    <button style={{width: '100%', backgroundColor: '#3B82F6', color: 'white', padding: '8px 15px', border: 'none', borderRadius: '5px', marginTop: '10px'}}>
+                      Preparar Receta
+                    </button>
+                  </div>
+                </div>
+                
+                <div style={{backgroundColor: 'white', padding: '15px', margin: '20px 0', borderRadius: '8px', boxShadow: '0 2px 5px rgba(0,0,0,0.1)'}}>
+                  <h3 style={{fontSize: '20px', fontWeight: 'bold', marginBottom: '10px'}}>Instrucciones:</h3>
+                  <ol style={{paddingLeft: '25px'}}>
+                    <li style={{margin: '5px 0'}}>Selecciona una receta según tus necesidades nutricionales</li>
+                    <li style={{margin: '5px 0'}}>Asegúrate de tener todos los ingredientes en tu inventario</li>
+                    <li style={{margin: '5px 0'}}>Sigue cada paso para preparar una comida nutritiva</li>
+                    <li style={{margin: '5px 0'}}>¡Disfruta de tu comida y aprende sobre nutrición!</li>
+                  </ol>
+                </div>
+              </div>
             </TabsContent>
           </Tabs>
         </div>
