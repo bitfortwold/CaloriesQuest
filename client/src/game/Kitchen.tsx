@@ -1123,375 +1123,183 @@ const Kitchen = ({ onExit }: KitchenProps) => {
               </div>
             </TabsContent>
             
-            {/* Contenido de Recetas Guiadas */}
-            <TabsContent value="guided-recipes" className="px-1 pt-2">
-              {/* Importamos y usamos directamente el componente GuidedRecipes */}
-              <div className="overflow-y-auto max-h-[65vh]">
-                {/* Inline component para mostrar las recetas */}
-                <div className="py-4 px-2">
-                  <h2 className="text-2xl font-bold text-center text-amber-800 mb-2">
-                    {language === 'en' ? 'Guided Recipes' : language === 'ca' ? 'Receptes Guiades' : 'Recetas Guiadas'}
-                  </h2>
-                  <p className="text-amber-800 text-center mb-4">
-                    {language === 'en' 
-                      ? 'Follow step-by-step instructions to create delicious and nutritious meals!' 
-                      : language === 'ca' 
-                      ? 'Segueix les instruccions pas a pas per crear àpats deliciosos i nutritius!' 
-                      : '¡Sigue las instrucciones paso a paso para crear comidas deliciosas y nutritivas!'}
-                  </p>
-                  
-                  {/* RECETAS DE DESAYUNO */}
-                  <div className="bg-amber-50 p-4 rounded-xl border-2 border-amber-500 shadow-md mb-6">
-                    <h3 className="text-xl font-bold text-amber-800 mb-3 border-b border-amber-300 pb-2">
-                      {language === 'en' ? 'Breakfast Recipes' : language === 'ca' ? 'Receptes d\'Esmorzar' : 'Recetas de Desayuno'}
-                    </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {/* Desayuno Equilibrado */}
-                      <div className="bg-white rounded-xl overflow-hidden border-2 border-amber-200 shadow-md">
-                        <div className="bg-amber-500 p-3">
-                          <h4 className="text-white font-bold">
-                            {language === 'en' ? "Balanced Breakfast" : 
-                             language === 'ca' ? "Esmorzar Equilibrat" : 
-                             "Desayuno Equilibrado"}
-                          </h4>
-                          <p className="text-white text-sm">
-                            {language === 'en' ? "A nutritious breakfast with eggs, bread and fruit" : 
-                             language === 'ca' ? "Un esmorzar nutritiu amb ous, pa i fruita" : 
-                             "Un desayuno nutritivo con huevos, pan y fruta"}
-                          </p>
-                        </div>
-                        <div className="p-3">
-                          <div className="flex flex-wrap gap-1 mb-2">
-                            {(language === 'en' ? ["Eggs", "Bread", "Apple"] : 
-                              language === 'ca' ? ["Ous", "Pa", "Poma"] : 
-                              ["Huevos", "Pan", "Manzana"]).map((item, idx) => (
-                                <span key={idx} className="bg-amber-100 text-amber-800 px-2 py-1 text-xs rounded-lg">
-                                  {item}
-                                </span>
-                              ))
-                            }
-                          </div>
-                          <div className="flex justify-between text-xs text-amber-800">
-                            <span>385 kcal</span>
-                            <span>15g {language === 'en' ? 'protein' : language === 'ca' ? 'proteïna' : 'proteína'}</span>
-                          </div>
-                        </div>
+            {/* Contenido de Recetas Guiadas - VERSIÓN SIMPLIFICADA */}
+            <TabsContent value="guided-recipes" className="p-4">
+              <div className="max-w-4xl mx-auto">
+                <h2 className="text-2xl font-bold mb-4 text-center text-amber-800">Recetas Guiadas</h2>
+                
+                {/* Recetas de desayuno */}
+                <div className="mb-8 bg-amber-100 p-4 rounded-xl">
+                  <h3 className="text-xl font-bold mb-4 text-amber-800 border-b pb-2">Recetas de Desayuno</h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {/* Desayuno 1 */}
+                    <div className="bg-white p-3 rounded-lg shadow border border-amber-300">
+                      <h4 className="font-bold text-amber-700 mb-1">Desayuno Equilibrado</h4>
+                      <p className="text-sm mb-2 text-gray-600">Un desayuno nutritivo con huevos, pan y fruta</p>
+                      <div className="flex gap-1 flex-wrap mb-2">
+                        <span className="bg-amber-100 text-amber-800 px-2 py-0.5 text-xs rounded">Huevos</span>
+                        <span className="bg-amber-100 text-amber-800 px-2 py-0.5 text-xs rounded">Pan</span>
+                        <span className="bg-amber-100 text-amber-800 px-2 py-0.5 text-xs rounded">Manzana</span>
                       </div>
-                      
-                      {/* Avena con Proteínas */}
-                      <div className="bg-white rounded-xl overflow-hidden border-2 border-amber-200 shadow-md">
-                        <div className="bg-amber-500 p-3">
-                          <h4 className="text-white font-bold">
-                            {language === 'en' ? "Protein Oatmeal" : 
-                             language === 'ca' ? "Farinetes amb Proteïnes" : 
-                             "Avena con Proteínas"}
-                          </h4>
-                          <p className="text-white text-sm">
-                            {language === 'en' ? "A hearty breakfast with oats, protein and nuts" : 
-                             language === 'ca' ? "Un esmorzar abundant amb civada, proteïnes i fruits secs" : 
-                             "Un desayuno abundante con avena, proteínas y frutos secos"}
-                          </p>
-                        </div>
-                        <div className="p-3">
-                          <div className="flex flex-wrap gap-1 mb-2">
-                            {(language === 'en' ? ["Oats", "Protein", "Banana", "Almond Milk"] : 
-                              language === 'ca' ? ["Civada", "Proteïna", "Plàtan", "Llet d'Ametlla"] : 
-                              ["Avena", "Proteína", "Plátano", "Leche de Almendra"]).map((item, idx) => (
-                                <span key={idx} className="bg-amber-100 text-amber-800 px-2 py-1 text-xs rounded-lg">
-                                  {item}
-                                </span>
-                              ))
-                            }
-                          </div>
-                          <div className="flex justify-between text-xs text-amber-800">
-                            <span>375 kcal</span>
-                            <span>25g {language === 'en' ? 'protein' : language === 'ca' ? 'proteïna' : 'proteína'}</span>
-                          </div>
-                        </div>
+                      <div className="text-xs text-gray-500 flex justify-between">
+                        <span>385 kcal</span>
+                        <span>15g proteína</span>
+                      </div>
+                    </div>
+
+                    {/* Desayuno 2 */}
+                    <div className="bg-white p-3 rounded-lg shadow border border-amber-300">
+                      <h4 className="font-bold text-amber-700 mb-1">Avena con Proteínas</h4>
+                      <p className="text-sm mb-2 text-gray-600">Un desayuno abundante con avena, proteínas y frutos secos</p>
+                      <div className="flex gap-1 flex-wrap mb-2">
+                        <span className="bg-amber-100 text-amber-800 px-2 py-0.5 text-xs rounded">Avena</span>
+                        <span className="bg-amber-100 text-amber-800 px-2 py-0.5 text-xs rounded">Proteína</span>
+                        <span className="bg-amber-100 text-amber-800 px-2 py-0.5 text-xs rounded">Plátano</span>
+                      </div>
+                      <div className="text-xs text-gray-500 flex justify-between">
+                        <span>375 kcal</span>
+                        <span>25g proteína</span>
                       </div>
                     </div>
                   </div>
-                  
-                  {/* RECETAS PRINCIPALES */}
-                  <div className="bg-green-50 p-4 rounded-xl border-2 border-green-500 shadow-md mb-6">
-                    <h3 className="text-xl font-bold text-green-800 mb-3 border-b border-green-300 pb-2">
-                      {language === 'en' ? 'Main Course Recipes' : language === 'ca' ? 'Receptes de Plat Principal' : 'Recetas de Plato Principal'}
-                    </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {/* Almuerzo Vegetariano */}
-                      <div className="bg-white rounded-xl overflow-hidden border-2 border-green-200 shadow-md">
-                        <div className="bg-green-600 p-3">
-                          <h4 className="text-white font-bold">
-                            {language === 'en' ? "Vegetarian Lunch" : 
-                             language === 'ca' ? "Dinar Vegetarià" : 
-                             "Almuerzo Vegetariano"}
-                          </h4>
-                          <p className="text-white text-sm">
-                            {language === 'en' ? "A plant-based lunch with beans, rice and vegetables" : 
-                             language === 'ca' ? "Un dinar a base de plantes amb mongetes, arròs i verdures" : 
-                             "Un almuerzo a base de plantas con frijoles, arroz y verduras"}
-                          </p>
-                        </div>
-                        <div className="p-3">
-                          <div className="flex flex-wrap gap-1 mb-2">
-                            {(language === 'en' ? ["Beans", "Rice", "Broccoli", "Carrot"] : 
-                              language === 'ca' ? ["Mongetes", "Arròs", "Bròquil", "Pastanaga"] : 
-                              ["Frijoles", "Arroz", "Brócoli", "Zanahoria"]).map((item, idx) => (
-                                <span key={idx} className="bg-green-100 text-green-800 px-2 py-1 text-xs rounded-lg">
-                                  {item}
-                                </span>
-                              ))
-                            }
-                          </div>
-                          <div className="flex justify-between text-xs text-green-800">
-                            <span>320 kcal</span>
-                            <span>12g {language === 'en' ? 'protein' : language === 'ca' ? 'proteïna' : 'proteína'}</span>
-                          </div>
-                        </div>
+                </div>
+
+                {/* Recetas principales */}
+                <div className="mb-8 bg-green-100 p-4 rounded-xl">
+                  <h3 className="text-xl font-bold mb-4 text-green-800 border-b pb-2">Recetas Principales</h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {/* Receta principal 1 */}
+                    <div className="bg-white p-3 rounded-lg shadow border border-green-300">
+                      <h4 className="font-bold text-green-700 mb-1">Almuerzo Vegetariano</h4>
+                      <p className="text-sm mb-2 text-gray-600">Un almuerzo a base de plantas con frijoles, arroz y verduras</p>
+                      <div className="flex gap-1 flex-wrap mb-2">
+                        <span className="bg-green-100 text-green-800 px-2 py-0.5 text-xs rounded">Frijoles</span>
+                        <span className="bg-green-100 text-green-800 px-2 py-0.5 text-xs rounded">Arroz</span>
+                        <span className="bg-green-100 text-green-800 px-2 py-0.5 text-xs rounded">Brócoli</span>
                       </div>
-                      
-                      {/* Cena Equilibrada */}
-                      <div className="bg-white rounded-xl overflow-hidden border-2 border-green-200 shadow-md">
-                        <div className="bg-green-600 p-3">
-                          <h4 className="text-white font-bold">
-                            {language === 'en' ? "Balanced Dinner" : 
-                             language === 'ca' ? "Sopar Equilibrat" : 
-                             "Cena Equilibrada"}
-                          </h4>
-                          <p className="text-white text-sm">
-                            {language === 'en' ? "A balanced dinner with fish, vegetables and grains" : 
-                             language === 'ca' ? "Un sopar equilibrat amb peix, verdures i cereals" : 
-                             "Una cena equilibrada con pescado, verduras y cereales"}
-                          </p>
-                        </div>
-                        <div className="p-3">
-                          <div className="flex flex-wrap gap-1 mb-2">
-                            {(language === 'en' ? ["Fish", "Quinoa", "Spinach", "Tomatoes"] : 
-                              language === 'ca' ? ["Peix", "Quinoa", "Espinacs", "Tomàquets"] : 
-                              ["Pescado", "Quinoa", "Espinacas", "Tomates"]).map((item, idx) => (
-                                <span key={idx} className="bg-green-100 text-green-800 px-2 py-1 text-xs rounded-lg">
-                                  {item}
-                                </span>
-                              ))
-                            }
-                          </div>
-                          <div className="flex justify-between text-xs text-green-800">
-                            <span>450 kcal</span>
-                            <span>32g {language === 'en' ? 'protein' : language === 'ca' ? 'proteïna' : 'proteína'}</span>
-                          </div>
-                        </div>
+                      <div className="text-xs text-gray-500 flex justify-between">
+                        <span>320 kcal</span>
+                        <span>12g proteína</span>
                       </div>
-                      
-                      {/* Ensalada Energética */}
-                      <div className="bg-white rounded-xl overflow-hidden border-2 border-green-200 shadow-md">
-                        <div className="bg-green-600 p-3">
-                          <h4 className="text-white font-bold">
-                            {language === 'en' ? "Power Salad" : 
-                             language === 'ca' ? "Amanida Energètica" : 
-                             "Ensalada Energética"}
-                          </h4>
-                          <p className="text-white text-sm">
-                            {language === 'en' ? "A protein-packed salad with chicken and avocado" : 
-                             language === 'ca' ? "Una amanida rica en proteïnes amb pollastre i alvocat" : 
-                             "Una ensalada rica en proteínas con pollo y aguacate"}
-                          </p>
-                        </div>
-                        <div className="p-3">
-                          <div className="flex flex-wrap gap-1 mb-2">
-                            {(language === 'en' ? ["Chicken", "Avocado", "Lettuce", "Tomato"] : 
-                              language === 'ca' ? ["Pollastre", "Alvocat", "Enciam", "Tomàquet"] : 
-                              ["Pollo", "Aguacate", "Lechuga", "Tomate"]).map((item, idx) => (
-                                <span key={idx} className="bg-green-100 text-green-800 px-2 py-1 text-xs rounded-lg">
-                                  {item}
-                                </span>
-                              ))
-                            }
-                          </div>
-                          <div className="flex justify-between text-xs text-green-800">
-                            <span>410 kcal</span>
-                            <span>35g {language === 'en' ? 'protein' : language === 'ca' ? 'proteïna' : 'proteína'}</span>
-                          </div>
-                        </div>
+                    </div>
+
+                    {/* Receta principal 2 */}
+                    <div className="bg-white p-3 rounded-lg shadow border border-green-300">
+                      <h4 className="font-bold text-green-700 mb-1">Cena Equilibrada</h4>
+                      <p className="text-sm mb-2 text-gray-600">Una cena equilibrada con pescado, verduras y cereales</p>
+                      <div className="flex gap-1 flex-wrap mb-2">
+                        <span className="bg-green-100 text-green-800 px-2 py-0.5 text-xs rounded">Pescado</span>
+                        <span className="bg-green-100 text-green-800 px-2 py-0.5 text-xs rounded">Quinoa</span>
+                        <span className="bg-green-100 text-green-800 px-2 py-0.5 text-xs rounded">Espinacas</span>
                       </div>
-                      
-                      {/* Bowl Mediterráneo */}
-                      <div className="bg-white rounded-xl overflow-hidden border-2 border-green-200 shadow-md">
-                        <div className="bg-green-600 p-3">
-                          <h4 className="text-white font-bold">
-                            {language === 'en' ? "Mediterranean Bowl" : 
-                             language === 'ca' ? "Bol Mediterrani" : 
-                             "Bowl Mediterráneo"}
-                          </h4>
-                          <p className="text-white text-sm">
-                            {language === 'en' ? "A hearty bowl with chickpeas and vegetables" : 
-                             language === 'ca' ? "Un bol abundant amb cigrons i verdures" : 
-                             "Un bowl abundante con garbanzos y verduras"}
-                          </p>
-                        </div>
-                        <div className="p-3">
-                          <div className="flex flex-wrap gap-1 mb-2">
-                            {(language === 'en' ? ["Chickpeas", "Quinoa", "Feta", "Olives"] : 
-                              language === 'ca' ? ["Cigrons", "Quinoa", "Feta", "Olives"] : 
-                              ["Garbanzos", "Quinoa", "Feta", "Aceitunas"]).map((item, idx) => (
-                                <span key={idx} className="bg-green-100 text-green-800 px-2 py-1 text-xs rounded-lg">
-                                  {item}
-                                </span>
-                              ))
-                            }
-                          </div>
-                          <div className="flex justify-between text-xs text-green-800">
-                            <span>395 kcal</span>
-                            <span>15g {language === 'en' ? 'protein' : language === 'ca' ? 'proteïna' : 'proteína'}</span>
-                          </div>
-                        </div>
+                      <div className="text-xs text-gray-500 flex justify-between">
+                        <span>450 kcal</span>
+                        <span>32g proteína</span>
+                      </div>
+                    </div>
+
+                    {/* Receta principal 3 */}
+                    <div className="bg-white p-3 rounded-lg shadow border border-green-300">
+                      <h4 className="font-bold text-green-700 mb-1">Ensalada Energética</h4>
+                      <p className="text-sm mb-2 text-gray-600">Una ensalada rica en proteínas con pollo y aguacate</p>
+                      <div className="flex gap-1 flex-wrap mb-2">
+                        <span className="bg-green-100 text-green-800 px-2 py-0.5 text-xs rounded">Pollo</span>
+                        <span className="bg-green-100 text-green-800 px-2 py-0.5 text-xs rounded">Aguacate</span>
+                        <span className="bg-green-100 text-green-800 px-2 py-0.5 text-xs rounded">Lechuga</span>
+                      </div>
+                      <div className="text-xs text-gray-500 flex justify-between">
+                        <span>410 kcal</span>
+                        <span>35g proteína</span>
+                      </div>
+                    </div>
+
+                    {/* Receta principal 4 */}
+                    <div className="bg-white p-3 rounded-lg shadow border border-green-300">
+                      <h4 className="font-bold text-green-700 mb-1">Bowl Mediterráneo</h4>
+                      <p className="text-sm mb-2 text-gray-600">Un bowl abundante con garbanzos y verduras</p>
+                      <div className="flex gap-1 flex-wrap mb-2">
+                        <span className="bg-green-100 text-green-800 px-2 py-0.5 text-xs rounded">Garbanzos</span>
+                        <span className="bg-green-100 text-green-800 px-2 py-0.5 text-xs rounded">Quinoa</span>
+                        <span className="bg-green-100 text-green-800 px-2 py-0.5 text-xs rounded">Feta</span>
+                      </div>
+                      <div className="text-xs text-gray-500 flex justify-between">
+                        <span>395 kcal</span>
+                        <span>15g proteína</span>
                       </div>
                     </div>
                   </div>
-                  
-                  {/* RECETAS ESPECIALES */}
-                  <div className="bg-blue-50 p-4 rounded-xl border-2 border-blue-500 shadow-md mb-6">
-                    <h3 className="text-xl font-bold text-blue-800 mb-3 border-b border-blue-300 pb-2">
-                      {language === 'en' ? 'Special Recipes' : language === 'ca' ? 'Receptes Especials' : 'Recetas Especiales'}
-                    </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {/* Bowl de Batido */}
-                      <div className="bg-white rounded-xl overflow-hidden border-2 border-blue-200 shadow-md">
-                        <div className="bg-blue-600 p-3">
-                          <h4 className="text-white font-bold">
-                            {language === 'en' ? "Antioxidant Smoothie Bowl" : 
-                             language === 'ca' ? "Bol de Batut Antioxidant" : 
-                             "Bowl de Batido Antioxidante"}
-                          </h4>
-                          <p className="text-white text-sm">
-                            {language === 'en' ? "A refreshing bowl with berries and superfoods" : 
-                             language === 'ca' ? "Un bol refrescant amb fruits vermells i superaliments" : 
-                             "Un bowl refrescante con bayas y superalimentos"}
-                          </p>
-                        </div>
-                        <div className="p-3">
-                          <div className="flex flex-wrap gap-1 mb-2">
-                            {(language === 'en' ? ["Berries", "Banana", "Yogurt", "Honey"] : 
-                              language === 'ca' ? ["Fruits Vermells", "Plàtan", "Iogurt", "Mel"] : 
-                              ["Bayas", "Plátano", "Yogur", "Miel"]).map((item, idx) => (
-                                <span key={idx} className="bg-blue-100 text-blue-800 px-2 py-1 text-xs rounded-lg">
-                                  {item}
-                                </span>
-                              ))
-                            }
-                          </div>
-                          <div className="flex justify-between text-xs text-blue-800">
-                            <span>340 kcal</span>
-                            <span>12g {language === 'en' ? 'protein' : language === 'ca' ? 'proteïna' : 'proteína'}</span>
-                          </div>
-                        </div>
+                </div>
+
+                {/* Recetas especiales */}
+                <div className="mb-8 bg-blue-100 p-4 rounded-xl">
+                  <h3 className="text-xl font-bold mb-4 text-blue-800 border-b pb-2">Recetas Especiales</h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {/* Receta especial 1 */}
+                    <div className="bg-white p-3 rounded-lg shadow border border-blue-300">
+                      <h4 className="font-bold text-blue-700 mb-1">Bowl de Batido Antioxidante</h4>
+                      <p className="text-sm mb-2 text-gray-600">Un bowl refrescante con bayas y superalimentos</p>
+                      <div className="flex gap-1 flex-wrap mb-2">
+                        <span className="bg-blue-100 text-blue-800 px-2 py-0.5 text-xs rounded">Bayas</span>
+                        <span className="bg-blue-100 text-blue-800 px-2 py-0.5 text-xs rounded">Plátano</span>
+                        <span className="bg-blue-100 text-blue-800 px-2 py-0.5 text-xs rounded">Yogur</span>
                       </div>
-                      
-                      {/* Salteado de Verduras */}
-                      <div className="bg-white rounded-xl overflow-hidden border-2 border-blue-200 shadow-md">
-                        <div className="bg-blue-600 p-3">
-                          <h4 className="text-white font-bold">
-                            {language === 'en' ? "Asian Veggie Stir Fry" : 
-                             language === 'ca' ? "Saltat de Verdures Asiàtic" : 
-                             "Salteado de Verduras Asiático"}
-                          </h4>
-                          <p className="text-white text-sm">
-                            {language === 'en' ? "A quick stir fry with ginger and soy sauce" : 
-                             language === 'ca' ? "Un saltat ràpid amb gingebre i salsa de soja" : 
-                             "Un salteado rápido con jengibre y salsa de soja"}
-                          </p>
-                        </div>
-                        <div className="p-3">
-                          <div className="flex flex-wrap gap-1 mb-2">
-                            {(language === 'en' ? ["Broccoli", "Carrot", "Garlic", "Soy Sauce"] : 
-                              language === 'ca' ? ["Bròquil", "Pastanaga", "All", "Salsa de Soja"] : 
-                              ["Brócoli", "Zanahoria", "Ajo", "Salsa de Soja"]).map((item, idx) => (
-                                <span key={idx} className="bg-blue-100 text-blue-800 px-2 py-1 text-xs rounded-lg">
-                                  {item}
-                                </span>
-                              ))
-                            }
-                          </div>
-                          <div className="flex justify-between text-xs text-blue-800">
-                            <span>290 kcal</span>
-                            <span>8g {language === 'en' ? 'protein' : language === 'ca' ? 'proteïna' : 'proteína'}</span>
-                          </div>
-                        </div>
+                      <div className="text-xs text-gray-500 flex justify-between">
+                        <span>340 kcal</span>
+                        <span>12g proteína</span>
                       </div>
-                      
-                      {/* Sopa de Verduras */}
-                      <div className="bg-white rounded-xl overflow-hidden border-2 border-blue-200 shadow-md">
-                        <div className="bg-blue-600 p-3">
-                          <h4 className="text-white font-bold">
-                            {language === 'en' ? "Hearty Vegetable Soup" : 
-                             language === 'ca' ? "Sopa Abundant de Verdures" : 
-                             "Sopa Abundante de Verduras"}
-                          </h4>
-                          <p className="text-white text-sm">
-                            {language === 'en' ? "A comforting soup with vegetables and beans" : 
-                             language === 'ca' ? "Una sopa reconfortant amb verdures i llegums" : 
-                             "Una sopa reconfortante con verduras y legumbres"}
-                          </p>
-                        </div>
-                        <div className="p-3">
-                          <div className="flex flex-wrap gap-1 mb-2">
-                            {(language === 'en' ? ["Tomatoes", "Carrots", "Beans", "Broth"] : 
-                              language === 'ca' ? ["Tomàquets", "Pastanagues", "Mongetes", "Brou"] : 
-                              ["Tomates", "Zanahorias", "Frijoles", "Caldo"]).map((item, idx) => (
-                                <span key={idx} className="bg-blue-100 text-blue-800 px-2 py-1 text-xs rounded-lg">
-                                  {item}
-                                </span>
-                              ))
-                            }
-                          </div>
-                          <div className="flex justify-between text-xs text-blue-800">
-                            <span>220 kcal</span>
-                            <span>10g {language === 'en' ? 'protein' : language === 'ca' ? 'proteïna' : 'proteína'}</span>
-                          </div>
-                        </div>
+                    </div>
+
+                    {/* Receta especial 2 */}
+                    <div className="bg-white p-3 rounded-lg shadow border border-blue-300">
+                      <h4 className="font-bold text-blue-700 mb-1">Salteado de Verduras Asiático</h4>
+                      <p className="text-sm mb-2 text-gray-600">Un salteado rápido con jengibre y salsa de soja</p>
+                      <div className="flex gap-1 flex-wrap mb-2">
+                        <span className="bg-blue-100 text-blue-800 px-2 py-0.5 text-xs rounded">Brócoli</span>
+                        <span className="bg-blue-100 text-blue-800 px-2 py-0.5 text-xs rounded">Zanahoria</span>
+                        <span className="bg-blue-100 text-blue-800 px-2 py-0.5 text-xs rounded">Jengibre</span>
                       </div>
-                      
-                      {/* Pimientos Rellenos */}
-                      <div className="bg-white rounded-xl overflow-hidden border-2 border-blue-200 shadow-md">
-                        <div className="bg-blue-600 p-3">
-                          <h4 className="text-white font-bold">
-                            {language === 'en' ? "Stuffed Bell Peppers" : 
-                             language === 'ca' ? "Pebrots Farcits" : 
-                             "Pimientos Rellenos"}
-                          </h4>
-                          <p className="text-white text-sm">
-                            {language === 'en' ? "Bell peppers stuffed with quinoa and beans" : 
-                             language === 'ca' ? "Pebrots farcits amb quinoa i mongetes" : 
-                             "Pimientos rellenos con quinoa y frijoles"}
-                          </p>
-                        </div>
-                        <div className="p-3">
-                          <div className="flex flex-wrap gap-1 mb-2">
-                            {(language === 'en' ? ["Peppers", "Quinoa", "Beans", "Cheese"] : 
-                              language === 'ca' ? ["Pebrots", "Quinoa", "Mongetes", "Formatge"] : 
-                              ["Pimientos", "Quinoa", "Frijoles", "Queso"]).map((item, idx) => (
-                                <span key={idx} className="bg-blue-100 text-blue-800 px-2 py-1 text-xs rounded-lg">
-                                  {item}
-                                </span>
-                              ))
-                            }
-                          </div>
-                          <div className="flex justify-between text-xs text-blue-800">
-                            <span>310 kcal</span>
-                            <span>14g {language === 'en' ? 'protein' : language === 'ca' ? 'proteïna' : 'proteína'}</span>
-                          </div>
-                        </div>
+                      <div className="text-xs text-gray-500 flex justify-between">
+                        <span>290 kcal</span>
+                        <span>8g proteína</span>
+                      </div>
+                    </div>
+
+                    {/* Receta especial 3 */}
+                    <div className="bg-white p-3 rounded-lg shadow border border-blue-300">
+                      <h4 className="font-bold text-blue-700 mb-1">Sopa Abundante de Verduras</h4>
+                      <p className="text-sm mb-2 text-gray-600">Una sopa reconfortante con verduras y legumbres</p>
+                      <div className="flex gap-1 flex-wrap mb-2">
+                        <span className="bg-blue-100 text-blue-800 px-2 py-0.5 text-xs rounded">Tomates</span>
+                        <span className="bg-blue-100 text-blue-800 px-2 py-0.5 text-xs rounded">Zanahorias</span>
+                        <span className="bg-blue-100 text-blue-800 px-2 py-0.5 text-xs rounded">Frijoles</span>
+                      </div>
+                      <div className="text-xs text-gray-500 flex justify-between">
+                        <span>220 kcal</span>
+                        <span>10g proteína</span>
+                      </div>
+                    </div>
+
+                    {/* Receta especial 4 */}
+                    <div className="bg-white p-3 rounded-lg shadow border border-blue-300">
+                      <h4 className="font-bold text-blue-700 mb-1">Pimientos Rellenos</h4>
+                      <p className="text-sm mb-2 text-gray-600">Pimientos rellenos con quinoa y frijoles</p>
+                      <div className="flex gap-1 flex-wrap mb-2">
+                        <span className="bg-blue-100 text-blue-800 px-2 py-0.5 text-xs rounded">Pimientos</span>
+                        <span className="bg-blue-100 text-blue-800 px-2 py-0.5 text-xs rounded">Quinoa</span>
+                        <span className="bg-blue-100 text-blue-800 px-2 py-0.5 text-xs rounded">Frijoles</span>
+                      </div>
+                      <div className="text-xs text-gray-500 flex justify-between">
+                        <span>310 kcal</span>
+                        <span>14g proteína</span>
                       </div>
                     </div>
                   </div>
-                  
-                  {/* Botón para ver más detalles */}
-                  <div className="flex justify-center mt-6">
-                    <button className="bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 px-6 rounded-xl shadow-md">
-                      {language === 'en' ? 'View Detailed Recipes' : 
-                       language === 'ca' ? 'Veure Receptes Detallades' : 
-                       'Ver Recetas Detalladas'}
-                    </button>
-                  </div>
+                </div>
+                
+                <div className="text-center">
+                  <button className="bg-amber-500 text-white font-bold py-2 px-6 rounded-lg shadow hover:bg-amber-600 transition-colors">
+                    Ver Recetas Detalladas
+                  </button>
                 </div>
               </div>
             </TabsContent>
