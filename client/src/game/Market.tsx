@@ -346,6 +346,7 @@ const Market = ({ onExit }: MarketProps) => {
               onClick={() => {
                 console.log("Toggle cart from header button");
                 toggleCartVisibility();
+                console.log("Cart visibility after toggle:", !showCart);
               }}
               className="bg-gradient-to-r from-[#E67E22] to-[#F39C12] text-white px-6 py-2 rounded-lg font-bold shadow-md border-2 border-[#D35400] hover:from-[#D35400] hover:to-[#E67E22] transition duration-300 flex items-center"
             >
