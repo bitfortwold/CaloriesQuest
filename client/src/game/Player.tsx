@@ -179,6 +179,47 @@ const Player = () => {
     lastGameStateRef.current = gameState;
   }, [gameState, camera, setPlayerPosition, setRotationY, updatePlayer, playerData]);
 
+  // Función para detectar colisiones con edificios
+  const checkBuildingCollisions = (newPos: { x: number, y: number, z: number }): boolean => {
+    // Dimensiones del Mercado (ajustar según el tamaño real en Buildings.tsx)
+    const marketWidth = 5; // Ancho del edificio
+    const marketDepth = 4; // Profundidad del edificio
+    const marketPos = getMarketPosition();
+    
+    // Dimensiones de la Cocina (ajustar según el tamaño real en Buildings.tsx)
+    const kitchenWidth = 6; // Ancho del edificio
+    const kitchenDepth = 5; // Profundidad del edificio
+    const kitchenPos = getKitchenPosition();
+    
+    // Radio del jugador (para colisión)
+    const playerRadius = 0.7;
+    
+    // Comprobar colisión con el Mercado (colisión rectangular)
+    if (
+      newPos.x > marketPos.x - marketWidth/2 - playerRadius && 
+      newPos.x < marketPos.x + marketWidth/2 + playerRadius &&
+      newPos.z > marketPos.z - marketDepth/2 - playerRadius && 
+      newPos.z < marketPos.z + marketDepth/2 + playerRadius
+    ) {
+      console.log("Colisión con el mercado");
+      return true; // Hay colisión
+    }
+    
+    // Comprobar colisión con la Cocina (colisión rectangular)
+    if (
+      newPos.x > kitchenPos.x - kitchenWidth/2 - playerRadius && 
+      newPos.x < kitchenPos.x + kitchenWidth/2 + playerRadius &&
+      newPos.z > kitchenPos.z - kitchenDepth/2 - playerRadius && 
+      newPos.z < kitchenPos.z + kitchenDepth/2 + playerRadius
+    ) {
+      console.log("Colisión con la cocina");
+      return true; // Hay colisión
+    }
+    
+    // No hay colisión
+    return false;
+  };
+
   // Handle movement and interactions in each frame
   useFrame(() => {
     if (gameState !== "playing" || !playerRef.current) return;
@@ -205,18 +246,24 @@ const Player = () => {
       const targetRotation = Math.atan2(moveDir.x, moveDir.z);
       setRotationY(targetRotation);
       
-      // Update position
+      // Calcular nueva posición
       const newPosition = {
         x: playerPosition.x + moveDir.x * PLAYER_SPEED,
         y: playerPosition.y,
         z: playerPosition.z + moveDir.z * PLAYER_SPEED
       };
       
-      // Apply the new position
-      setPlayerPosition(newPosition);
+      // Verificar colisiones antes de aplicar la nueva posición
+      const hasCollision = checkBuildingCollisions(newPosition);
       
-      // Burn a small amount of calories when moving
-      increaseCaloriesBurned(0.01);
+      // Solo aplicar la nueva posición si no hay colisión
+      if (!hasCollision) {
+        // Apply the new position
+        setPlayerPosition(newPosition);
+        
+        // Burn a small amount of calories when moving
+        increaseCaloriesBurned(0.01);
+      }
     }
   });
   
