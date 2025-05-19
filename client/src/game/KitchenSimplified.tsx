@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useFoodStore } from "../stores/useFoodStore";
 import { usePlayerStore } from "../stores/usePlayerStore";
+import { useGameStateStore } from "../stores/useGameStateStore";
 import { useLanguage } from "../i18n/LanguageContext";
 import { toast } from "sonner";
 import AlertSound from "../components/AlertSound";
@@ -171,8 +172,16 @@ const KitchenSimplified = ({ onExit }: KitchenProps) => {
             
             <button 
               onClick={() => {
-                console.log("Botón salir clickeado");
-                if (onExit) onExit();
+                console.log("Botón salir clickeado - Método directo");
+                // Utilizar el método directo para salir (sin pasar por el controlador que está causando el problema)
+                const { setGameState } = useGameStateStore.getState();
+                const { setPlayerPosition } = usePlayerStore.getState();
+                
+                // Posicionar al jugador lejos de la cocina
+                setPlayerPosition({ x: 3, y: 0, z: -5 });
+                
+                // Cambiar directamente el estado del juego
+                setGameState("playing");
               }}
               className="bg-red-500 text-white px-6 py-2 rounded-xl font-bold"
             >
