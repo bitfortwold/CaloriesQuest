@@ -172,34 +172,23 @@ const KitchenSimplified = ({ onExit }: KitchenProps) => {
             
             <button 
               onClick={() => {
-                console.log("⭐ SISTEMA DEFINITIVO DE SALIDA ESTÁTICA - COCINA");
+                console.log("Salida directa de la cocina");
                 
-                // ⚠️ POSICIÓN ESTÁTICA SEGURA:
-                // - Frente a la cocina (x positivo moderado, z positivo alejado)
-                const safePosition = { x: 8, y: 0, z: 20 }; // Frente a la cocina pero muy alejado
-                
-                // 1. LIMPIAR CUALQUIER DESTINO O MOVIMIENTO PENDIENTE
-                const { setIsMovingToTarget, setTargetPosition, setDestinationBuilding } = usePlayerStore.getState();
+                // Detener cualquier movimiento
+                const { setIsMovingToTarget, setTargetPosition } = usePlayerStore.getState();
                 setTargetPosition(null);
                 setIsMovingToTarget(false);
-                setDestinationBuilding(null);
                 
-                // 2. EJECUTAR CALLBACK PRIMERO
+                // Cambiar estado
+                const { setGameState } = useGameStateStore.getState();
+                setGameState("playing");
+                
+                // Posicionar jugador frente a la cocina a distancia segura
+                const { setPlayerPosition } = usePlayerStore.getState();
+                setPlayerPosition({ x: 8, y: 0, z: 16 });
+                
+                // Ejecutar callback
                 if (onExit) onExit();
-                
-                // 3. CAMBIO DE ESTADO Y POSICIÓN CON RETRASO PROGRAMADO
-                setTimeout(() => {
-                  // Cambiar el estado del juego
-                  const { setGameState } = useGameStateStore.getState();
-                  setGameState("playing");
-                  
-                  // Posicionar al jugador con retraso
-                  setTimeout(() => {
-                    const { setPlayerPosition } = usePlayerStore.getState();
-                    setPlayerPosition(safePosition);
-                    console.log(`✅ JUGADOR POSICIONADO ESTÁTICAMENTE frente a la cocina en (${safePosition.x}, ${safePosition.y}, ${safePosition.z})`);
-                  }, 100);
-                }, 50);
               }}
               className="bg-red-500 text-white px-6 py-2 rounded-xl font-bold"
             >

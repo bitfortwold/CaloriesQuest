@@ -370,44 +370,27 @@ const Market = ({ onExit }: MarketProps) => {
               <h1 className="text-4xl font-bold text-white drop-shadow-lg tracking-wide uppercase">{t.market}</h1>
             </div>
 
-            {/* Botón Salir con Sistema Unificado v3.0 */}
+            {/* Botón Salir Simple y Directo */}
             <div className="relative">
               <button
                 onClick={() => {
-                  console.log("⭐ SISTEMA DEFINITIVO DE SALIDA ESTÁTICA - MERCADO");
+                  console.log("Salida simple del mercado");
                   
-                  // ⚠️ IMPORTANTE - POSICIÓN ESTÁTICA SEGURA:
-                  // - Frente al mercado (coordenada x negativa)
-                  // - Muy alejado para evitar interacción automática con la puerta
-                  // - No debe disparar ningún movimiento una vez posicionado
-                  const safePosition = { x: -8, y: 0, z: 20 }; // Aún más lejos para garantizar
+                  // Cambiar primero el estado
+                  const { setGameState } = useGameStateStore.getState();
+                  setGameState("playing");
                   
-                  // 1. LIMPIAR CUALQUIER DESTINO O MOVIMIENTO PENDIENTE
-                  const { setIsMovingToTarget, setTargetPosition, setDestinationBuilding } = usePlayerStore.getState();
-                  // Esto es crucial: cancel ANY pending movement
+                  // Posicionar al jugador frontalmente a distancia segura
+                  const { setPlayerPosition } = usePlayerStore.getState();
+                  setPlayerPosition({ x: -8, y: 0, z: 16 });
+                  
+                  // Limpiar movimiento
+                  const { setIsMovingToTarget, setTargetPosition } = usePlayerStore.getState();
                   setTargetPosition(null);
                   setIsMovingToTarget(false);
-                  setDestinationBuilding(null);
                   
-                  // 2. CAMBIAR EL ESTADO DEL JUEGO
-                  const { setGameState } = useGameStateStore.getState();
-                  
-                  // 3. EJECUTAR CALLBACK PRIMERO - CRUCIAL PARA LIMPIAR COMPONENTES
+                  // Ejecutar callback para limpieza
                   if (onExit) onExit();
-                  
-                  // 4. CAMBIO DE ESTADO Y POSICIÓN CON RETRASO PROGRAMADO
-                  // Este retraso es crítico para la secuencia correcta
-                  setTimeout(() => {
-                    // Primero establecer el estado
-                    setGameState("playing");
-                    
-                    // Luego, con otro pequeño retraso, posicionar al jugador
-                    setTimeout(() => {
-                      const { setPlayerPosition } = usePlayerStore.getState();
-                      setPlayerPosition(safePosition);
-                      console.log(`✅ JUGADOR POSICIONADO DE FORMA ESTÁTICA en (${safePosition.x}, ${safePosition.y}, ${safePosition.z})`);
-                    }, 100);
-                  }, 50);
                 }}
                 className="bg-[#D32F2F] hover:bg-[#B71C1C] py-3 px-12 rounded-full shadow-lg border-2 border-[#C62828] transition-all duration-300 transform hover:scale-105"
               >
