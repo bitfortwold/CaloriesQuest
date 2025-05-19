@@ -342,7 +342,11 @@ const Player = () => {
             console.log("🧭 Destino final encontrado, continuando hacia:", finalDestination);
             
             // Establecer el destino final como nuevo objetivo
-            usePlayerStore.getState().setTargetPosition(finalDestination);
+            usePlayerStore.getState().setTargetPosition(new THREE.Vector3(
+              finalDestination.x,
+              finalDestination.y,
+              finalDestination.z
+            ));
             
             // Limpiar el almacenamiento
             localStorage.removeItem('finalDestination');

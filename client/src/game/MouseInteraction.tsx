@@ -192,6 +192,9 @@ function MouseInteraction() {
             // Vector desde el edificio al punto destino
             const toBuildingTarget = new THREE.Vector3().subVectors(clickPoint, buildingCenter).normalize();
             
+            // Vector directo desde el jugador al destino
+            const directToTarget = new THREE.Vector3().subVectors(clickPoint, playerPos).normalize();
+            
             // Crear un vector perpendicular para rodear el edificio
             const perpendicular = new THREE.Vector3(toBuilding.z, 0, -toBuilding.x);
             
@@ -199,15 +202,24 @@ function MouseInteraction() {
             const dotProduct = perpendicular.dot(toBuildingTarget);
             const finalPerpendicular = dotProduct >= 0 ? perpendicular : perpendicular.clone().negate();
             
-            // Calcular el radio de seguridad alrededor del edificio
-            const SAFETY_MARGIN = 2;
+            // Calcular el radio de seguridad alrededor del edificio - aumentar margen para evitar colisiones
+            const SAFETY_MARGIN = 4; // Aumentado para dar más espacio
             const buildingRadius = Math.max(blockingBuilding.width, blockingBuilding.depth) / 2 + SAFETY_MARGIN;
             
-            // Calcular punto intermedio seguro para rodear el edificio
-            const waypointOffset = finalPerpendicular.clone().multiplyScalar(buildingRadius);
+            // Crear una mezcla del vector perpendicular (para rodear el edificio) y el vector hacia el destino (para mantener el rumbo)
+            // Esto ayuda a crear una curva más natural alrededor del edificio en dirección del objetivo final
+            const blendedVector = new THREE.Vector3()
+              .addVectors(
+                finalPerpendicular.clone().multiplyScalar(0.8), // Vector de desvío (mayor peso)
+                directToTarget.clone().multiplyScalar(0.2)      // Vector hacia el destino (menor peso)
+              )
+              .normalize();
+            
+            // Calcular el punto de offset usando este vector mezclado
+            const pathOffset = blendedVector.clone().multiplyScalar(buildingRadius);
             
             // Añadir el offset al centro del edificio para obtener el punto intermedio
-            const waypoint = new THREE.Vector3().addVectors(buildingCenter, waypointOffset);
+            const waypoint = new THREE.Vector3().addVectors(buildingCenter, pathOffset);
             
             console.log(`🧭 Punto intermedio calculado: ${JSON.stringify(waypoint)}`);
             
