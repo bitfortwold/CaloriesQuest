@@ -7,6 +7,7 @@ import { usePlayerStore } from "../stores/usePlayerStore";
 import { useLanguage } from "../i18n/LanguageContext";
 import { toast } from "sonner";
 import { useKeyboardExit } from "../hooks/useKeyboardExit";
+import { KitchenGuideButton } from "../components/ui/KitchenGuideButton";
 
 interface KitchenProps {
   onExit: () => void;
@@ -384,21 +385,14 @@ const Kitchen = ({ onExit }: KitchenProps) => {
           {/* Botones superiores */}
           <div className="flex justify-between items-center mb-2">
             {/* Botón convencional de guía (a la izquierda) */}
-            <Button
-              onClick={handleToggleGuide}
-              className={`px-6 py-2 rounded-lg font-bold transition-all 
-                ${showGuide 
-                  ? 'bg-green-600 text-white border-2 border-green-700 hover:bg-green-700' 
-                  : 'bg-orange-500 text-white border-2 border-orange-700 hover:bg-orange-600'}
-              `}
-            >
-              <div className="flex items-center">
-                <span className="mr-2 text-xl">👨‍🍳</span>
-                <span>
-                  {language === 'en' ? 'Cooking Guide' : language === 'ca' ? 'Guia de Cuina' : 'Guía de Cocina'}
-                </span>
-              </div>
-            </Button>
+            <KitchenGuideButton 
+              isActive={showGuide} 
+              onChange={(newState) => {
+                console.log("KitchenGuideButton onChange:", newState);
+                setShowGuide(newState);
+                setCookingMode(newState ? "guided" : "free");
+              }}
+            />
 
             {/* Título con aspecto de cartel de madera (centrado) */}
             <div className="bg-[#BA7D45] px-12 py-3 rounded-2xl shadow-lg border-4 border-[#8B5E34] transform rotate-0 relative">
@@ -407,12 +401,18 @@ const Kitchen = ({ onExit }: KitchenProps) => {
             </div>
             
             {/* Botón de salir (a la derecha) */}
-            <Button 
-              onClick={onExit}
+            <button 
+              type="button"
+              onClick={() => {
+                console.log("BOTÓN SALIR PRESIONADO");
+                if (typeof onExit === 'function') {
+                  onExit();
+                }
+              }}
               className="bg-gradient-to-r from-[#EF5350] to-[#F44336] hover:from-[#D32F2F] hover:to-[#EF5350] text-white font-bold px-6 py-3 rounded-xl shadow-md border-2 border-[#D32F2F] transform transition-all hover:scale-105"
             >
               {language === 'en' ? 'Exit' : language === 'ca' ? 'Sortir' : 'Salir'}
-            </Button>
+            </button>
           </div>
           
           {/* Panel de Calorías */}
