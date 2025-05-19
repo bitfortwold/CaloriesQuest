@@ -172,16 +172,34 @@ const KitchenSimplified = ({ onExit }: KitchenProps) => {
             
             <button 
               onClick={() => {
-                console.log("Botón salir clickeado - Método seguro");
+                console.log("⭐ SISTEMA DEFINITIVO DE SALIDA ESTÁTICA - COCINA");
                 
-                // Importar la función de salida segura directamente para evitar dependencias circulares
-                const { safeExit } = require('../utils/buildingExitHelper');
-                safeExit("kitchen");
+                // ⚠️ POSICIÓN ESTÁTICA SEGURA:
+                // - Frente a la cocina (x positivo moderado, z positivo alejado)
+                const safePosition = { x: 8, y: 0, z: 20 }; // Frente a la cocina pero muy alejado
                 
-                // También notificamos al componente padre por compatibilidad
-                if (onExit) {
-                  setTimeout(() => onExit(), 100);
-                }
+                // 1. LIMPIAR CUALQUIER DESTINO O MOVIMIENTO PENDIENTE
+                const { setIsMovingToTarget, setTargetPosition, setDestinationBuilding } = usePlayerStore.getState();
+                setTargetPosition(null);
+                setIsMovingToTarget(false);
+                setDestinationBuilding(null);
+                
+                // 2. EJECUTAR CALLBACK PRIMERO
+                if (onExit) onExit();
+                
+                // 3. CAMBIO DE ESTADO Y POSICIÓN CON RETRASO PROGRAMADO
+                setTimeout(() => {
+                  // Cambiar el estado del juego
+                  const { setGameState } = useGameStateStore.getState();
+                  setGameState("playing");
+                  
+                  // Posicionar al jugador con retraso
+                  setTimeout(() => {
+                    const { setPlayerPosition } = usePlayerStore.getState();
+                    setPlayerPosition(safePosition);
+                    console.log(`✅ JUGADOR POSICIONADO ESTÁTICAMENTE frente a la cocina en (${safePosition.x}, ${safePosition.y}, ${safePosition.z})`);
+                  }, 100);
+                }, 50);
               }}
               className="bg-red-500 text-white px-6 py-2 rounded-xl font-bold"
             >
