@@ -206,29 +206,27 @@ const Garden = ({ onExit }: GardenProps) => {
             <div className="relative">
               <button
                 onClick={() => {
-                  console.log("SALIDA DE EMERGENCIA DEL HUERTO");
+                  console.log("SACANDO JUGADOR DEL HUERTO HACIA POSICIÓN EXACTA");
                   
-                  // Ejecutar callback primero para desmontar componentes
+                  // PASO 1: Cambiar estado del juego inmediatamente
+                  const { setGameState } = useGameStateStore.getState();
+                  setGameState("playing");
+                  
+                  // PASO 2: Detener cualquier movimiento pendiente
+                  const { setIsMovingToTarget, setTargetPosition, setDestinationBuilding } = usePlayerStore.getState();
+                  setTargetPosition(null);
+                  setIsMovingToTarget(false);
+                  setDestinationBuilding(null);
+                  
+                  // PASO 3: Posicionar al jugador exactamente en la posición mostrada en la captura
+                  // (justo frente al huerto, mirando hacia él)
+                  const { setPlayerPosition } = usePlayerStore.getState();
+                  setPlayerPosition({ x: 0, y: 0, z: -13 });
+                  
+                  console.log("✅ JUGADOR POSICIONADO EN LA UBICACIÓN EXACTA");
+                  
+                  // PASO 4: Notificar al componente padre (último paso)
                   if (onExit) onExit();
-                  
-                  // Esperar brevemente y cambiar estado
-                  setTimeout(() => {
-                    // Cambiar estado a playing
-                    const { setGameState } = useGameStateStore.getState();
-                    setGameState("playing");
-                    
-                    // Detener cualquier movimiento
-                    const { setIsMovingToTarget, setTargetPosition, setDestinationBuilding } = usePlayerStore.getState();
-                    setTargetPosition(null);
-                    setIsMovingToTarget(false);
-                    setDestinationBuilding(null);
-                    
-                    // Posicionar al jugador delante del huerto pero más cerca de la cámara
-                    const { setPlayerPosition } = usePlayerStore.getState();
-                    setPlayerPosition({ x: 0, y: 0, z: -20 });
-                    
-                    console.log("✅ JUGADOR REPOSICIONADO EXITOSAMENTE FRENTE AL HUERTO");
-                  }, 50);
                 }}
                 className="bg-gradient-to-r from-red-700 to-red-800 py-3 px-10 rounded-xl shadow-xl border-2 border-red-900 transform transition-all duration-300 flex items-center gap-3 hover:scale-105 hover:shadow-2xl"
               >
