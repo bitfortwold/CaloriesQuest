@@ -29,14 +29,14 @@ const GameUI = () => {
   // Don't render anything if DOM is not ready
   if (!domReady) return null;
   
-  // SISTEMA DE SALIDA BÁSICO
-  // ⚠️ Este sistema solo actualiza el estado del juego
-  // Las posiciones del jugador se manejan directamente en cada componente
+  // SISTEMA DE SALIDA MEJORADO
+  // Este sistema actualiza el estado del juego y reposiciona al jugador
   const handleBuildingExit = (buildingType: string) => {
-    console.log(`Salida de edificio: ${buildingType} - Actualizando jugador`);
+    console.log(`Salida de edificio: ${buildingType} - Iniciando secuencia de salida`);
     
-    // Solo limpiar información específica del jugador si es necesario
-    const { updatePlayer, playerData } = usePlayerStore.getState();
+    // Primero limpiamos información específica del jugador
+    const { updatePlayer, playerData, setPlayerPosition, setIsMovingToTarget, setTargetPosition } = usePlayerStore.getState();
+    const { setGameState } = useGameStateStore.getState();
     
     if (playerData) {
       updatePlayer({
@@ -45,7 +45,29 @@ const GameUI = () => {
       });
     }
     
-    // No manipulamos posición ni estado aquí - eso lo hace cada componente
+    // Posiciones de salida seguras
+    const safeExitPositions = {
+      market: { x: -10, y: 0, z: 10 },    // Lejos del mercado, en diagonal
+      kitchen: { x: 10, y: 0, z: 10 },    // Lejos de la cocina, en diagonal
+      garden: { x: 0, y: 0, z: -20 },     // Muy lejos del huerto
+      default: { x: 0, y: 0, z: -15 }     // Posición segura por defecto
+    };
+    
+    // Reposicionamos al jugador lejos del edificio
+    const exitPosition = safeExitPositions[buildingType as keyof typeof safeExitPositions] || safeExitPositions.default;
+    
+    // Detenemos cualquier movimiento automático
+    setTargetPosition(null);
+    setIsMovingToTarget(false);
+    
+    // Establecemos la nueva posición y cambiamos el estado
+    setPlayerPosition(exitPosition);
+    console.log(`✅ Jugador reposicionado en (${exitPosition.x}, ${exitPosition.y}, ${exitPosition.z})`);
+    
+    // Cambiamos el estado con un ligero retraso para asegurar que el componente se desmonte primero
+    setTimeout(() => {
+      setGameState("playing");
+    }, 100);
   };
   
   // Render UI based on game state
