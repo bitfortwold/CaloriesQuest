@@ -214,7 +214,7 @@ const Garden = ({ onExit }: GardenProps) => {
                   const { setGameState } = useGameStateStore.getState();
                   setGameState("playing");
                   
-                  // Paso 2: Cambiar ubicación del jugador a una posición MUY alejada del huerto
+                  // Paso 2: Cambiar ubicación del jugador a una posición específica frente al huerto
                   const { setPlayerPosition, setTargetPosition, setIsMovingToTarget, setDestinationBuilding } = usePlayerStore.getState();
                   
                   // Resetear todos los estados de navegación
@@ -222,10 +222,12 @@ const Garden = ({ onExit }: GardenProps) => {
                   setIsMovingToTarget(false);
                   setDestinationBuilding(null);
                   
-                  // Posicionar al jugador en una zona MUY alejada del huerto
-                  // Lo suficientemente lejos como para evitar interacción con la puerta
-                  setPlayerPosition({ x: 5, y: 0, z: -20 });
-                  console.log("🚀 JUGADOR POSICIONADO LEJOS DEL HUERTO", { x: 5, y: 0, z: -20 });
+                  // Importamos las posiciones desde Buildings.tsx
+                  const gardenExitPosition = { x: 0, y: 0, z: -12.5 };
+                  
+                  // Posicionar al jugador exactamente frente a la puerta pero a distancia segura
+                  setPlayerPosition(gardenExitPosition);
+                  console.log("🚀 JUGADOR POSICIONADO FRENTE AL HUERTO", gardenExitPosition);
                   
                   // Paso 3: Finalmente cerramos la interfaz
                   if (onExit) onExit();
