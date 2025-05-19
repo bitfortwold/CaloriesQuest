@@ -202,30 +202,38 @@ const Garden = ({ onExit }: GardenProps) => {
               <h2 className="text-3xl font-bold text-white drop-shadow-lg tracking-wide uppercase">Huerto Virtual</h2>
             </div>
 
-            {/* BOTÓN DE SALIDA DEFINITIVO */}
+            {/* BOTÓN DE SALIDA ABSOLUTA */}
             <div className="relative">
               <button
                 onClick={() => {
-                  console.log("⚠️ SALIDA DEFINITIVA del huerto");
+                  console.log("🚨 SISTEMA DE SALIDA ABSOLUTA DE EMERGENCIA");
                   
-                  // 1. Primero cambiar el estado del juego
-                  useGameStateStore.setState({ gameState: "playing" });
+                  // IMPORTANTE: Usar esta secuencia específica para evitar el bucle de entrada/salida
                   
-                  // 2. Mover al jugador a una posición frente al huerto pero lejos de la puerta
-                  // La posición original del jugador cuando inicia el juego es (0, 0, -5)
-                  // Con -20, estará muy lejos de la puerta, mirando hacia ella
+                  // 1. Primero desactivar cualquier sistema de detección de entrada automática
+                  const { setIsMovingToTarget, setTargetPosition } = usePlayerStore.getState();
+                  setTargetPosition(null);
+                  setIsMovingToTarget(false);
+                  
+                  // 2. Mover al jugador a una posición LATERAL, no al frente del edificio
+                  // Esta posición está al lado del mercado, totalmente fuera del área del huerto
                   const { setPlayerPosition } = usePlayerStore.getState();
-                  setPlayerPosition({ x: 0, y: 0, z: -20 });
+                  setPlayerPosition({ x: 10, y: 0, z: 5 });
                   
-                  // 3. Notificar para limpieza después de un breve retraso
+                  // 3. Cambiar el estado del juego después de posicionar
                   setTimeout(() => {
+                    useGameStateStore.setState({ gameState: "playing" });
+                    // 4. Limpieza final después de todo
                     if (onExit) onExit();
-                  }, 200);
+                  }, 300);
                 }}
-                className="bg-red-600 hover:bg-red-700 py-3 px-8 rounded-xl shadow-lg border-2 border-red-800 transition duration-300 flex items-center justify-center"
+                className="bg-red-700 hover:bg-red-800 py-3 px-8 rounded-full shadow-lg border-4 border-red-900 transform transition-all duration-300 flex items-center gap-2 hover:scale-105"
               >
-                <span className="text-white font-bold text-xl mr-2">
-                  SALIR AHORA
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                </svg>
+                <span className="text-white font-bold text-xl tracking-wide">
+                  SALIR
                 </span>
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
