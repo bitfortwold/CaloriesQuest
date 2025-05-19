@@ -487,20 +487,50 @@ const Player = () => {
     
     // Aplicar movimiento (tanto para teclado como para clic)
     if (newPosition) {
-      // Verificar colisiones antes de aplicar la nueva posición
-      const hasCollision = checkBuildingCollisions(newPosition);
+      console.log("🏃‍♂️ Moviendo jugador a:", newPosition);
+      
+      // Verificar colisiones con nuestra nueva función mejorada
+      const collisionResult = checkBuildingCollisions(newPosition);
       
       // Solo aplicar la nueva posición si no hay colisión
-      if (!hasCollision) {
+      if (!collisionResult.collided) {
         // Apply the new position
+        console.log("✅ Posición válida, aplicando movimiento");
         setPlayerPosition(newPosition);
         
         // Burn a small amount of calories when moving (proporcional a la distancia)
         increaseCaloriesBurned(0.01 * (moveDistance / PLAYER_SPEED));
       } else if (isMovingToTarget) {
-        // Si hay colisión en movimiento por clic, detener el movimiento
-        console.log("🛑 Colisión detectada, deteniendo movimiento por clic");
-        usePlayerStore.getState().setIsMovingToTarget(false);
+        // Si hay colisión en movimiento por clic, intentamos ir hacia la puerta del edificio
+        console.log("🚪 Colisión detectada con edificio, intentando redirigir a la puerta");
+        
+        const building = collisionResult.building;
+        if (building) {
+          // Establecer el edificio como destino
+          console.log(`🏢 Redirigiendo hacia ${building.name}`);
+          usePlayerStore.getState().setDestinationBuilding(building.name);
+          
+          // Calcular posición de la puerta
+          let doorPosition;
+          
+          if (building.name === "market") {
+            doorPosition = { x: building.pos.x, y: 0, z: building.pos.z + 2.5 };
+          } else if (building.name === "kitchen") {
+            doorPosition = { x: building.pos.x, y: 0, z: building.pos.z + 2.5 };
+          } else if (building.name === "garden") {
+            doorPosition = { x: building.pos.x, y: 0, z: building.pos.z + 2.5 };
+          }
+          
+          if (doorPosition) {
+            console.log(`🚪 Redirigiendo a la puerta en ${JSON.stringify(doorPosition)}`);
+            // Actualizar posición objetivo para ir a la puerta
+            usePlayerStore.getState().setTargetPosition(doorPosition);
+          }
+        } else {
+          // Si no pudimos identificar el edificio, detener el movimiento
+          console.log("🛑 Colisión detectada, deteniendo movimiento");
+          usePlayerStore.getState().setIsMovingToTarget(false);
+        }
       }
     }
   });
