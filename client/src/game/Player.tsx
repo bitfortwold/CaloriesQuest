@@ -57,31 +57,44 @@ const Player = () => {
     // Obtener posición actual del jugador
     const playerPos = new THREE.Vector3(playerPosition.x, playerPosition.y, playerPosition.z);
     
-    // Definir posiciones de las puertas
-    const marketDoorPosition = new THREE.Vector3(marketPosition.x, playerPosition.y, marketPosition.z + 2);
-    const kitchenDoorPosition = new THREE.Vector3(kitchenPosition.x, playerPosition.y, kitchenPosition.z + 2);
-    const gardenDoorPosition = new THREE.Vector3(gardenPosition.x, playerPosition.y, gardenPosition.z + 2);
+    // Obtener posiciones de salida/entrada de edificios (son las posiciones exactas donde el jugador se dirige)
+    const marketExitPos = getMarketExitPosition();
+    const kitchenExitPos = getKitchenExitPosition();
+    const gardenExitPos = getGardenExitPosition();
     
-    // Calcular distancias
-    const distToMarketDoor = playerPos.distanceTo(marketDoorPosition);
-    const distToKitchenDoor = playerPos.distanceTo(kitchenDoorPosition);
-    const distToGardenDoor = playerPos.distanceTo(gardenDoorPosition);
+    // Definir posiciones de destino (usar las mismas que en MouseInteraction)
+    const marketDestination = new THREE.Vector3(marketExitPos.x, playerPosition.y, marketExitPos.z);
+    const kitchenDestination = new THREE.Vector3(kitchenExitPos.x, playerPosition.y, kitchenExitPos.z);
+    const gardenDestination = new THREE.Vector3(gardenExitPos.x, playerPosition.y, gardenExitPos.z);
+    
+    // Calcular distancias a los puntos de destino
+    const distToMarketDest = playerPos.distanceTo(marketDestination);
+    const distToKitchenDest = playerPos.distanceTo(kitchenDestination);
+    const distToGardenDest = playerPos.distanceTo(gardenDestination);
+    
+    // Depuración de distancias
+    console.log(`📏 Distancia al mercado: ${distToMarketDest.toFixed(2)}`);
+    console.log(`📏 Distancia a la cocina: ${distToKitchenDest.toFixed(2)}`);
+    console.log(`📏 Distancia al huerto: ${distToGardenDest.toFixed(2)}`);
+    
+    // Aumentar la distancia de detección para facilitar la entrada
+    const AUTO_ENTER_THRESHOLD = 3.0; // Más generoso que antes
     
     // Verificar si estamos cerca de alguna puerta
-    if (distToMarketDoor < DOOR_DETECTION_DISTANCE) {
-      console.log("Llegando al mercado por las puertas...");
+    if (distToMarketDest < AUTO_ENTER_THRESHOLD) {
+      console.log("🚪 Llegando al mercado por las puertas...");
       enterBuilding("market");
       return true;
     }
     
-    if (distToKitchenDoor < DOOR_DETECTION_DISTANCE) {
-      console.log("Llegando a la cocina por las puertas...");
+    if (distToKitchenDest < AUTO_ENTER_THRESHOLD) {
+      console.log("🚪 Llegando a la cocina por las puertas...");
       enterBuilding("kitchen");
       return true;
     }
     
-    if (distToGardenDoor < DOOR_DETECTION_DISTANCE) {
-      console.log("Llegando al huerto por las puertas...");
+    if (distToGardenDest < AUTO_ENTER_THRESHOLD) {
+      console.log("🚪 Llegando al huerto por las puertas...");
       enterBuilding("garden");
       return true;
     }
