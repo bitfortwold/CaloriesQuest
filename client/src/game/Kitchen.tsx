@@ -1123,59 +1123,60 @@ const Kitchen = ({ onExit }: KitchenProps) => {
               </div>
             </TabsContent>
             
-            {/* Contenido de Recetas Guiadas - VERSIÓN FUNCIONAL */}
+            {/* Contenido de Recetas Guiadas - HTML SIMPLE */}
             <TabsContent value="guided-recipes">
-              <div className="p-6 bg-amber-50">
-                <div className="text-center mb-6">
-                  <h2 className="text-2xl font-bold text-amber-800">Recetas Guiadas</h2>
-                  <p className="text-gray-600">¡Sigue las instrucciones paso a paso para crear comidas deliciosas y nutritivas!</p>
-                </div>
+              <div>
+                <h2 style={{fontSize: "24px", fontWeight: "bold", textAlign: "center", margin: "20px 0"}}>Las Tres Recetas Básicas</h2>
                 
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-3 mb-6">
-                  <div className="bg-white p-4 rounded-lg shadow border border-amber-200">
-                    <h3 className="text-lg font-bold text-amber-700 mb-2">Desayuno Equilibrado</h3>
-                    <p className="text-sm text-gray-600 mb-2">Un desayuno nutritivo con huevos, pan y fruta.</p>
-                    <p className="text-sm"><strong>Ingredientes:</strong> Huevos, Pan, Manzana</p>
-                    <p className="text-sm"><strong>Calorías:</strong> 320 kcal</p>
-                    <button className="mt-3 w-full bg-amber-500 text-white py-2 rounded hover:bg-amber-600">
-                      Preparar
-                    </button>
-                  </div>
-                  
-                  <div className="bg-white p-4 rounded-lg shadow border border-green-200">
-                    <h3 className="text-lg font-bold text-green-700 mb-2">Almuerzo Vegetariano</h3>
-                    <p className="text-sm text-gray-600 mb-2">Un almuerzo a base de plantas con legumbres y verduras.</p>
-                    <p className="text-sm"><strong>Ingredientes:</strong> Frijoles, Arroz, Brócoli</p>
-                    <p className="text-sm"><strong>Calorías:</strong> 380 kcal</p>
-                    <button className="mt-3 w-full bg-green-500 text-white py-2 rounded hover:bg-green-600">
-                      Preparar
-                    </button>
-                  </div>
-                  
-                  <div className="bg-white p-4 rounded-lg shadow border border-blue-200">
-                    <h3 className="text-lg font-bold text-blue-700 mb-2">Cena Proteica</h3>
-                    <p className="text-sm text-gray-600 mb-2">Una cena rica en proteínas y vegetales nutritivos.</p>
-                    <p className="text-sm"><strong>Ingredientes:</strong> Pollo, Patata, Espinaca</p>
-                    <p className="text-sm"><strong>Calorías:</strong> 450 kcal</p>
-                    <button className="mt-3 w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600">
-                      Preparar
-                    </button>
-                  </div>
-                </div>
+                <table style={{width: "100%", borderCollapse: "separate", borderSpacing: "10px"}}>
+                  <tbody>
+                    <tr>
+                      <td style={{width: "33%", padding: "15px", backgroundColor: "#FEF3C7", borderRadius: "8px", border: "1px solid #F59E0B"}}>
+                        <h3 style={{fontSize: "18px", fontWeight: "bold", color: "#92400E", marginBottom: "10px"}}>Desayuno Equilibrado</h3>
+                        <p style={{marginBottom: "10px"}}>Un desayuno nutritivo con huevos, pan y fruta fresca</p>
+                        <p><strong>Ingredientes:</strong> Huevos, Pan, Manzana</p>
+                        <p><strong>Calorías:</strong> 350 kcal</p>
+                        <button style={{width: "100%", backgroundColor: "#F59E0B", color: "white", padding: "8px", border: "none", borderRadius: "5px", marginTop: "10px"}}>
+                          Preparar
+                        </button>
+                      </td>
+                      
+                      <td style={{width: "33%", padding: "15px", backgroundColor: "#DCFCE7", borderRadius: "8px", border: "1px solid #22C55E"}}>
+                        <h3 style={{fontSize: "18px", fontWeight: "bold", color: "#166534", marginBottom: "10px"}}>Almuerzo Vegetariano</h3>
+                        <p style={{marginBottom: "10px"}}>Un almuerzo a base de plantas con frijoles, arroz y verduras</p>
+                        <p><strong>Ingredientes:</strong> Frijoles, Arroz, Brócoli</p>
+                        <p><strong>Calorías:</strong> 420 kcal</p>
+                        <button style={{width: "100%", backgroundColor: "#22C55E", color: "white", padding: "8px", border: "none", borderRadius: "5px", marginTop: "10px"}}>
+                          Preparar
+                        </button>
+                      </td>
+                      
+                      <td style={{width: "33%", padding: "15px", backgroundColor: "#DBEAFE", borderRadius: "8px", border: "1px solid #3B82F6"}}>
+                        <h3 style={{fontSize: "18px", fontWeight: "bold", color: "#1E40AF", marginBottom: "10px"}}>Cena Proteica</h3>
+                        <p style={{marginBottom: "10px"}}>Una cena rica en proteínas con pollo, patatas y vegetales</p>
+                        <p><strong>Ingredientes:</strong> Pollo, Patata, Espinaca</p>
+                        <p><strong>Calorías:</strong> 480 kcal</p>
+                        <button style={{width: "100%", backgroundColor: "#3B82F6", color: "white", padding: "8px", border: "none", borderRadius: "5px", marginTop: "10px"}}>
+                          Preparar
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
                 
-                <div className="bg-white p-5 rounded-lg shadow-md mb-6">
-                  <h3 className="text-xl font-bold text-gray-800 mb-3">Instrucciones de Cocina</h3>
-                  <ol className="list-decimal pl-5 space-y-2">
-                    <li>Selecciona una receta de las opciones anteriores</li>
-                    <li>Asegúrate de tener todos los ingredientes necesarios en tu inventario</li>
-                    <li>Sigue las instrucciones paso a paso para preparar la comida</li>
-                    <li>¡Disfruta tu comida nutritiva y aprende sobre sus beneficios!</li>
+                <div style={{backgroundColor: "white", padding: "15px", margin: "20px 0", borderRadius: "8px", boxShadow: "0 2px 5px rgba(0,0,0,0.1)"}}>
+                  <h3 style={{fontSize: "20px", fontWeight: "bold", marginBottom: "10px"}}>Instrucciones:</h3>
+                  <ol style={{paddingLeft: "25px"}}>
+                    <li style={{margin: "5px 0"}}>Selecciona una receta según tus necesidades nutricionales</li>
+                    <li style={{margin: "5px 0"}}>Asegúrate de tener todos los ingredientes en tu inventario</li>
+                    <li style={{margin: "5px 0"}}>Sigue cada paso para preparar una comida nutritiva</li>
+                    <li style={{margin: "5px 0"}}>¡Disfruta de tu comida y aprende sobre nutrición!</li>
                   </ol>
                 </div>
                 
-                <div className="text-center">
-                  <button className="bg-amber-600 text-white font-bold py-2 px-6 rounded-lg shadow-md hover:bg-amber-700">
-                    Guía Nutricional
+                <div style={{textAlign: "center", marginTop: "20px"}}>
+                  <button style={{backgroundColor: "#D97706", color: "white", padding: "10px 20px", border: "none", borderRadius: "8px", fontWeight: "bold"}}>
+                    Guía Nutricional Completa
                   </button>
                 </div>
               </div>
