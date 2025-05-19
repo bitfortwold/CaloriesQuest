@@ -4,6 +4,7 @@ import { getMarketExitPosition, getKitchenExitPosition, getGardenExitPosition } 
 import { useCameraStore } from "../lib/stores/useCameraStore";
 import * as THREE from "three";
 import { getGardenPosition, getMarketPosition, getKitchenPosition } from "./Buildings";
+import { useThree } from "@react-three/fiber";
 
 /**
  * ExitHelper - Componente de ayuda para salir de los edificios
@@ -70,9 +71,9 @@ export const useExitHelper = () => {
       if (camera) {
         const gardenPos = getGardenPosition();
         
-        // Posicionamos la cámara más atrás y más alta para ver mejor al personaje
-        camera.position.set(0, 12, 2); // Posición más alta y un poco más atrás
-        camera.lookAt(new THREE.Vector3(0, 2, -8)); // Mirar hacia el norte, pero más alto para centrar el personaje
+        // Posicionamos la cámara para ver el personaje completamente centrado
+        camera.position.set(0, 14, 5); // Más alta y más atrás para tener mejor perspectiva
+        camera.lookAt(new THREE.Vector3(0, 1, -6)); // Mirar más abajo para centrar el personaje
         camera.updateProjectionMatrix();
       }
     }

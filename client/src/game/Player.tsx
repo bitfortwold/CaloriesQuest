@@ -141,9 +141,9 @@ const Player = () => {
         const kitchenPos = getKitchenPosition();
         
         if (exitedBuilding === "garden") {
-          // Cámara mirando al norte (huerto)
-          camera.position.set(0, cameraHeight, exitPosition.z + cameraDistance);
-          camera.lookAt(gardenPos.x, 0, gardenPos.z);
+          // Cámara especial para el huerto que muestra mejor al personaje
+          camera.position.set(0, 14, 2); // Posición más alta y más atrás
+          camera.lookAt(0, 1.5, -8); // Mirar hacia el jugador
         }
         else if (exitedBuilding === "market") {
           // Cámara mirando al este (mercado)
