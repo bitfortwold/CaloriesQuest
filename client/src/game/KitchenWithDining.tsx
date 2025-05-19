@@ -870,29 +870,31 @@ const Kitchen = ({ onExit }: KitchenProps) => {
         {/* Contenido de pestañas */}
         <div className="p-4">
           <Tabs defaultValue="free-cooking" className="w-full">
-            <TabsList className="grid grid-cols-3 w-full rounded-t-xl bg-[#FFD8A8] overflow-hidden border-2 border-[#EDBB76]">
-              <TabsTrigger 
-                value="free-cooking" 
-                className="data-[state=active]:bg-[#FF9800] data-[state=active]:text-white data-[state=active]:border-b-4 data-[state=active]:border-[#F57C00] flex-1 py-4 text-[#8B5E34] font-bold text-base sm:text-lg"
-              >
-                <span className="mr-2 text-xl">🍳</span>
-                {language === 'en' ? 'Free Cooking' : language === 'ca' ? 'Cuina Lliure' : 'Cocina Libre'}
-              </TabsTrigger>
-              <TabsTrigger 
-                value="guided-recipes" 
-                className="data-[state=active]:bg-[#66BB6A] data-[state=active]:text-white data-[state=active]:border-b-4 data-[state=active]:border-[#4CAF50] flex-1 py-4 text-[#8B5E34] font-bold text-base sm:text-lg"
-              >
-                <span className="mr-2 text-xl">👨‍🍳</span>
-                {language === 'en' ? 'Guided Recipes' : language === 'ca' ? 'Receptes Guiades' : 'Recetas Guiadas'}
-              </TabsTrigger>
-              <TabsTrigger 
-                value="dining-room" 
-                className="data-[state=active]:bg-[#F57C00] data-[state=active]:text-white data-[state=active]:border-b-4 data-[state=active]:border-[#E65100] flex-1 py-4 text-[#8B5E34] font-bold text-base sm:text-lg"
-              >
-                <span className="mr-2 text-xl">🍽️</span>
-                {language === 'en' ? 'Dining Room' : language === 'ca' ? 'Menjador' : 'Comedor'}
-              </TabsTrigger>
-            </TabsList>
+            <div className="mb-4">
+              <TabsList className="grid grid-cols-3 w-full rounded-xl bg-[#FFD8A8] overflow-hidden border-2 border-[#EDBB76]">
+                <TabsTrigger 
+                  value="free-cooking" 
+                  className="data-[state=active]:bg-[#FF9800] data-[state=active]:text-white data-[state=active]:border-b-4 data-[state=active]:border-[#F57C00] flex-1 py-4 text-[#8B5E34] font-bold text-base sm:text-lg"
+                >
+                  <span className="mr-2 text-xl">🍳</span>
+                  {language === 'en' ? 'Free Cooking' : language === 'ca' ? 'Cuina Lliure' : 'Cocina Libre'}
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="guided-recipes" 
+                  className="data-[state=active]:bg-[#66BB6A] data-[state=active]:text-white data-[state=active]:border-b-4 data-[state=active]:border-[#4CAF50] flex-1 py-4 text-[#8B5E34] font-bold text-base sm:text-lg"
+                >
+                  <span className="mr-2 text-xl">👨‍🍳</span>
+                  {language === 'en' ? 'Guided Recipes' : language === 'ca' ? 'Receptes Guiades' : 'Recetas Guiadas'}
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="dining-room" 
+                  className="data-[state=active]:bg-[#F57C00] data-[state=active]:text-white data-[state=active]:border-b-4 data-[state=active]:border-[#E65100] flex-1 py-4 text-[#8B5E34] font-bold text-base sm:text-lg"
+                >
+                  <span className="mr-2 text-xl">🍽️</span>
+                  {language === 'en' ? 'Dining Room' : language === 'ca' ? 'Menjador' : 'Comedor'}
+                </TabsTrigger>
+              </TabsList>
+            </div>
             
             {/* Contenido de Cocina Libre */}
             <TabsContent value="free-cooking" className="px-1 pt-2">
