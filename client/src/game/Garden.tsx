@@ -206,27 +206,30 @@ const Garden = ({ onExit }: GardenProps) => {
             <div className="relative">
               <button
                 onClick={() => {
-                  console.log("🌱 SALIDA HUERTO - POSICIÓN ESPECÍFICA");
+                  console.log("🌱 SALIDA HUERTO - INICIANDO SECUENCIA SEGURA");
                   
-                  // Limpiar inmediatamente todos los estados de movimiento
-                  const { setIsMovingToTarget, setTargetPosition, setDestinationBuilding, setPlayerPosition } = usePlayerStore.getState();
-                  setTargetPosition(null);
-                  setIsMovingToTarget(false);
-                  setDestinationBuilding(null);
-                  
-                  // Posicionar al jugador EXACTAMENTE donde muestran las capturas
-                  // Esto debe ocurrir ANTES de cambiar el estado
-                  setPlayerPosition({ x: 0, y: 0, z: -10 });
-                  
-                  // Cambiar el estado del juego
-                  const { setGameState } = useGameStateStore.getState();
-                  setGameState("playing");
-                  
-                  // Ejecutar callback siempre al final
+                  // Primero llamamos a onExit para cerrar la interfaz del huerto
                   if (onExit) onExit();
                   
-                  // Loguear a consola en posición fija para debugueo
-                  console.log("🚀 JUGADOR POSICIONADO EXACTAMENTE FRENTE AL HUERTO");
+                  // Luego usando setTimeout damos tiempo a que se cierre la interfaz
+                  setTimeout(() => {
+                    // Limpiar inmediatamente todos los estados de movimiento
+                    const { setIsMovingToTarget, setTargetPosition, setDestinationBuilding, setPlayerPosition } = usePlayerStore.getState();
+                    setTargetPosition(null);
+                    setIsMovingToTarget(false);
+                    setDestinationBuilding(null);
+                    
+                    // Posicionar al jugador en una zona segura frente al huerto
+                    // Modificamos ligeramente la posición para evitar problemas
+                    setPlayerPosition({ x: 0, y: 0, z: -15 });
+                    
+                    // Por último, cambiar el estado del juego
+                    const { setGameState } = useGameStateStore.getState();
+                    setGameState("playing");
+                    
+                    // Loguear a consola en posición fija para debugueo
+                    console.log("🚀 JUGADOR POSICIONADO CORRECTAMENTE FUERA DEL HUERTO");
+                  }, 100);
                 }}
                 className="bg-gradient-to-r from-red-700 to-red-800 py-3 px-10 rounded-xl shadow-xl border-2 border-red-900 transform transition-all duration-300 flex items-center gap-3 hover:scale-105 hover:shadow-2xl"
               >
