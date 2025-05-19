@@ -206,33 +206,27 @@ const Garden = ({ onExit }: GardenProps) => {
             <div className="relative">
               <button
                 onClick={() => {
-                  console.log("SALIDA DIRECTA DEL HUERTO - FORCE MODE");
+                  console.log("🌱 SALIDA HUERTO - POSICIÓN ESPECÍFICA");
                   
-                  // PASO 1: Ejecutamos callback primero
-                  if (onExit) onExit();
-                  
-                  // PASO 2: Forzamos cambio de estado
-                  const { exitBuilding } = useGameStateStore.getState();
-                  exitBuilding(); // Método que fuerza salida
-                  
-                  // PASO 3: Aseguramos cambio de estado después del callback
-                  const { setGameState } = useGameStateStore.getState();
-                  setGameState("playing");
-                  
-                  // PASO 4: Limpiamos movimiento
-                  const { setIsMovingToTarget, setTargetPosition, setDestinationBuilding } = usePlayerStore.getState();
+                  // Limpiar inmediatamente todos los estados de movimiento
+                  const { setIsMovingToTarget, setTargetPosition, setDestinationBuilding, setPlayerPosition } = usePlayerStore.getState();
                   setTargetPosition(null);
                   setIsMovingToTarget(false);
                   setDestinationBuilding(null);
                   
-                  // PASO 5: Posicionamos jugador en último paso
-                  // Esperar unos milisegundos para garantizar que el componente se ha desmontado
-                  setTimeout(() => {
-                    // Tomamos referencias frescas del store
-                    const { setPlayerPosition } = usePlayerStore.getState();
-                    setPlayerPosition({ x: 0, y: 0, z: -15 });
-                    console.log("⭐ JUGADOR REPOSICIONADO FRENTE AL HUERTO");
-                  }, 100);
+                  // Posicionar al jugador EXACTAMENTE donde muestran las capturas
+                  // Esto debe ocurrir ANTES de cambiar el estado
+                  setPlayerPosition({ x: 0, y: 0, z: -10 });
+                  
+                  // Cambiar el estado del juego
+                  const { setGameState } = useGameStateStore.getState();
+                  setGameState("playing");
+                  
+                  // Ejecutar callback siempre al final
+                  if (onExit) onExit();
+                  
+                  // Loguear a consola en posición fija para debugueo
+                  console.log("🚀 JUGADOR POSICIONADO EXACTAMENTE FRENTE AL HUERTO");
                 }}
                 className="bg-gradient-to-r from-red-700 to-red-800 py-3 px-10 rounded-xl shadow-xl border-2 border-red-900 transform transition-all duration-300 flex items-center gap-3 hover:scale-105 hover:shadow-2xl"
               >
