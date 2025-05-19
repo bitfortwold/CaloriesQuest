@@ -102,14 +102,24 @@ const KitchenSimple = ({ onExit }: KitchenProps) => {
       {showNutritionGuide && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black bg-opacity-70">
           <div className="bg-white w-11/12 max-w-4xl max-h-[85vh] overflow-y-auto rounded-xl p-6 relative">
-            <div className="flex justify-between items-center mb-4 border-b pb-3">
-              <h2 className="text-2xl font-bold text-amber-700">Guía Nutricional Completa</h2>
-              <button 
-                onClick={() => setShowNutritionGuide(false)}
-                className="text-gray-500 hover:text-gray-700 text-xl font-bold"
-              >
-                ✕
-              </button>
+            <div className="mb-4 border-b pb-3">
+              <div className="flex justify-between items-center mb-3">
+                <h2 className="text-2xl font-bold text-amber-700">Guía Nutricional Completa</h2>
+                <button 
+                  onClick={() => setShowNutritionGuide(false)}
+                  className="text-gray-500 hover:text-gray-700 text-xl font-bold"
+                >
+                  ✕
+                </button>
+              </div>
+              <div className="text-center mb-2">
+                <button 
+                  onClick={() => setShowNutritionGuide(false)}
+                  className="px-4 py-1 bg-amber-600 text-white rounded-md hover:bg-amber-700 transition"
+                >
+                  Volver a la Cocina
+                </button>
+              </div>
             </div>
             
             <div className="space-y-6">
