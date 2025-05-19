@@ -149,23 +149,83 @@ const KitchenSimple = ({ onExit }: KitchenProps) => {
           
           {activeTab === 'free-cooking' && (
             <div>
-              <h2 className="text-xl text-amber-900 font-bold mb-6">Ingredientes Disponibles</h2>
-              
-              {playerData?.inventory && playerData.inventory.length > 0 ? (
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  {playerData.inventory.map((food, index) => (
-                    <div key={index} className="bg-white p-3 rounded-lg shadow-sm text-center">
-                      <div className="font-bold mb-1">{food.name}</div>
-                      <div className="text-gray-600">{food.calories} kcal</div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                {/* Despensa */}
+                <div className="bg-amber-50 p-5 rounded-lg border border-amber-300">
+                  <h2 className="text-xl text-amber-900 font-bold mb-4">Despensa</h2>
+                  
+                  {playerData?.inventory && playerData.inventory.some(food => !food.name.toLowerCase().includes("leche") && !food.name.toLowerCase().includes("queso") && !food.name.toLowerCase().includes("yogur")) ? (
+                    <div className="grid grid-cols-2 gap-3">
+                      {playerData.inventory
+                        .filter(food => !food.name.toLowerCase().includes("leche") && !food.name.toLowerCase().includes("queso") && !food.name.toLowerCase().includes("yogur"))
+                        .map((food, index) => (
+                          <div key={index} className="bg-white p-3 rounded-lg shadow-sm text-center">
+                            <div className="font-bold mb-1">{food.name}</div>
+                            <div className="text-gray-600">{food.calories} kcal</div>
+                            <button 
+                              className="mt-2 text-sm px-3 py-1 bg-amber-600 text-white rounded hover:bg-amber-700"
+                              onClick={() => prepareMeal(food.name, food.calories)}
+                            >
+                              Consumir
+                            </button>
+                          </div>
+                        ))}
                     </div>
-                  ))}
+                  ) : (
+                    <div className="bg-white p-4 rounded-lg text-center">
+                      <p className="text-gray-500">No hay alimentos en la despensa.</p>
+                    </div>
+                  )}
                 </div>
-              ) : (
-                <div className="bg-white p-6 rounded-lg text-center">
-                  <p className="mb-2">No tienes ingredientes en tu inventario.</p>
-                  <p>Visita el Mercado para comprar algunos.</p>
+                
+                {/* Refrigerador */}
+                <div className="bg-blue-50 p-5 rounded-lg border border-blue-300">
+                  <h2 className="text-xl text-blue-900 font-bold mb-4">Refrigerador</h2>
+                  
+                  {playerData?.inventory && playerData.inventory.some(food => food.name.toLowerCase().includes("leche") || food.name.toLowerCase().includes("queso") || food.name.toLowerCase().includes("yogur")) ? (
+                    <div className="grid grid-cols-2 gap-3">
+                      {playerData.inventory
+                        .filter(food => food.name.toLowerCase().includes("leche") || food.name.toLowerCase().includes("queso") || food.name.toLowerCase().includes("yogur"))
+                        .map((food, index) => (
+                          <div key={index} className="bg-white p-3 rounded-lg shadow-sm text-center">
+                            <div className="font-bold mb-1">{food.name}</div>
+                            <div className="text-gray-600">{food.calories} kcal</div>
+                            <button 
+                              className="mt-2 text-sm px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
+                              onClick={() => prepareMeal(food.name, food.calories)}
+                            >
+                              Consumir
+                            </button>
+                          </div>
+                        ))}
+                    </div>
+                  ) : (
+                    <div className="bg-white p-4 rounded-lg text-center">
+                      <p className="text-gray-500">No hay alimentos refrigerados.</p>
+                    </div>
+                  )}
                 </div>
-              )}
+              </div>
+              
+              <div className="bg-white p-4 rounded-lg shadow-md mb-6">
+                <h3 className="font-bold text-lg mb-2">Todos los Ingredientes</h3>
+                
+                {playerData?.inventory && playerData.inventory.length > 0 ? (
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    {playerData.inventory.map((food, index) => (
+                      <div key={index} className="bg-amber-50 p-3 rounded-lg border border-amber-200 text-center">
+                        <div className="font-bold mb-1">{food.name}</div>
+                        <div className="text-gray-600">{food.calories} kcal</div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center p-4">
+                    <p className="mb-2">No tienes ingredientes en tu inventario.</p>
+                    <p>Visita el Mercado para comprar algunos.</p>
+                  </div>
+                )}
+              </div>
             </div>
           )}
           
