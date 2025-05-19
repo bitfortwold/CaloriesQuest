@@ -96,6 +96,8 @@ function MouseInteraction() {
             building.pos.z - playerPosition.z
           );
           
+          console.log(`📐 Vector del jugador al edificio: (${toBuilding.x.toFixed(2)}, 0, ${toBuilding.z.toFixed(2)})`);
+          
           // Proyectar este vector sobre la dirección de clic
           const projection = toBuilding.dot(directionToClick);
           
@@ -182,6 +184,12 @@ function MouseInteraction() {
           if (blockingBuilding) {
             console.log(`🚧 Edificio ${blockingBuilding.name} bloquea la ruta directa - calculando desvío`);
             
+            // Registrar información detallada para diagnóstico
+            console.log(`📊 Posición del jugador: ${JSON.stringify(playerPosition)}`);
+            console.log(`📊 Posición del edificio: ${JSON.stringify(blockingBuilding.pos)}`);
+            console.log(`📊 Punto de destino: ${JSON.stringify(clickPoint)}`);
+            console.log(`📊 Dimensiones del edificio: ${blockingBuilding.width}x${blockingBuilding.depth}`);
+            
             // Calcular el vector perpendicular al vector jugador-edificio para rodear el edificio
             const buildingCenter = new THREE.Vector3(blockingBuilding.pos.x, 0, blockingBuilding.pos.z);
             const playerPos = new THREE.Vector3(playerPosition.x, 0, playerPosition.z);
@@ -195,6 +203,17 @@ function MouseInteraction() {
             // Vector directo desde el jugador al destino
             const directToTarget = new THREE.Vector3().subVectors(clickPoint, playerPos).normalize();
             
+            // Registrar los vectores para diagnóstico
+            console.log(`📐 Vector jugador->edificio: (${toBuilding.x.toFixed(2)}, ${toBuilding.z.toFixed(2)})`);
+            console.log(`📐 Vector edificio->destino: (${toBuildingTarget.x.toFixed(2)}, ${toBuildingTarget.z.toFixed(2)})`);
+            console.log(`📐 Vector directo al destino: (${directToTarget.x.toFixed(2)}, ${directToTarget.z.toFixed(2)})`);
+            
+            // Determinar si es más eficiente rodear por la izquierda o derecha del edificio
+            // mediante el producto cruz
+            const cross = toBuilding.x * directToTarget.z - toBuilding.z * directToTarget.x;
+            const direction = cross > 0 ? "derecha" : "izquierda";
+            console.log(`🧭 Rodeando por la ${direction} del edificio (producto cruz: ${cross.toFixed(3)})`);
+            
             // Crear un vector perpendicular para rodear el edificio
             const perpendicular = new THREE.Vector3(toBuilding.z, 0, -toBuilding.x);
             
@@ -203,7 +222,7 @@ function MouseInteraction() {
             const finalPerpendicular = dotProduct >= 0 ? perpendicular : perpendicular.clone().negate();
             
             // Calcular el radio de seguridad alrededor del edificio - aumentar margen para evitar colisiones
-            const SAFETY_MARGIN = 4; // Aumentado para dar más espacio
+            const SAFETY_MARGIN = 5; // Aumentado para dar más espacio
             const buildingRadius = Math.max(blockingBuilding.width, blockingBuilding.depth) / 2 + SAFETY_MARGIN;
             
             // Crear una mezcla del vector perpendicular (para rodear el edificio) y el vector hacia el destino (para mantener el rumbo)

@@ -239,7 +239,7 @@ const Player = () => {
     const playerRadius = 0.7;
     
     // Margen de seguridad para mantener distancia con los edificios
-    const SAFETY_MARGIN = 1.0;
+    const SAFETY_MARGIN = 2.0; // Aumentado para evitar que el jugador se acerque demasiado a los edificios
     
     // Comprobar colisión con el Mercado (colisión rectangular)
     const marketCollision = 
