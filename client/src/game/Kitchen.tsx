@@ -949,12 +949,22 @@ const Kitchen = ({ onExit }: KitchenProps) => {
             
             {/* Contenido de Recetas Guiadas */}
             <TabsContent value="guided-recipes" className="px-1 pt-2">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  {renderGuidedRecipes()}
-                </div>
-                <div>
-                  {renderCookingGuide()}
+              <div className="grid grid-cols-1 gap-4">
+                <h2 className="text-2xl font-bold text-center text-[#8B5E34] mb-2">
+                  {language === 'en' ? 'Guided Recipes' : language === 'ca' ? 'Receptes Guiades' : 'Recetas Guiadas'}
+                </h2>
+                <p className="text-[#7E4E1B] text-center mb-4">
+                  {language === 'en' 
+                    ? 'Follow step-by-step instructions to create delicious and nutritious meals!' 
+                    : language === 'ca' 
+                    ? 'Segueix les instruccions pas a pas per crear àpats deliciosos i nutritius!' 
+                    : '¡Sigue las instrucciones paso a paso para crear comidas deliciosas y nutritivas!'}
+                </p>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="col-span-1 md:col-span-2">
+                    {renderGuidedRecipes()}
+                  </div>
                 </div>
               </div>
             </TabsContent>
