@@ -48,7 +48,6 @@ export interface PlayerData {
   garden: GardenPlot[]; // Huerto virtual con parcelas
   seeds: Plant[]; // Semillas disponibles para plantar
   lastGardenAction?: string; // Última acción realizada en el huerto (plantar, regar, cosechar)
-  cooldownTimer?: number; // Tiempo de espera para evitar entradas automáticas
   lastBuildingExit?: string; // Último edificio del que salió el jugador (unificado para los tres edificios)
 }
 
