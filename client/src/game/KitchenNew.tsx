@@ -2,9 +2,9 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useFoodStore } from "../stores/useFoodStore";
 import { usePlayerStore } from "../stores/usePlayerStore";
+import { useGameStateStore } from "../stores/useGameStateStore";
 import { useLanguage } from "../i18n/LanguageContext";
 import { toast } from "sonner";
-import { useKeyboardExit } from "../hooks/useKeyboardExit";
 import AlertSound from "../components/AlertSound";
 
 interface KitchenProps {
@@ -12,10 +12,16 @@ interface KitchenProps {
 }
 
 const Kitchen = ({ onExit }: KitchenProps) => {
-  // Asegurar que la función onExit está correctamente enlazada
+  // Implementación robusta de la función de salida
   const handleExit = () => {
-    console.log("Saliendo de la cocina...");
-    if (onExit) onExit();
+    console.log("Saliendo de la cocina con método directo...");
+    // Usar método directo para salir
+    const { exitBuilding } = useGameStateStore.getState();
+    exitBuilding();
+    // También llamar al callback por compatibilidad
+    if (onExit) {
+      setTimeout(() => onExit(), 0);
+    }
   };
   const { refrigeratorFood, pantryFood, removeFromKitchen } = useFoodStore();
   const { playerData, consumeFood } = usePlayerStore();
