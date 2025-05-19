@@ -31,15 +31,10 @@ const Player = () => {
     updatePlayer
   } = usePlayerStore();
   
-  // Posiciones de edificios usando la nueva configuración centralizada
-  const gardenConfig = getBuildingConfig("garden");
-  const marketConfig = getBuildingConfig("market");
-  const kitchenConfig = getBuildingConfig("kitchen");
-  
-  // Posiciones extraídas de la configuración
-  const gardenPosition = gardenConfig?.position || { x: 0, y: 0, z: -15 };
-  const marketPosition = marketConfig?.position || { x: -8, y: 0, z: 0 };
-  const kitchenPosition = kitchenConfig?.position || { x: 8, y: 0, z: 0 };
+  // Posiciones de edificios
+  const gardenPosition = getGardenPosition();
+  const marketPosition = getMarketPosition();
+  const kitchenPosition = getKitchenPosition();
   
   // Controles de teclado y movimiento
   const [, getKeys] = useKeyboardControls();
