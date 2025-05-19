@@ -10,6 +10,7 @@ import Player from "./Player";
 import Buildings from "./Buildings";
 import GameUI from "./GameUI";
 import Garden from "./Garden";
+import { ForceExitButton } from "./ForceExitButton";
 
 const Game = () => {
   const { gameState, setGameState, enterBuilding, exitBuilding } = useGameStateStore();

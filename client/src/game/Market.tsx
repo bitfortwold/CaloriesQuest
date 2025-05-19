@@ -367,12 +367,20 @@ const Market = ({ onExit }: MarketProps) => {
               <button
                 onClick={() => {
                   console.log("Saliendo del mercado con posición segura");
-                  // Usamos helper para salir correctamente
-                  const { exitBuilding } = useExitHelper();
-                  exitBuilding("market");
-                  
-                  // Llamamos a onExit para limpieza de componente
-                  onExit();
+                  try {
+                    // Primero cambiamos el estado del juego directamente
+                    useGameStateStore.setState({ gameState: "playing" });
+                    
+                    // Luego usamos el helper para ajustar posición y cámara
+                    const { exitBuilding } = useExitHelper();
+                    exitBuilding("market");
+                    
+                    // Llamamos a onExit para limpieza de componente
+                    onExit();
+                    console.log("Saliendo de market con sistema unificado");
+                  } catch (error) {
+                    console.error("Error al salir del mercado:", error);
+                  }
                 }}
                 className="bg-[#E57373] hover:bg-[#EF5350] py-3 px-12 rounded-full shadow-md border-2 border-[#C62828] transition duration-300"
               >
