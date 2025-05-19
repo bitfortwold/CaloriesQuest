@@ -84,9 +84,9 @@ const Player = () => {
     // Hacer más generoso el umbral para facilitar la entrada
     const AUTO_ENTER_THRESHOLD = 2.5;
     
-    // Verificar si estamos cerca de alguna puerta Y es nuestro destino actual
-    if (distToMarketDoor < AUTO_ENTER_THRESHOLD && 
-       (currentDestination === "market" || !currentDestination)) {
+    // Verificar si estamos cerca de alguna puerta Y es ESPECÍFICAMENTE nuestro destino actual
+    // IMPORTANTE: Solo permitir entrar si el jugador explícitamente seleccionó este edificio
+    if (distToMarketDoor < AUTO_ENTER_THRESHOLD && currentDestination === "market") {
       console.log("🚪 Llegando al mercado por las puertas...");
       // Hacer que el jugador esté exactamente en la posición correcta
       setPlayerPosition({
@@ -99,8 +99,7 @@ const Player = () => {
       return true;
     }
     
-    if (distToKitchenDoor < AUTO_ENTER_THRESHOLD && 
-       (currentDestination === "kitchen" || !currentDestination)) {
+    if (distToKitchenDoor < AUTO_ENTER_THRESHOLD && currentDestination === "kitchen") {
       console.log("🚪 Llegando a la cocina por las puertas...");
       // Hacer que el jugador esté exactamente en la posición correcta
       setPlayerPosition({
@@ -113,8 +112,7 @@ const Player = () => {
       return true;
     }
     
-    if (distToGardenDoor < AUTO_ENTER_THRESHOLD &&
-       (currentDestination === "garden" || !currentDestination)) {
+    if (distToGardenDoor < AUTO_ENTER_THRESHOLD && currentDestination === "garden") {
       console.log("🚪 Llegando al huerto por las puertas...");
       // Hacer que el jugador esté exactamente en la posición correcta
       setPlayerPosition({

@@ -25,6 +25,13 @@ function MouseInteraction() {
         console.log('🖱️ Clic en UI, ignorando para movimiento del jugador');
         return;
       }
+      
+      // Obtener la posición actual del jugador para el análisis
+      const playerPosition = usePlayerStore.getState().playerPosition;
+      
+      // Obtener el destino actual del edificio
+      const currentDestinationBuilding = usePlayerStore.getState().destinationBuilding;
+      
       raycaster.setFromCamera(mouse, camera);
       // Aumentamos la precisión del raycaster
       raycaster.params.Line.threshold = 0.1;
@@ -37,6 +44,15 @@ function MouseInteraction() {
       console.log('🔎 Detectando objetos...');
       console.log(`📏 Encontrados ${intersects.length} objetos en el rayo`);
       
+      // Filtrar para priorizar las puertas clicables
+      const doorObjects = intersects.filter(obj => {
+        const name = obj.object.name || '';
+        return name.includes("_doors_clickable");
+      });
+      
+      // Si hay puertas en el rayo, dar prioridad absoluta a las puertas sobre otros objetos
+      const hasDoors = doorObjects.length > 0;
+      
       if (intersects.length > 0) {
         // Mostrar los primeros 3 objetos para depuración
         for (let i = 0; i < Math.min(3, intersects.length); i++) {
@@ -44,12 +60,21 @@ function MouseInteraction() {
           console.log(`🟢 Objeto #${i+1}: ${obj.name || 'sin nombre'} (distancia: ${intersects[i].distance.toFixed(2)})`);
         }
         
-        const intersectedObject = intersects[0].object;
+        // Si hay puertas, usamos la primera puerta (prioridad máxima)
+        let intersectedObject;
+        
+        if (hasDoors) {
+          intersectedObject = doorObjects[0].object;
+          console.log('🚪 Encontrada puerta clicable, dando prioridad máxima');
+        } else {
+          intersectedObject = intersects[0].object;
+        }
+        
         const objectName = intersectedObject.name || 'unnamed';
         
         console.log('Objeto clicado:', objectName);
         
-        // Verificar si es una puerta válida con una lógica más robusta
+        // Verificar si es una puerta válida o un edificio
         if (objectName.includes("market_doors_clickable")) {
           console.log('🚪 Puerta del Mercado clicada');
           // Usar las posiciones correctas desde Buildings.tsx
