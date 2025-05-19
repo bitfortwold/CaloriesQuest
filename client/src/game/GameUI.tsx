@@ -31,10 +31,11 @@ const GameUI = () => {
   
   // SISTEMA UNIFICADO PARA LA SALIDA DE EDIFICIOS
   const handleBuildingExit = (buildingType: string) => {
-    console.log(`SISTEMA UNIFICADO: Saliendo de ${buildingType} - [VERSIÓN CORREGIDA]`);
+    console.log(`SISTEMA UNIFICADO: Saliendo de ${buildingType} - [VERSIÓN MEJORADA]`);
     
-    // Obtener el estado actual del jugador
-    const { updatePlayer, playerData } = usePlayerStore.getState();
+    // Obtener el estado actual del jugador y del juego
+    const { updatePlayer, playerData, setPlayerPosition } = usePlayerStore.getState();
+    const { setGameState } = useGameStateStore.getState();
     
     // Guardar información de salida para todos los edificios de la misma manera
     if (playerData) {
@@ -45,17 +46,16 @@ const GameUI = () => {
       });
     }
     
-    // Devolver control al juego - mismo comportamiento para los tres edificios
-    exitBuilding();
+    // Mover al jugador lejos de la puerta para evitar entrar inmediatamente
+    // Desplazamos al jugador hacia el centro del mapa
+    if (buildingType === "kitchen") {
+      setPlayerPosition({ x: 0, y: 0, z: -5 });
+    }
     
-    // Forzar la actualización del estado global para asegurar la transición
-    setTimeout(() => {
-      // Verificación final para asegurar que hemos salido realmente
-      if (useGameStateStore.getState().gameState !== "playing") {
-        console.log("⚠️ Forzando salida del edificio a playing");
-        exitBuilding();
-      }
-    }, 100);
+    // Establecer el estado directamente a playing
+    setGameState("playing");
+    
+    // Ya no llamamos a exitBuilding() porque setGameState lo hace de manera más directa
   };
   
   // Render UI based on game state
