@@ -110,7 +110,10 @@ const GameUI = () => {
             {/* Botones flotantes: sonido e información */}
             <div className="fixed bottom-4 right-4 flex flex-col gap-2">
               <button
-                onClick={() => setShowInfoModal(true)}
+                onClick={(e) => {
+                  e.stopPropagation(); // Evitar que el clic se propague al juego
+                  setShowInfoModal(true);
+                }}
                 className="bg-gradient-to-r from-amber-500 to-amber-700 text-white p-3 rounded-full shadow-lg border-2 border-amber-600 hover:scale-105 transition-transform flex items-center justify-center"
                 title="Información"
               >

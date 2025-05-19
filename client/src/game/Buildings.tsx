@@ -12,8 +12,8 @@ interface Position {
   z: number;
 }
 
-// Posición central del mapa - punto de spawn del jugador
-export const CENTRAL_SPAWN_POSITION: Position = { x: 0, y: 0, z: 0 };
+// Posición central del mapa - punto de spawn del jugador (punto azul del mapa)
+export const CENTRAL_SPAWN_POSITION: Position = { x: 0, y: 0, z: -5 };
 
 // Posiciones de los edificios (fijas e inmutables)
 const GARDEN_POSITION: Position = { x: 0, y: 0, z: -15 };

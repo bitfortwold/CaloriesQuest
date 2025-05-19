@@ -47,7 +47,10 @@ export const SoundButton = () => {
         {/* Botón principal de sonido */}
         <button
           className="w-12 h-12 rounded-full bg-black/80 flex items-center justify-center text-white hover:bg-black/90 transition-all shadow-lg"
-          onClick={() => toggleMute()}
+          onClick={(e) => {
+            e.stopPropagation(); // Evitar que el clic se propague al juego
+            toggleMute();
+          }}
           title={isMuted ? "Activar música de fondo" : "Silenciar música de fondo"}
         >
           {isMuted ? (
@@ -78,7 +81,10 @@ export const SoundButton = () => {
               {/* Botón de aumentar volumen */}
               <button
                 className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-white hover:bg-white/30 transition-all"
-                onClick={increaseVolume}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  increaseVolume();
+                }}
                 title="Subir volumen de música"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
