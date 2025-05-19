@@ -79,10 +79,47 @@ function MouseInteraction() {
           setDestinationBuilding('garden');
         } else {
           // Si no es una puerta pero es un objeto, intentar moverse a ese punto
-          // Usar el punto de intersección como destino
-          const targetPos = new THREE.Vector3().copy(intersects[0].point);
-          console.log(`🚶 Moviendo a punto en el mundo: ${JSON.stringify(targetPos)}`);
-          setTargetPosition(targetPos);
+          
+          // Obtener el nombre del objeto para análisis
+          const objectName = intersects[0].object.name || '';
+          
+          // Verificar si es uno de los edificios principales (que podría causar problemas de colisión)
+          const isBuilding = 
+            objectName.includes('market') || 
+            objectName.includes('kitchen') || 
+            objectName.includes('garden') ||
+            objectName.includes('building');
+            
+          if (isBuilding) {
+            console.log(`🏢 Clic en edificio ${objectName} - encontrando un punto seguro cercano`);
+            
+            // Calcular un punto seguro fuera del edificio
+            const clickPoint = intersects[0].point.clone();
+            const playerPos = usePlayerStore.getState().playerPosition;
+            
+            // Vector desde el jugador al punto de clic
+            const directionToClick = new THREE.Vector3(
+              clickPoint.x - playerPos.x,
+              0,
+              clickPoint.z - playerPos.z
+            ).normalize();
+            
+            // Encontrar un punto seguro a 2 unidades del edificio en dirección opuesta al clic
+            const safePoint = new THREE.Vector3(
+              clickPoint.x - directionToClick.x * 2,
+              clickPoint.y,
+              clickPoint.z - directionToClick.z * 2
+            );
+            
+            console.log(`🛡️ Punto seguro calculado: ${JSON.stringify(safePoint)}`);
+            setTargetPosition(safePoint);
+          } else {
+            // Punto normal en un objeto no-edificio
+            const targetPos = new THREE.Vector3().copy(intersects[0].point);
+            console.log(`🚶 Moviendo a punto en el mundo: ${JSON.stringify(targetPos)}`);
+            setTargetPosition(targetPos);
+          }
+          
           setIsMovingToTarget(true);
           // Importante: no setear destino de edificio para clics en otros objetos
           setDestinationBuilding(null);

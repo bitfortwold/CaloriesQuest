@@ -220,8 +220,8 @@ const Player = () => {
     lastGameStateRef.current = gameState;
   }, [gameState, camera, setPlayerPosition, setRotationY, updatePlayer, playerData]);
 
-  // Función para detectar colisiones con edificios
-  const checkBuildingCollisions = (newPos: { x: number, y: number, z: number }, returnBuildingInfo = false): boolean | {hasCollision: boolean, buildingInfo?: any} => {
+  // Función simplificada para detectar colisiones con edificios
+  const checkBuildingCollisions = (newPos: { x: number, y: number, z: number }): boolean => {
     // Dimensiones del Mercado (ajustar según el tamaño real en Buildings.tsx)
     const marketWidth = 5; // Ancho del edificio
     const marketDepth = 4; // Profundidad del edificio
@@ -248,17 +248,6 @@ const Player = () => {
       newPos.z < marketPos.z + marketDepth/2 + playerRadius
     ) {
       console.log("Colisión con el mercado");
-      if (returnBuildingInfo) {
-        return {
-          hasCollision: true,
-          buildingInfo: {
-            name: "market",
-            position: marketPos,
-            width: marketWidth,
-            depth: marketDepth
-          }
-        };
-      }
       return true; // Hay colisión
     }
     
@@ -270,17 +259,6 @@ const Player = () => {
       newPos.z < kitchenPos.z + kitchenDepth/2 + playerRadius
     ) {
       console.log("Colisión con la cocina");
-      if (returnBuildingInfo) {
-        return {
-          hasCollision: true,
-          buildingInfo: {
-            name: "kitchen",
-            position: kitchenPos,
-            width: kitchenWidth,
-            depth: kitchenDepth
-          }
-        };
-      }
       return true; // Hay colisión
     }
     
@@ -292,24 +270,10 @@ const Player = () => {
       newPos.z < gardenPos.z + gardenDepth/2 + playerRadius
     ) {
       console.log("Colisión con el huerto");
-      if (returnBuildingInfo) {
-        return {
-          hasCollision: true,
-          buildingInfo: {
-            name: "garden",
-            position: gardenPos,
-            width: gardenWidth,
-            depth: gardenDepth
-          }
-        };
-      }
       return true; // Hay colisión
     }
     
     // No hay colisión
-    if (returnBuildingInfo) {
-      return { hasCollision: false };
-    }
     return false;
   };
 
@@ -348,170 +312,103 @@ const Player = () => {
         return;
       }
       
-      // Sistema de navegación inteligente para rodear obstáculos
+      // ENFOQUE SIMPLE: Normalizar vector y moverse directamente hacia el objetivo si no hay colisión
       
-      // Normalizar el vector para obtener la dirección base
+      // Normalizar el vector para obtener la dirección de movimiento
       targetVector.normalize();
       
-      // Calcular posición tentativa siguiente basada en movimiento directo
-      const directNextPosition = {
+      // Calcular nueva posición con la velocidad apropiada
+      const tentativePosition = {
         x: playerPosition.x + targetVector.x * PLAYER_SPEED,
         y: playerPosition.y,
         z: playerPosition.z + targetVector.z * PLAYER_SPEED
       };
       
-      // Verificar si hay colisión con algún edificio
-      const collisionResult = checkBuildingCollisions(directNextPosition, true) as {hasCollision: boolean, buildingInfo?: any};
+      // Verificar colisión
+      const hasCollision = checkBuildingCollisions(tentativePosition);
       
-      // Si hay colisión, calcular ruta alternativa para rodear el edificio
-      if (collisionResult.hasCollision && collisionResult.buildingInfo) {
-        console.log(`🧭 Navegación: Rodeando ${collisionResult.buildingInfo.name} inteligentemente`);
+      if (hasCollision) {
+        // Si hay colisión, simplemente detener el movimiento
+        console.log("🚫 Colisión detectada - No es posible moverse en esa dirección");
         
-        const building = collisionResult.buildingInfo;
-        const buildingPos = building.position;
+        // Detenemos el movimiento para evitar problemas
+        usePlayerStore.getState().setIsMovingToTarget(false);
         
-        // Determinar posición relativa al edificio para saber cómo rodearlo
-        const isPlayerLeftOfBuilding = playerPosition.x < buildingPos.x - (building.width/2);
-        const isPlayerRightOfBuilding = playerPosition.x > buildingPos.x + (building.width/2);
-        const isPlayerInFrontOfBuilding = playerPosition.z < buildingPos.z - (building.depth/2);
-        const isPlayerBehindBuilding = playerPosition.z > buildingPos.z + (building.depth/2);
+        // SOLUCIÓN ALTERNATIVA: Si estamos muy cerca del destino final, simplemente teletransportar al jugador
+        // a uno de los lados del edificio más cercano al punto objetivo
+        const distanceToTarget = Math.sqrt(
+          Math.pow(targetPosition.x - playerPosition.x, 2) + 
+          Math.pow(targetPosition.z - playerPosition.z, 2)
+        );
         
-        // Vector desde el edificio al destino final
-        const buildingToTarget = new THREE.Vector3(
-          targetPosition.x - buildingPos.x,
-          0,
-          targetPosition.z - buildingPos.z
-        ).normalize();
-        
-        // Sistema mejorado de navegación para evitar vibraciones y atascos en esquinas
-        
-        // 1. Crear un vector de dirección para el desvío
-        let alternativeDir = new THREE.Vector3();
-        
-        // 2. Determinar la dirección más segura para rodear el edificio
-        const distToTarget = new THREE.Vector3(
-          targetPosition.x - playerPosition.x,
-          0,
-          targetPosition.z - playerPosition.z
-        ).length();
-        
-        // 3. Determinar la mejor dirección de desvío basada en la posición relativa
-        if (isPlayerLeftOfBuilding) {
-          // Jugador a la izquierda del edificio
-          // Moverse más a la izquierda y ligeramente en dirección Z hacia el objetivo
-          const zDir = targetPosition.z > playerPosition.z ? 0.7 : -0.7;
-          alternativeDir.set(-1.5, 0, zDir);
-        } 
-        else if (isPlayerRightOfBuilding) {
-          // Jugador a la derecha del edificio
-          // Moverse más a la derecha y ligeramente en dirección Z hacia el objetivo
-          const zDir = targetPosition.z > playerPosition.z ? 0.7 : -0.7;
-          alternativeDir.set(1.5, 0, zDir);
-        } 
-        else if (isPlayerInFrontOfBuilding) {
-          // Jugador delante del edificio
-          // Determinar el lado más eficiente para rodear el edificio
-          const xOffset = playerPosition.x - buildingPos.x;
-          // Si estamos más cerca del lado izquierdo, rodear por la izquierda
-          if (xOffset < 0) {
-            alternativeDir.set(-1.5, 0, -0.7);
-          } else {
-            // Si no, rodear por la derecha
-            alternativeDir.set(1.5, 0, -0.7);
-          }
-        } 
-        else if (isPlayerBehindBuilding) {
-          // Jugador detrás del edificio
-          // Determinar el lado más eficiente para rodear el edificio
-          const xOffset = playerPosition.x - buildingPos.x;
-          // Si estamos más cerca del lado izquierdo, rodear por la izquierda
-          if (xOffset < 0) {
-            alternativeDir.set(-1.5, 0, 0.7);
-          } else {
-            // Si no, rodear por la derecha
-            alternativeDir.set(1.5, 0, 0.7);
-          }
-        } 
-        else {
-          // Estamos dentro o muy cerca del edificio
-          // Movernos directamente lejos del centro del edificio
-          const fromBuildingCenter = new THREE.Vector3(
-            playerPosition.x - buildingPos.x,
-            0,
-            playerPosition.z - buildingPos.z
-          );
+        if (distanceToTarget < 5) {
+          console.log("🧙 Ayudando al jugador a llegar al destino");
           
-          if (fromBuildingCenter.length() < 0.1) {
-            // Si estamos muy cerca del centro, movernos en una dirección aleatoria pero constante
-            fromBuildingCenter.set(1, 0, 1);
-          }
+          // Ordenamos los edificios por distancia
+          const buildings = [
+            { name: "market", pos: getMarketPosition(), width: 5, depth: 4 },
+            { name: "kitchen", pos: getKitchenPosition(), width: 6, depth: 5 },
+            { name: "garden", pos: getGardenPosition(), width: 8, depth: 6 }
+          ];
           
-          fromBuildingCenter.normalize();
-          // Multiplicamos por 2 para asegurar un movimiento significativo lejos del edificio
-          fromBuildingCenter.multiplyScalar(2);
-          alternativeDir.copy(fromBuildingCenter);
-        }
-        
-        // 4. Verificar si esta posición alternativa también causa colisión
-        const tentativeAlternativePosition = {
-          x: playerPosition.x + alternativeDir.x * PLAYER_SPEED,
-          y: playerPosition.y,
-          z: playerPosition.z + alternativeDir.z * PLAYER_SPEED
-        };
-        
-        const secondCollision = checkBuildingCollisions(tentativeAlternativePosition);
-        
-        // 5. Si la dirección alternativa también colisiona, intentar una dirección más radical
-        if (secondCollision) {
-          console.log("⚠️ Navegación: Ruta alternativa también tiene colisión, buscando mejor camino");
+          // Encontrar el edificio más cercano
+          let closestBuilding = buildings[0];
+          let minDistance = Number.MAX_VALUE;
           
-          // Intentar en 45°, 90°, 135°, 180° desde la dirección original
-          const angles = [Math.PI/4, Math.PI/2, 3*Math.PI/4, Math.PI];
-          let validDirection = false;
-          
-          for (const angle of angles) {
-            // Rotar el vector dirección en el ángulo especificado
-            const cos = Math.cos(angle);
-            const sin = Math.sin(angle);
-            const rotatedX = targetVector.x * cos - targetVector.z * sin;
-            const rotatedZ = targetVector.x * sin + targetVector.z * cos;
+          for (const building of buildings) {
+            const dist = Math.sqrt(
+              Math.pow(building.pos.x - playerPosition.x, 2) + 
+              Math.pow(building.pos.z - playerPosition.z, 2)
+            );
             
-            const testPos = {
-              x: playerPosition.x + rotatedX * PLAYER_SPEED * 1.5,
-              y: playerPosition.y,
-              z: playerPosition.z + rotatedZ * PLAYER_SPEED * 1.5
-            };
-            
-            if (!checkBuildingCollisions(testPos)) {
-              console.log(`🔄 Navegación: Encontrada dirección segura en rotación ${(angle * 180/Math.PI).toFixed(0)}°`);
-              alternativeDir.set(rotatedX, 0, rotatedZ);
-              validDirection = true;
-              break;
+            if (dist < minDistance) {
+              minDistance = dist;
+              closestBuilding = building;
             }
           }
           
-          // Si ninguna dirección funciona, moverse temporalmente en dirección opuesta
-          if (!validDirection) {
-            console.log("🔄 Navegación: Moviéndose en dirección opuesta al objetivo para desatascar");
-            alternativeDir.set(-targetVector.x * 2, 0, -targetVector.z * 2);
+          // Determinar la mejor posición alrededor del edificio
+          const buildingPos = closestBuilding.pos;
+          
+          // Calcular el lado más cercano al destino
+          const sides = [
+            { x: buildingPos.x - closestBuilding.width/2 - 1, z: buildingPos.z, name: "izquierda" }, // izquierda
+            { x: buildingPos.x + closestBuilding.width/2 + 1, z: buildingPos.z, name: "derecha" },  // derecha
+            { x: buildingPos.x, z: buildingPos.z - closestBuilding.depth/2 - 1, name: "frente" },   // frente
+            { x: buildingPos.x, z: buildingPos.z + closestBuilding.depth/2 + 1, name: "atrás" }      // atrás
+          ];
+          
+          // Encontrar el lado más cercano al destino final
+          let bestSide = sides[0];
+          let bestDistance = Number.MAX_VALUE;
+          
+          for (const side of sides) {
+            const dist = Math.sqrt(
+              Math.pow(targetPosition.x - side.x, 2) + 
+              Math.pow(targetPosition.z - side.z, 2)
+            );
+            
+            if (dist < bestDistance) {
+              bestDistance = dist;
+              bestSide = side;
+            }
           }
+          
+          console.log(`🧩 Moviendo al jugador al lado ${bestSide.name} del ${closestBuilding.name}`);
+          
+          // Actualizar posición del jugador directamente
+          newPosition = {
+            x: bestSide.x,
+            y: playerPosition.y,
+            z: bestSide.z
+          };
+          
+          // Actualizar rotación para mirar hacia el objetivo final
+          setRotationY(Math.atan2(targetPosition.x - bestSide.x, targetPosition.z - bestSide.z));
         }
-        
-        // Normalizar la dirección alternativa
-        alternativeDir.normalize();
-        
-        // Calcular nueva posición basada en la ruta alternativa
-        newPosition = {
-          x: playerPosition.x + alternativeDir.x * PLAYER_SPEED,
-          y: playerPosition.y,
-          z: playerPosition.z + alternativeDir.z * PLAYER_SPEED
-        };
-        
-        // Actualizar rotación para mirar hacia la dirección alternativa
-        setRotationY(Math.atan2(alternativeDir.x, alternativeDir.z));
       } else {
-        // Sin obstáculos, usar movimiento directo normal
-        newPosition = directNextPosition;
+        // Sin colisión, movimiento normal
+        newPosition = tentativePosition;
         
         // Actualizar rotación para mirar hacia el objetivo
         setRotationY(Math.atan2(targetVector.x, targetVector.z));
