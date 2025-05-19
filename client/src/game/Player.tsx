@@ -269,31 +269,82 @@ const Player = () => {
     const enteringBuilding = checkBuildingProximity();
     if (enteringBuilding) return; // Si estamos entrando a un edificio, no procesar más movimiento
     
-    // Solo movimiento por teclado (sin clic ni target)
-    const { forward, backward, leftward, rightward } = getKeys();
+    // Obtener estados para el movimiento por clic
+    const { targetPosition, isMovingToTarget } = usePlayerStore.getState();
     
-    // Calculate keyboard movement direction
-    moveDir.set(0, 0, 0);
-    if (forward) moveDir.z -= 1;
-    if (backward) moveDir.z += 1;
-    if (leftward) moveDir.x -= 1;
-    if (rightward) moveDir.x += 1;
+    // Determinar si nos movemos con teclado o hacia un punto objetivo
+    let newPosition;
+    let moveDistance = 0;
     
-    // Move with keyboard if direction exists
-    if (moveDir.length() > 0) {
-      moveDir.normalize();
+    // MOVIMIENTO HACIA OBJETIVO (clic)
+    if (isMovingToTarget && targetPosition) {
+      // Vector desde la posición actual a la posición objetivo
+      const targetVector = new THREE.Vector3(
+        targetPosition.x - playerPosition.x,
+        0,
+        targetPosition.z - playerPosition.z
+      );
       
-      // Update rotation based on movement direction
-      const targetRotation = Math.atan2(moveDir.x, moveDir.z);
+      // Distancia al objetivo
+      const distanceToTarget = targetVector.length();
+      
+      // Si estamos muy cerca del objetivo, detenemos el movimiento
+      if (distanceToTarget < 0.2) {
+        // Llegamos al objetivo
+        console.log("🏁 Llegado al punto de destino");
+        usePlayerStore.getState().setIsMovingToTarget(false);
+        return;
+      }
+      
+      // Normalizar el vector para obtener la dirección
+      targetVector.normalize();
+      
+      // Actualizar rotación para mirar hacia el objetivo
+      const targetRotation = Math.atan2(targetVector.x, targetVector.z);
       setRotationY(targetRotation);
       
       // Calcular nueva posición
-      const newPosition = {
-        x: playerPosition.x + moveDir.x * PLAYER_SPEED,
+      newPosition = {
+        x: playerPosition.x + targetVector.x * PLAYER_SPEED,
         y: playerPosition.y,
-        z: playerPosition.z + moveDir.z * PLAYER_SPEED
+        z: playerPosition.z + targetVector.z * PLAYER_SPEED
       };
       
+      moveDistance = PLAYER_SPEED;
+    } 
+    // MOVIMIENTO POR TECLADO
+    else {
+      // Movimiento por teclado (WASD/Flechas)
+      const { forward, backward, leftward, rightward } = getKeys();
+      
+      // Calculate keyboard movement direction
+      moveDir.set(0, 0, 0);
+      if (forward) moveDir.z -= 1;
+      if (backward) moveDir.z += 1;
+      if (leftward) moveDir.x -= 1;
+      if (rightward) moveDir.x += 1;
+      
+      // Solo si hay movimiento por teclado
+      if (moveDir.length() > 0) {
+        moveDir.normalize();
+        
+        // Update rotation based on movement direction
+        const targetRotation = Math.atan2(moveDir.x, moveDir.z);
+        setRotationY(targetRotation);
+        
+        // Calcular nueva posición
+        newPosition = {
+          x: playerPosition.x + moveDir.x * PLAYER_SPEED,
+          y: playerPosition.y,
+          z: playerPosition.z + moveDir.z * PLAYER_SPEED
+        };
+        
+        moveDistance = PLAYER_SPEED;
+      }
+    }
+    
+    // Aplicar movimiento (tanto para teclado como para clic)
+    if (newPosition) {
       // Verificar colisiones antes de aplicar la nueva posición
       const hasCollision = checkBuildingCollisions(newPosition);
       
@@ -302,8 +353,12 @@ const Player = () => {
         // Apply the new position
         setPlayerPosition(newPosition);
         
-        // Burn a small amount of calories when moving
-        increaseCaloriesBurned(0.01);
+        // Burn a small amount of calories when moving (proporcional a la distancia)
+        increaseCaloriesBurned(0.01 * (moveDistance / PLAYER_SPEED));
+      } else if (isMovingToTarget) {
+        // Si hay colisión en movimiento por clic, detener el movimiento
+        console.log("🛑 Colisión detectada, deteniendo movimiento por clic");
+        usePlayerStore.getState().setIsMovingToTarget(false);
       }
     }
   });

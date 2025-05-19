@@ -9,6 +9,10 @@ function MouseInteraction() {
   const mouse = new THREE.Vector2();
   const { setTargetPosition, setIsMovingToTarget, setDestinationBuilding } = usePlayerStore.getState();
   
+  // Plano horizontal para detección de clics en el suelo
+  const groundPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
+  const intersectionPoint = new THREE.Vector3();
+  
   useEffect(() => {
     function onMouseMove(event: MouseEvent) {
       mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
@@ -65,9 +69,29 @@ function MouseInteraction() {
           setTargetPosition(targetPos);
           setIsMovingToTarget(true);
           setDestinationBuilding('garden');
+        } else {
+          // Si no es una puerta pero es un objeto, intentar moverse a ese punto
+          // Usar el punto de intersección como destino
+          const targetPos = new THREE.Vector3().copy(intersects[0].point);
+          console.log(`🚶 Moviendo a punto en el mundo: ${JSON.stringify(targetPos)}`);
+          setTargetPosition(targetPos);
+          setIsMovingToTarget(true);
+          // Importante: no setear destino de edificio para clics en otros objetos
+          setDestinationBuilding(null);
         }
       } else {
-        console.log('❌ No se detectó ningún objeto clicado.');
+        // Si no hay intersección con objetos, intentar con el plano del suelo
+        raycaster.setFromCamera(mouse, camera);
+        if (raycaster.ray.intersectPlane(groundPlane, intersectionPoint)) {
+          console.log(`🚶 Moviendo a punto en el suelo: ${JSON.stringify(intersectionPoint)}`);
+          const targetPos = new THREE.Vector3().copy(intersectionPoint);
+          setTargetPosition(targetPos);
+          setIsMovingToTarget(true);
+          // Importante: no setear destino de edificio para clics en el suelo
+          setDestinationBuilding(null);
+        } else {
+          console.log('❌ No se detectó ningún punto de destino válido.');
+        }
       }
     }
 
