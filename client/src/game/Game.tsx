@@ -73,13 +73,18 @@ const Game = () => {
       {/* Sky background */}
       <Sky sunPosition={[100, 10, 100]} />
       
-      {/* Ambient and directional light */}
-      <ambientLight intensity={0.5} />
+      {/* Mejorado el sistema de iluminación y sombras */}
+      <ambientLight intensity={0.6} />
       <directionalLight 
         position={[10, 10, 5]} 
         intensity={1} 
         castShadow 
-        shadow-mapSize={1024} 
+        shadow-mapSize={2048}
+        shadow-camera-left={-20}
+        shadow-camera-right={20}
+        shadow-camera-top={20}
+        shadow-camera-bottom={-20}
+        shadow-bias={-0.0001}
       />
       
       {/* Game environment, player, and buildings */}
