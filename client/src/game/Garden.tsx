@@ -202,22 +202,26 @@ const Garden = ({ onExit }: GardenProps) => {
               <h2 className="text-3xl font-bold text-white drop-shadow-lg tracking-wide uppercase">Huerto Virtual</h2>
             </div>
 
-            {/* Botón Salir estilo sencillo con ExitHelper */}
+            {/* Botón de salida de EMERGENCIA */}
             <div className="relative">
               <button
                 onClick={() => {
-                  console.log("Saliendo del huerto con posición segura");
-                  // Usamos helper para salir correctamente
-                  const { exitBuilding } = useExitHelper();
-                  exitBuilding("garden");
+                  console.log("🔴 FORZANDO SALIDA DE EMERGENCIA desde Garden");
                   
-                  // Llamamos a onExit para limpieza de componente
-                  onExit();
+                  // Forzamos directamente el cambio de estado a playing
+                  useGameStateStore.setState({ gameState: "playing" });
+                  
+                  // Mover al jugador MUY lejos de cualquier puerta para evitar entrar de nuevo
+                  const { setPlayerPosition } = usePlayerStore.getState();
+                  setPlayerPosition({ x: 0, y: 0, z: -15 });
+                  
+                  // Notificar para limpieza de componente
+                  setTimeout(() => onExit(), 100);
                 }}
-                className="bg-[#E57373] hover:bg-[#EF5350] py-3 px-12 rounded-full shadow-md border-2 border-[#C62828] transition duration-300"
+                className="bg-[#E53935] hover:bg-[#C62828] py-3 px-12 rounded-full shadow-md border-2 border-[#B71C1C] transition duration-300"
               >
                 <span className="text-white font-bold text-xl">
-                  Salir
+                  SALIR (Modo Seguro)
                 </span>
               </button>
             </div>
