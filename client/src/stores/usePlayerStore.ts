@@ -58,6 +58,9 @@ interface PlayerState {
   
   // Sistema de movimiento hacia edificios
   destinationBuilding: string | null; // Edificio al que se dirige el jugador
+  targetPosition: THREE.Vector3 | null; // Posición objetivo para el movimiento
+  isMovingToTarget: boolean; // Indica si el jugador se está moviendo hacia un objetivo
+  
   setDestinationBuilding: (building: string | null) => void; // Establece el edificio de destino
   setTargetPosition: (target: THREE.Vector3 | null) => void; // Establece la posición objetivo
   setIsMovingToTarget: (isMoving: boolean) => void; // Indica si se está moviendo hacia un objetivo
@@ -97,19 +100,29 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   
   // Estado para el sistema de movimiento hacia edificios
   destinationBuilding: null,
+  targetPosition: null,
+  isMovingToTarget: false,
   setDestinationBuilding: (building) => set({ destinationBuilding: building }),
+  
+  // Versión unificada de setTargetPosition
   setTargetPosition: (target) => {
-    // Ahora es una función real que actualiza el estado
+    // Actualizar el estado interno
+    set({ targetPosition: target });
+    
+    // Emitir evento si estamos en un navegador
     if (typeof window !== 'undefined' && window.dispatchEvent) {
-      // Creamos un evento personalizado para avisar a Player.tsx
       const event = new CustomEvent('setTargetPosition', { detail: target });
       window.dispatchEvent(event);
     }
   },
+  
+  // Versión unificada de setIsMovingToTarget
   setIsMovingToTarget: (isMoving) => {
-    // Ahora es una función real que actualiza el estado
+    // Actualizar el estado interno
+    set({ isMovingToTarget: isMoving });
+    
+    // Emitir evento si estamos en un navegador
     if (typeof window !== 'undefined' && window.dispatchEvent) {
-      // Creamos un evento personalizado para avisar a Player.tsx
       const event = new CustomEvent('setIsMovingToTarget', { detail: isMoving });
       window.dispatchEvent(event);
     }
