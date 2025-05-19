@@ -1124,59 +1124,58 @@ const Kitchen = ({ onExit }: KitchenProps) => {
               </div>
             </TabsContent>
             
-            {/* Contenido de Recetas Guiadas con CSS */}
+            {/* CONTENIDO HARDCODED HTML */}
             <TabsContent value="guided-recipes">
-              <div className="recipe-section">
-                <h2 className="recipe-title">Las Tres Recetas Básicas</h2>
-                
-                <div className="recipe-grid">
-                  {/* Desayuno Equilibrado */}
-                  <div className="recipe-card-breakfast">
-                    <h3 className="recipe-name-breakfast">Desayuno Equilibrado</h3>
-                    <p className="recipe-description">Un desayuno nutritivo con huevos, pan y fruta fresca</p>
+              <div style={{background: '#FFFAEC', padding: '10px', margin: '10px'}}>
+                <div dangerouslySetInnerHTML={{__html: `
+                  <h2 style="font-size: 24px; font-weight: bold; text-align: center; margin-bottom: 20px; color: #92400e;">Las Tres Recetas Básicas</h2>
+                  
+                  <div style="padding: 15px; background-color: #FEF3C7; border-radius: 8px; border: 1px solid #F59E0B; margin-bottom: 20px;">
+                    <h3 style="font-size: 20px; font-weight: bold; margin-bottom: 10px; color: #92400E;">Desayuno Equilibrado</h3>
+                    <p style="margin-bottom: 10px;">Un desayuno nutritivo con huevos, pan y fruta fresca</p>
                     <p><strong>Ingredientes:</strong> Huevos, Pan, Manzana</p>
                     <p><strong>Calorías:</strong> 350 kcal</p>
-                    <button className="recipe-btn-breakfast">
+                    <button style="width: 100%; background-color: #F59E0B; color: white; padding: 8px 15px; border: none; border-radius: 5px; margin-top: 10px; cursor: pointer;">
                       Preparar Receta
                     </button>
                   </div>
                   
-                  {/* Almuerzo Vegetariano */}
-                  <div className="recipe-card-lunch">
-                    <h3 className="recipe-name-lunch">Almuerzo Vegetariano</h3>
-                    <p className="recipe-description">Un almuerzo a base de plantas con frijoles, arroz y verduras</p>
+                  <div style="padding: 15px; background-color: #DCFCE7; border-radius: 8px; border: 1px solid #22C55E; margin-bottom: 20px;">
+                    <h3 style="font-size: 20px; font-weight: bold; margin-bottom: 10px; color: #166534;">Almuerzo Vegetariano</h3>
+                    <p style="margin-bottom: 10px;">Un almuerzo a base de plantas con frijoles, arroz y verduras</p>
                     <p><strong>Ingredientes:</strong> Frijoles, Arroz, Brócoli</p>
                     <p><strong>Calorías:</strong> 420 kcal</p>
-                    <button className="recipe-btn-lunch">
+                    <button style="width: 100%; background-color: #22C55E; color: white; padding: 8px 15px; border: none; border-radius: 5px; margin-top: 10px; cursor: pointer;">
                       Preparar Receta
                     </button>
                   </div>
                   
-                  {/* Cena Proteica */}
-                  <div className="recipe-card-dinner">
-                    <h3 className="recipe-name-dinner">Cena Proteica</h3>
-                    <p className="recipe-description">Una cena rica en proteínas con pollo, patatas y verduras</p>
+                  <div style="padding: 15px; background-color: #DBEAFE; border-radius: 8px; border: 1px solid #3B82F6; margin-bottom: 20px;">
+                    <h3 style="font-size: 20px; font-weight: bold; margin-bottom: 10px; color: #1E40AF;">Cena Proteica</h3>
+                    <p style="margin-bottom: 10px;">Una cena rica en proteínas con pollo, patatas y verduras</p>
                     <p><strong>Ingredientes:</strong> Pollo, Patata, Espinaca</p>
                     <p><strong>Calorías:</strong> 480 kcal</p>
-                    <button className="recipe-btn-dinner">
+                    <button style="width: 100%; background-color: #3B82F6; color: white; padding: 8px 15px; border: none; border-radius: 5px; margin-top: 10px; cursor: pointer;">
                       Preparar Receta
                     </button>
                   </div>
-                </div>
-                
-                <div className="instructions-box">
-                  <h3 className="instructions-title">Instrucciones:</h3>
-                  <ol className="instructions-list">
-                    <li className="instructions-item">Selecciona una receta según tus necesidades nutricionales</li>
-                    <li className="instructions-item">Asegúrate de tener todos los ingredientes en tu inventario</li>
-                    <li className="instructions-item">Sigue cada paso para preparar una comida nutritiva</li>
-                    <li className="instructions-item">¡Disfruta de tu comida y aprende sobre nutrición!</li>
-                  </ol>
-                </div>
-                
-                <button className="nutrition-btn">
-                  Guía Nutricional Completa
-                </button>
+                  
+                  <div style="background-color: white; padding: 15px; margin: 20px 0; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                    <h3 style="font-size: 20px; font-weight: bold; margin-bottom: 10px;">Instrucciones Generales:</h3>
+                    <ol style="padding-left: 25px;">
+                      <li style="margin: 5px 0;">Selecciona una receta según tus necesidades nutricionales</li>
+                      <li style="margin: 5px 0;">Asegúrate de tener todos los ingredientes en tu inventario</li>
+                      <li style="margin: 5px 0;">Sigue cada paso para preparar una comida nutritiva</li>
+                      <li style="margin: 5px 0;">¡Disfruta de tu comida y aprende sobre nutrición!</li>
+                    </ol>
+                  </div>
+                  
+                  <div style="text-align: center;">
+                    <button style="background-color: #D97706; color: white; padding: 10px 20px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">
+                      Guía Nutricional Completa
+                    </button>
+                  </div>
+                `}} />
               </div>
             </TabsContent>
           </Tabs>
