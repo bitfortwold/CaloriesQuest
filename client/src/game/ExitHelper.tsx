@@ -47,9 +47,16 @@ export const useExitHelper = () => {
     // 2. Cambiar estado del juego a "playing"
     useGameStateStore.setState({ gameState: "playing" });
     
-    // 3. Mover al jugador a una posición segura lejos de las puertas
+    // 3. Mover al jugador a una posición segura lejos de las puertas y reiniciar el destino
     if (exitPosition) {
-      const { setPlayerPosition } = usePlayerStore.getState();
+      const { setPlayerPosition, setDestinationBuilding, setIsMovingToTarget, setTargetPosition } = usePlayerStore.getState();
+      
+      // Limpiar el destino y movimiento para evitar re-entrada automática
+      setDestinationBuilding(null);
+      setIsMovingToTarget(false);
+      setTargetPosition(null);
+      
+      // Posicionar al jugador en un lugar seguro
       setPlayerPosition(exitPosition);
       
       // 4. Ajustar la cámara para obtener una mejor vista
