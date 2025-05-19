@@ -368,27 +368,40 @@ const Player = () => {
           // Determinar la mejor posición alrededor del edificio
           const buildingPos = closestBuilding.pos;
           
-          // Calcular el lado más cercano al destino
+          // Calcular el lado más cercano al destino con un margen de seguridad amplio
+          const SAFE_MARGIN = 3; // Mayor margen de seguridad para evitar colisiones
           const sides = [
-            { x: buildingPos.x - closestBuilding.width/2 - 1, z: buildingPos.z, name: "izquierda" }, // izquierda
-            { x: buildingPos.x + closestBuilding.width/2 + 1, z: buildingPos.z, name: "derecha" },  // derecha
-            { x: buildingPos.x, z: buildingPos.z - closestBuilding.depth/2 - 1, name: "frente" },   // frente
-            { x: buildingPos.x, z: buildingPos.z + closestBuilding.depth/2 + 1, name: "atrás" }      // atrás
+            { x: buildingPos.x - closestBuilding.width/2 - SAFE_MARGIN, z: buildingPos.z, name: "izquierda" }, // izquierda
+            { x: buildingPos.x + closestBuilding.width/2 + SAFE_MARGIN, z: buildingPos.z, name: "derecha" },  // derecha
+            { x: buildingPos.x, z: buildingPos.z - closestBuilding.depth/2 - SAFE_MARGIN, name: "frente" },   // frente
+            { x: buildingPos.x, z: buildingPos.z + closestBuilding.depth/2 + SAFE_MARGIN, name: "atrás" }      // atrás
           ];
           
-          // Encontrar el lado más cercano al destino final
+          // Encontrar el lado más cercano al destino final y verificar que no tenga colisión
           let bestSide = sides[0];
           let bestDistance = Number.MAX_VALUE;
           
           for (const side of sides) {
-            const dist = Math.sqrt(
-              Math.pow(targetPosition.x - side.x, 2) + 
-              Math.pow(targetPosition.z - side.z, 2)
-            );
+            // Verificar que este punto no cause colisión
+            const testPos = {
+              x: side.x,
+              y: playerPosition.y,
+              z: side.z
+            };
             
-            if (dist < bestDistance) {
-              bestDistance = dist;
-              bestSide = side;
+            // Solo considerar este lado si no hay colisión
+            if (!checkBuildingCollisions(testPos)) {
+              const dist = Math.sqrt(
+                Math.pow(targetPosition.x - side.x, 2) + 
+                Math.pow(targetPosition.z - side.z, 2)
+              );
+              
+              if (dist < bestDistance) {
+                bestDistance = dist;
+                bestSide = side;
+              }
+            } else {
+              console.log(`🚫 Punto ${side.name} también tiene colisión, ignorando`);
             }
           }
           
