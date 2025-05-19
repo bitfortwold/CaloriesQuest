@@ -31,15 +31,10 @@ const Player = () => {
     updatePlayer
   } = usePlayerStore();
   
-  // Posiciones de edificios usando la nueva configuración centralizada
-  const gardenConfig = getBuildingConfig("garden");
-  const marketConfig = getBuildingConfig("market");
-  const kitchenConfig = getBuildingConfig("kitchen");
-  
-  // Posiciones extraídas de la configuración
-  const gardenPosition = gardenConfig?.position || { x: 0, y: 0, z: -15 };
-  const marketPosition = marketConfig?.position || { x: -8, y: 0, z: 0 };
-  const kitchenPosition = kitchenConfig?.position || { x: 8, y: 0, z: 0 };
+  // Posiciones de edificios
+  const marketPosition = getMarketPosition();
+  const kitchenPosition = getKitchenPosition();
+  const gardenPosition = getGardenPosition();
   
   // Controles de teclado y movimiento
   const [, getKeys] = useKeyboardControls();
@@ -114,14 +109,7 @@ const Player = () => {
       let exitPosition = { x: 0, y: 0, z: 0 };
       
       if (exitedBuilding === "garden") {
-        const basePosition = getGardenExitPosition();
-        // Posición personalizada para el huerto para ver mejor al personaje
-        exitPosition = {
-          x: basePosition.x,
-          y: basePosition.y,
-          z: -3 // Ajuste para que el personaje esté correctamente posicionado frente al huerto
-        };
-        console.log("🚪 Saliendo de garden con posición segura:", exitPosition);
+        exitPosition = getGardenExitPosition();
         targetRotation = Math.PI; // Mirando hacia el norte (huerto)
       } 
       else if (exitedBuilding === "market") {
@@ -153,9 +141,9 @@ const Player = () => {
         const kitchenPos = getKitchenPosition();
         
         if (exitedBuilding === "garden") {
-          // Cámara especial para el huerto que muestra mejor al personaje
-          camera.position.set(0, 10, 10); // Posición ideal para ver al jugador completo
-          camera.lookAt(0, 1.5, -3); // Mirar hacia el jugador
+          // Cámara mirando al norte (huerto)
+          camera.position.set(0, cameraHeight, exitPosition.z + cameraDistance);
+          camera.lookAt(gardenPos.x, 0, gardenPos.z);
         }
         else if (exitedBuilding === "market") {
           // Cámara mirando al este (mercado)
