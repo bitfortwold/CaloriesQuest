@@ -23,6 +23,14 @@ const Kitchen = ({ onExit }: KitchenProps) => {
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
   const [showGuide, setShowGuide] = useState<boolean>(false);
   
+  // Cargar alimentos de muestra si la nevera y despensa están vacías
+  useEffect(() => {
+    if (refrigeratorFood.length === 0 && pantryFood.length === 0) {
+      console.log("🥕 Cargando alimentos de muestra en la cocina");
+      useFoodStore.getState().addSampleFoods();
+    }
+  }, [refrigeratorFood.length, pantryFood.length]);
+  
   // Función para traducir nombres de elementos
   const getTranslation = (key: string): string => {
     return key; // Placeholder
@@ -85,20 +93,34 @@ const Kitchen = ({ onExit }: KitchenProps) => {
   
   // Función para alternar entre guía y cocina libre
   const toggleGuide = () => {
-    setShowGuide(!showGuide);
-    if (!showGuide) {
+    // Guardar el nuevo valor en una variable local para usarlo en este contexto
+    const newGuideState = !showGuide;
+    console.log("🔄 ACTIVANDO/DESACTIVANDO GUÍA - Estado actual:", showGuide, "Nuevo estado:", newGuideState);
+    
+    // Primero actualizar el estado
+    setShowGuide(newGuideState);
+    
+    // Mostrar confirmación con toast
+    if (newGuideState) {
+      // Activando la guía
       toast.success(language === 'en' 
-        ? "Guide Mode Activated" 
+        ? "Recipe Guide Mode Activated" 
         : language === 'ca' 
-        ? "Mode Guia Activat" 
-        : "Modo Guía Activado");
+        ? "Mode Guia de Receptes Activat" 
+        : "Modo Guía de Recetas Activado");
     } else {
+      // Desactivando la guía
       toast.info(language === 'en' 
-        ? "Free Cooking Mode" 
+        ? "Free Cooking Mode Activated" 
         : language === 'ca' 
-        ? "Mode Cuina Lliure" 
-        : "Modo Cocina Libre");
+        ? "Mode Cuina Lliure Activat" 
+        : "Modo Cocina Libre Activado");
     }
+    
+    // Forzar re-render con un pequeño retraso para asegurar que el cambio se aplica
+    setTimeout(() => {
+      console.log("✅ Estado de guía actualizado, estado actual:", !showGuide);
+    }, 50);
   };
   
   // Renderizado de recetas guiadas
@@ -117,7 +139,14 @@ const Kitchen = ({ onExit }: KitchenProps) => {
                      ["Huevos", "Pan", "Manzana"],
         benefits: language === 'en' ? "High in proteins and complex carbohydrates for sustained energy" : 
                   language === 'ca' ? "Alt en proteïnes i carbohidrats complexos per a energia sostinguda" : 
-                  "Alto en proteínas y carbohidratos complejos para energía sostenida"
+                  "Alto en proteínas y carbohidratos complejos para energía sostenida",
+        nutritionalInfo: {
+          calories: 385,
+          protein: 15,
+          carbs: 56,
+          fat: 12,
+          sustainabilityScore: 7
+        }
       },
       {
         id: "lunch",
@@ -132,12 +161,41 @@ const Kitchen = ({ onExit }: KitchenProps) => {
                      ["Frijoles", "Arroz", "Brócoli", "Zanahoria"],
         benefits: language === 'en' ? "Rich in fiber and provides essential vitamins and minerals" : 
                   language === 'ca' ? "Ric en fibra i proporciona vitamines i minerals essencials" : 
-                  "Rico en fibra y proporciona vitaminas y minerales esenciales"
+                  "Rico en fibra y proporciona vitaminas y minerales esenciales",
+        nutritionalInfo: {
+          calories: 320,
+          protein: 12,
+          carbs: 64,
+          fat: 3,
+          sustainabilityScore: 9
+        }
+      },
+      {
+        id: "dinner",
+        name: language === 'en' ? "Balanced Dinner" : 
+              language === 'ca' ? "Sopar Equilibrat" : 
+              "Cena Equilibrada",
+        description: language === 'en' ? "A balanced dinner with fish, vegetables and whole grains" : 
+                     language === 'ca' ? "Un sopar equilibrat amb peix, verdures i cereals integrals" : 
+                     "Una cena equilibrada con pescado, verduras y cereales integrales",
+        ingredients: language === 'en' ? ["Fish", "Quinoa", "Spinach", "Cherry Tomatoes", "Olive Oil"] : 
+                     language === 'ca' ? ["Peix", "Quinoa", "Espinacs", "Tomàquets Cherry", "Oli d'Oliva"] : 
+                     ["Pescado", "Quinoa", "Espinacas", "Tomates Cherry", "Aceite de Oliva"],
+        benefits: language === 'en' ? "Excellent source of omega-3, protein and antioxidants" : 
+                  language === 'ca' ? "Excel·lent font d'omega-3, proteïnes i antioxidants" : 
+                  "Excelente fuente de omega-3, proteínas y antioxidantes",
+        nutritionalInfo: {
+          calories: 450,
+          protein: 32,
+          carbs: 38,
+          fat: 18,
+          sustainabilityScore: 8
+        }
       }
     ];
     
     return (
-      <div className="grid grid-cols-1 gap-4">
+      <div className="grid grid-cols-1 gap-4 max-h-[500px] overflow-y-auto pr-2">
         {recipes.map(recipe => (
           <Card key={recipe.id} className="bg-[#FFFAF0] border-4 border-[#F5D6A4] shadow-lg rounded-2xl overflow-hidden">
             <CardHeader className="bg-gradient-to-r from-[#F9A826] to-[#F48E11] pb-2 border-b-4 border-[#E47F0E]">
@@ -155,6 +213,62 @@ const Kitchen = ({ onExit }: KitchenProps) => {
                   ))}
                 </div>
               </div>
+              
+              {/* Información Nutricional */}
+              <div className="my-3 bg-[#FFFCF5] p-3 border-2 border-[#EECA81] rounded-xl">
+                <h4 className="font-bold text-[#8B5E34] mb-2 flex items-center">
+                  <span className="mr-2">📊</span>
+                  {language === 'en' ? 'Nutritional Information' : language === 'ca' ? 'Informació Nutricional' : 'Información Nutricional'}:
+                </h4>
+                <div className="grid grid-cols-4 gap-2 mb-2">
+                  <div className="bg-[#FFE0A3] text-[#8B5E34] p-2 rounded-lg text-center">
+                    <div className="font-bold">{recipe.nutritionalInfo.calories}</div>
+                    <div className="text-xs">{language === 'en' ? 'Calories' : language === 'ca' ? 'Calories' : 'Calorías'}</div>
+                  </div>
+                  <div className="bg-[#FFE0A3] text-[#8B5E34] p-2 rounded-lg text-center">
+                    <div className="font-bold">{recipe.nutritionalInfo.protein}g</div>
+                    <div className="text-xs">{language === 'en' ? 'Protein' : language === 'ca' ? 'Proteïna' : 'Proteína'}</div>
+                  </div>
+                  <div className="bg-[#FFE0A3] text-[#8B5E34] p-2 rounded-lg text-center">
+                    <div className="font-bold">{recipe.nutritionalInfo.carbs}g</div>
+                    <div className="text-xs">{language === 'en' ? 'Carbs' : language === 'ca' ? 'Carbohidrats' : 'Carbohidratos'}</div>
+                  </div>
+                  <div className="bg-[#FFE0A3] text-[#8B5E34] p-2 rounded-lg text-center">
+                    <div className="font-bold">{recipe.nutritionalInfo.fat}g</div>
+                    <div className="text-xs">{language === 'en' ? 'Fat' : language === 'ca' ? 'Greix' : 'Grasa'}</div>
+                  </div>
+                </div>
+                
+                {/* Indicador de Sostenibilidad */}
+                <div className="flex items-center">
+                  <div className="text-xs font-bold text-[#8B5E34] mr-2">
+                    {language === 'en' ? 'Sustainability' : language === 'ca' ? 'Sostenibilitat' : 'Sostenibilidad'}:
+                  </div>
+                  <div className="flex-1 h-2 bg-gray-200 rounded-full">
+                    {(() => {
+                      const score = recipe.nutritionalInfo.sustainabilityScore;
+                      const percentage = score * 10;
+                      
+                      let color = "bg-red-500";
+                      if (score >= 7) {
+                        color = "bg-green-500";
+                      } else if (score >= 5) {
+                        color = "bg-yellow-500";
+                      } else if (score >= 3) {
+                        color = "bg-orange-500";
+                      }
+                      
+                      return (
+                        <div className={`${color} h-2 rounded-full`} style={{ width: `${percentage}%` }}></div>
+                      );
+                    })()}
+                  </div>
+                  <div className="ml-2 text-sm font-bold text-[#8B5E34]">
+                    {recipe.nutritionalInfo.sustainabilityScore}/10
+                  </div>
+                </div>
+              </div>
+              
               <div>
                 <h4 className="font-bold text-[#8B5E34] mb-1">{language === 'en' ? 'Benefits' : language === 'ca' ? 'Beneficis' : 'Beneficios'}:</h4>
                 <p className="text-[#7E4E1B] text-sm">{recipe.benefits}</p>
