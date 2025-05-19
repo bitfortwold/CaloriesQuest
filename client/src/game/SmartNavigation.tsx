@@ -9,21 +9,22 @@ import { usePlayerStore } from '../stores/usePlayerStore';
  */
 const SmartNavigation = () => {
   // Definición de edificios para detección de colisiones
+  // Radios reducidos para permitir acercarse más a las puertas
   const buildings = [
     { 
       name: "market", 
       position: new THREE.Vector3(-8, 0, 0), 
-      radius: 3.5  // Radio de colisión aproximado
+      radius: 2.5  // Radio reducido para permitir acercarse a la puerta
     },
     { 
       name: "kitchen", 
       position: new THREE.Vector3(8, 0, 0), 
-      radius: 4
+      radius: 2.5
     },
     { 
       name: "garden", 
       position: new THREE.Vector3(0, 0, -15), 
-      radius: 5
+      radius: 3.5
     }
   ];
   
@@ -61,19 +62,39 @@ const SmartNavigation = () => {
     let obstacle = false;
     let steeringForce = new THREE.Vector3();
     
+    // Obtener el edificio de destino si existe
+    const destBuilding = usePlayerStore.getState().destinationBuilding;
+    
     for (const building of buildings) {
       // Distancia del jugador al edificio
       const buildingDist = currPos.distanceTo(building.position);
       
+      // Calcular la dirección a la puerta del edificio (frente del edificio)
+      const doorPosition = new THREE.Vector3(
+        building.position.x,
+        0,
+        building.position.z + 2.5 // Las puertas están en el frente (z positivo)
+      );
+      
+      // Si estamos dirigiéndonos a este edificio y estamos cerca de la puerta, 
+      // no aplicar fuerzas de esquiva (para permitir entrada)
+      if (destBuilding === building.name) {
+        const doorDist = currPos.distanceTo(doorPosition);
+        if (doorDist < 3) {
+          console.log(`🚪 Acercándose a la puerta de ${building.name}, permitiendo entrada`);
+          continue; // Pasar al siguiente edificio sin aplicar fuerzas
+        }
+      }
+      
       // Si estamos cerca del edificio, aplicar fuerza para alejarnos
-      if (buildingDist < building.radius + 1.5) {
+      if (buildingDist < building.radius + 1.2) {
         const pushDir = new THREE.Vector3()
           .subVectors(currPos, building.position)
           .normalize();
         
         // Fuerza inversamente proporcional a la distancia
-        const force = 1 - (buildingDist / (building.radius + 1.5));
-        steeringForce.add(pushDir.multiplyScalar(force * 2));
+        const force = 1 - (buildingDist / (building.radius + 1.2));
+        steeringForce.add(pushDir.multiplyScalar(force * 1.8)); // Fuerza reducida
         obstacle = true;
         
         console.log(`🧭 Esquivando ${building.name}`);
