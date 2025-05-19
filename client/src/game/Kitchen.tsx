@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useFoodStore } from "../stores/useFoodStore";
 import { usePlayerStore } from "../stores/usePlayerStore";
+import { useGameStateStore } from "../stores/useGameStateStore";
 import { useLanguage } from "../i18n/LanguageContext";
 import { toast } from "sonner";
 import { useKeyboardExit } from "../hooks/useKeyboardExit";
@@ -419,12 +420,12 @@ const Kitchen = ({ onExit }: KitchenProps) => {
             
             {/* Botón de salir (a la derecha) */}
             <button 
-              type="button"
               onClick={() => {
-                console.log("BOTÓN SALIR PRESIONADO");
-                if (typeof onExit === 'function') {
-                  onExit();
-                }
+                console.log("BOTÓN SALIR PRESIONADO - SOLUCIÓN SIMPLE");
+                // Forzar el cambio de estado con un evento directo
+                window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+                // Llamar directamente a la función de salida proporcionada
+                onExit();
               }}
               className="bg-gradient-to-r from-[#EF5350] to-[#F44336] hover:from-[#D32F2F] hover:to-[#EF5350] text-white font-bold px-6 py-3 rounded-xl shadow-md border-2 border-[#D32F2F] transform transition-all hover:scale-105"
             >
