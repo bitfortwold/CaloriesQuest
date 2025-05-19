@@ -354,22 +354,29 @@ const Kitchen = ({ onExit }: KitchenProps) => {
           
           {/* Botones superiores */}
           <div className="flex justify-between items-center mb-2">
-            {/* Botón de Funciones (a la izquierda) */}
+            {/* Botón redondo de Guía (a la izquierda) */}
             <button
               onClick={() => {
-                if (cookingMode === "guided") {
-                  setCookingMode("free");
-                  setShowGuide(false);
+                console.log("Seleccionando Guía de Cocina");
+                setShowGuide(!showGuide);
+                if (!showGuide) {
+                  setCookingMode("guided");
                 } else {
-                  setShowGuide(!showGuide);
+                  setCookingMode("free");
                 }
-                console.log("Cambiando modo de cocina desde botón superior");
               }}
-              className="bg-gradient-to-r from-[#E67E22] to-[#F39C12] text-white px-6 py-2 rounded-lg font-bold shadow-md border-2 border-[#D35400] hover:from-[#D35400] hover:to-[#E67E22] transition duration-300"
+              className={`rounded-full font-bold transition-all shadow-lg h-14 w-14 flex items-center justify-center
+                ${showGuide 
+                ? 'bg-gradient-to-r from-[#22c55e] to-[#16a34a] text-white border-2 border-[#15803d] hover:from-[#15803d] hover:to-[#22c55e]' 
+                : 'bg-gradient-to-r from-[#f97316] to-[#ea580c] text-white border-2 border-[#c2410c] hover:from-[#c2410c] hover:to-[#f97316]'}
+              `}
             >
-              {cookingMode === "guided" ? 
-                (language === 'en' ? 'Free Cooking' : language === 'ca' ? 'Cuina Lliure' : 'Cocina Libre') : 
-                (language === 'en' ? 'Cooking Guide' : language === 'ca' ? 'Guia de Cuina' : 'Guía de Cocina')}
+              <div className="flex flex-col items-center justify-center">
+                <span className="text-xl">👨‍🍳</span>
+                <span className="text-xs mt-1">
+                  {language === 'en' ? 'Guide' : language === 'ca' ? 'Guia' : 'Guía'}
+                </span>
+              </div>
             </button>
 
             {/* Título con aspecto de cartel de madera (centrado) */}
@@ -412,34 +419,7 @@ const Kitchen = ({ onExit }: KitchenProps) => {
         
         {/* Contenido principal */}
         <div className="p-4">
-          {/* Botón de Guía de Cocina redondeado */}
-          <div className="mb-4 flex justify-center">
-            <div className="w-full flex justify-center">
-              <Button 
-                onClick={() => {
-                  console.log("Seleccionando Guía de Cocina");
-                  setShowGuide(!showGuide);
-                  if (!showGuide) {
-                    setCookingMode("guided");
-                  } else {
-                    setCookingMode("free");
-                  }
-                }}
-                className={`rounded-full font-bold transition-all shadow-lg w-16 h-16 flex items-center justify-center
-                  ${showGuide 
-                  ? 'bg-gradient-to-r from-[#22c55e] to-[#16a34a] text-white border-2 border-[#15803d] hover:from-[#15803d] hover:to-[#22c55e]' 
-                  : 'bg-gradient-to-r from-[#f97316] to-[#ea580c] text-white border-2 border-[#c2410c] hover:from-[#c2410c] hover:to-[#f97316]'}
-                `}
-              >
-                <div className="flex flex-col items-center justify-center">
-                  <span className="text-xl">👨‍🍳</span>
-                  <span className="text-xs mt-1">
-                    {language === 'en' ? 'Guide' : language === 'ca' ? 'Guia' : 'Guía'}
-                  </span>
-                </div>
-              </Button>
-            </div>
-          </div>
+          {/* El botón se ha movido a la esquina superior izquierda */}
           
           {showGuide ? (
             // Guía de Cocina
