@@ -284,6 +284,9 @@ const Market = ({ onExit }: MarketProps) => {
     let hasFoodItems = false;
     let hasSeedItems = false;
     
+    // Obtener la función addFood directamente del estado global
+    const { addFood } = usePlayerStore.getState();
+    
     // Procesar cada item en el carrito
     cart.forEach(item => {
       if (item.type === "food") {
@@ -296,12 +299,24 @@ const Market = ({ onExit }: MarketProps) => {
             id: uniqueId
           };
           
-          // Determinar si va a la nevera o a la despensa basado en el tipo de alimento
-          if (item.item.storageType === 'refrigerator') {
-            useFoodStore.getState().addToRefrigerator(foodWithId);
-          } else {
-            useFoodStore.getState().addToPantry(foodWithId);
+          // IMPORTANTE: Añadir el alimento al inventario del jugador
+          console.log(`Añadiendo ${foodWithId.name} al inventario del jugador`);
+          addFood(foodWithId);
+          
+          // También mantener compatibilidad con el sistema antiguo
+          try {
+            if (item.item.category === 'lácteos' || 
+                item.item.name.toLowerCase().includes('leche') || 
+                item.item.name.toLowerCase().includes('queso') || 
+                item.item.name.toLowerCase().includes('yogur')) {
+              useFoodStore.getState().addToRefrigerator(foodWithId);
+            } else {
+              useFoodStore.getState().addToPantry(foodWithId);
+            }
+          } catch (error) {
+            console.error("Error al agregar a FoodStore:", error);
           }
+          
           foodItems.push(uniqueId);
         }
       } else if (item.type === "seed") {
