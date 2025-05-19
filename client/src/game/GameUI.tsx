@@ -19,6 +19,7 @@ const GameUI = () => {
   // Track whether DOM is ready for portals
   const [domReady, setDomReady] = useState(false);
   const [showStatsPanel, setShowStatsPanel] = useState(false);
+  const [showInfoModal, setShowInfoModal] = useState(false);
   
   // Set up portal target
   useEffect(() => {
@@ -106,10 +107,105 @@ const GameUI = () => {
               )}
             </div>
             
-            {/* Botón flotante de sonido solamente (selector de idioma eliminado) */}
+            {/* Botones flotantes: sonido e información */}
             <div className="fixed bottom-4 right-4 flex flex-col gap-2">
+              <button
+                onClick={() => setShowInfoModal(true)}
+                className="bg-gradient-to-r from-amber-500 to-amber-700 text-white p-3 rounded-full shadow-lg border-2 border-amber-600 hover:scale-105 transition-transform flex items-center justify-center"
+                title={t.information || "Información"}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </button>
               <SoundButton />
             </div>
+            
+            {/* Modal de información */}
+            {showInfoModal && (
+              <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-black bg-opacity-70">
+                <div className="bg-gray-800 rounded-xl max-w-2xl w-full mx-4 p-6 text-white border-2 border-amber-500 shadow-2xl">
+                  <h2 className="text-2xl font-bold mb-4 text-amber-400">Instrucciones del Juego</h2>
+                  
+                  <div className="space-y-4 max-h-[70vh] overflow-y-auto pr-2 mb-4">
+                    <div className="border-b border-gray-700 pb-3">
+                      <h3 className="font-bold text-amber-300 mb-2">Controles Básicos</h3>
+                      <ul className="space-y-2 text-gray-300">
+                        <li className="flex items-start">
+                          <span className="bg-gray-700 text-amber-400 px-2 py-0.5 rounded mr-2 font-mono">WASD</span>
+                          <span>o</span>
+                          <span className="bg-gray-700 text-amber-400 px-2 py-0.5 rounded mx-2 font-mono">↑←↓→</span>
+                          <span>Movimiento del personaje</span>
+                        </li>
+                        <li className="flex items-start">
+                          <span className="bg-gray-700 text-amber-400 px-2 py-0.5 rounded mr-2">Clic</span>
+                          <span>Moverte a un punto del mapa</span>
+                        </li>
+                        <li className="flex items-start">
+                          <span className="bg-gray-700 text-amber-400 px-2 py-0.5 rounded mr-2 font-mono">ESC</span>
+                          <span>Salir de edificios o ventanas</span>
+                        </li>
+                      </ul>
+                    </div>
+                    
+                    <div className="border-b border-gray-700 pb-3">
+                      <h3 className="font-bold text-amber-300 mb-2">Controles para Ratón Mac</h3>
+                      <ul className="space-y-2 text-gray-300">
+                        <li className="flex items-start">
+                          <span className="bg-gray-700 text-amber-400 px-2 py-0.5 rounded mr-2">Arrastrar</span>
+                          <span>Rotar la cámara</span>
+                        </li>
+                        <li className="flex items-start">
+                          <span className="bg-gray-700 text-amber-400 px-2 py-0.5 rounded mr-2">Desplazar</span>
+                          <span>Zoom de cámara</span>
+                        </li>
+                        <li className="flex items-start">
+                          <span className="bg-gray-700 text-amber-400 px-2 py-0.5 rounded mr-2">Gesto de pellizco</span>
+                          <span>Zoom de cámara (trackpad)</span>
+                        </li>
+                      </ul>
+                    </div>
+                    
+                    <div className="border-b border-gray-700 pb-3">
+                      <h3 className="font-bold text-amber-300 mb-2">Edificios</h3>
+                      <ul className="space-y-2 text-gray-300">
+                        <li><span className="text-amber-400 font-bold">Mercado:</span> Compra alimentos con tus monedas IHC.</li>
+                        <li><span className="text-amber-400 font-bold">Cocina:</span> Prepara comidas combinando ingredientes.</li>
+                        <li><span className="text-amber-400 font-bold">Huerto:</span> Cultiva tus propios alimentos para ahorrar.</li>
+                      </ul>
+                    </div>
+                    
+                    <div className="border-b border-gray-700 pb-3">
+                      <h3 className="font-bold text-amber-300 mb-2">Monedas y Calorías</h3>
+                      <p className="text-gray-300 mb-2">
+                        En este juego, 1 Kcal = 1 IHC (iHumanCoin). 
+                        Puedes obtener monedas completando desafíos, realizando actividades
+                        y haciendo elecciones nutricionales saludables.
+                      </p>
+                    </div>
+                    
+                    <div>
+                      <h3 className="font-bold text-amber-300 mb-2">Interacción con Edificios</h3>
+                      <ol className="list-decimal pl-5 space-y-2 text-gray-300">
+                        <li>Haz clic en la <span className="text-amber-400">puerta</span> de un edificio para acercarte a él</li>
+                        <li>Cuando llegues cerca de la entrada, entrarás automáticamente</li>
+                        <li>Dentro del edificio, usa sus funciones específicas</li>
+                        <li>Para salir, pulsa <span className="bg-gray-700 text-amber-400 px-2 py-0.5 rounded mr-2 font-mono">ESC</span> o el botón rojo</li>
+                      </ol>
+                    </div>
+                  </div>
+                  
+                  <div className="flex justify-end">
+                    <button 
+                      onClick={() => setShowInfoModal(false)}
+                      className="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded transition-colors"
+                    >
+                      Entendido
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         );
       default:
