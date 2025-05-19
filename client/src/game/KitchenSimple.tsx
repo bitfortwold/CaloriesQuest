@@ -291,7 +291,7 @@ const KitchenSimple = ({ onExit }: KitchenProps) => {
                 <h3 className="font-bold text-lg mb-2">Instrucciones Generales:</h3>
                 <ol className="list-decimal pl-5 space-y-1">
                   <li>Selecciona una receta según tus necesidades nutricionales</li>
-                  <li>Asegúrate de tener todos los ingredientes en tu despensa y nevera</li>
+                  <li>Asegúrate de tener todos los ingredientes en tu despensa o nevera</li>
                   <li>Sigue cada paso para preparar una comida nutritiva</li>
                   <li>¡Disfruta de tu comida y aprende sobre nutrición!</li>
                 </ol>
@@ -382,7 +382,7 @@ const KitchenSimple = ({ onExit }: KitchenProps) => {
                   </div>
                 ) : (
                   <div className="text-center p-4">
-                    <p className="mb-2">No tienes ingredientes en tu despensa y refrigerador.</p>
+                    <p className="mb-2">No tienes ingredientes en tu despensa o refrigerador.</p>
                     <p>Visita el Mercado para comprar algunos.</p>
                   </div>
                 )}
