@@ -246,7 +246,7 @@ const KitchenSimple = ({ onExit }: KitchenProps) => {
                             <div className="text-gray-600">{food.calories} kcal</div>
                             <button 
                               className="mt-2 text-sm px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
-                              onClick={() => prepareMeal(food.name, food.calories)}
+                              onClick={() => prepareMeal(food.name, food.calories, [food.name])}
                             >
                               Consumir
                             </button>
