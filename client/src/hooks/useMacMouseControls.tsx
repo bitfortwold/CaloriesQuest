@@ -22,8 +22,11 @@ export function useMacMouseControls() {
   const [inertia, setInertia] = useState({ x: 0, y: 0 });
   const [gestureStarted, setGestureStarted] = useState(false);
   
-  // Obtener funciones del store de cámara
-  const { requestOrbitDelta, requestZoom } = useCameraStore.getState();
+  // Obtener funciones del store de cámara de forma segura
+  const cameraStore = useCameraStore.getState();
+  // En lugar de desestructurar directamente, acceder a los métodos con seguridad
+  const requestOrbitDelta = cameraStore.requestOrbitDelta || ((x: number, y: number) => {});
+  const requestZoom = cameraStore.requestZoom || ((delta: number) => {});
 
   // Función para manejar inicio de arrastre
   const handleMouseDown = useCallback((e: MouseEvent) => {

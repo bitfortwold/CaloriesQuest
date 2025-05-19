@@ -1,8 +1,7 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { useThree, useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { useCameraStore } from '../lib/stores/useCameraStore';
-import { useMacMouseControls } from '../hooks/useMacMouseControls';
 import { usePlayerStore } from '../stores/usePlayerStore';
 
 // Componente de cámara optimizado para gestos de trackpad de Mac
@@ -13,12 +12,14 @@ const MacTrackpadCamera = () => {
   
   // Obtener estados de los stores
   const { 
-    cameraRotation, 
-    cameraDistance, 
-    cameraTarget,
     resetPending,
     clearReset
   } = useCameraStore();
+  
+  // Valores predeterminados para control de cámara
+  const [cameraRotation, setCameraRotation] = useState({ x: 0, y: Math.PI / 4 });
+  const [cameraDistance, setCameraDistance] = useState(10);
+  const cameraTarget = { x: 0, y: 0, z: 0 };
   
   const { playerPosition } = usePlayerStore();
   

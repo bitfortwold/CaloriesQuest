@@ -10,6 +10,7 @@ import Player from "./Player";
 import Buildings from "./Buildings";
 import GameUI from "./GameUI";
 import Garden from "./Garden";
+import MacTrackpadCamera from "./MacTrackpadCamera";
 
 const Game = () => {
   const { gameState, setGameState, enterBuilding, exitBuilding } = useGameStateStore();
@@ -35,37 +36,10 @@ const Game = () => {
     };
   }, [setGameState, isInitialized]);
 
-  // Sistema de cámara mejorado para permitir zoom durante movimiento
+  // Inicialización básica de la cámara - el componente MacTrackpadCamera 
+  // se encargará del resto de la configuración y seguimiento del jugador
   useEffect(() => {
-    if (gameState === "playing" && orbitControlsRef.current) {
-      // Actualizar el objetivo de la cámara para que siga al jugador suavemente
-      cameraTarget.current.set(
-        playerPosition.x,
-        playerPosition.y,
-        playerPosition.z
-      );
-      
-      // Aplicar el target a los controles de órbita con interpolación suave
-      // Esto permite hacer zoom mientras el personaje se mueve, sin perder fluidez
-      orbitControlsRef.current.target.lerp(cameraTarget.current, 0.05);
-      
-      // Importante: asegurar que los controles NO se desactiven durante el movimiento
-      orbitControlsRef.current.enabled = true;
-    }
-  }, [gameState, playerPosition]);
-  
-  // Implementar un sistema adicional para mantener la cámara funcionando durante movimiento
-  useFrame(() => {
-    if (gameState === "playing" && orbitControlsRef.current) {
-      // Actualizar los controles de órbita en cada frame
-      // Esto permite operaciones de zoom durante movimiento
-      orbitControlsRef.current.update();
-    }
-  });
-
-  // Initial camera position
-  useEffect(() => {
-    if (camera && playerPosition) {
+    if (!isInitialized && camera && playerPosition) {
       // Posición inicial de la cámara detrás del jugador
       camera.position.set(
         playerPosition.x, 
@@ -74,42 +48,13 @@ const Game = () => {
       );
       camera.lookAt(playerPosition.x, playerPosition.y, playerPosition.z);
     }
-  }, [camera, playerPosition]);
+  }, [isInitialized, camera, playerPosition]);
 
   return (
     <>
-      {/* Controles de órbita optimizados para fluidez y no perder posición */}
+      {/* Sistema de cámara optimizado para ratón Mac */}
       {gameState === "playing" && (
-        <OrbitControls 
-          ref={orbitControlsRef}
-          enablePan={true}
-          enableZoom={true}
-          enableRotate={true}
-          minDistance={3}
-          maxDistance={30}
-          minPolarAngle={Math.PI / 8} // Limitar rotación hacia abajo (no mucho)
-          maxPolarAngle={Math.PI / 2} // Limitar rotación hacia arriba (hasta horizontal)
-          zoomSpeed={0.8} // Velocidad de zoom más suave para mejor control
-          rotateSpeed={0.4} // Velocidad de rotación más suave para movimientos precisos
-          panSpeed={0.4} // Velocidad de paneo más suave para movimientos precisos
-          enableDamping={true} // Añadir inercia para movimientos fluidos
-          dampingFactor={0.07} // Factor de inercia reducido para mayor estabilidad
-          screenSpacePanning={true} // Paneo en espacio de pantalla para mantener enfoque
-          keyPanSpeed={20} // Velocidad de paneo con teclado
-          mouseButtons={{
-            LEFT: THREE.MOUSE.ROTATE,
-            MIDDLE: THREE.MOUSE.DOLLY,
-            RIGHT: THREE.MOUSE.PAN
-          }}
-          touches={{
-            ONE: THREE.TOUCH.ROTATE,
-            TWO: THREE.TOUCH.DOLLY_PAN
-          }}
-          // Mantener los controles siempre activos, incluso durante el movimiento
-          enabled={true}
-          // Hacer que los controles no se desactiven automáticamente
-          makeDefault={true}
-        />
+        <MacTrackpadCamera />
       )}
       
       {/* Sky background */}
