@@ -1,8 +1,3 @@
-import { useEffect } from 'react';
-import { useThree } from '@react-three/fiber';
-import * as THREE from 'three';
-import { usePlayerStore } from '../stores/usePlayerStore';
-
 function MouseInteraction() {
   const { camera, scene } = useThree();
   const raycaster = new THREE.Raycaster();
@@ -28,20 +23,17 @@ function MouseInteraction() {
         // Verificar si es una puerta válida
         if (objectName.includes("market_doors_clickable")) {
           console.log('🚪 Puerta del Mercado clicada');
-          // Usar las posiciones correctas desde Buildings.tsx (-8, 0, 3)
-          setTargetPosition(new THREE.Vector3(-8, 0, 3)); // Posición frente al mercado
+          setTargetPosition(new THREE.Vector3(0, 0, 2.5)); // Ajusta la posición de destino
           setIsMovingToTarget(true);
           setDestinationBuilding('market');
         } else if (objectName.includes("kitchen_doors_clickable")) {
           console.log('🚪 Puerta de la Cocina clicada');
-          // Usar las posiciones correctas desde Buildings.tsx (8, 0, 3)
-          setTargetPosition(new THREE.Vector3(8, 0, 3)); // Posición frente a la cocina
+          setTargetPosition(new THREE.Vector3(-2, 0, 2.5)); // Ajusta la posición de destino
           setIsMovingToTarget(true);
           setDestinationBuilding('kitchen');
         } else if (objectName.includes("garden_doors_clickable")) {
           console.log('🚪 Puerta del Huerto clicada');
-          // Usar las posiciones correctas desde Buildings.tsx (0, 0, -12)
-          setTargetPosition(new THREE.Vector3(0, 0, -12)); // Posición frente al huerto
+          setTargetPosition(new THREE.Vector3(2, 0, 2.5)); // Ajusta la posición de destino
           setIsMovingToTarget(true);
           setDestinationBuilding('garden');
         }
