@@ -1123,147 +1123,59 @@ const Kitchen = ({ onExit }: KitchenProps) => {
               </div>
             </TabsContent>
             
-            {/* Contenido de Recetas Guiadas - Recetas Originales */}
-            <TabsContent value="guided-recipes" className="p-4">
-              <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-md p-6">
-                <h2 className="text-2xl font-bold mb-6 text-center text-amber-800">Recetas Guiadas</h2>
-                <p className="text-center text-gray-600 mb-6">¡Sigue las instrucciones paso a paso para crear comidas deliciosas y nutritivas!</p>
+            {/* Contenido de Recetas Guiadas - VERSIÓN FUNCIONAL */}
+            <TabsContent value="guided-recipes">
+              <div className="p-6 bg-amber-50">
+                <div className="text-center mb-6">
+                  <h2 className="text-2xl font-bold text-amber-800">Recetas Guiadas</h2>
+                  <p className="text-gray-600">¡Sigue las instrucciones paso a paso para crear comidas deliciosas y nutritivas!</p>
+                </div>
                 
-                {/* Sección de Desayunos */}
-                <div className="mb-8">
-                  <h3 className="text-xl font-bold mb-4 text-amber-800 border-b pb-2">Desayunos Saludables</h3>
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-3 mb-6">
+                  <div className="bg-white p-4 rounded-lg shadow border border-amber-200">
+                    <h3 className="text-lg font-bold text-amber-700 mb-2">Desayuno Equilibrado</h3>
+                    <p className="text-sm text-gray-600 mb-2">Un desayuno nutritivo con huevos, pan y fruta.</p>
+                    <p className="text-sm"><strong>Ingredientes:</strong> Huevos, Pan, Manzana</p>
+                    <p className="text-sm"><strong>Calorías:</strong> 320 kcal</p>
+                    <button className="mt-3 w-full bg-amber-500 text-white py-2 rounded hover:bg-amber-600">
+                      Preparar
+                    </button>
+                  </div>
                   
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
-                    {/* Desayuno 1 */}
-                    <div className="bg-amber-50 p-4 rounded-lg border border-amber-200">
-                      <h4 className="font-bold text-lg text-amber-800 mb-2">Desayuno Equilibrado</h4>
-                      <p className="text-sm mb-3">Un desayuno nutritivo con huevos, pan y fruta</p>
-                      
-                      <div className="mb-3">
-                        <h5 className="font-semibold text-xs uppercase text-amber-700 mb-1">Ingredientes:</h5>
-                        <div className="flex flex-wrap gap-1">
-                          <span className="bg-amber-100 text-amber-800 px-2 py-1 text-xs rounded">Huevos</span>
-                          <span className="bg-amber-100 text-amber-800 px-2 py-1 text-xs rounded">Pan</span>
-                          <span className="bg-amber-100 text-amber-800 px-2 py-1 text-xs rounded">Manzana</span>
-                        </div>
-                      </div>
-                      
-                      <div className="text-xs text-gray-600 mb-3">
-                        <p><strong>Beneficios:</strong> Alto en proteínas y carbohidratos complejos para energía sostenida.</p>
-                      </div>
-                      
-                      <button className="w-full bg-amber-500 text-white py-2 rounded hover:bg-amber-600 transition-colors text-sm font-medium">
-                        Preparar Receta
-                      </button>
-                    </div>
-                    
-                    {/* Desayuno 2 */}
-                    <div className="bg-amber-50 p-4 rounded-lg border border-amber-200">
-                      <h4 className="font-bold text-lg text-amber-800 mb-2">Muesli con Frutas</h4>
-                      <p className="text-sm mb-3">Un desayuno rápido y energético con cereales y frutas frescas</p>
-                      
-                      <div className="mb-3">
-                        <h5 className="font-semibold text-xs uppercase text-amber-700 mb-1">Ingredientes:</h5>
-                        <div className="flex flex-wrap gap-1">
-                          <span className="bg-amber-100 text-amber-800 px-2 py-1 text-xs rounded">Avena</span>
-                          <span className="bg-amber-100 text-amber-800 px-2 py-1 text-xs rounded">Manzana</span>
-                          <span className="bg-amber-100 text-amber-800 px-2 py-1 text-xs rounded">Plátano</span>
-                          <span className="bg-amber-100 text-amber-800 px-2 py-1 text-xs rounded">Leche</span>
-                        </div>
-                      </div>
-                      
-                      <div className="text-xs text-gray-600 mb-3">
-                        <p><strong>Beneficios:</strong> Rico en fibra y vitaminas para un comienzo energético.</p>
-                      </div>
-                      
-                      <button className="w-full bg-amber-500 text-white py-2 rounded hover:bg-amber-600 transition-colors text-sm font-medium">
-                        Preparar Receta
-                      </button>
-                    </div>
+                  <div className="bg-white p-4 rounded-lg shadow border border-green-200">
+                    <h3 className="text-lg font-bold text-green-700 mb-2">Almuerzo Vegetariano</h3>
+                    <p className="text-sm text-gray-600 mb-2">Un almuerzo a base de plantas con legumbres y verduras.</p>
+                    <p className="text-sm"><strong>Ingredientes:</strong> Frijoles, Arroz, Brócoli</p>
+                    <p className="text-sm"><strong>Calorías:</strong> 380 kcal</p>
+                    <button className="mt-3 w-full bg-green-500 text-white py-2 rounded hover:bg-green-600">
+                      Preparar
+                    </button>
+                  </div>
+                  
+                  <div className="bg-white p-4 rounded-lg shadow border border-blue-200">
+                    <h3 className="text-lg font-bold text-blue-700 mb-2">Cena Proteica</h3>
+                    <p className="text-sm text-gray-600 mb-2">Una cena rica en proteínas y vegetales nutritivos.</p>
+                    <p className="text-sm"><strong>Ingredientes:</strong> Pollo, Patata, Espinaca</p>
+                    <p className="text-sm"><strong>Calorías:</strong> 450 kcal</p>
+                    <button className="mt-3 w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600">
+                      Preparar
+                    </button>
                   </div>
                 </div>
                 
-                {/* Sección de Platos Principales */}
-                <div className="mb-8">
-                  <h3 className="text-xl font-bold mb-4 text-green-800 border-b pb-2">Platos Principales</h3>
-                  
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
-                    {/* Plato Principal 1 */}
-                    <div className="bg-green-50 p-4 rounded-lg border border-green-200">
-                      <h4 className="font-bold text-lg text-green-800 mb-2">Almuerzo Vegetariano</h4>
-                      <p className="text-sm mb-3">Un almuerzo a base de plantas con frijoles, arroz y verduras</p>
-                      
-                      <div className="mb-3">
-                        <h5 className="font-semibold text-xs uppercase text-green-700 mb-1">Ingredientes:</h5>
-                        <div className="flex flex-wrap gap-1">
-                          <span className="bg-green-100 text-green-800 px-2 py-1 text-xs rounded">Frijoles</span>
-                          <span className="bg-green-100 text-green-800 px-2 py-1 text-xs rounded">Arroz</span>
-                          <span className="bg-green-100 text-green-800 px-2 py-1 text-xs rounded">Brócoli</span>
-                          <span className="bg-green-100 text-green-800 px-2 py-1 text-xs rounded">Zanahoria</span>
-                        </div>
-                      </div>
-                      
-                      <div className="text-xs text-gray-600 mb-3">
-                        <p><strong>Beneficios:</strong> Rico en fibra y proporciona vitaminas y minerales esenciales.</p>
-                      </div>
-                      
-                      <button className="w-full bg-green-500 text-white py-2 rounded hover:bg-green-600 transition-colors text-sm font-medium">
-                        Preparar Receta
-                      </button>
-                    </div>
-                    
-                    {/* Plato Principal 2 */}
-                    <div className="bg-green-50 p-4 rounded-lg border border-green-200">
-                      <h4 className="font-bold text-lg text-green-800 mb-2">Cena Proteica</h4>
-                      <p className="text-sm mb-3">Una cena rica en proteínas con pollo, patatas y vegetales</p>
-                      
-                      <div className="mb-3">
-                        <h5 className="font-semibold text-xs uppercase text-green-700 mb-1">Ingredientes:</h5>
-                        <div className="flex flex-wrap gap-1">
-                          <span className="bg-green-100 text-green-800 px-2 py-1 text-xs rounded">Pollo</span>
-                          <span className="bg-green-100 text-green-800 px-2 py-1 text-xs rounded">Patata</span>
-                          <span className="bg-green-100 text-green-800 px-2 py-1 text-xs rounded">Espinaca</span>
-                        </div>
-                      </div>
-                      
-                      <div className="text-xs text-gray-600 mb-3">
-                        <p><strong>Beneficios:</strong> Apoya la recuperación muscular y la salud general.</p>
-                      </div>
-                      
-                      <button className="w-full bg-green-500 text-white py-2 rounded hover:bg-green-600 transition-colors text-sm font-medium">
-                        Preparar Receta
-                      </button>
-                    </div>
-                    
-                    {/* Plato Principal 3 */}
-                    <div className="bg-green-50 p-4 rounded-lg border border-green-200">
-                      <h4 className="font-bold text-lg text-green-800 mb-2">Pescado con Verduras</h4>
-                      <p className="text-sm mb-3">Plato nutritivo bajo en grasas con pescado y verduras al vapor</p>
-                      
-                      <div className="mb-3">
-                        <h5 className="font-semibold text-xs uppercase text-green-700 mb-1">Ingredientes:</h5>
-                        <div className="flex flex-wrap gap-1">
-                          <span className="bg-green-100 text-green-800 px-2 py-1 text-xs rounded">Pescado</span>
-                          <span className="bg-green-100 text-green-800 px-2 py-1 text-xs rounded">Brócoli</span>
-                          <span className="bg-green-100 text-green-800 px-2 py-1 text-xs rounded">Zanahoria</span>
-                          <span className="bg-green-100 text-green-800 px-2 py-1 text-xs rounded">Patata</span>
-                        </div>
-                      </div>
-                      
-                      <div className="text-xs text-gray-600 mb-3">
-                        <p><strong>Beneficios:</strong> Rico en ácidos grasos omega-3 y proteínas magras.</p>
-                      </div>
-                      
-                      <button className="w-full bg-green-500 text-white py-2 rounded hover:bg-green-600 transition-colors text-sm font-medium">
-                        Preparar Receta
-                      </button>
-                    </div>
-                  </div>
+                <div className="bg-white p-5 rounded-lg shadow-md mb-6">
+                  <h3 className="text-xl font-bold text-gray-800 mb-3">Instrucciones de Cocina</h3>
+                  <ol className="list-decimal pl-5 space-y-2">
+                    <li>Selecciona una receta de las opciones anteriores</li>
+                    <li>Asegúrate de tener todos los ingredientes necesarios en tu inventario</li>
+                    <li>Sigue las instrucciones paso a paso para preparar la comida</li>
+                    <li>¡Disfruta tu comida nutritiva y aprende sobre sus beneficios!</li>
+                  </ol>
                 </div>
                 
-                <div className="text-center mt-8">
-                  <button className="bg-amber-600 text-white font-bold py-3 px-8 rounded-lg shadow-md hover:bg-amber-700 transition-colors">
-                    Ver Más Recetas
+                <div className="text-center">
+                  <button className="bg-amber-600 text-white font-bold py-2 px-6 rounded-lg shadow-md hover:bg-amber-700">
+                    Guía Nutricional
                   </button>
                 </div>
               </div>
