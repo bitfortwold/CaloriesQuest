@@ -12,7 +12,6 @@ import GameUI from "./GameUI";
 import Garden from "./Garden";
 import MacMouseControls from "./MacMouseControls";
 import MouseInteraction from "./MouseInteraction";
-import SmartNavigation from "./SmartNavigation";
 
 const Game = () => {
   const { gameState, setGameState, enterBuilding, exitBuilding } = useGameStateStore();
@@ -90,7 +89,6 @@ const Game = () => {
         <>
           <Player />
           <Buildings />
-          <SmartNavigation />
         </>
       )}
       

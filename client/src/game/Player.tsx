@@ -329,34 +329,10 @@ const Player = () => {
       // Distancia al objetivo
       const distanceToTarget = targetVector.length();
       
-      // Si estamos muy cerca del objetivo, detenemos el movimiento o continuamos al destino final
+      // Si estamos muy cerca del objetivo, detenemos el movimiento
       if (distanceToTarget < 0.2) {
         // Llegamos al objetivo
         console.log("🏁 Llegado al punto de destino");
-        
-        // Verificar si hay un destino final guardado en localStorage
-        const finalDestStr = localStorage.getItem('finalDestination');
-        if (finalDestStr) {
-          try {
-            // Recuperar el destino final
-            const finalDest = JSON.parse(finalDestStr);
-            console.log(`🧭 Continuando hacia el destino final: ${JSON.stringify(finalDest)}`);
-            
-            // Establecer el destino final como nuevo objetivo
-            usePlayerStore.getState().setTargetPosition(finalDest);
-            
-            // Eliminar el destino final del localStorage para no usarlo otra vez
-            localStorage.removeItem('finalDestination');
-            
-            // No detenemos el movimiento, continuamos hacia el destino final
-            return;
-          } catch (error) {
-            console.error("Error al procesar el destino final:", error);
-            // Si hay error, simplemente detener el movimiento
-          }
-        }
-        
-        // Si no hay destino final o hubo un error, detenemos el movimiento
         usePlayerStore.getState().setIsMovingToTarget(false);
         return;
       }

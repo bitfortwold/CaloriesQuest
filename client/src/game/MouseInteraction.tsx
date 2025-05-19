@@ -108,7 +108,6 @@ function MouseInteraction() {
           // Obtener el nombre del objeto para análisis
           const objectName = intersects[0].object.name || '';
           const clickPoint = intersects[0].point.clone();
-          const playerPos = usePlayerStore.getState().playerPosition;
           
           // Detectar si el usuario ha hecho clic en un edificio (no en una puerta)
           const isBuilding = 
@@ -130,24 +129,9 @@ function MouseInteraction() {
             
             // Obtener posición del edificio
             let buildingPos;
-            let buildingWidth = 5;
-            let buildingDepth = 4;
-            
-            if (buildingType === 'market') {
-              buildingPos = { x: -8, y: 0, z: 0 };
-              buildingWidth = 5;
-              buildingDepth = 4;
-            } 
-            else if (buildingType === 'kitchen') {
-              buildingPos = { x: 8, y: 0, z: 0 };
-              buildingWidth = 6;
-              buildingDepth = 5;
-            } 
-            else if (buildingType === 'garden') {
-              buildingPos = { x: 0, y: 0, z: -15 };
-              buildingWidth = 8;
-              buildingDepth = 6;
-            }
+            if (buildingType === 'market') buildingPos = { x: -8, y: 0, z: 0 };
+            else if (buildingType === 'kitchen') buildingPos = { x: 8, y: 0, z: 0 };
+            else if (buildingType === 'garden') buildingPos = { x: 0, y: 0, z: -15 };
             
             // Configurar como destino la puerta, no el edificio donde hizo clic
             if (buildingPos) {
@@ -162,116 +146,9 @@ function MouseInteraction() {
               setTargetPosition(clickPoint);
             }
           } else {
-            // Verificar si el clic implica atravesar un edificio, lo que requeriría rodearlo
-            const directPath = new THREE.Vector3().subVectors(clickPoint, new THREE.Vector3(playerPos.x, 0, playerPos.z));
-            const distance = directPath.length();
-            
-            // Solo implementamos la navegación inteligente para clics más allá de cierta distancia
-            if (distance > 5) {
-              // Verificar si hay edificios en el camino
-              const buildings = [
-                { name: "market", pos: { x: -8, y: 0, z: 0 }, width: 5, depth: 4 },
-                { name: "kitchen", pos: { x: 8, y: 0, z: 0 }, width: 6, depth: 5 },
-                { name: "garden", pos: { x: 0, y: 0, z: -15 }, width: 8, depth: 6 }
-              ];
-              
-              // Determinar si algún edificio está en la trayectoria directa
-              let buildingInPath = false;
-              let pathBuilding = null;
-              
-              for (const building of buildings) {
-                // Verificar si la línea recta entre el jugador y el destino 
-                // pasa a través del edificio (aproximación simple)
-                
-                // Calculamos la distancia del edificio a la línea que va del jugador al punto objetivo
-                const playerToTarget = new THREE.Vector3(clickPoint.x - playerPos.x, 0, clickPoint.z - playerPos.z);
-                const playerToBuilding = new THREE.Vector3(building.pos.x - playerPos.x, 0, building.pos.z - playerPos.z);
-                
-                // Proyección del vector jugador-edificio sobre el vector jugador-objetivo
-                const dotProduct = playerToTarget.dot(playerToBuilding);
-                const targetLengthSq = playerToTarget.lengthSq();
-                const projection = dotProduct / targetLengthSq;
-                
-                // Si la proyección está entre 0 y 1, el edificio está entre el jugador y el objetivo
-                if (projection > 0 && projection < 1) {
-                  // Calcular el punto más cercano en la línea
-                  const closestPoint = new THREE.Vector3(
-                    playerPos.x + playerToTarget.x * projection,
-                    0,
-                    playerPos.z + playerToTarget.z * projection
-                  );
-                  
-                  // Distancia del edificio a la línea
-                  const distanceToLine = new THREE.Vector3(
-                    closestPoint.x - building.pos.x,
-                    0,
-                    closestPoint.z - building.pos.z
-                  ).length();
-                  
-                  // Si la distancia es menor que el ancho o profundidad del edificio 
-                  // (más un pequeño margen), hay colisión
-                  const buildingRadius = Math.max(building.width, building.depth) / 2 + 1;
-                  
-                  if (distanceToLine < buildingRadius) {
-                    buildingInPath = true;
-                    pathBuilding = building;
-                    break;
-                  }
-                }
-              }
-              
-              if (buildingInPath && pathBuilding) {
-                console.log(`🚧 Edificio ${pathBuilding.name} detectado en el camino, calculando ruta alternativa`);
-                
-                // Calcular puntos de navegación alrededor del edificio
-                const SAFETY_MARGIN = 4;
-                const buildingWidth = pathBuilding.width;
-                const buildingDepth = pathBuilding.depth;
-                const buildingPos = pathBuilding.pos;
-                
-                // Calcular cuatro puntos alrededor del edificio (izquierda, derecha, arriba, abajo)
-                const navPoints = [
-                  { x: buildingPos.x - buildingWidth/2 - SAFETY_MARGIN, z: buildingPos.z, name: "izquierda" },
-                  { x: buildingPos.x + buildingWidth/2 + SAFETY_MARGIN, z: buildingPos.z, name: "derecha" },
-                  { x: buildingPos.x, z: buildingPos.z - buildingDepth/2 - SAFETY_MARGIN, name: "frente" },
-                  { x: buildingPos.x, z: buildingPos.z + buildingDepth/2 + SAFETY_MARGIN, name: "atrás" }
-                ];
-                
-                // Encontrar el punto de navegación más cercano al destino final
-                let bestPoint = navPoints[0];
-                let bestDistance = Number.MAX_VALUE;
-                
-                for (const point of navPoints) {
-                  const dist = Math.sqrt(
-                    Math.pow(clickPoint.x - point.x, 2) + 
-                    Math.pow(clickPoint.z - point.z, 2)
-                  );
-                  
-                  if (dist < bestDistance) {
-                    bestDistance = dist;
-                    bestPoint = point;
-                  }
-                }
-                
-                console.log(`🧭 Rodeando por el lado ${bestPoint.name} para llegar al destino`);
-                
-                // Usar ese punto como destino intermedio
-                // El sistema de navegación debería llevarnos a ese punto y luego al destino final
-                setTargetPosition(new THREE.Vector3(bestPoint.x, 0, bestPoint.z));
-                
-                // Guardar el destino final para usarlo una vez que llegue al punto intermedio
-                // (esto debería implementarse en Player.tsx para cambiar al destino final al llegar)
-                localStorage.setItem('finalDestination', JSON.stringify({x: clickPoint.x, y: 0, z: clickPoint.z}));
-              } else {
-                // No hay obstáculos, ir directamente al punto
-                console.log(`🚶 Camino libre, moviendo a punto en el mundo: ${JSON.stringify(clickPoint)}`);
-                setTargetPosition(clickPoint);
-              }
-            } else {
-              // Para distancias cortas, simplemente ir directo
-              console.log(`🚶 Moviendo a punto cercano: ${JSON.stringify(clickPoint)}`);
-              setTargetPosition(clickPoint);
-            }
+            // Punto normal en un objeto no-edificio
+            console.log(`🚶 Moviendo a punto en el mundo: ${JSON.stringify(clickPoint)}`);
+            setTargetPosition(clickPoint);
           }
           
           setIsMovingToTarget(true);

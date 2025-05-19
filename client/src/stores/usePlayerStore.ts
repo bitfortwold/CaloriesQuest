@@ -331,8 +331,6 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
     set({ playerPosition: position });
   },
   
-  // Esta función ya no es necesaria, usaremos directamente rotatePlayer
-  
   setPlayerData: (data: PlayerData) => {
     set({ playerData: data });
   },
