@@ -112,7 +112,7 @@ const GameUI = () => {
               <button
                 onClick={() => setShowInfoModal(true)}
                 className="bg-gradient-to-r from-amber-500 to-amber-700 text-white p-3 rounded-full shadow-lg border-2 border-amber-600 hover:scale-105 transition-transform flex items-center justify-center"
-                title={t.information || "Información"}
+                title="Información"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
