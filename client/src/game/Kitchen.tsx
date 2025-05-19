@@ -343,16 +343,23 @@ const Kitchen = ({ onExit }: KitchenProps) => {
 
   // Manejo de la activación/desactivación de la guía
   const toggleGuide = () => {
+    // Cambiar el estado de la guía y actualizar el modo
     const newGuideState = !showGuide;
-    console.log("Seleccionando Guía de Cocina - Cambiando a:", newGuideState ? "Activa" : "Inactiva");
+    console.log("⚙️ Boton guía presionado - Cambiando a: " + (newGuideState ? "ACTIVA" : "INACTIVA"));
     
+    // Primero actualizar el modo de cocina
     if (newGuideState) {
       setCookingMode("guided");
     } else {
       setCookingMode("free");
     }
     
-    setShowGuide(newGuideState);
+    // Luego actualizar el estado de la guía con un pequeño retraso para asegurar
+    // que la UI tenga tiempo de reflejarlo
+    setTimeout(() => {
+      setShowGuide(newGuideState);
+      console.log("🟢 Estado de la guía actualizado:", newGuideState);
+    }, 100);
   };
 
   return (
