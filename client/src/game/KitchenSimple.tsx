@@ -26,8 +26,15 @@ const KitchenSimple = ({ onExit }: KitchenProps) => {
 
   // Función para salir
   const handleExit = () => {
-    exitBuilding();
+    // Primero llamamos a onExit para cerrar la interfaz de la cocina
     onExit();
+    
+    // Luego usamos setTimeout para dar tiempo a que se cierre la interfaz
+    // antes de actualizar el estado del juego
+    setTimeout(() => {
+      exitBuilding();
+      console.log("Saliendo de la cocina exitosamente");
+    }, 100);
   };
 
   // Función para cocinar
