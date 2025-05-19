@@ -28,9 +28,9 @@ const MacMouseControls = () => {
     }
   }, [camera, playerPosition]);
 
-  // Actualizar target para seguir al jugador
-  useEffect(() => {
-    if (orbitControlsRef.current) {
+  // Actualizar target para seguir al jugador usando useFrame para asegurar actualizaciones constantes
+  useFrame(() => {
+    if (orbitControlsRef.current && playerPosition) {
       // Actualizar el objetivo para que siga al jugador
       cameraTarget.current.set(
         playerPosition.x,
@@ -38,10 +38,14 @@ const MacMouseControls = () => {
         playerPosition.z
       );
       
-      // Interpolación suave hacia el jugador
-      orbitControlsRef.current.target.lerp(cameraTarget.current, 0.05);
+      // Aplicar directamente la posición del jugador como target de la cámara
+      // para un seguimiento inmediato y preciso
+      orbitControlsRef.current.target.copy(cameraTarget.current);
+      
+      // Forzar actualización de los controles en cada frame
+      orbitControlsRef.current.update();
     }
-  }, [playerPosition]);
+  });
 
   // Detección de gestos específicos de Mac
   useEffect(() => {
