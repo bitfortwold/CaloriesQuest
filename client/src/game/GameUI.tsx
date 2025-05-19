@@ -31,7 +31,7 @@ const GameUI = () => {
   
   // SISTEMA UNIFICADO PARA LA SALIDA DE EDIFICIOS
   const handleBuildingExit = (buildingType: string) => {
-    console.log(`Saliendo de ${buildingType} con sistema unificado`);
+    console.log(`SISTEMA UNIFICADO: Saliendo de ${buildingType} - [VERSIÓN CORREGIDA]`);
     
     // Obtener el estado actual del jugador
     const { updatePlayer, playerData } = usePlayerStore.getState();
@@ -47,6 +47,15 @@ const GameUI = () => {
     
     // Devolver control al juego - mismo comportamiento para los tres edificios
     exitBuilding();
+    
+    // Forzar la actualización del estado global para asegurar la transición
+    setTimeout(() => {
+      // Verificación final para asegurar que hemos salido realmente
+      if (useGameStateStore.getState().gameState !== "playing") {
+        console.log("⚠️ Forzando salida del edificio a playing");
+        exitBuilding();
+      }
+    }, 100);
   };
   
   // Render UI based on game state

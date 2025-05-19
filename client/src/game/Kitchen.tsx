@@ -148,15 +148,27 @@ const Kitchen = ({ onExit }: KitchenProps) => {
     );
   };
   
-  // Función simplificada para alternar entre guía y cocina libre
+  // Función completamente rediseñada para alternar entre guía y cocina libre
   const handleToggleGuide = () => {
     // Invierte directamente los estados
     const newGuideState = !showGuide;
-    console.log("⚠️ ALTERNANDO GUÍA:", {estado_actual: showGuide, nuevo_estado: newGuideState});
+    console.log("🔄 ALTERNANDO GUÍA (versión corregida):", 
+      {estado_actual: showGuide, nuevo_estado: newGuideState, modo_actual: cookingMode});
     
-    // Actualiza el modo de cocina y el estado de la guía
-    setCookingMode(newGuideState ? "guided" : "free");
+    // Actualiza primero el estado de la guía
     setShowGuide(newGuideState);
+    
+    // Luego actualiza el modo de cocina
+    setCookingMode(newGuideState ? "guided" : "free");
+    
+    // Notificar al usuario sobre el cambio
+    if (newGuideState) {
+      toast.info(language === 'en' 
+        ? "Guide mode activated. Select a recipe to follow step-by-step instructions." 
+        : language === 'ca' 
+          ? "Mode de guia activat. Selecciona una recepta per seguir instruccions pas a pas."
+          : "Modo guía activado. Selecciona una receta para seguir instrucciones paso a paso.");
+    }
   };
   
   // Contenido de la Guía de Cocina
@@ -385,14 +397,19 @@ const Kitchen = ({ onExit }: KitchenProps) => {
           {/* Botones superiores */}
           <div className="flex justify-between items-center mb-2">
             {/* Botón convencional de guía (a la izquierda) */}
-            <KitchenGuideButton 
-              isActive={showGuide} 
-              onChange={(newState) => {
-                console.log("KitchenGuideButton onChange:", newState);
-                setShowGuide(newState);
-                setCookingMode(newState ? "guided" : "free");
-              }}
-            />
+            <button
+              onClick={handleToggleGuide}
+              className={`flex items-center gap-2 px-6 py-2 rounded-lg font-bold transition-all 
+                ${showGuide 
+                  ? 'bg-green-500 text-white border-2 border-green-700 hover:bg-green-600' 
+                  : 'bg-orange-500 text-white border-2 border-orange-700 hover:bg-orange-600'}
+              `}
+            >
+              <span className="mr-2 text-xl">👨‍🍳</span>
+              <span>
+                {language === 'en' ? 'Cooking Guide' : language === 'ca' ? 'Guia de Cuina' : 'Guía de Cocina'}
+              </span>
+            </button>
 
             {/* Título con aspecto de cartel de madera (centrado) */}
             <div className="bg-[#BA7D45] px-12 py-3 rounded-2xl shadow-lg border-4 border-[#8B5E34] transform rotate-0 relative">
