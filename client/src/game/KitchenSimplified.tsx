@@ -172,13 +172,23 @@ const KitchenSimplified = ({ onExit }: KitchenProps) => {
             
             <button 
               onClick={() => {
-                // Importamos la función de salida unificada
-                const { executeUnifiedExit } = require('../utils/UnifiedExitSystem');
+                console.log("Salida directa de la cocina");
                 
-                // Ejecutamos la salida unificada para la cocina
-                executeUnifiedExit("kitchen");
+                // PASO 1: Detener cualquier movimiento
+                const { setIsMovingToTarget, setTargetPosition, setDestinationBuilding } = usePlayerStore.getState();
+                setTargetPosition(null);
+                setIsMovingToTarget(false);
+                setDestinationBuilding(null);
                 
-                // Notificamos al componente padre
+                // PASO 2: Cambiar estado
+                const { setGameState } = useGameStateStore.getState();
+                setGameState("playing");
+                
+                // PASO 3: Posicionar jugador frente a la cocina a distancia segura
+                const { setPlayerPosition } = usePlayerStore.getState();
+                setPlayerPosition({ x: 8, y: 0, z: 6 });
+                
+                // PASO 4: Ejecutar callback
                 if (onExit) onExit();
               }}
               className="bg-red-500 text-white px-6 py-2 rounded-xl font-bold"

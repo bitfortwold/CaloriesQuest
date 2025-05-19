@@ -206,13 +206,23 @@ const Garden = ({ onExit }: GardenProps) => {
             <div className="relative">
               <button
                 onClick={() => {
-                  // Importamos la función de salida unificada
-                  const { executeUnifiedExit } = require('../utils/UnifiedExitSystem');
+                  console.log("Salida directa del huerto");
                   
-                  // Ejecutamos la salida unificada para el huerto
-                  executeUnifiedExit("garden");
+                  // PASO 1: Detener cualquier movimiento
+                  const { setIsMovingToTarget, setTargetPosition, setDestinationBuilding } = usePlayerStore.getState();
+                  setTargetPosition(null);
+                  setIsMovingToTarget(false);
+                  setDestinationBuilding(null);
                   
-                  // Notificamos al componente padre
+                  // PASO 2: Cambiar estado
+                  const { setGameState } = useGameStateStore.getState();
+                  setGameState("playing");
+                  
+                  // PASO 3: Posicionar jugador frente al huerto a distancia segura
+                  const { setPlayerPosition } = usePlayerStore.getState();
+                  setPlayerPosition({ x: 0, y: 0, z: -14 });
+                  
+                  // PASO 4: Ejecutar callback
                   if (onExit) onExit();
                 }}
                 className="bg-gradient-to-r from-red-700 to-red-800 py-3 px-10 rounded-xl shadow-xl border-2 border-red-900 transform transition-all duration-300 flex items-center gap-3 hover:scale-105 hover:shadow-2xl"
