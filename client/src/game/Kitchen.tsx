@@ -494,6 +494,13 @@ const Kitchen = ({ onExit }: KitchenProps) => {
 
   return (
     <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 overflow-auto">
+      {/* Componente de sonido */}
+      <AlertSound 
+        playSound={playSound} 
+        soundType={soundType} 
+        onPlayComplete={handleSoundComplete} 
+      />
+      
       <div className="w-full max-w-5xl max-h-[90vh] overflow-auto bg-[#FFF8E9] rounded-3xl shadow-2xl border-8 border-[#CD8E3E]">
         {/* Header de madera estilizado */}
         <div className="bg-gradient-to-r from-[#C68642] to-[#A05F2C] p-4 rounded-t-2xl relative overflow-hidden">
