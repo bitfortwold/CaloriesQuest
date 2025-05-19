@@ -46,10 +46,14 @@ const GameUI = () => {
       });
     }
     
-    // Mover al jugador lejos de la puerta para evitar entrar inmediatamente
-    // Desplazamos al jugador hacia el centro del mapa
+    // Mover al jugador a la posición de salida correspondiente según el edificio
     if (buildingType === "kitchen") {
-      setPlayerPosition({ x: 0, y: 0, z: -5 });
+      // Posición de salida frente a la cocina (reutilizando la constante definida en Buildings.tsx)
+      setPlayerPosition({ x: 8, y: 0, z: 3 });
+    } else if (buildingType === "market") {
+      setPlayerPosition({ x: -8, y: 0, z: 3 });
+    } else if (buildingType === "garden") {
+      setPlayerPosition({ x: 0, y: 0, z: -10 });
     }
     
     // Establecer el estado directamente a playing
