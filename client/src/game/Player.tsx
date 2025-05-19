@@ -57,44 +57,72 @@ const Player = () => {
     // Obtener posición actual del jugador
     const playerPos = new THREE.Vector3(playerPosition.x, playerPosition.y, playerPosition.z);
     
-    // Obtener posiciones de salida/entrada de edificios (son las posiciones exactas donde el jugador se dirige)
-    const marketExitPos = getMarketExitPosition();
-    const kitchenExitPos = getKitchenExitPosition();
-    const gardenExitPos = getGardenExitPosition();
+    // Obtener posiciones de los edificios
+    const marketPos = getMarketPosition();
+    const kitchenPos = getKitchenPosition();
+    const gardenPos = getGardenPosition();
     
-    // Definir posiciones de destino (usar las mismas que en MouseInteraction)
-    const marketDestination = new THREE.Vector3(marketExitPos.x, playerPosition.y, marketExitPos.z);
-    const kitchenDestination = new THREE.Vector3(kitchenExitPos.x, playerPosition.y, kitchenExitPos.z);
-    const gardenDestination = new THREE.Vector3(gardenExitPos.x, playerPosition.y, gardenExitPos.z);
+    // Crear posiciones de las puertas (justo frente a los edificios)
+    const marketDoorPos = new THREE.Vector3(marketPos.x, playerPosition.y, marketPos.z + 2.5);
+    const kitchenDoorPos = new THREE.Vector3(kitchenPos.x, playerPosition.y, kitchenPos.z + 2.5);
+    const gardenDoorPos = new THREE.Vector3(gardenPos.x, playerPosition.y, gardenPos.z + 2.5);
     
-    // Calcular distancias a los puntos de destino
-    const distToMarketDest = playerPos.distanceTo(marketDestination);
-    const distToKitchenDest = playerPos.distanceTo(kitchenDestination);
-    const distToGardenDest = playerPos.distanceTo(gardenDestination);
+    // Calcular distancias a las puertas
+    const distToMarketDoor = playerPos.distanceTo(marketDoorPos);
+    const distToKitchenDoor = playerPos.distanceTo(kitchenDoorPos);
+    const distToGardenDoor = playerPos.distanceTo(gardenDoorPos);
     
-    // Depuración de distancias
-    console.log(`📏 Distancia al mercado: ${distToMarketDest.toFixed(2)}`);
-    console.log(`📏 Distancia a la cocina: ${distToKitchenDest.toFixed(2)}`);
-    console.log(`📏 Distancia al huerto: ${distToGardenDest.toFixed(2)}`);
+    // Depuración de distancias 
+    console.log(`📏 Distancia puerta Mercado: ${distToMarketDoor.toFixed(2)}`);
+    console.log(`📏 Distancia puerta Cocina: ${distToKitchenDoor.toFixed(2)}`);
+    console.log(`📏 Distancia puerta Huerto: ${distToGardenDoor.toFixed(2)}`);
     
-    // Aumentar la distancia de detección para facilitar la entrada
-    const AUTO_ENTER_THRESHOLD = 3.0; // Más generoso que antes
+    // Verificar también el edificio de destino
+    const currentDestination = usePlayerStore.getState().destinationBuilding;
+    console.log(`🏢 Edificio de destino actual: ${currentDestination || "ninguno"}`);
     
-    // Verificar si estamos cerca de alguna puerta
-    if (distToMarketDest < AUTO_ENTER_THRESHOLD) {
+    // Hacer más generoso el umbral para facilitar la entrada
+    const AUTO_ENTER_THRESHOLD = 2.5;
+    
+    // Verificar si estamos cerca de alguna puerta Y es nuestro destino actual
+    if (distToMarketDoor < AUTO_ENTER_THRESHOLD && 
+       (currentDestination === "market" || !currentDestination)) {
       console.log("🚪 Llegando al mercado por las puertas...");
+      // Hacer que el jugador esté exactamente en la posición correcta
+      setPlayerPosition({
+        x: marketDoorPos.x,
+        y: playerPosition.y,
+        z: marketDoorPos.z
+      });
+      // Entrar al edificio
       enterBuilding("market");
       return true;
     }
     
-    if (distToKitchenDest < AUTO_ENTER_THRESHOLD) {
+    if (distToKitchenDoor < AUTO_ENTER_THRESHOLD && 
+       (currentDestination === "kitchen" || !currentDestination)) {
       console.log("🚪 Llegando a la cocina por las puertas...");
+      // Hacer que el jugador esté exactamente en la posición correcta
+      setPlayerPosition({
+        x: kitchenDoorPos.x,
+        y: playerPosition.y,
+        z: kitchenDoorPos.z
+      });
+      // Entrar al edificio
       enterBuilding("kitchen");
       return true;
     }
     
-    if (distToGardenDest < AUTO_ENTER_THRESHOLD) {
+    if (distToGardenDoor < AUTO_ENTER_THRESHOLD &&
+       (currentDestination === "garden" || !currentDestination)) {
       console.log("🚪 Llegando al huerto por las puertas...");
+      // Hacer que el jugador esté exactamente en la posición correcta
+      setPlayerPosition({
+        x: gardenDoorPos.x,
+        y: playerPosition.y,
+        z: gardenDoorPos.z
+      });
+      // Entrar al edificio
       enterBuilding("garden");
       return true;
     }
