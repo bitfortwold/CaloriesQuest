@@ -19,13 +19,11 @@ export const CENTRAL_SPAWN_POSITION: Position = { x: 0, y: 0, z: -5 };
 const GARDEN_POSITION: Position = { x: 0, y: 0, z: -15 };
 const MARKET_POSITION: Position = { x: -8, y: 0, z: 0 };
 const KITCHEN_POSITION: Position = { x: 8, y: 0, z: 0 };
-const GYM_POSITION: Position = { x: 0, y: 0, z: 5 }; // Nueva posición para el gimnasio
 
 // Posiciones de entrada/salida (fijas e inmutables)
 const GARDEN_EXIT_POSITION: Position = { x: 0, y: 0, z: -5 };   // Frente al huerto (CORREGIDO)
 const MARKET_EXIT_POSITION: Position = { x: -8, y: 0, z: 3 };   // Frente al mercado
 const KITCHEN_EXIT_POSITION: Position = { x: 8, y: 0, z: 3 };   // Frente a la cocina
-const GYM_EXIT_POSITION: Position = { x: 0, y: 0, z: 2 };       // Frente al gimnasio
 
 // Funciones de acceso consistentes para todos los edificios
 export const getGardenPosition = () => GARDEN_POSITION;
