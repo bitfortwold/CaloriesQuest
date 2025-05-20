@@ -661,12 +661,15 @@ const Player = () => {
             doorPosition = { x: building.pos.x, y: 0, z: building.pos.z + 2.5 };
           } else if (building.name === "garden") {
             doorPosition = { x: building.pos.x, y: 0, z: building.pos.z + 2.5 };
+          } else if (building.name === "gym") {
+            doorPosition = { x: building.pos.x, y: 0, z: building.pos.z - 2.5 }; // La puerta del gimnasio está hacia el sur
           }
           
           if (doorPosition) {
             console.log(`🚪 Redirigiendo a la puerta en ${JSON.stringify(doorPosition)}`);
-            // Actualizar posición objetivo para ir a la puerta
-            usePlayerStore.getState().setTargetPosition(doorPosition);
+            // Actualizar posición objetivo para ir a la puerta - convertir a Vector3
+            const targetVector = new THREE.Vector3(doorPosition.x, doorPosition.y, doorPosition.z);
+            usePlayerStore.getState().setTargetPosition(targetVector);
           }
         } else {
           // Si no pudimos identificar el edificio, detener el movimiento
