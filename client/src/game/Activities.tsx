@@ -1,71 +1,138 @@
-import React from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { activities } from "../data/activities";
-import { usePlayerStore } from "../stores/usePlayerStore";
-import { useLanguage } from "../i18n/LanguageContext";
-import { toast } from "sonner";
+import React, { useEffect, useState } from 'react';
+import { usePlayerStore } from '../stores/usePlayerStore';
+import { PhysicalActivity, ActivityCategory, PHYSICAL_ACTIVITIES } from '../data/activities';
+import { Dumbbell, Activity, Heart } from 'lucide-react';
 
-const Activities = () => {
-  const { 
-    increaseCaloriesBurned, 
-    updateCoins, 
-    calculateEstimatedLifespan 
-  } = usePlayerStore();
-  const { t } = useLanguage(); // Hook para acceder a las traducciones
+interface ActivitiesProps {
+  onActivityComplete: (calories: number) => void;
+}
+
+const Activities: React.FC<ActivitiesProps> = ({ onActivityComplete }) => {
+  const [selectedCategory, setSelectedCategory] = useState<ActivityCategory>('cardio');
+  const { playerData } = usePlayerStore();
   
-  // Handle activity participation
-  const performActivity = (activity: typeof activities[0]) => {
-    // Burn calories
-    increaseCaloriesBurned(activity.caloriesBurned);
+  const categories: {id: ActivityCategory, name: string, icon: JSX.Element}[] = [
+    { id: 'cardio', name: 'Cardio', icon: <Activity size={18} /> },
+    { id: 'strength', name: 'Fuerza', icon: <Dumbbell size={18} /> },
+    { id: 'flexibility', name: 'Flexibilidad', icon: <Heart size={18} /> },
+    { id: 'recreational', name: 'Recreativas', icon: <Activity size={18} /> }
+  ];
+
+  return (
+    <div className="p-4">
+      <h2 className="text-xl font-bold mb-4">Actividades Físicas</h2>
+      
+      {/* Selector de categorías */}
+      <div className="flex space-x-2 mb-6">
+        {categories.map(category => (
+          <button
+            key={category.id}
+            className={`flex items-center px-3 py-2 rounded-lg ${
+              selectedCategory === category.id 
+                ? 'bg-blue-600 text-white' 
+                : 'bg-blue-100 text-blue-800 hover:bg-blue-200'
+            }`}
+            onClick={() => setSelectedCategory(category.id)}
+          >
+            <span className="mr-2">{category.icon}</span>
+            {category.name}
+          </button>
+        ))}
+      </div>
+      
+      {/* Lista de actividades */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {PHYSICAL_ACTIVITIES[selectedCategory].map(activity => (
+          <ActivityCard 
+            key={activity.id} 
+            activity={activity} 
+            onComplete={onActivityComplete}
+          />
+        ))}
+      </div>
+    </div>
+  );
+};
+
+interface ActivityCardProps {
+  activity: PhysicalActivity;
+  onComplete: (calories: number) => void;
+}
+
+const ActivityCard: React.FC<ActivityCardProps> = ({ activity, onComplete }) => {
+  const [isActive, setIsActive] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [timeRemaining, setTimeRemaining] = useState(activity.duration * 60); // en segundos
+  
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
     
-    // Earn coins - Sistema Económico Virtual: 1 Kcal = 1 IHC
-    // Las calorías quemadas se convierten en monedas en relación 1:1
-    const coinsEarned = activity.caloriesBurned;
-    updateCoins(coinsEarned);
-    
-    // Update estimated lifespan
-    calculateEstimatedLifespan();
-    
-    // Show success message
-    toast.success(`¡Has realizado ${activity.name}! Quemaste ${activity.caloriesBurned} calorías y ganaste ${coinsEarned} iHumanCoins (IHC).`);
-    
-    // Show educational tip if available
-    if (activity.educationalTip) {
-      setTimeout(() => {
-        toast.info(activity.educationalTip, { duration: 6000 });
+    if (isActive && progress < 100) {
+      timer = setInterval(() => {
+        setProgress(prev => {
+          const newProgress = prev + (100 / (activity.duration * 60));
+          if (newProgress >= 100) {
+            setIsActive(false);
+            onComplete(activity.caloriesBurned);
+            return 100;
+          }
+          return newProgress;
+        });
+        
+        setTimeRemaining(prev => {
+          const newTime = prev - 1;
+          return Math.max(0, newTime);
+        });
       }, 1000);
     }
+    
+    return () => {
+      if (timer) clearInterval(timer);
+    };
+  }, [isActive, activity.duration, activity.caloriesBurned, onComplete]);
+  
+  const formatTime = (seconds: number): string => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
   
   return (
-    <div className="p-4 max-h-[500px] overflow-y-auto">
-      <h2 className="text-lg font-bold mb-3">{t.activities}</h2>
-      <p className="text-sm mb-4">{t.performActivities}</p>
+    <div className="bg-white rounded-lg shadow-md overflow-hidden">
+      <div className="bg-blue-700 text-white p-3">
+        <h3 className="font-bold">{activity.name}</h3>
+      </div>
       
-      <div className="grid grid-cols-1 gap-3">
-        {activities.map((activity) => (
-          <Card key={activity.id} className="overflow-hidden">
-            <CardContent className="p-3">
-              <div className="flex justify-between items-center">
-                <div>
-                  <h3 className="font-medium">{activity.name}</h3>
-                  <div className="text-sm text-gray-600 mt-1">
-                    <div>{t.burns}: {activity.caloriesBurned} {t.calories}</div>
-                    <div>{t.earns}: {activity.caloriesBurned} iHumancoins</div>
-                  </div>
-                </div>
-                <Button 
-                  size="sm"
-                  onClick={() => performActivity(activity)}
-                >
-                  {t.doIt}
-                </Button>
-              </div>
-              <p className="text-xs text-gray-500 mt-2">{activity.description}</p>
-            </CardContent>
-          </Card>
-        ))}
+      <div className="p-4">
+        <p className="text-sm mb-2">{activity.description}</p>
+        
+        <div className="flex justify-between text-sm mb-2">
+          <span>Duración: {activity.duration} min</span>
+          <span>Calorías: ~{activity.caloriesBurned}</span>
+        </div>
+        
+        {isActive && (
+          <div className="mt-3">
+            <div className="w-full bg-gray-200 rounded-full h-2.5 mb-2">
+              <div 
+                className="bg-blue-600 h-2.5 rounded-full transition-all duration-1000" 
+                style={{ width: `${progress}%` }}
+              ></div>
+            </div>
+            <p className="text-sm text-center">{formatTime(timeRemaining)}</p>
+          </div>
+        )}
+        
+        <button
+          onClick={() => setIsActive(!isActive)}
+          className={`w-full mt-3 py-2 rounded-md font-medium ${
+            isActive 
+              ? 'bg-red-600 text-white hover:bg-red-700' 
+              : 'bg-blue-600 text-white hover:bg-blue-700'
+          }`}
+        >
+          {isActive ? 'Detener' : 'Comenzar'}
+        </button>
       </div>
     </div>
   );
