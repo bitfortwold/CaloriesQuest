@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-export type GameState = "ready" | "playing" | "market" | "kitchen" | "activities" | "garden" | "gym";
+export type GameState = "ready" | "playing" | "market" | "kitchen" | "activities" | "garden";
 
 interface GameStateStore {
   gameState: GameState;
@@ -9,7 +9,7 @@ interface GameStateStore {
   // Actions
   setGameState: (state: GameState) => void;
   setIsRegistered: (registered: boolean) => void;
-  enterBuilding: (building: "market" | "kitchen" | "garden" | "gym") => void;
+  enterBuilding: (building: "market" | "kitchen" | "garden") => void;
   exitBuilding: () => void;
   logout: () => void; // Función para cerrar sesión
 }
@@ -28,7 +28,7 @@ export const useGameStateStore = create<GameStateStore>((set) => ({
     set({ isRegistered: registered });
   },
   
-  enterBuilding: (building: "market" | "kitchen" | "activities" | "garden" | "gym") => {
+  enterBuilding: (building: "market" | "kitchen" | "activities" | "garden") => {
     set({ gameState: building });
   },
   
