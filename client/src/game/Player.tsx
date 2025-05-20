@@ -10,8 +10,10 @@ import {
   getGardenExitPosition,
   getMarketExitPosition,
   getKitchenExitPosition,
+  getGymExitPosition,
   getMarketPosition,
-  getKitchenPosition
+  getKitchenPosition,
+  getGymPosition
 } from "./Buildings";
 
 // Constantes
@@ -35,6 +37,7 @@ const Player = () => {
   const marketPosition = getMarketPosition();
   const kitchenPosition = getKitchenPosition();
   const gardenPosition = getGardenPosition();
+  const gymPosition = getGymPosition();
   
   // Controles de teclado y movimiento
   const [, getKeys] = useKeyboardControls();
@@ -61,21 +64,25 @@ const Player = () => {
     const marketPos = getMarketPosition();
     const kitchenPos = getKitchenPosition();
     const gardenPos = getGardenPosition();
+    const gymPos = getGymPosition();
     
     // Crear posiciones de las puertas (justo frente a los edificios)
     const marketDoorPos = new THREE.Vector3(marketPos.x, playerPosition.y, marketPos.z + 2.5);
     const kitchenDoorPos = new THREE.Vector3(kitchenPos.x, playerPosition.y, kitchenPos.z + 2.5);
     const gardenDoorPos = new THREE.Vector3(gardenPos.x, playerPosition.y, gardenPos.z + 2.5);
+    const gymDoorPos = new THREE.Vector3(gymPos.x, playerPosition.y, gymPos.z - 2.5); // La puerta del gym está hacia el sur
     
     // Calcular distancias a las puertas
     const distToMarketDoor = playerPos.distanceTo(marketDoorPos);
     const distToKitchenDoor = playerPos.distanceTo(kitchenDoorPos);
     const distToGardenDoor = playerPos.distanceTo(gardenDoorPos);
+    const distToGymDoor = playerPos.distanceTo(gymDoorPos);
     
     // Depuración de distancias 
     console.log(`📏 Distancia puerta Mercado: ${distToMarketDoor.toFixed(2)}`);
     console.log(`📏 Distancia puerta Cocina: ${distToKitchenDoor.toFixed(2)}`);
     console.log(`📏 Distancia puerta Huerto: ${distToGardenDoor.toFixed(2)}`);
+    console.log(`📏 Distancia puerta Gimnasio: ${distToGymDoor.toFixed(2)}`);
     
     // Verificar también el edificio de destino
     const currentDestination = usePlayerStore.getState().destinationBuilding;
@@ -124,13 +131,26 @@ const Player = () => {
       enterBuilding("garden");
       return true;
     }
+
+    if (distToGymDoor < AUTO_ENTER_THRESHOLD && currentDestination === "gym") {
+      console.log("🚪 Llegando al gimnasio por las puertas...");
+      // Hacer que el jugador esté exactamente en la posición correcta
+      setPlayerPosition({
+        x: gymDoorPos.x,
+        y: playerPosition.y,
+        z: gymDoorPos.z
+      });
+      // Entrar al edificio
+      enterBuilding("gym");
+      return true;
+    }
     
     return false;
   };
   
   // Sistema unificado para detectar salida de cualquier edificio
   useEffect(() => {
-    const buildingStates = ["garden", "market", "kitchen"];
+    const buildingStates = ["garden", "market", "kitchen", "gym"];
     
     // Verificar si acabamos de salir de un edificio
     const wasInBuilding = buildingStates.includes(lastGameStateRef.current || "");
