@@ -8,7 +8,6 @@ import { useLanguage } from "../i18n/LanguageContext";
 import Market from "./Market";
 import Kitchen from "./KitchenSimple";
 import Garden from "./Garden";
-import GymZone from "./GymZone";
 import StatsPanel from "./StatsPanel";
 
 const GameUI = () => {
@@ -106,14 +105,7 @@ const GameUI = () => {
           </>
         );
       
-      case "gym":
-        return (
-          <>
-            <div className="fixed inset-0 z-50 flex items-center justify-center">
-              <GymZone />
-            </div>
-          </>
-        );
+      // El gimnasio ha sido eliminado
       case "playing":
         return (
           <div className="z-10">

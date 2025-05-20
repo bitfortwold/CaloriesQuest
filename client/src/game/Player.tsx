@@ -125,25 +125,14 @@ const Player = () => {
       return true;
     }
 
-    if (distToGymDoor < AUTO_ENTER_THRESHOLD && currentDestination === "gym") {
-      console.log("🚪 Llegando al gimnasio por las puertas...");
-      // Hacer que el jugador esté exactamente en la posición correcta
-      setPlayerPosition({
-        x: gymDoorPos.x,
-        y: playerPosition.y,
-        z: gymDoorPos.z
-      });
-      // Entrar al edificio
-      enterBuilding("gym");
-      return true;
-    }
+    // El gimnasio ha sido eliminado
     
     return false;
   };
   
   // Sistema unificado para detectar salida de cualquier edificio
   useEffect(() => {
-    const buildingStates = ["garden", "market", "kitchen", "gym"];
+    const buildingStates = ["garden", "market", "kitchen"];
     
     // Verificar si acabamos de salir de un edificio
     const wasInBuilding = buildingStates.includes(lastGameStateRef.current || "");
