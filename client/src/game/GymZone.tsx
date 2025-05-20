@@ -12,7 +12,7 @@ const GymZone: React.FC = () => {
   const [message, setMessage] = useState<string | null>(null);
 
   // Hook para salir con tecla ESC
-  useKeyboardExit();
+  useKeyboardExit('gym');
   
   // Manejar la finalización de una actividad
   const handleActivityComplete = (caloriesBurned: number) => {

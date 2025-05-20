@@ -17,6 +17,7 @@ export const useExitHelper = () => {
     market: { x: -10, y: 0, z: 10 },    // Lejos del mercado, en diagonal
     kitchen: { x: 10, y: 0, z: 10 },    // Lejos de la cocina, en diagonal
     garden: { x: 0, y: 0, z: -20 },     // Muy lejos del huerto
+    gym: { x: 0, y: 0, z: 10 },         // Lejos del gimnasio
     default: { x: 0, y: 0, z: -15 }     // Posición segura por defecto
   };
   
@@ -24,7 +25,7 @@ export const useExitHelper = () => {
    * Función mejorada para salir de un edificio de forma segura
    * Implementa una secuencia específica de pasos para garantizar la salida limpia
    */
-  const exitBuilding = (buildingType: 'market' | 'kitchen' | 'garden') => {
+  const exitBuilding = (buildingType: 'market' | 'kitchen' | 'garden' | 'gym') => {
     console.log(`🚪 SISTEMA UNIFICADO DE SALIDA v2.0: Saliendo del ${buildingType}`);
     
     // 1. DETENER CUALQUIER MOVIMIENTO AUTOMÁTICO
