@@ -29,13 +29,11 @@ const KITCHEN_EXIT_POSITION: Position = { x: 8, y: 0, z: 3 };   // Frente a la c
 export const getGardenPosition = () => GARDEN_POSITION;
 export const getMarketPosition = () => MARKET_POSITION;
 export const getKitchenPosition = () => KITCHEN_POSITION;
-export const getGymPosition = () => GYM_POSITION;
 
 // Funciones de acceso para posiciones de salida
 export const getGardenExitPosition = () => GARDEN_EXIT_POSITION;
 export const getMarketExitPosition = () => MARKET_EXIT_POSITION;
 export const getKitchenExitPosition = () => KITCHEN_EXIT_POSITION;
-export const getGymExitPosition = () => GYM_EXIT_POSITION;
 
 // Componente principal de edificios
 const Buildings = () => {
@@ -46,7 +44,6 @@ const Buildings = () => {
   const marketPos: [number, number, number] = [MARKET_POSITION.x, MARKET_POSITION.y, MARKET_POSITION.z];
   const kitchenPos: [number, number, number] = [KITCHEN_POSITION.x, KITCHEN_POSITION.y, KITCHEN_POSITION.z];
   const gardenPos: [number, number, number] = [GARDEN_POSITION.x, GARDEN_POSITION.y, GARDEN_POSITION.z];
-  const gymPos: [number, number, number] = [GYM_POSITION.x, GYM_POSITION.y, GYM_POSITION.z];
   
   // Manejadores de clics para cada edificio
   const handleMarketClick = (e: any) => {
@@ -109,25 +106,7 @@ const Buildings = () => {
     setDestinationBuilding("garden"); // Indica que debe entrar al huerto al llegar
   };
   
-  const handleGymClick = (e: any) => {
-    console.log("🏢 Gimnasio clickeado: moviéndose hacia él...");
-    if (e && e.stopPropagation) e.stopPropagation();
-    
-    // Crear punto de destino frente al gimnasio
-    const targetPoint = new THREE.Vector3(
-      gymPos[0],
-      0,
-      gymPos[2] - 3 // Posición frente a la entrada (posicionado en z positivo, por lo que restamos)
-    );
-    
-    // Obtener referencias al player para mover
-    const { setTargetPosition, setIsMovingToTarget, setDestinationBuilding } = usePlayerStore.getState();
-    
-    // Configurar el movimiento hacia el gimnasio
-    setTargetPosition(targetPoint);
-    setIsMovingToTarget(true);
-    setDestinationBuilding("gym"); // Indica que debe entrar al gimnasio al llegar
-  };
+  // Gimnasio eliminado
   
   // Registrar posiciones en el store
   useEffect(() => {
@@ -138,78 +117,6 @@ const Buildings = () => {
   
   return (
     <group>
-      {/* Gym Building */}
-      <group position={gymPos}>
-        {/* Puertas - área interactiva */}
-        <group position={[0, 0, -2.5]}>  {/* Puerta orientada hacia -Z (hacia el sur) */}
-          {/* Área clickeable para las puertas */}
-          <mesh 
-            onClick={(e) => {
-              e.stopPropagation(); 
-              handleGymClick(e);
-            }}
-            onPointerOver={(e) => e.stopPropagation()}
-            position={[0, 1.5, -0.5]} 
-            name="gym_doors_clickable"
-          >
-            <boxGeometry args={[2.5, 3, 1]} /> 
-            <meshStandardMaterial color="#8B4513" opacity={0.7} transparent={true} />
-          </mesh>
-          
-          {/* Puertas visibles */}
-          <mesh position={[-0.6, 1, 0]} castShadow receiveShadow>
-            <boxGeometry args={[0.8, 2, 0.1]} />
-            <meshStandardMaterial color="#8B4513" />
-          </mesh>
-          
-          <mesh position={[0.6, 1, 0]} castShadow receiveShadow>
-            <boxGeometry args={[0.8, 2, 0.1]} />
-            <meshStandardMaterial color="#8B4513" />
-          </mesh>
-          
-          {/* Letrero de entrada */}
-          <Text
-            position={[0, 2.7, 0]}
-            rotation={[0, 0, 0]}
-            fontSize={0.5}
-            color="#FFD700"
-            anchorX="center"
-            anchorY="middle"
-          >
-            ENTER
-          </Text>
-        </group>
-        
-        {/* Edificio del Gimnasio - Base */}
-        <mesh castShadow receiveShadow position={[0, 2, 0]}>
-          <boxGeometry args={[8, 4, 6]} />
-          <meshStandardMaterial color="#4682B4" /> {/* Azul acero para el gimnasio */}
-        </mesh>
-        
-        {/* Gimnasio techo */}
-        <mesh castShadow position={[0, 4.5, 0]} rotation={[0, 0, 0]}>
-          <boxGeometry args={[8.5, 0.5, 6.5]} />
-          <meshStandardMaterial color="#2F4F4F" />
-        </mesh>
-        
-        {/* Ventanas frontales del gimnasio */}
-        <mesh position={[0, 2.5, -3.01]}>
-          <boxGeometry args={[4, 1.5, 0.1]} />
-          <meshStandardMaterial color="#87CEEB" opacity={0.7} transparent />
-        </mesh>
-        
-        {/* Letrero del gimnasio */}
-        <Text
-          position={[0, 5.5, -3]} 
-          rotation={[0, 0, 0]}
-          fontSize={0.8}
-          color="#FFD700"
-          anchorX="center"
-          anchorY="middle"
-        >
-          GIMNASIO
-        </Text>
-      </group>
       
       {/* Market Building */}
       <group position={marketPos}>
